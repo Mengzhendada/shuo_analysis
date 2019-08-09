@@ -6,77 +6,8 @@
 #include "TCanvas.h"
 #include <fmt/core.h>
 #include <fmt/ostream.h>
+#include "Read_CALPARAM.h"
 using json = nlohmann::json;
-//Read calorimeter calibrate numbers
-class Read_CALPARAM{
-
-  std::ifstream& ifs;
-  std::vector<double> _neg, _pos;
-  std::vector<std::vector<double>> _arr;
-
-  void skip(){
-    assert(ifs.good());
-    ifs.ignore(5000,'=');
-  }
-  void read_neg(){
-    std::string line;
-    std::getline(ifs,line);
-    std::istringstream ss(line);
-    std::string tmp;
-    std::getline(ss,tmp,',');
-    while(ss.good()){
-      _neg.push_back(std::stod(tmp));
-      std::getline(ss,tmp,',');
-    }
-  }
-  void read_pos(){
-    std::string line;
-    std::getline(ifs,line);
-    std::istringstream ss(line);
-    std::string tmp;
-    std::getline(ss,tmp,',');
-    while(ss.good()){
-      _pos.push_back(std::stod(tmp));
-      std::getline(ss,tmp,',');
-    }   
-  }
-
-  void read_arr(){
-    std::string line;
-    std::getline(ifs,line);
-    while(ifs.good()){
-      std::istringstream ss(line);
-      std::string tmp;
-      std::vector<double> tmpv;
-      std::getline(ss,tmp,',');
-      while(ss.good()){
-        tmpv.push_back(std::stod(tmp));
-        std::getline(ss,tmp,',');
-      }   
-      _arr.push_back(tmpv);
-      std::getline(ifs,line);
-    }
-  }
-
-  public:
-
-  //Read_CALPARAM(std::string if_name):ifs(ifstream(if_name)){
-
-  //}
-  Read_CALPARAM(std::ifstream& in_ifs):ifs(in_ifs){
-    skip();
-    read_neg();
-    skip();
-    read_pos();
-    skip();
-    read_arr();
-  }
-  ~Read_CALPARAM();
-  const std::vector<double>& neg(){return _neg;}
-  const std::vector<double>& pos(){return _pos;}
-  const std::vector<std::vector<double>>& arr(){return _arr;}
-
-};
 
 void to_json(){
   Read_CALPARAM* rc[15];
@@ -109,6 +40,7 @@ void to_json(){
     tmp = {
       {runnum,{
                 {"momentum",momentum[in]},
+                {"events",rc[in]->nentries()},
                 {"neg",{
                          {"0",rc[in]->neg()[0]},
                          {"1",rc[in]->neg()[1]},

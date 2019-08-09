@@ -30,9 +30,6 @@ namespace fs = std::experimental::filesystem;
 
 #include "TObject.h"
 
-#include "ROOT/RDataFrame.hxx"
-#include "ROOT/RVec.hxx"
-#include "TCanvas.h"
 #include "TH1.h"
 #include "TMath.h"
 #include "TF1.h"
@@ -40,7 +37,6 @@ namespace fs = std::experimental::filesystem;
 #include "TGraphErrors.h"
 #include "TMultiGraph.h"
 
-#include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
