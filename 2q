@@ -9,8 +9,6 @@ namespace fs = std::experimental::filesystem;
 #include "nlohmann/json.hpp"
 #include "TObject.h"
 #include <map>
-#include <string>
-#include <sstream>
 
 class run_key{
   friend std::ostream& operator<<(std::ostream& os,const run_key&);
@@ -45,7 +43,6 @@ class run_key{
   {
     return keyobj._hms_p==this->_hms_p && keyobj._hms_th==this->_hms_th && keyobj._shms_p==this->_shms_p && keyobj._shms_th==this->_shms_th; 
   }
-
 };
 std::ostream& operator<<(std::ostream& os,const run_key& k){
  // os << "hms_p " <<k._hms_p << " hms_th " << k._hms_th << " shms_p " << k._shms_p << " shms_th " << k._shms_th << " ";
@@ -112,23 +109,15 @@ void runnumclassify1(){
   std::ofstream out("classify_runs.json");
   for(auto it = mymap.begin();it!= mymap.end();++it){
     outfile<< "#kingroup "<<i<<" "<<it->first<<"\n";
+    std::cout<<it->first<<std::endl;
     int nn=0;
-    std::stringstream ss;
-    ss<<it->first;
-    std::string string = ss.str();
-    std::string ii = std::to_string(i);
-    jout[ii]["kingroup"]=string;
+    string ii = std::to_string(i);
+    string kingroup = std::to_string(it->first<<);
+    jout[ii]["kingroup"]=ii;
     out<<jout<<std::endl;  
    i++;
     for(auto ik = it->second.begin();ik!= it->second.end();++ik){
       outfile<<*ik<<" ";
-      int runnum = *ik;
-    // if(runnum<7000){
-       
-        
-       //auto jit = j.find(runnum);}
-     //else{
-       //auto jit = k.find(runnum);}
       runs.push_back(*ik);
       nn++;
       
