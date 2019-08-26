@@ -194,7 +194,7 @@ void calorimeter_gain_analysis(){
       //TF1 *f1 = new TF1("f1","pol1",)
       //mg->Fit("pol1","FQ");
       //c->SaveAs(fmt::format("cal_gain/cal_gain_{}_{}.ps",i,j).c_str());       
-      TF1 *f1 = new TF1("f1",fline,0,6,2);
+      TF1 *f1 = new TF1("f1",fline,0,6,1);
       f1->SetParameters(30,0.1);
       reject = kTRUE;
       mg->Fit(f1,"0");
