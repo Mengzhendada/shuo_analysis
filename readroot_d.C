@@ -42,13 +42,14 @@ namespace fs = std::experimental::filesystem;
 #include <string>
 
 int readroot_d(){
- std::string rootfile = std::string("Cal_gain.root");
+ std::string rootfile = std::string("ROOTfiles/coin_replay_production_7593_-1.root");
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
  //.Define("pos_0", "pos_0" );
- auto h = d.Histo1D({"","",100,0,100},"pos_0");
+ auto h = d.Histo1D({"cal","cal",100,0.1,2},"P.cal.etottracknorm");
 
   auto *c = new TCanvas;
  h->DrawCopy();
+c->SaveAs("cal.pdf");
   return 0;
 }

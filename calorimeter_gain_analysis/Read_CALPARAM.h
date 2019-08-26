@@ -30,6 +30,7 @@ class Read_CALPARAM{
           //std::cout<<temp<<std::endl;
           std::istringstream stream(temp);
           stream>>entries;
+          temp.clear();
   }
   void skip(){
     assert(ifs.good());
