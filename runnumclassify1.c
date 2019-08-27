@@ -158,40 +158,41 @@ void runnumclassify1(){
       std::string runnum = std::to_string(*ik);
     auto runinfo = run_info.find(runnum);
     auto runinfojs=*runinfo;
-    if(runinfojs["spectrometers"]["shms_momentum"].get<double>()<0){
-      if(runinfojs["target"]["target_id"].get<int>()==2){
-      runs_neg_2.push_back(*ik);
-      }
-      else{
-        if(runinfojs["target"]["target_id"].get<int>()==3){
-        runs_neg_3.push_back(*ik);
-        }
-        else{
-        runs_neg_5.push_back(*ik);
-        }
-      }
-    }
-    else{
-      if(runinfojs["target"]["target_id"].get<int>()==2){
-      runs_pos_2.push_back(*ik);
-      }
-      else{
-        if(runinfojs["target"]["target_id"].get<int>()==3){
-        runs_pos_3.push_back(*ik);
-        }
-        else{
-        runs_pos_5.push_back(*ik);
-        }
-      }
-    }
-    }
-    jout[ii]["neg"]["H2"]=runs_neg_2;
-    jout[ii]["neg"]["D2"]=runs_neg_3;
-    jout[ii]["neg"]["Dummy"]=runs_neg_5;
-    jout[ii]["pos"]["H2"]=runs_pos_2;
-    jout[ii]["pos"]["D2"]=runs_neg_3;
-    jout[ii]["pos"]["Dummy"]=runs_pos_5;
-    out<<jout<<std::endl;
+    std::cout<<runinfojs["spectrometers"]["shms_momentum"].get<double>()<<std::endl;
+    // if(runinfojs["spectrometers"]["shms_momentum"].get<double>()<0){
+   //   if(runinfojs["target"]["target_id"].get<int>()==2){
+   //   runs_neg_2.push_back(*ik);
+   //   }
+   //   else{
+   //     if(runinfojs["target"]["target_id"].get<int>()==3){
+   //     runs_neg_3.push_back(*ik);
+   //     }
+   //     else{
+   //     runs_neg_5.push_back(*ik);
+   //     }
+   //   }
+   // }
+   // else{
+   //   if(runinfojs["target"]["target_id"].get<int>()==2){
+   //   runs_pos_2.push_back(*ik);
+   //   }
+   //   else{
+   //     if(runinfojs["target"]["target_id"].get<int>()==3){
+   //     runs_pos_3.push_back(*ik);
+   //     }
+   //     else{
+   //     runs_pos_5.push_back(*ik);
+   //     }
+   //   }
+   // }
+   // }
+   // jout[ii]["neg"]["H2"]=runs_neg_2;
+   // jout[ii]["neg"]["D2"]=runs_neg_3;
+   // jout[ii]["neg"]["Dummy"]=runs_neg_5;
+   // jout[ii]["pos"]["H2"]=runs_pos_2;
+   // jout[ii]["pos"]["D2"]=runs_neg_3;
+   // jout[ii]["pos"]["Dummy"]=runs_pos_5;
+   // out<<jout<<std::endl;
     //if(shmsp>0){
     //  if(targetid==2)
     //  { 
