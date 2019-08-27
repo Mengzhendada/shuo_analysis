@@ -142,16 +142,56 @@ void runnumclassify1(){
     int targetid = runkey.shms_th();
     int shmsp = runkey.shms_p();
     std::string ii = std::to_string(i);
+    json run_info;
+    {
+      std::ifstream json_input_file("all_run_info.json");
+      json_input_file>>run_info;
+    }
     json jout;
     jout[ii]["kingroup"]=string;
     jout[ii]["hms_p"]=runkey.hms_p();
     jout[ii]["shms_p"]=runkey.hms_th();
     //jout[ii]["targetid"]=runkey.shms_th();
-    //out<<jout<<std::endl;  
+    //out<<jout<<std::endl; 
+    std::vector<int> runs_pos_2,runs_pos_3,runs_pos_5,runs_neg_2,runs_neg_3,runs_neg_5;
     for(auto ik = it->second.begin();ik!=it->second.end();++ik){
     int runnum = *ik;
-
+    auto runinfo = run_info.find(runnum);
+    auto runinfojs=*runinfo;
+    if(runinfojs["spectrometers"]["shms_momentum"]<0){
+      if(runinfojs["target"]["target_id"]==2){
+      runs_neg_2.push_back(runnum);
+      }
+      else{
+        if(runinfojs["target"]["target_id"]==3){
+        runs_neg_3.push_back(runnum);
+        }
+        else{
+        runs_neg_5.push_back(runnum);
+        }
+      }
     }
+    else{
+      if(runinfojs["target"]["target_id"]==2){
+      runs_pos_2.push_back(runnum);
+      }
+      else{
+        if(runinfojs["target"]["target_id"]==3){
+        runs_pos_3.push_back(runnum);
+        }
+        else{
+        runs_pos_5.push_back(runnum);
+        }
+      }
+    }
+    }
+    jout[ii]["neg"]["H2"]=runs_neg_2;
+    jout[ii]["neg"]["D2"]=runs_neg_3;
+    jout[ii]["neg"]["Dummy"]=runs_neg_5;
+    jout[ii]["pos"]["H2"]=runs_pos_2;
+    jout[ii]["pos"]["D2"]=runs_neg_3;
+    jout[ii]["pos"]["Dummy"]=runs_pos_5;
+    out<<jout<<std::endl;
     //if(shmsp>0){
     //  if(targetid==2)
     //  { 
