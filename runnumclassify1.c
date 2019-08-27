@@ -227,7 +227,7 @@ void runnumclassify1(){
     jout[ii]["neg"]["D2"]=runs_neg_3;
     jout[ii]["neg"]["Dummy"]=runs_neg_5;
     jout[ii]["pos"]["H2"]=runs_pos_2;
-    jout[ii]["pos"]["D2"]=runs_neg_3;
+    jout[ii]["pos"]["D2"]=runs_pos_3;
     jout[ii]["pos"]["Dummy"]=runs_pos_5;
     out<<jout<<std::endl;
     //if(shmsp>0){
