@@ -155,10 +155,11 @@ void runnumclassify1(){
     //out<<jout<<std::endl; 
     std::vector<int> runs_pos_2,runs_pos_3,runs_pos_5,runs_neg_2,runs_neg_3,runs_neg_5;
     for(auto ik = it->second.begin();ik!=it->second.end();++ik){
+      runs.push_back(*ik);
       std::string runnum = std::to_string(*ik);
     auto runinfo = run_info.find(runnum);
     auto runinfojs=*runinfo;
-   // std::cout<<runinfojs["spectrometers"]["shms_momentum"].get<double>()<<std::endl;
+    std::cout<<runinfojs["spectrometers"]["shms_momentum"].get<double>()<<std::endl;
     // if(runinfojs["spectrometers"]["shms_momentum"].get<double>()<0){
    //   if(runinfojs["target"]["target_id"].get<int>()==2){
    //   runs_neg_2.push_back(*ik);
