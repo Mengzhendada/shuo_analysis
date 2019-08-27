@@ -1,15 +1,25 @@
-#ifdef __cpp_lib_filesystem
-#include <filesystem>
-namespace fs = std::filesystem;
-#else
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#endif
+//#ifdef __cpp_lib_filesystem
+//#include <filesystem>
+//namespace fs = std::filesystem;
+//#else
+//#include <experimental/filesystem>
+//namespace fs = std::experimental::filesystem;
+//#endif
+//#include <iostream>
+//#include "nlohmann/json.hpp"
+//using json =  nlohmann::json;
+//#include <fstream>
+//#include "TObject.h"
+//#include <map>
 #include <iostream>
-#include "nlohmann/json.hpp"
-
-#include "TObject.h"
+#include <string>
+#include <fstream>
 #include <map>
+#include "nlohmann/json.hpp"
+#include <sstream>
+#include <ostream>
+using json = nlohmann::json;
+using namespace std;
 
 class run_key{
   friend std::ostream& operator<<(std::ostream& os,const run_key&);
@@ -46,50 +56,103 @@ class run_key{
   }
 };
 std::ostream& operator<<(std::ostream& os,const run_key& k){
-  os << "hms_p " <<k._hms_p << " hms_th " << k._hms_th << " shms_p " << k._shms_p << " shms_th " << k._shms_th << " ";
+ // os << "hms_p " <<k._hms_p << " hms_th " << k._hms_th << " shms_p " << k._shms_p << " shms_th " << k._shms_th << " ";
+  os<<"hms_p "<<k._hms_p<<" shms_p "<<k._shms_p<<" ";
   return os;
 }
 
 void runnumclassify(){
   using nlohmann::json;
+  std::cout<<"check1"<<std::endl;
   json j;
   {
-    std::ifstream json_input_file("run_list.json");
+    std::ifstream json_input_file("jlabana/run_list.json");
     json_input_file>>j;
   }
   json k;
   {
-    std::ifstream json_input_file2("run_list_update.json");
+    std::ifstream json_input_file2("jlabana/run_list_update.json");
     json_input_file2>>k;
   }
+  std::cout<<"check"<<std::endl;
+  std::string runnumber;
+  std::ifstream infile_fall;
+  infile_fall.open("jlabana/fall_good_runlist.txt");
+  std::ifstream infile_spring;
+  infile_spring.open("jlabana/spring_good_runlist.txt");
   std::ofstream outfile;
-  outfile.open("runs_classify.txt");
+  outfile.open("jlabana/runs_classify.txt");
   run_key runskey(0,0,0,0);
   std::map<run_key,vector<int>> mymap;
-  for(json::iterator it = j.begin(); it!= j.end(); ++it){
-    if(std::stoi(it.key())>=6009 && std::stoi(it.key())<= 6532){
-      runskey.hms_p() = it.value()["spectrometers"]["hms_momentum"];
-      runskey.hms_th() = it.value()["spectrometers"]["hms_angle"];
-      runskey.shms_p() = it.value()["spectrometers"]["shms_momentum"];
-      runskey.shms_th() = it.value()["spectrometers"]["shms_angle"];
+  while(infile_fall>>runnumber){
+  auto it = j.find(runnumber);
+  auto runjs = *it;
+// std::cout<<"1"<<std::endl;
+      runskey.hms_p() = runjs["spectrometers"]["hms_momentum"].get<double>();
+      runskey.hms_th() = runjs["spectrometers"]["hms_momentum"].get<double>();
+      //runskey.hms_th() = runjs["spectrometers"]["hms_angle"].get<double>();
+      runskey.shms_p() = std::abs(runjs["spectrometers"]["shms_momentum"].get<double>());
+      runskey.shms_th() = std::abs(runjs["spectrometers"]["shms_momentum"].get<double>());
+      //runskey.shms_th() = runjs["spectrometers"]["shms_angle"].get<double>();
       //mymap.insert(std::make_pair<run_key,int>(runskey,std::stoi(it.key())));
       //std::cout << "pre: " << setw(5) << mymap.size() << std::endl;//<< setw(5) << mymap.at(runskey).size() << endl;
       mymap[runskey].push_back(std::stoi(it.key()));
       //std::cout << "pos: " << setw(5) << mymap.size() << std::endl;//flush <<  setw(5) <<  mymap.at(runskey).size() << endl;
-      //std::cout<<std::stoi(it.key())<<std::endl;
-    }}
+  //    std::cout<<std::stoi(it.key())<<std::endl;
+    }
+  while(infile_spring>>runnumber){
+  auto it = k.find(runnumber);
+  auto runjs = *it;
+// std::cout<<"1"<<std::endl;
+      runskey.hms_p() = runjs["spectrometers"]["hms_momentum"].get<double>();
+      runskey.hms_th() = runjs["spectrometers"]["hms_momentum"].get<double>();
+      //runskey.hms_th() = runjs["spectrometers"]["hms_angle"].get<double>();
+      runskey.shms_p() = std::abs(runjs["spectrometers"]["shms_momentum"].get<double>());
+      runskey.shms_th() = std::abs(runjs["spectrometers"]["shms_momentum"].get<double>());
+      //runskey.shms_th() = runjs["spectrometers"]["shms_angle"].get<double>();
+      //mymap.insert(std::make_pair<run_key,int>(runskey,std::stoi(it.key())));
+      //std::cout << "pre: " << setw(5) << mymap.size() << std::endl;//<< setw(5) << mymap.at(runskey).size() << endl;
+      mymap[runskey].push_back(std::stoi(it.key()));
+      //std::cout << "pos: " << setw(5) << mymap.size() << std::endl;//flush <<  setw(5) <<  mymap.at(runskey).size() << endl;
+      std::cout<<std::stoi(it.key())<<std::endl;
+    }
   std::vector<int> runs;
   for(auto it = mymap.begin();it!= mymap.end();++it){
     outfile<< "#"<<it->first<<"\n";
     for(auto ik = it->second.begin();ik!= it->second.end();++ik){
-      outfile<<*ik<<" ";
+      //outfile<<*ik<<" ";
       runs.push_back(*ik);
     }
+    outfile<<"\n";
+//    string _hms_cal_spring = "csvspringcalib/hms_cal/pcal.param.coin_replay_production_";
+//    string _shms_cal_spring = "csvspringcalib/shms_cal/pcal.param.coin_replay_production_";
+//    string _shms_cal_fall = "csvfallcalib/shms_cal/pcal.param.coin_replay_production_";
+    for(auto ik = it->second.begin();ik!= it->second.end();++ik){
+     // string name_hms_cal_spring = _hms_cal_spring+std::to_string(*ik)+"_-1_0_-1";
+     // std::cout<<name_hms_cal_spring<<std::endl;
+     // std::ifstream infile_hms_cal_spring;
+     // infile_hms_cal_spring.open(name_hms_cal_spring);
+     // if(infile_hms_cal_spring.good()){outfile<<"#include \"PARAM/HMS/CAL/pcal.param.coin_replay_production_"<<std::to_string(*ik)<<"_-1_0_-1"<<"\""<<"\n";}
+     // string name_shms_cal_spring = _shms_cal_spring+std::to_string(*ik)+"_-1_0_-1";
+    //  std::cout<<name_shms_cal_spring<<std::endl;
+    //  std::ifstream infile_shms_cal_spring;
+    //  infile_shms_cal_spring.open(name_shms_cal_spring);
+    //  if(infile_shms_cal_spring.good()){
+    //    std::cout<<name_shms_cal_spring<<std::endl;
+    //    outfile<<"#include \"PARAM/SHMS/CAL/pcal.param.coin_replay_production_"<<std::to_string(*ik)<<"_-1_0_-1"<<"\""<<"\n";}
+    //  string name_shms_cal_fall = _shms_cal_fall+std::to_string(*ik)+"_-1_0_-1";
+      //std::cout<<name_shms_cal_fall<<std::endl;
+    //  std::ifstream infile_shms_cal_fall;
+    //  infile_shms_cal_fall.open(name_shms_cal_fall);
+    //  if(infile_shms_cal_fall.good()){outfile<<"#include \"PARAM/SHMS/CAL/pcal.param.coin_replay_production_"<<std::to_string(*ik)<<"_-1_0_-1"<<"\""<<"\n";}
+      
+    }  
     outfile<<"\n";  
   }
   std::sort(runs.begin(),runs.end());
   std::cout<<"vector size"<<runs.size()<<std::endl;
-  for(auto it = runs.begin();it!= runs.end(); ++it){
-    std::cout<<*it<<std::endl;
-  }
+//  for(auto it = runs.begin();it!= runs.end(); ++it){
+//    std::cout<<*it<<std::endl;
+//  }
 }
+
