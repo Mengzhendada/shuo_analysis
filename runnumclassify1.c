@@ -158,7 +158,7 @@ void runnumclassify1(){
       std::string runnum = std::to_string(*ik);
     auto runinfo = run_info.find(runnum);
     auto runinfojs=*runinfo;
-    std::cout<<runinfojs["spectrometers"]["shms_momentum"].get<double>()<<std::endl;
+   // std::cout<<runinfojs["spectrometers"]["shms_momentum"].get<double>()<<std::endl;
     // if(runinfojs["spectrometers"]["shms_momentum"].get<double>()<0){
    //   if(runinfojs["target"]["target_id"].get<int>()==2){
    //   runs_neg_2.push_back(*ik);
@@ -185,7 +185,7 @@ void runnumclassify1(){
    //     }
    //   }
    // }
-   // }
+    }
    // jout[ii]["neg"]["H2"]=runs_neg_2;
    // jout[ii]["neg"]["D2"]=runs_neg_3;
    // jout[ii]["neg"]["Dummy"]=runs_neg_5;
