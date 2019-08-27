@@ -160,27 +160,27 @@ void runnumclassify1(){
     auto runinfojs=*runinfo;
     if(runinfojs["spectrometers"]["shms_momentum"]<0){
       if(runinfojs["target"]["target_id"]==2){
-      runs_neg_2.push_back(runnum);
+      runs_neg_2.push_back(*ik);
       }
       else{
         if(runinfojs["target"]["target_id"]==3){
-        runs_neg_3.push_back(runnum);
+        runs_neg_3.push_back(*ik);
         }
         else{
-        runs_neg_5.push_back(runnum);
+        runs_neg_5.push_back(*ik);
         }
       }
     }
     else{
       if(runinfojs["target"]["target_id"]==2){
-      runs_pos_2.push_back(runnum);
+      runs_pos_2.push_back(*ik);
       }
       else{
         if(runinfojs["target"]["target_id"]==3){
-        runs_pos_3.push_back(runnum);
+        runs_pos_3.push_back(*ik);
         }
         else{
-        runs_pos_5.push_back(runnum);
+        runs_pos_5.push_back(*ik);
         }
       }
     }
