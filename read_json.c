@@ -11,7 +11,7 @@ json j;
   infile>>j;
 }
 std::vector<int> runs;
-runs=j["1"]["neg"]["D2"].get<std::vector<int>>();
+runs=j["3"]["neg"]["D2"].get<std::vector<int>>();
 std::cout<<runs[0];
-std::cout<<j["1"]["neg"]["D2"]<<std::endl;
+//std::cout<<j["1"]["neg"]["D2"]<<std::endl;
 }

@@ -129,7 +129,7 @@ void runnumclassify1(){
     }
   std::vector<int> runs;
   int i = 1;
-  //json jout,temp1,temp2;
+  json jout;
   std::ofstream out("classify_runs.json");
   for(auto it = mymap.begin();it!= mymap.end();++it){
     outfile<< "#kingroup "<<i<<" "<<it->first<<"\n";
@@ -142,7 +142,7 @@ void runnumclassify1(){
     int targetid = runkey.shms_th();
     int shmsp = runkey.shms_p();
     std::string ii = std::to_string(i);
-    json jout;
+    //json jout;
     jout[ii]["hms_p"]=runkey.hms_p();
     jout[ii]["shms_p"]=runkey.shms_p();
     //jout[ii]["targetid"]=runkey.shms_th();
@@ -229,7 +229,6 @@ void runnumclassify1(){
     jout[ii]["pos"]["H2"]=runs_pos_2;
     jout[ii]["pos"]["D2"]=runs_pos_3;
     jout[ii]["pos"]["Dummy"]=runs_pos_5;
-    out<<jout<<std::endl;
     //if(shmsp>0){
     //  if(targetid==2)
     //  { 
@@ -339,6 +338,7 @@ void runnumclassify1(){
    // }  
    // outfile<<"\n";  
   }
+    out<<jout.dump(4)<<std::endl;
   
   std::sort(runs.begin(),runs.end());
   std::cout<<"vector size"<<runs.size()<<std::endl;
