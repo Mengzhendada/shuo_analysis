@@ -109,7 +109,7 @@ R__LOAD_LIBRARY(libfmt.so)
         std::cout << ii << std::endl;
       }
 
-      TCanvas* c = new TCanvas();
+      TCanvas* c = new TCanvas("c1","c1",1900,1000);
       //c->Divide(2, 2);
       //c->cd(1);
       Graph_D2->SetMarkerStyle(21);
