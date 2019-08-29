@@ -30,24 +30,13 @@ class run_key{
   double& shms_th()  {return _shms_th;}
   bool operator <(const run_key& keyobj)const
   {
-    //if(keyobj._hms_p<this->_hms_p){return true;}
-    //else{
-    //  if(keyobj._hms_th<this->_hms_th){return true;}
-    //  else{
-    //    if(keyobj._shms_p<this->shms_p){return true;}
-    //    else{
-    //      if(keyobj._shms_th<this->shms_th){return true;}
-    //    }
-
-    //  }
-    //}
-    //return keyobj._hms_p<this->_hms_p || (keyobj._hms_p==this->_hms_p && (keyobj._hms_th<this->_hms_th));
+    double epsilon=0.02;
     return keyobj._hms_p<this->_hms_p || (keyobj._hms_p==this->_hms_p && (keyobj._hms_th<this->_hms_th || (keyobj._hms_th==this->_hms_th && ( keyobj._shms_p<this->_shms_p || ( keyobj._shms_p==this->_shms_p && keyobj._shms_th<this->_shms_th))))); 
   }
   bool operator ==(const run_key& keyobj)const
   {
-    //return keyobj._hms_p==this->_hms_p && keyobj._hms_th == this->_hms_th;
-    return keyobj._hms_p==this->_hms_p && keyobj._hms_th==this->_hms_th && keyobj._shms_p==this->_shms_p && keyobj._shms_th==this->_shms_th; 
+    double epsilon=0.02;
+    return (std::abs(keyobj._hms_p-this->_hms_p)<epsilon) && (std::abs(keyobj._hms_th-this->_hms_th)<epsilon) && (std::abs(keyobj._shms_p-this->_shms_p)<epsilon) && (std::abs(keyobj._shms_th-this->_shms_th)<epsilon); 
   }
 
 };
@@ -57,16 +46,16 @@ std::ostream& operator<<(std::ostream& os,const run_key& k){
   return os;
 }
 
-void runnumclassify1(){
+void make_ratio_kin_group(){
   using nlohmann::json;
   json j;
   {
-    std::ifstream json_input_file("run_list.json");
+    std::ifstream json_input_file("db2/run_list.json");
     json_input_file>>j;
   }
   json k;
   {
-    std::ifstream json_input_file2("run_list_update.json");
+    std::ifstream json_input_file2("db2/run_list_update.json");
     json_input_file2>>k;
   }
   std::string runnumber;
@@ -79,52 +68,24 @@ void runnumclassify1(){
   run_key runskey(0,0,0,0);
   std::map<run_key,vector<int>> mymap;
   
-  //std::ofstream allinfo;
-  //allinfo.open("all_run_indo.json");
   while(infile_fall>>runnumber){
   auto it = j.find(runnumber);
   auto runjs = *it;
-// std::cout<<"1"<<std::endl;
       runskey.hms_p() = runjs["spectrometers"]["hms_momentum"].get<double>();
       runskey.hms_th() = runjs["spectrometers"]["hms_angle"].get<double>();//just to satisfy run_key class requirments
       runskey.shms_p() = std::abs(runjs["spectrometers"]["shms_momentum"].get<double>()); 
-     // runskey.shms_th() = runjs["target"]["target_id"].get<double>();//just to satisfy run_key class requirments
-      //runskey.hms_th() = runjs["spectrometers"]["hms_angle"].get<double>();
-     // runskey.shms_p() = std::abs(runjs["spectrometers"]["shms_momentum"].get<double>());
       runskey.shms_th() = runjs["spectrometers"]["shms_angle"].get<double>();
-      //runskey.shms_th() = runjs["spectrometers"]["shms_angle"].get<double>();
-      //mymap.insert(std::make_pair<run_key,int>(runskey,std::stoi(it.key())));
-      //std::cout << "pre: " << setw(5) << mymap.size() << std::endl;//<< setw(5) << mymap.at(runskey).size() << endl;
       mymap[runskey].push_back(std::stoi(it.key()));
-    //  json all;
-    //  all[it.key()]["spectrometers"]["hms_momentum"] = runjs["spectrometers"]["hms_momentum"].get<double>();//get info for each runs
-    //  all[it.key()]["spectrometers"]["shms_momentum"] = runjs["spectrometers"]["shms_momentum"].get<double>();
-      // = runjs["spectrometers"]["shms_momentum"].get<double>();
-   //   all[it.key()]["target"]["target_id"] = runjs["target"]["target_id"].get<double>();
-   //   allinfo<<all<<std::endl;
-      //std::cout << "pos: " << setw(5) << mymap.size() << std::endl;//flush <<  setw(5) <<  mymap.at(runskey).size() << endl;
       std::cout<<std::stoi(it.key())<<std::endl;
     }
   while(infile_spring>>runnumber){
   auto it = k.find(runnumber);
   auto runjs = *it;
-// std::cout<<"1"<<std::endl;
       runskey.hms_p() = runjs["spectrometers"]["hms_momentum"].get<double>();
       runskey.hms_th() = runjs["spectrometers"]["hms_angle"].get<double>();
-      //runskey.hms_th() = runjs["spectrometers"]["hms_angle"].get<double>();
       runskey.shms_p() = std::abs(runjs["spectrometers"]["shms_momentum"].get<double>());
-     // runskey.shms_th() = runjs["target"]["target_id"].get<double>();
       runskey.shms_th() = runjs["spectrometers"]["shms_angle"].get<double>();
-      //mymap.insert(std::make_pair<run_key,int>(runskey,std::stoi(it.key())));
-      //std::cout << "pre: " << setw(5) << mymap.size() << std::endl;//<< setw(5) << mymap.at(runskey).size() << endl;
       mymap[runskey].push_back(std::stoi(it.key()));
-     // json all;
-     // all[it.key()]["spectrometers"]["hms_momentum"] = runjs["spectrometers"]["hms_momentum"].get<double>();//get info for each runs
-     // all[it.key()]["spectrometers"]["shms_momentum"] = runjs["spectrometers"]["shms_momentum"].get<double>();
-      // = runjs["spectrometers"]["shms_momentum"].get<double>();
-     // all[it.key()]["target"]["target_id"] = runjs["target"]["target_id"].get<double>();
-     // allinfo<<all<<std::endl;
-      //std::cout << "pos: " << setw(5) << mymap.size() << std::endl;//flush <<  setw(5) <<  mymap.at(runskey).size() << endl;
       std::cout<<std::stoi(it.key())<<std::endl;
     }
   std::vector<int> runs;

@@ -17,7 +17,7 @@ void getline_test(){
       for(int a = i; a<line.size();a++){
       temp += line[a];
       }
-      break;
+      
     }
     }
     std::cout<<temp<<std::endl;
