@@ -73,6 +73,7 @@ void grep_current_to_json(int RunNumber = 0){
   std::ifstream infile;
   infile.open(RunFileNamePattern);
   std::string line,temp;
+  int zeros=0;
   if(infile.fail()){std::cout<<"check file "<<RunFileNamePattern<<std::endl;}
 
     std::cout<<"check 1"<<string[i]<<std::endl;
@@ -94,7 +95,10 @@ void grep_current_to_json(int RunNumber = 0){
         }
           std::istringstream stream(temp);
           stream>>current;
+          if(current ==0){zeros +=1;}
+          else{
           currents.push_back(current);
+          }
         temp.clear();
       }//end if line find string
     }//end reading lines
@@ -105,6 +109,7 @@ void grep_current_to_json(int RunNumber = 0){
     double most_common = Most_Common(currents);
     auto max = *max_element(currents.begin(),currents.end());
     auto min = *min_element(currents.begin(),currents.end());
+    j[string[i]]["num_of_zeros"] = zeros;
     j[string[i]]["average"]=average;
     j[string[i]]["standard_derivation"]=stdde;
     j[string[i]]["most_common"]=most_common;
