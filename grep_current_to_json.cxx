@@ -15,16 +15,16 @@ using namespace std;
 #include <bits/stdc++.h>
 #include <numeric>
 
-auto Average(std::vector<double> v)
+double Average(std::vector<double> v)
 {
-  return std::accumulate(v.begin(),v.end(),0)/v.size();
+  return std::accumulate(v.begin(),v.end(),0.0)/v.size();
 }
-auto Standard_Derivation(std::vector<double> v, double mean){
+double Standard_Derivation(std::vector<double> v, double mean){
   double stupid=0;
   for(int i = 0;i<v.size();i++){stupid+=(v[i]-mean)*(v[i]-mean);}
   return std::sqrt(stupid/v.size());
 }
-auto Most_Common(std::vector<double> v){
+double Most_Common(std::vector<double> v){
   sort(v.begin(),v.end());
   auto most_value=*v.begin();
   auto test = *v.begin();
@@ -95,7 +95,7 @@ void grep_current_to_json(int RunNumber = 0){
         }
           std::istringstream stream(temp);
           stream>>current;
-          if(current ==0){zeros +=1;}
+          if(current ==0){zeros =zeros +1;}
           else{
           currents.push_back(current);
           }
@@ -104,6 +104,7 @@ void grep_current_to_json(int RunNumber = 0){
     }//end reading lines
     std::cout<<currents.size()<<std::endl; 
  // j[string[i]]=currents;  
+    if(currents.size()!=0){
     double average = Average(currents);
     double stdde = Standard_Derivation(currents,average);
     double most_common = Most_Common(currents);
@@ -116,6 +117,16 @@ void grep_current_to_json(int RunNumber = 0){
     j[string[i]]["maximum"]=max;
     j[string[i]]["minimum"]=min;
     j[string[i]]["first"]=currents[0];
+    }
+    else{
+    j[string[i]]["num_of_zeros"] = -1;
+    j[string[i]]["average"]=0;
+    j[string[i]]["standard_derivation"]=0;
+    j[string[i]]["most_common"]=0;
+    j[string[i]]["maximum"]=0;
+    j[string[i]]["minimum"]=0;
+    j[string[i]]["first"]=0;
+   }
   }//end string array
   std::string jsonname = fmt::format("Data/magnet_current_{}.json",RunNumber).c_str();
   std::ofstream o2(jsonname);
