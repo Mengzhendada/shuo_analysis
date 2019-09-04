@@ -4,131 +4,113 @@
 
 #kingroup 3 hms_p -4.357 hms_th 20.24 shms_p 2.341 shms_th 13.81 
 
-#kingroup 4 hms_p -4.508 hms_th 16.632 shms_p 2.433 shms_th 11.613 
+#kingroup 4 hms_p -4.508 hms_th 16.63 shms_p 4.262 shms_th 11.61 
 
-#kingroup 5 hms_p -4.508 hms_th 16.63 shms_p 4.262 shms_th 11.61 
+#kingroup 5 hms_p -4.508 hms_th 16.63 shms_p 3.653 shms_th 11.61 
 
-#kingroup 6 hms_p -4.508 hms_th 16.63 shms_p 3.653 shms_th 11.61 
+#kingroup 6 hms_p -4.508 hms_th 16.63 shms_p 3.043 shms_th 11.61 
 
-#kingroup 7 hms_p -4.508 hms_th 16.63 shms_p 3.043 shms_th 11.61 
+#kingroup 7 hms_p -4.508 hms_th 16.63 shms_p 2.433 shms_th 11.61 
 
-#kingroup 8 hms_p -4.508 hms_th 16.63 shms_p 2.433 shms_th 11.61 
+#kingroup 8 hms_p -4.736 hms_th 19.06 shms_p 4.102 shms_th 14.179 
 
-#kingroup 9 hms_p -4.736 hms_th 19.06 shms_p 4.102 shms_th 14.179 
+#kingroup 9 hms_p -4.736 hms_th 19.06 shms_p 3.515 shms_th 14.179 
 
-#kingroup 10 hms_p -4.736 hms_th 19.06 shms_p 3.515 shms_th 14.179 
+#kingroup 10 hms_p -4.89 hms_th 19.1 shms_p 3.461 shms_th 15.94 
 
-#kingroup 11 hms_p -4.89 hms_th 19.1 shms_p 3.461 shms_th 15.94 
+#kingroup 11 hms_p -4.89 hms_th 19.1 shms_p 2.928 shms_th 15.94 
 
-#kingroup 12 hms_p -4.89 hms_th 19.1 shms_p 2.928 shms_th 15.94 
+#kingroup 12 hms_p -4.89 hms_th 19.1 shms_p 2.394 shms_th 15.94 
 
-#kingroup 13 hms_p -4.89 hms_th 19.1 shms_p 2.394 shms_th 15.94 
+#kingroup 13 hms_p -4.973 hms_th 17.275 shms_p 3.936 shms_th 14.148 
 
-#kingroup 14 hms_p -4.973 hms_th 17.275 shms_p 3.936 shms_th 14.148 
+#kingroup 14 hms_p -4.973 hms_th 17.26 shms_p 3.373 shms_th 14.159 
 
-#kingroup 15 hms_p -4.973 hms_th 17.26 shms_p 3.936 shms_th 14.159 
+#kingroup 15 hms_p -4.973 hms_th 17.26 shms_p 2.81 shms_th 14.159 
 
-#kingroup 16 hms_p -4.973 hms_th 17.26 shms_p 3.373 shms_th 14.159 
+#kingroup 16 hms_p -4.973 hms_th 17.26 shms_p 2.246 shms_th 14.159 
 
-#kingroup 17 hms_p -4.973 hms_th 17.26 shms_p 2.81 shms_th 14.159 
+#kingroup 17 hms_p -5.27 hms_th 24.42 shms_p 6.193 shms_th 20.58 
 
-#kingroup 18 hms_p -4.973 hms_th 17.26 shms_p 2.246 shms_th 14.159 
+#kingroup 18 hms_p -5.27 hms_th 18.51 shms_p 4.452 shms_th 17.75 
 
-#kingroup 19 hms_p -5.27 hms_th 24.42 shms_p 6.193 shms_th 20.58 
+#kingroup 19 hms_p -5.27 hms_th 18.51 shms_p 3.214 shms_th 17.75 
 
-#kingroup 20 hms_p -5.27 hms_th 18.51 shms_p 4.452 shms_th 17.75 
+#kingroup 20 hms_p -5.27 hms_th 18.51 shms_p 2.718 shms_th 17.75 
 
-#kingroup 21 hms_p -5.27 hms_th 18.51 shms_p 3.214 shms_th 17.75 
+#kingroup 21 hms_p -5.27 hms_th 18.51 shms_p 2.223 shms_th 17.75 
 
-#kingroup 22 hms_p -5.27 hms_th 18.51 shms_p 2.718 shms_th 17.75 
+#kingroup 22 hms_p -5.27 hms_th 17.21 shms_p 3.729 shms_th 15.639 
 
-#kingroup 23 hms_p -5.27 hms_th 18.51 shms_p 2.223 shms_th 17.75 
+#kingroup 23 hms_p -5.27 hms_th 17.21 shms_p 3.195 shms_th 15.639 
 
-#kingroup 24 hms_p -5.27 hms_th 17.21 shms_p 3.729 shms_th 15.639 
+#kingroup 24 hms_p -5.27 hms_th 17.21 shms_p 2.662 shms_th 15.639 
 
-#kingroup 25 hms_p -5.27 hms_th 17.21 shms_p 3.195 shms_th 15.639 
+#kingroup 25 hms_p -5.27 hms_th 17.21 shms_p 2.128 shms_th 15.639 
 
-#kingroup 26 hms_p -5.27 hms_th 17.21 shms_p 2.662 shms_th 15.639 
+#kingroup 26 hms_p -5.27 hms_th 16.3 shms_p 2.01 shms_th 25.999 
 
-#kingroup 27 hms_p -5.27 hms_th 17.21 shms_p 2.128 shms_th 15.639 
+#kingroup 27 hms_p -5.27 hms_th 15.38 shms_p 3.729 shms_th 14.209 
 
-#kingroup 28 hms_p -5.27 hms_th 16.3 shms_p 2.01 shms_th 25.999 
+#kingroup 28 hms_p -5.27 hms_th 15.38 shms_p 3.195 shms_th 14.209 
 
-#kingroup 29 hms_p -5.27 hms_th 15.38 shms_p 3.729 shms_th 14.209 
+#kingroup 29 hms_p -5.27 hms_th 15.38 shms_p 2.662 shms_th 14.209 
 
-#kingroup 30 hms_p -5.27 hms_th 15.38 shms_p 3.195 shms_th 14.209 
+#kingroup 30 hms_p -5.714 hms_th 23.22 shms_p 5.65 shms_th 22.25 
 
-#kingroup 31 hms_p -5.27 hms_th 15.38 shms_p 2.662 shms_th 14.209 
+#kingroup 31 hms_p -5.714 hms_th 22.43 shms_p 5.744 shms_th 22.29 
 
-#kingroup 32 hms_p -5.714 hms_th 23.22 shms_p 5.65 shms_th 22.25 
+#kingroup 32 hms_p -5.714 hms_th 21.93 shms_p 5.36 shms_th 23.45 
 
-#kingroup 33 hms_p -5.714 hms_th 22.43 shms_p 5.744 shms_th 22.29 
+#kingroup 33 hms_p -5.714 hms_th 20.712 shms_p 5.07 shms_th 24.72 
 
-#kingroup 34 hms_p -5.714 hms_th 21.93 shms_p 5.36 shms_th 23.45 
+#kingroup 34 hms_p -5.714 hms_th 17.65 shms_p 3.15 shms_th 19.93 
 
-#kingroup 35 hms_p -5.714 hms_th 20.712 shms_p 5.07 shms_th 24.72 
+#kingroup 35 hms_p -5.714 hms_th 17.65 shms_p 2.699 shms_th 19.93 
 
-#kingroup 36 hms_p -5.714 hms_th 20.71 shms_p 5.07 shms_th 24.71 
+#kingroup 36 hms_p -5.714 hms_th 17.65 shms_p 2.248 shms_th 19.93 
 
-#kingroup 37 hms_p -5.714 hms_th 17.65 shms_p 3.15 shms_th 19.93 
+#kingroup 37 hms_p -5.714 hms_th 17.65 shms_p 1.797 shms_th 19.93 
 
-#kingroup 38 hms_p -5.714 hms_th 17.65 shms_p 2.699 shms_th 19.93 
+#kingroup 38 hms_p -5.983 hms_th 21.29 shms_p 5.471 shms_th 23.39 
 
-#kingroup 39 hms_p -5.714 hms_th 17.65 shms_p 2.248 shms_th 19.93 
+#kingroup 39 hms_p -5.983 hms_th 15.753 shms_p 3.229 shms_th 18.551 
 
-#kingroup 40 hms_p -5.714 hms_th 17.65 shms_p 1.797 shms_th 19.93 
+#kingroup 40 hms_p -5.983 hms_th 15.753 shms_p 2.767 shms_th 18.551 
 
-#kingroup 41 hms_p -5.983 hms_th 21.29 shms_p 5.471 shms_th 23.39 
+#kingroup 41 hms_p -5.983 hms_th 15.75 shms_p 2.304 shms_th 18.55 
 
-#kingroup 42 hms_p -5.983 hms_th 15.753 shms_p 3.229 shms_th 18.551 
+#kingroup 42 hms_p -5.983 hms_th 15.75 shms_p 1.842 shms_th 18.55 
 
-#kingroup 43 hms_p -5.983 hms_th 15.753 shms_p 2.767 shms_th 18.551 
+#kingroup 43 hms_p -5.983 hms_th 14.232 shms_p 3.229 shms_th 17.038 
 
-#kingroup 44 hms_p -5.983 hms_th 15.75 shms_p 3.229 shms_th 18.55 
+#kingroup 44 hms_p -5.983 hms_th 14.232 shms_p 2.767 shms_th 17.038 
 
-#kingroup 45 hms_p -5.983 hms_th 15.75 shms_p 2.767 shms_th 18.55 
+#kingroup 45 hms_p -5.983 hms_th 14.232 shms_p 2.304 shms_th 17.038 
 
-#kingroup 46 hms_p -5.983 hms_th 15.75 shms_p 2.304 shms_th 18.55 
+#kingroup 46 hms_p -5.983 hms_th 14.232 shms_p 1.842 shms_th 17.038 
 
-#kingroup 47 hms_p -5.983 hms_th 15.75 shms_p 1.842 shms_th 18.55 
+#kingroup 47 hms_p -6.358 hms_th 21.29 shms_p 5.471 shms_th 23.39 
 
-#kingroup 48 hms_p -5.983 hms_th 14.245 shms_p 3.229 shms_th 17.038 
+#kingroup 48 hms_p -6.358 hms_th 21.06 shms_p 5.414 shms_th 23.63 
 
-#kingroup 49 hms_p -5.983 hms_th 14.245 shms_p 2.767 shms_th 17.038 
+#kingroup 49 hms_p -6.358 hms_th 19.78 shms_p 5.09 shms_th 25.01 
 
-#kingroup 50 hms_p -5.983 hms_th 14.245 shms_p 2.304 shms_th 17.038 
+#kingroup 50 hms_p -6.358 hms_th 15.3 shms_p 2.966 shms_th 20.58 
 
-#kingroup 51 hms_p -5.983 hms_th 14.245 shms_p 1.842 shms_th 17.038 
+#kingroup 51 hms_p -6.358 hms_th 15.3 shms_p 2.541 shms_th 20.58 
 
-#kingroup 52 hms_p -5.983 hms_th 14.232 shms_p 3.229 shms_th 17.038 
+#kingroup 52 hms_p -6.358 hms_th 15.3 shms_p 2.116 shms_th 20.58 
 
-#kingroup 53 hms_p -5.983 hms_th 14.232 shms_p 2.767 shms_th 17.038 
+#kingroup 53 hms_p -6.358 hms_th 15.3 shms_p 1.691 shms_th 20.58 
 
-#kingroup 54 hms_p -5.983 hms_th 14.232 shms_p 2.304 shms_th 17.038 
+#kingroup 54 hms_p -6.358 hms_th 13.96 shms_p 7 shms_th 9.039 
 
-#kingroup 55 hms_p -5.983 hms_th 14.232 shms_p 1.842 shms_th 17.038 
+#kingroup 55 hms_p -6.358 hms_th 13.96 shms_p 2.966 shms_th 19.089 
 
-#kingroup 56 hms_p -6.358 hms_th 21.29 shms_p 5.471 shms_th 23.39 
+#kingroup 56 hms_p -6.358 hms_th 13.96 shms_p 2.541 shms_th 19.089 
 
-#kingroup 57 hms_p -6.358 hms_th 21.06 shms_p 5.414 shms_th 23.63 
+#kingroup 57 hms_p -6.358 hms_th 13.96 shms_p 2.116 shms_th 19.089 
 
-#kingroup 58 hms_p -6.358 hms_th 19.78 shms_p 5.09 shms_th 25.01 
-
-#kingroup 59 hms_p -6.358 hms_th 15.3 shms_p 2.966 shms_th 20.58 
-
-#kingroup 60 hms_p -6.358 hms_th 15.3 shms_p 2.541 shms_th 20.58 
-
-#kingroup 61 hms_p -6.358 hms_th 15.3 shms_p 2.116 shms_th 20.58 
-
-#kingroup 62 hms_p -6.358 hms_th 15.3 shms_p 1.691 shms_th 20.58 
-
-#kingroup 63 hms_p -6.358 hms_th 13.96 shms_p 7 shms_th 9.039 
-
-#kingroup 64 hms_p -6.358 hms_th 13.96 shms_p 2.966 shms_th 19.089 
-
-#kingroup 65 hms_p -6.358 hms_th 13.96 shms_p 2.541 shms_th 19.089 
-
-#kingroup 66 hms_p -6.358 hms_th 13.96 shms_p 2.116 shms_th 19.089 
-
-#kingroup 67 hms_p -6.358 hms_th 13.96 shms_p 1.691 shms_th 19.089 
+#kingroup 58 hms_p -6.358 hms_th 13.96 shms_p 1.691 shms_th 19.089 
 
