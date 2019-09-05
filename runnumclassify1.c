@@ -214,10 +214,10 @@ void runnumclassify1(){
     jout[ii]["pos"]["H2"]=runs_pos_2;
     jout[ii]["pos"]["D2"]=runs_pos_3;
     jout[ii]["pos"]["Dummy"]=runs_pos_5;
-    out<<jout.dump(4)<<std::endl;
    i++;
    outfile<<"\n";
   }
+    out<<jout.dump(4)<<std::endl;
   
   std::sort(runs.begin(),runs.end());
   std::cout<<"vector size"<<runs.size()<<std::endl;
