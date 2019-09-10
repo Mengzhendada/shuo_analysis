@@ -46,10 +46,10 @@ int readroot_d(){
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
  //.Define("pos_0", "pos_0" );
- auto h = d.Histo1D({"cal","cal",100,0.1,2},"P.cal.etottracknorm");
+ auto h = d.Histo1D({"","",100,0.1,2},"P.tr.p");
 
   auto *c = new TCanvas;
  h->DrawCopy();
-c->SaveAs("cal.pdf");
+c->SaveAs("readroot_d.pdf");
   return 0;
 }

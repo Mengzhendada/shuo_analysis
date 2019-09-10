@@ -110,6 +110,7 @@ void grep_current_to_json(int RunNumber = 0){
     double most_common = Most_Common(currents);
     auto max = *max_element(currents.begin(),currents.end());
     auto min = *min_element(currents.begin(),currents.end());
+    j[string[i]]["nentries"]=currents.size();
     j[string[i]]["num_of_zeros"] = zeros;
     j[string[i]]["average"]=average;
     j[string[i]]["standard_derivation"]=stdde;
@@ -119,6 +120,7 @@ void grep_current_to_json(int RunNumber = 0){
     j[string[i]]["first"]=currents[0];
     }
     else{
+    j[string[i]]["nentries"]=currents.size();
     j[string[i]]["num_of_zeros"] = -1;
     j[string[i]]["average"]=0;
     j[string[i]]["standard_derivation"]=0;
