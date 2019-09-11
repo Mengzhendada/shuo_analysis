@@ -1,6 +1,6 @@
 {
     "1": {
-        "group_num": 463,
+        "group_num": 460,
         "hms_p": -4.357,
         "kin_group": 7671.0,
         "neg": {
@@ -29,7 +29,7 @@
         "shms_p": 3.514
     },
     "10": {
-        "group_num": 533,
+        "group_num": 530,
         "hms_p": -4.89,
         "kin_group": 7793.0,
         "neg": {
@@ -56,7 +56,7 @@
         "shms_p": 3.461
     },
     "11": {
-        "group_num": 543,
+        "group_num": 540,
         "hms_p": -4.89,
         "kin_group": 7798.0,
         "neg": {
@@ -84,7 +84,7 @@
         "shms_p": 2.928
     },
     "12": {
-        "group_num": 553,
+        "group_num": 550,
         "hms_p": -4.89,
         "kin_group": 7803.0,
         "neg": {
@@ -114,7 +114,7 @@
         "shms_p": 2.394
     },
     "13": {
-        "group_num": 153,
+        "group_num": 150,
         "hms_p": -4.973,
         "kin_group": 6192.0,
         "neg": {
@@ -150,7 +150,7 @@
         "shms_p": 3.936
     },
     "14": {
-        "group_num": 163,
+        "group_num": 160,
         "hms_p": -4.973,
         "kin_group": 6197.0,
         "neg": {
@@ -185,7 +185,7 @@
         "shms_p": 3.373
     },
     "15": {
-        "group_num": 173,
+        "group_num": 170,
         "hms_p": -4.973,
         "kin_group": 6202.0,
         "neg": {
@@ -227,7 +227,7 @@
         "shms_p": 2.81
     },
     "16": {
-        "group_num": 183,
+        "group_num": 180,
         "hms_p": -4.973,
         "kin_group": 6213.0,
         "neg": {
@@ -273,7 +273,7 @@
         "shms_p": 2.246
     },
     "17": {
-        "group_num": 63,
+        "group_num": 60,
         "hms_p": -5.27,
         "kin_group": 6017.0,
         "neg": {
@@ -291,7 +291,7 @@
         "shms_p": 6.193
     },
     "18": {
-        "group_num": 493,
+        "group_num": 490,
         "hms_p": -5.27,
         "kin_group": 7723.0,
         "neg": {
@@ -319,7 +319,7 @@
         "shms_p": 4.452
     },
     "19": {
-        "group_num": 503,
+        "group_num": 500,
         "hms_p": -5.27,
         "kin_group": 7726.0,
         "neg": {
@@ -356,7 +356,7 @@
         "shms_p": 3.214
     },
     "2": {
-        "group_num": 473,
+        "group_num": 470,
         "hms_p": -4.357,
         "kin_group": 7675.0,
         "neg": {
@@ -391,7 +391,7 @@
         "shms_p": 2.928
     },
     "20": {
-        "group_num": 513,
+        "group_num": 510,
         "hms_p": -5.27,
         "kin_group": 7737.0,
         "neg": {
@@ -430,7 +430,7 @@
         "shms_p": 2.718
     },
     "21": {
-        "group_num": 523,
+        "group_num": 520,
         "hms_p": -5.27,
         "kin_group": 7750.0,
         "neg": {
@@ -471,7 +471,7 @@
         "shms_p": 2.223
     },
     "22": {
-        "group_num": 273,
+        "group_num": 270,
         "hms_p": -5.27,
         "kin_group": 6419.0,
         "neg": {
@@ -504,7 +504,7 @@
         "shms_p": 3.729
     },
     "23": {
-        "group_num": 283,
+        "group_num": 280,
         "hms_p": -5.27,
         "kin_group": 6427.0,
         "neg": {
@@ -538,7 +538,7 @@
         "shms_p": 3.195
     },
     "24": {
-        "group_num": 293,
+        "group_num": 290,
         "hms_p": -5.27,
         "kin_group": 6434.0,
         "neg": {
@@ -569,7 +569,7 @@
         "shms_p": 2.662
     },
     "25": {
-        "group_num": 303,
+        "group_num": 300,
         "hms_p": -5.27,
         "kin_group": 6441.0,
         "neg": {
@@ -606,7 +606,7 @@
         "shms_p": 2.128
     },
     "26": {
-        "group_num": 413,
+        "group_num": 410,
         "hms_p": -5.27,
         "kin_group": 6553.0,
         "neg": {
@@ -632,7 +632,7 @@
         "shms_p": 2.01
     },
     "27": {
-        "group_num": 383,
+        "group_num": 380,
         "hms_p": -5.27,
         "kin_group": 6537.0,
         "neg": {
@@ -654,7 +654,7 @@
         "shms_p": 3.729
     },
     "28": {
-        "group_num": 393,
+        "group_num": 390,
         "hms_p": -5.27,
         "kin_group": 6538.0,
         "neg": {
@@ -680,7 +680,7 @@
         "shms_p": 3.195
     },
     "29": {
-        "group_num": 403,
+        "group_num": 400,
         "hms_p": -5.27,
         "kin_group": 6542.0,
         "neg": {
@@ -706,7 +706,7 @@
         "shms_p": 2.662
     },
     "3": {
-        "group_num": 483,
+        "group_num": 480,
         "hms_p": -4.357,
         "kin_group": 7684.0,
         "neg": {
@@ -746,7 +746,7 @@
         "shms_p": 2.341
     },
     "30": {
-        "group_num": 563,
+        "group_num": 560,
         "hms_p": -5.714,
         "kin_group": 7822.0,
         "neg": {
@@ -767,7 +767,7 @@
         "shms_p": 5.65
     },
     "31": {
-        "group_num": 53,
+        "group_num": 50,
         "hms_p": -5.714,
         "kin_group": 6015.0,
         "neg": {
@@ -787,7 +787,7 @@
         "shms_p": 5.744
     },
     "32": {
-        "group_num": 573,
+        "group_num": 570,
         "hms_p": -5.714,
         "kin_group": 7826.0,
         "neg": {
@@ -808,7 +808,7 @@
         "shms_p": 5.36
     },
     "33": {
-        "group_num": 583,
+        "group_num": 580,
         "hms_p": -5.714,
         "kin_group": 7829.0,
         "neg": {
@@ -828,7 +828,7 @@
         "shms_p": 5.07
     },
     "34": {
-        "group_num": 423,
+        "group_num": 420,
         "hms_p": -5.714,
         "kin_group": 7593.0,
         "neg": {
@@ -864,7 +864,7 @@
         "shms_p": 3.15
     },
     "35": {
-        "group_num": 433,
+        "group_num": 430,
         "hms_p": -5.714,
         "kin_group": 7605.0,
         "neg": {
@@ -896,7 +896,7 @@
         "shms_p": 2.699
     },
     "36": {
-        "group_num": 443,
+        "group_num": 440,
         "hms_p": -5.714,
         "kin_group": 7611.0,
         "neg": {
@@ -934,7 +934,7 @@
         "shms_p": 2.248
     },
     "37": {
-        "group_num": 453,
+        "group_num": 450,
         "hms_p": -5.714,
         "kin_group": 7620.0,
         "neg": {
@@ -980,7 +980,7 @@
         "shms_p": 1.797
     },
     "38": {
-        "group_num": 43,
+        "group_num": 40,
         "hms_p": -5.983,
         "kin_group": 6013.0,
         "neg": {
@@ -1000,7 +1000,7 @@
         "shms_p": 5.471
     },
     "39": {
-        "group_num": 193,
+        "group_num": 190,
         "hms_p": -5.983,
         "kin_group": 6285.0,
         "neg": {
@@ -1035,7 +1035,7 @@
         "shms_p": 3.229
     },
     "4": {
-        "group_num": 73,
+        "group_num": 70,
         "hms_p": -4.508,
         "kin_group": 6018.0,
         "neg": {
@@ -1072,7 +1072,7 @@
         "shms_p": 4.262
     },
     "40": {
-        "group_num": 203,
+        "group_num": 200,
         "hms_p": -5.983,
         "kin_group": 6292.0,
         "neg": {
@@ -1108,7 +1108,7 @@
         "shms_p": 2.767
     },
     "41": {
-        "group_num": 213,
+        "group_num": 210,
         "hms_p": -5.983,
         "kin_group": 6300.0,
         "neg": {
@@ -1146,7 +1146,7 @@
         "shms_p": 2.304
     },
     "42": {
-        "group_num": 223,
+        "group_num": 220,
         "hms_p": -5.983,
         "kin_group": 6334.0,
         "neg": {
@@ -1193,7 +1193,7 @@
         "shms_p": 1.842
     },
     "43": {
-        "group_num": 113,
+        "group_num": 110,
         "hms_p": -5.983,
         "kin_group": 6104.0,
         "neg": {
@@ -1233,7 +1233,7 @@
         "shms_p": 3.229
     },
     "44": {
-        "group_num": 123,
+        "group_num": 120,
         "hms_p": -5.983,
         "kin_group": 6115.0,
         "neg": {
@@ -1267,7 +1267,7 @@
         "shms_p": 2.767
     },
     "45": {
-        "group_num": 133,
+        "group_num": 130,
         "hms_p": -5.983,
         "kin_group": 6122.0,
         "neg": {
@@ -1302,7 +1302,7 @@
         "shms_p": 2.304
     },
     "46": {
-        "group_num": 143,
+        "group_num": 140,
         "hms_p": -5.983,
         "kin_group": 6129.0,
         "neg": {
@@ -1343,7 +1343,7 @@
         "shms_p": 1.842
     },
     "47": {
-        "group_num": 33,
+        "group_num": 30,
         "hms_p": -6.358,
         "kin_group": 6012.0,
         "neg": {
@@ -1361,7 +1361,7 @@
         "shms_p": 5.471
     },
     "48": {
-        "group_num": 13,
+        "group_num": 10,
         "hms_p": -6.358,
         "kin_group": 6009.0,
         "neg": {
@@ -1379,7 +1379,7 @@
         "shms_p": 5.414
     },
     "49": {
-        "group_num": 23,
+        "group_num": 20,
         "hms_p": -6.358,
         "kin_group": 6010.0,
         "neg": {
@@ -1399,7 +1399,7 @@
         "shms_p": 5.09
     },
     "5": {
-        "group_num": 83,
+        "group_num": 80,
         "hms_p": -4.508,
         "kin_group": 6027.0,
         "neg": {
@@ -1434,7 +1434,7 @@
         "shms_p": 3.653
     },
     "50": {
-        "group_num": 233,
+        "group_num": 230,
         "hms_p": -6.358,
         "kin_group": 6359.0,
         "neg": {
@@ -1466,7 +1466,7 @@
         "shms_p": 2.966
     },
     "51": {
-        "group_num": 243,
+        "group_num": 240,
         "hms_p": -6.358,
         "kin_group": 6367.0,
         "neg": {
@@ -1497,7 +1497,7 @@
         "shms_p": 2.541
     },
     "52": {
-        "group_num": 253,
+        "group_num": 250,
         "hms_p": -6.358,
         "kin_group": 6373.0,
         "neg": {
@@ -1530,7 +1530,7 @@
         "shms_p": 2.116
     },
     "53": {
-        "group_num": 263,
+        "group_num": 260,
         "hms_p": -6.358,
         "kin_group": 6378.0,
         "neg": {
@@ -1565,7 +1565,7 @@
         "shms_p": 1.691
     },
     "54": {
-        "group_num": 313,
+        "group_num": 310,
         "hms_p": -6.358,
         "kin_group": 6482.0,
         "neg": {
@@ -1586,7 +1586,7 @@
         "shms_p": 7.0
     },
     "55": {
-        "group_num": 323,
+        "group_num": 320,
         "hms_p": -6.358,
         "kin_group": 6486.0,
         "neg": {
@@ -1611,7 +1611,7 @@
         "shms_p": 2.966
     },
     "56": {
-        "group_num": 333,
+        "group_num": 330,
         "hms_p": -6.358,
         "kin_group": 6488.0,
         "neg": {
@@ -1637,7 +1637,7 @@
         "shms_p": 2.541
     },
     "57": {
-        "group_num": 343,
+        "group_num": 340,
         "hms_p": -6.358,
         "kin_group": 6490.0,
         "neg": {
@@ -1664,7 +1664,7 @@
         "shms_p": 2.116
     },
     "58": {
-        "group_num": 353,
+        "group_num": 350,
         "hms_p": -6.358,
         "kin_group": 6495.0,
         "neg": {
@@ -1694,7 +1694,7 @@
         "shms_p": 1.691
     },
     "6": {
-        "group_num": 93,
+        "group_num": 90,
         "hms_p": -4.508,
         "kin_group": 6038.0,
         "neg": {
@@ -1733,7 +1733,7 @@
         "shms_p": 3.043
     },
     "7": {
-        "group_num": 103,
+        "group_num": 100,
         "hms_p": -4.508,
         "kin_group": 6049.0,
         "neg": {
@@ -1782,7 +1782,7 @@
         "shms_p": 2.433
     },
     "8": {
-        "group_num": 363,
+        "group_num": 360,
         "hms_p": -4.736,
         "kin_group": 6518.0,
         "neg": {
@@ -1811,7 +1811,7 @@
         "shms_p": 4.102
     },
     "9": {
-        "group_num": 373,
+        "group_num": 370,
         "hms_p": -4.736,
         "kin_group": 6527.0,
         "neg": {

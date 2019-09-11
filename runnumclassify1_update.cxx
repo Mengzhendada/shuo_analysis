@@ -36,7 +36,7 @@ for(json::iterator it = j.begin();it!=j.end();++it){
   int group_num;
   kin_group = it.value()["kin_group"].get<int>();
   group_num = k[std::to_string(kin_group)].get<int>();
-  it.value()["group_num"]=group_num*10+3;
+  it.value()["group_num"]=group_num*10;
 }
 std::ofstream outfile_j;
 outfile_j.open("ratio_run_group.json");
