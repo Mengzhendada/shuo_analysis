@@ -14,6 +14,7 @@ using json = nlohmann::json;
 using namespace std;
 #include <bits/stdc++.h>
 #include <numeric>
+#include "TFile.h"
 
 double Average(std::vector<double> v)
 {
@@ -134,5 +135,6 @@ void grep_current_to_json(int RunNumber = 0){
   std::ofstream o2(jsonname);
   //o2<<j<<std::endl;
   o2<<std::setw(4)<<j<<std::endl;
-  
+  std::string rootfilename = "Data/Epic_values_"+std::to_string(RunNumber)+".root";
+  TFile * froot = new TFile(rootfilename.c_str());  
 }
