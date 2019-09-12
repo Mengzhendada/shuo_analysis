@@ -12,7 +12,14 @@ double a[20] = {1,2,3,4,5,6,7,8,9,5,5,5,5,5,5,4,4,4,6,6};
 for(int i = 0;i<20;i++){
   h2->Fill(a[i]);
 }
-TCanvas *c1 = new TCanvas();
+
+
+std::string filename = "something.root";
+TFile* root = new TFile(filename.c_str());
+h1->Write();
+h2->Write();
+root->Close();
+TCanvas *c = new TCanvas();
 c1->Divide(1,2);
 c1->cd(1);
 h1->Draw();
