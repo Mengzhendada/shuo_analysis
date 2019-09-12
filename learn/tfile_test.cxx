@@ -2,6 +2,8 @@
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TH1F.h"
+#include <iostream>
+#include <fstream>
 
 void tfile_test(){
 TH1* h1 = new TH1D("1","11",100,0,1);
@@ -15,11 +17,11 @@ for(int i = 0;i<20;i++){
 
 
 std::string filename = "something.root";
-TFile* root = new TFile(filename.c_str());
+TFile* root = new TFile(filename.c_str(),"RECREATE");
 h1->Write();
 h2->Write();
 root->Close();
-TCanvas *c = new TCanvas();
+TCanvas *c1 = new TCanvas();
 c1->Divide(1,2);
 c1->cd(1);
 h1->Draw();
