@@ -1,0 +1,55 @@
+ecDI_B_Set_NMR      # HMS dipole NMR setpoint
+ecDI_B_True_NMR     # HMS dipole NMR readback
+ecDI_I_True         # HMS magnet rs232 readback current
+ecDI_I_coarse       # HMS magnet analog readback current
+ecDI_Set_Current    # HMS magnet set current
+ecHMS_Angle         # HMS Angle Readback
+ecP_HMS             # HMS dipole momentum setting
+ecQ1_I_True         # HMS magnet rs232 readback current
+ecQ1_I_coarse       # HMS magnet analog readback current
+ecQ1_Set_Current    # HMS magnet set current
+ecQ2_I_True         # HMS magnet rs232 readback current
+ecQ2_I_coarse       # HMS magnet analog readback current
+ecQ2_Set_Current    # HMS magnet set current
+ecQ3_I_True         # HMS magnet rs232 readback current
+ecQ3_I_coarse       # HMS magnet analog readback current
+ecQ3_Set_Current    # HMS magnet set current
+ecSDI_B_Set_NMR     # SHMS dipole NMR setpoint
+ecSDI_B_True_NMR    # SHMS dipole NMR readback
+ecSDI_HP            # SHMS HP raw Hall probe value
+ecSDI_I_True        # SHMS RS232 current readback
+ecSDI_I_coarse      # SHMS analog current readback
+ecSDI_Set_Current   # SHMS current setpoints
+ecSHB_HP            # SHMS HB raw Hall probe value
+ecSHB_HallP         # SHMS Hall probes HB (corrected)
+ecSHB_I_True        # SHMS RS232 current readback
+ecSHB_I_coarse      # SHMS analog current readback
+ecSHB_Set_Current   # SHMS current setpoints
+ecSHMS_Angle        # SHMS Angle Readback
+ecSP_SHMS           # SHMS momentum setpoint
+ecSQ1_HP            # SHMS Q1 raw Hall probe value
+ecSQ1_HallP         # SHMS Hall probes Q1 (corrected)
+ecSQ1_I_True        # SHMS RS232 current readback
+ecSQ1_I_coarse      # SHMS analog current readback
+ecSQ1_Set_Current   # SHMS current setpoints
+ecSQ2_HP            # SHMS Q2 raw Hall probe value
+ecSQ2_HallP         # SHMS Hall probes Q2 (corrected)
+ecSQ2_I_True        # SHMS RS232 current readback
+ecSQ2_I_coarse      # SHMS analog current readback
+ecSQ2_Set_Current   # SHMS current setpoints
+ecSQ3_HP            # SHMS Q3 raw Hall probe value
+ecSQ3_HallP         # SHMS Hall probes Q3 (corrected)
+ecSQ3_I_True        # SHMS RS232 current readback
+ecSQ3_I_coarse      # SHMS analog current readback
+ecSQ3_Set_Current   # SHMS current setpoints
+ecS_Shutter_status  # SHMS Shutter Readback (1=open, 0=unknown/assumed closed)
+hcLS218_2_T5        # temperature loop 2(1)
+hcLS218_2_T6        # temperature loop 2(2)
+hcLS218_2_T7        # temperature loop 2(3)
+hcLS218_3_T5        # temperature loop 3(1)
+hcLS218_3_T6        # temperature loop 3(2)
+hcLS218_3_T7        # temperature loop 3(3)
+hcD2_P_Exhaust_R    # pressure loop H2 return
+hcD2_P_Fill_Target_R# pressure loop H2 before
+hcH2_P_Exhaust_R    # pressure loop H2 return
+hcH2_P_Fill_Target_R# pressure loop H2 before
