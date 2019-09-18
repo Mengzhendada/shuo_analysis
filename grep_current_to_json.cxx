@@ -63,7 +63,8 @@ void grep_current_to_json(int RunNumber = 0){
       return;
   }
   // Create file name patterns.
-  string     RunFileNamePattern = "raw/coin_all_0"+std::to_string(RunNumber)+".dat";
+ // string     RunFileNamePattern = "raw/coin_all_0"+std::to_string(RunNumber)+".dat";
+  string     RunFileNamePattern = "values/strings_"+std::to_string(RunNumber)+".txt";
   std::cout<<RunFileNamePattern<<std::endl;
   //infile.ignore(50000,'cdipc_ypos');
 
@@ -119,9 +120,10 @@ void grep_current_to_json(int RunNumber = 0){
     double average,stdde;
     if(currents.size()!=0){
       //for root
-      //    average = Average(currents);
-      //    stdde = Standard_Derivation(currents,average);
+          average = Average(currents);
+          stdde = Standard_Derivation(currents,average);
       //for json
+      
       double most_common = Most_Common(currents);
       auto max = *max_element(currents.begin(),currents.end());
       auto min = *min_element(currents.begin(),currents.end());
@@ -156,7 +158,7 @@ void grep_current_to_json(int RunNumber = 0){
   //root->Close();
   std::string jsonname = fmt::format("Data/magnet_current_{}.json",RunNumber).c_str();
   std::ofstream o2(jsonname);
-  o2<<j<<std::endl;
+  //o2<<j<<std::endl;
   o2<<std::setw(4)<<j<<std::endl;
   //std::string rootfilename = "Data/Epic_values_"+std::to_string(RunNumber)+".root";
 }
