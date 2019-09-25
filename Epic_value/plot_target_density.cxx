@@ -16,23 +16,89 @@ using json = nlohmann::json;
     for(int i = 0; i<v1.size();i++){
       sum1 += v1[i]*v2[i];
       sum2 +=v2[i];
-//      std::cout<<"v1 "<<v1[i]<<" v2 "<<v2[i]<<std::endl;
+      //      std::cout<<"v1 "<<v1[i]<<" v2 "<<v2[i]<<std::endl;
     }
     //std::cout<<"in function "<<sum1/sum2<<std::endl;
     return sum1/sum2;
   }
 
 double Get_Density(std::string target, double T,double P){
+  std::cout<<"Get Density for "<<target<<std::endl;
   if(target == "H2"){
-   int T_1 = T;
-   int T_2 = (T-T_1)*100;
-   std::ifstream infile = 
+    int T_1 = T;
+    int T_2 = (T-T_1)*100;
+    std::string name = "shuo_analysis/Epic_value/Target_fluid_property/"+target+"_"+std::to_string(T_1)+"d"+std::to_string(T_2)+"K.txt";
+    std::cout<<"file name "<<name<<std::endl;
+    std::ifstream infile(name);
+    if(infile.fail()){std::cout<<"H2 fluid property file doesn't exit"<<std::endl;}
+    double a,b,t;
+    std::vector<double> Pressure,Density;
+    std::string line;
+    while (!infile.eof()) 
+    {
+      getline(infile,line);
+
+      if (line.length() == 0 || line[0] == 'T'){}
+      else
+      {
+      infile>>t>>a>>b;
+      Pressure.push_back(a);
+      Density.push_back(b);
+      infile.ignore(100,'\n');
+      }
+    }
+    int entries = Pressure.size();
+    int i = 0, j = entries -1,k;
+    if(P<Pressure.front()){std::cout<<"Pressure out of range"<<std::endl;
+      return 0;}
+    else{
+      if(P>Pressure.back()){std::cout<<"Pressure out of range too large"<<std::endl;
+        return 0;}
+      else{
+        while(i!=j)
+        {
+          k = i+(j-i)/2;
+          Pressure[k]>=P ? j=k : i=k+1;
+        }
+      }
+    }
+    return Density[k];
   }
   else{
     if(target == "D2"){
-    
+      int T_1 = T;
+      int T_2 = (T-T_1)*100;
+      std::string name = "shuo_analysis/Epic_value/Target_fluid_property/"+target+"_"+std::to_string(T_1)+"d"+std::to_string(T_2)+"K.txt";
+      std::ifstream infile(name);
+      if(infile.fail()){std::cout<<"D2 fluid property file doesn't exit"<<std::endl;}
+      double a,b;
+      std::vector<double> Pressure,Density;
+      while(!infile.eof()){
+        infile>>a>>b;
+        Pressure.push_back(a);
+        Density.push_back(b);
+        infile.ignore(100,'\n');
+      }
+      int entries = Pressure.size();
+      int i = 0, j = entries -1,k;
+      if(P<Pressure.front()){std::cout<<"Pressure out of range"<<std::endl;
+        return 0;}
+      else{
+        if(P>Pressure.back()){std::cout<<"Pressure out of range too large"<<std::endl;
+          return 0;}
+        else{
+          while(i!=j)
+          {
+            k = i+(j-i)/2;
+            Pressure[k]>=P ? j=k : i=k+1;
+          }
+        }
+      }
+      return Density[k];
+
     }
-    else{std::cout<<"wrong target input"<<std::endl;}
+    else{std::cout<<"wrong target input"<<std::endl;
+      return 0;}
   }
 }
 
@@ -42,7 +108,7 @@ json j;
   std::ifstream infile("results/ratio_run_group_updated.json");
   infile>>j;
 }
-std::string string[10] = {"hcLS218_2_T5","hcLS218_2_T6","hcLS218_2_T7","hcLS218_3_T5","hcLS218_3_T6","hcLS218_3_T7","hcD2_P_Exhaust_R","hcD2_P_Fill_Target_R","hcH2_P_Exhaust_R","hcH2_P_Fill_Target_R"};
+std::string string[11] = {"hcLS218_2_T5","hcLS218_2_T6","hcLS218_2_T7","hcLS218_3_T5","hcLS218_3_T6","hcLS218_3_T7","hcD2_P_Exhaust_R","hcD2_P_Fill_Target_R","hcH2_P_Exhaust_R","hcH2_P_Fill_Target_R"};
 TGraphErrors* Graph_D2 = new TGraphErrors();
 Graph_D2->SetTitle("D2 density");
 TGraphErrors* Graph_H2 = new TGraphErrors();
@@ -55,7 +121,8 @@ TGraphErrors* Graph_H2_Temperature = new TGraphErrors();
 Graph_H2_Temperature->SetTitle("H2_T");
 TGraphErrors* Graph_H2_Pressure = new TGraphErrors();
 Graph_H2_Pressure->SetTitle("H2_P");
-int i_D2=0,i_H2=0,i_D2_psi=0,i_H2_psi=0;
+
+int i_D2=0,i_H2=0,i_D2_psi=0,i_H2_psi=0,i_D2_Density = 0,i_H2_Density = 0;
 for(json::iterator it=j.begin();it!=j.end();++it){
 auto runjs = it.value();
 int kingroup = std::stoi(it.key());
@@ -104,6 +171,9 @@ Graph_D2_Temperature->SetPoint(i_D2,kingroup+3,D2_tmp_neg_value);
 ++i_D2;
 Graph_D2_Pressure->SetPoint(i_D2,kingroup+3,D2_psi_neg_value);
 ++i_D2_psi;
+double density = Get_Density("D2",D2_tmp_neg_value,D2_psi_neg_value);
+Graph_D2->SetPoint(i_D2_Density,kingroup+3,density);
+++i_D2_Density;
 //if(D2_tmp_neg_value!=0){
 //double density_neg = D2_psi_neg_value/D2_tmp_neg_value*2.013553*6.89476/8.314462;
 //std::cout<<"density_D2 neg "<<density_neg<<" rungroup "<<kingroup<<" psi "<<D2_psi_neg_value<<" tmp "<<D2_tmp_neg_value<<std::endl;
@@ -155,6 +225,9 @@ Graph_D2_Temperature->SetPoint(i_D2,kingroup+3,D2_tmp_pos_value);
 ++i_D2;
 Graph_D2_Pressure->SetPoint(i_D2,kingroup+3,D2_psi_pos_value);
 ++i_D2_psi;
+double density = Get_Density("D2",D2_tmp_pos_value,D2_psi_pos_value);
+Graph_D2->SetPoint(i_D2_Density,kingroup+3,density);
+++i_D2_Density;
 //if(D2_tmp_pos_value!=0){
 //double density_pos = D2_psi_pos_value/D2_tmp_pos_value*2.013553*6.89476/8.314462;
 //std::cout<<"density_D2 "<<density_pos<<" rungroup "<<kingroup<<" psi "<<D2_psi_pos_value<<" tmp "<<D2_tmp_pos_value<<std::endl;
@@ -208,6 +281,9 @@ Graph_H2_Temperature->SetPoint(i_H2,kingroup+3,H2_tmp_neg_value);
 ++i_H2;
 Graph_H2_Pressure->SetPoint(i_H2,kingroup+3,H2_psi_neg_value);
 ++i_H2_psi;
+double density = Get_Density("H2",H2_tmp_neg_value,H2_psi_neg_value);
+Graph_H2->SetPoint(i_H2_Density,kingroup+3,density);
+++i_H2_Density;
 //if(H2_tmp_neg_value!=0){
 //double density_neg = H2_psi_neg_value/H2_tmp_neg_value*2.013553*6.89476/8.314462;
 //std::cout<<"density_H2 neg "<<density_neg<<" rungroup "<<kingroup<<std::endl;
@@ -261,6 +337,9 @@ Graph_H2_Temperature->SetPoint(i_H2,kingroup+3,H2_tmp_pos_value);
 ++i_H2;
 Graph_H2_Pressure->SetPoint(i_H2,kingroup+3,H2_psi_pos_value);
 ++i_H2_psi;
+double density = Get_Density("H2",H2_tmp_pos_value,H2_psi_pos_value);
+Graph_H2->SetPoint(i_H2_Density,kingroup+3,density);
+++i_H2_Density;
 //if(H2_tmp_pos_value!=0){
 //double density_pos = H2_psi_pos_value/H2_tmp_pos_value*2.013553*6.89476/8.314462;
 //std::cout<<"density_H2 "<<density_pos<<" rungroup "<<kingroup<<std::endl;
@@ -274,10 +353,17 @@ auto c = new TCanvas();
 Graph_D2_Temperature->SetMarkerStyle(23);
 Graph_D2_Temperature->Draw("ap");
 Graph_D2_Temperature->Write();
-//auto mg_D2 = new TMultiGraph();
-//mg_D2->Add(Graph_D2_Temperature);
-//mg_D2->Draw("a");
+
 c->SaveAs("results/currentplot/D2_T.pdf");
+auto c_density = new TCanvas();
+Graph_D2->SetMarkerStyle(24);
+Graph_D2->Draw("p");
+auto mg_D2 = new TMultiGraph();
+mg_D2->Add(Graph_D2);
+mg_D2->Draw("a");
+mg_D2->Write("D2_density");
+c_density->SaveAs("results/currentplot/D2_density.pdf");
+
 auto c_D2_P = new TCanvas();
 Graph_D2_Pressure->SetMarkerStyle(24);
 Graph_D2_Pressure->Draw("ap");
@@ -288,11 +374,17 @@ Graph_H2_Temperature->SetMarkerStyle(23);
 Graph_H2_Temperature->Draw("ap");
 Graph_H2_Temperature->GetXaxis()->SetTitle("run_group");
 Graph_H2_Temperature->Write();
-//Graph_H2->GetYaxis()->SetTitle("P/T");
-//auto mg_H2 = new TMultiGraph();
-//mg_H2->Add(Graph_H2);
-//mg_H2->Draw("a");
+
 c1->SaveAs("results/currentplot/H2_T.pdf");
+auto c_H2_density = new TCanvas();
+Graph_H2->SetMarkerStyle(24);
+Graph_H2->Draw("p");
+Graph_H2->GetYaxis()->SetTitle("Density");
+auto mg_H2 = new TMultiGraph();
+mg_H2->Add(Graph_H2);
+mg_H2->Draw("a");
+mg_H2->Write("H2_density");
+c_H2_density->SaveAs("results/currentplot/H2_Density.pdf");
 //mg_D2->BuildLegend();
 //mg_H2->BuildLegend();
 //mg_D2->Write("D2 density");
