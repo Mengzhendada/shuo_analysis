@@ -6,9 +6,6 @@ R__LOAD_LIBRARY(libfmt.so)
 #include <cmath>
 #include <iostream>
 
-#include "ROOT/RDataFrame.hxx"
-#include "ROOT/RVec.hxx"
-
 #include "Math/Vector3D.h"
 #include "Math/Vector4D.h"
 #include "Math/VectorUtil.h"
