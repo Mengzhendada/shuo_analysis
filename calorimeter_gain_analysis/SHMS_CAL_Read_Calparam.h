@@ -1,11 +1,11 @@
-#ifndef Read_CALPARAM_hh
-#define Read_CALPARAM_hh
+#ifndef SHMS_CAL_Read_Calparam_hh
+#define SHMS_CAL_Read_Calparam_hh
 
 #include <string>
 #include <vector>
 #include <iostream>
 #include <sstream>
-class Read_CALPARAM{
+class SHMS_CAL_Read_Calparam{
   
   std::ifstream& ifs;
   std::vector<double> _neg, _pos;
@@ -78,10 +78,10 @@ class Read_CALPARAM{
 
   public:
 
-  //Read_CALPARAM(std::string if_name):ifs(ifstream(if_name)){
+  //SHMS_CAL_Read_Calparam(std::string if_name):ifs(ifstream(if_name)){
 
   //}
-  Read_CALPARAM(std::ifstream& in_ifs):ifs(in_ifs){
+  SHMS_CAL_Read_Calparam(std::ifstream& in_ifs):ifs(in_ifs){
     read_entries();
     skip();
     read_neg();
@@ -90,7 +90,7 @@ class Read_CALPARAM{
     skip();
     read_arr();
   }
-  ~Read_CALPARAM(){};
+  ~SHMS_CAL_Read_Calparam(){};
   const std::vector<double>& neg(){return _neg;}
   const std::vector<double>& pos(){return _pos;}
   const std::vector<std::vector<double>>& arr(){return _arr;}

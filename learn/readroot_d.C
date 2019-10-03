@@ -30,6 +30,9 @@ namespace fs = std::experimental::filesystem;
 
 #include "TObject.h"
 
+#include "ROOT/RDataFrame.hxx"
+#include "ROOT/RVec.hxx"
+#include "TCanvas.h"
 #include "TH1.h"
 #include "TMath.h"
 #include "TF1.h"
@@ -37,19 +40,19 @@ namespace fs = std::experimental::filesystem;
 #include "TGraphErrors.h"
 #include "TMultiGraph.h"
 
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
 
 int readroot_d(){
- std::string rootfile = std::string("ROOTfiles/coin_replay_production_7593_-1.root");
+ std::string rootfile = std::string("Cal_gain.root");
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
  //.Define("pos_0", "pos_0" );
- auto h = d.Histo1D({"","",100,0.1,2},"P.tr.p");
-
+ //auto h = d.Histo1D({"","",100,0,100},"pos_0");
+ auto g = d.Graph("momentum","arr_7_7");
   auto *c = new TCanvas;
- h->DrawCopy();
-c->SaveAs("readroot_d.pdf");
+ g->DrawCopy();
   return 0;
 }

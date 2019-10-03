@@ -5,10 +5,22 @@ readroot*.c: plot variable that are interested in and save in .pdf to download
 creat_txt  : creat some annoying repeated txt
 makelatexfromttxt.C: write repeated latex format txt
 
-steering scripts: 
+#Calorimeter gain analysis calorimeter_gain_analysis
+cal_gain:plot for each block
+cal_gain_json:calibration gain for each run in json
+csvfallcalib: calibration gain for fall runs in txt
+csvspringcalib: calibration gain for spring runs in txt
 calorimeter_gain_modifyc: plot gain constant for each block
 csvelas.C, csvelasfall.C: compare elastic data runs with simc result
+SHMS_CAL_Read_Calparam.h: read txt calgain into json
+shms_cal_param_to_json.cxx, read txt calgain into json for shms 
+calorimeter_gain_analysis_statistic.cxx:count how mant blocks fires in calorimeter
+creat_cal/rdataset: failed try
+
+#elastic runs 
 modifyelas.C: compare elastic data runs with some recalculation with simc data
+
+#refertime 
 csvreftimecut.c: make plots that are related to reference time cut
 
 pre steering scripts:
