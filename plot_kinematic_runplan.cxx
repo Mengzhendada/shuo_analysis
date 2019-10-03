@@ -10,39 +10,34 @@ using json = nlohmann::json;
 void plot_kinematic_runplan(){
 json j;
 {
-  std::ifstream infile("db2/ratio_run_group_updated.json");
+  std::ifstream infile("db2/kin_group.json");
   infile>>j;
 }
-auto gr_fall = new TGraph();
-auto gr_spring = new TGraph();
-int i_fall = 0,i_spring = 0;
-for(json::iterator it = j.begin();it!=j.end();++it){
-  double x = it.value()["x"].get<double>();
-  double Q2 = it.value()["Q2"].get<double>();
-  std::cout<<"x "<<x<<" Q2 "<<Q2<<std::endl;
-  int runnum = it.value()["kin_group"].get<int>();
-  if(runnum<7000){
-  gr_fall->SetPoint(i_fall,x,Q2);
-  ++i_fall; 
-  }
-  else{
-    gr_spring->SetPoint(i_spring,x,Q2);
-    ++i_spring;
-  }
-  
-}
+int num[13] = {1,2,3,4,5,6,7,8,9,40,41,42,43};
+int i =0;
 auto c = new TCanvas();
-gr_fall->SetMarkerStyle(21);
-gr_fall->SetMarkerColorAlpha(2,0.5);
-gr_fall->GetXaxis()->SetRangeUser(0.1,1);
-gr_fall->GetXaxis()->SetTitle("x");
-gr_fall->GetYaxis()->SetTitle("Q2");
-gr_fall->Draw("ap");
-gr_spring->SetMarkerStyle(21);
-gr_spring->SetMarkerColorAlpha(3,0.5);
-gr_spring->GetXaxis()->SetRangeUser(0.1,1);
-gr_spring->GetXaxis()->SetTitle("x");
-gr_spring->GetYaxis()->SetTitle("Q2");
-gr_spring->Draw("p");
-c->SaveAs("kinematics.pdf");
+for(json::iterator it = j.begin();it!=j.end();++it){
+  double x = std::stod(it.key());
+  auto runjs = it.value();
+  if(x>0){
+    for(json::iterator ik = runjs.begin();ik!=runjs.end();++ik){
+    double Q2 = std::stod(ik.key());
+    std::string title = "x_Q2_"+std::to_string(x).substr(0,4)+"_"+std::to_string(Q2).substr(0,4); 
+      TH2F *h_run_plan = new TH2F("CSV run plan","CSV run plan",400,0,1,400,0,10);
+      //TH2F *h_run_plan = new TH2F("CSV run plan",title.c_str(),400,0,1,400,0,10);
+h_run_plan->GetXaxis()->SetTitle("x");
+h_run_plan->GetYaxis()->SetTitle("Q2");
+    h_run_plan->Fill(x,Q2);
+    h_run_plan->SetMarkerStyle(kFullDotLarge);
+    h_run_plan->SetMarkerColorAlpha(num[i],1);
+    h_run_plan->SetMarkerSize(1.1);
+    h_run_plan->Draw("p same");
+    ++i;
+    }//Q2 loop
+  }//if x > 0
+  
+}//x loop
+c->BuildLegend(0.75,0.65,1,1,"csv run plan","p");
+c->SetTitle("CSV Run Plan");
+c->SaveAs("results/csv_kin/kin_plot/kinematics_runplan.pdf");
 }
