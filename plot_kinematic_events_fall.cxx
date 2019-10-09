@@ -66,17 +66,17 @@ auto W2 = [](Pvec4D& pq) {
 
 void plot_kinematic_events_fall(int RunNumber = 0){
   //std::cout<<"check"<<std::endl;
- // if (RunNumber == 0){
- //   std::cout<<"Enter a Run Number (-1 to exit):";
- //   std::cin>>RunNumber;
- //   if(RunNumber<=0)
- //     return;
- // }
+  if (RunNumber == 0){
+    std::cout<<"Enter a Run Number (-1 to exit):";
+    std::cin>>RunNumber;
+    if(RunNumber<=0)
+      return;
+  }
   
   TFile* root = new TFile("results/csv_kin/kinematics_fall.root","UPDATE");
-  std::ifstream infile("db2/fall_good_runlist.txt");
-  while(infile>>RunNumber)
-  {
+  //std::ifstream infile("db2/fall_good_runlist.txt");
+  //while(infile>>RunNumber)
+  
     std::cout<<RunNumber<<std::endl;
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
   ROOT::EnableImplicitMT();
@@ -172,6 +172,6 @@ void plot_kinematic_events_fall(int RunNumber = 0){
   h_P_cal_cut->DrawCopy("same");
   std::string name_pi = "results/csv_kin/piselection"+std::to_string(RunNumber)+".pdf";
   c_pi->SaveAs(name_pi.c_str());
-}
+
   root->Close();
 }
