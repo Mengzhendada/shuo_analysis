@@ -125,17 +125,17 @@ void plot_kinematic_events_spring(int RunNumber = 0){
     c->SaveAs(name.c_str());
     kin_x_Q2->Write(std::to_string(RunNumber).c_str());
   
-    auto kin_x_Q2_ori = dCOIN_sidis.Histo2D({"csv_kin","csv_kin_root",400,0,1,400,0,10},"H.kin.primary.x_bj","H.kin.primary.Q2");
-  kin_x_Q2_ori->GetXaxis()->SetTitle("x");
-  kin_x_Q2_ori->GetYaxis()->SetTitle("Q2");
-  auto c_xq2ori = new TCanvas("x_Q2_root");
-  kin_x_Q2_ori->DrawCopy();
-  std::string name_xq2ori = "results/csv_kin/kinematics_xq2_"+std::to_string(RunNumber)+".pdf";
-  c->SaveAs(name_xq2ori.c_str());
-  std::string name_xq2ori_root = "xq2root_"+std::to_string(RunNumber);
-  kin_x_Q2_ori->Write(name_xq2ori_root.c_str());
+  //  auto kin_x_Q2_ori = dCOIN_sidis.Histo2D({"csv_kin","csv_kin_root",400,0,1,400,0,10},"H.kin.primary.x_bj","H.kin.primary.Q2");
+  //kin_x_Q2_ori->GetXaxis()->SetTitle("x");
+  //kin_x_Q2_ori->GetYaxis()->SetTitle("Q2");
+  //auto c_xq2ori = new TCanvas("x_Q2_root");
+  //kin_x_Q2_ori->DrawCopy();
+  //std::string name_xq2ori = "results/csv_kin/kinematics_xq2_"+std::to_string(RunNumber)+".pdf";
+  //c->SaveAs(name_xq2ori.c_str());
+  //std::string name_xq2ori_root = "xq2root_"+std::to_string(RunNumber);
+  //kin_x_Q2_ori->Write(name_xq2ori_root.c_str());
 
-  auto kin_x_z = dCOIN_sidis.Histo2D({"x_z","x_z",400,0,1,400,0,1},"z","xbj");
+  auto kin_x_z = dCOIN_sidis.Histo2D({"x_z","x_z",400,0,3,400,0,1},"z","xbj");
   kin_x_z->GetXaxis()->SetTitle("z");
   kin_x_z->GetYaxis()->SetTitle("x");
   auto c_x_z = new TCanvas("CSV x vs. z");
@@ -145,7 +145,7 @@ void plot_kinematic_events_spring(int RunNumber = 0){
   std::string name_xz_root = "xz_"+std::to_string(RunNumber);
   kin_x_z->Write(name_xz_root.c_str());
 
-  auto kin_Q2_z = dCOIN_sidis.Histo2D({"Q2_z","Q2_z",400,0,1,400,0,10},"z","Q2");
+  auto kin_Q2_z = dCOIN_sidis.Histo2D({"Q2_z","Q2_z",400,0,3,400,0,10},"z","Q2");
   kin_Q2_z->GetXaxis()->SetTitle("z");
   kin_Q2_z->GetYaxis()->SetTitle("Q2");
   auto c_Q2_z = new TCanvas("CSV Q2 vs. z");
