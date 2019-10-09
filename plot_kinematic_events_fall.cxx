@@ -82,7 +82,7 @@ void plot_kinematic_events_fall(int RunNumber = 0){
    std::string goodTrackHMS = "H.gtr.dp>-8 && H.gtr.dp<8";
   // std::string piCerSHMS = "P.ngcer.npeSum<0.5 && P.aero.npeSum>1.0";
    std::string piCerSHMS = "P.aero.npeSum>1.0";
-   std::string piCalSHMS = "P.cal.etottracknorm <0.35 && P.cal.eprtracknorm<0.2";
+   std::string piCalSHMS = "P.cal.etottracknorm <0.3 && P.cal.eprtracknorm<0.2";
    std::string piCutSHMS = piCerSHMS +" && "+ piCalSHMS;
    std::string eCutHMS = "H.cal.etottracknorm >0.80 && H.cal.etottracknorm<2 && H.cer.npeSum>1";
    auto dHMSGoodTrack = d_coin.Filter(goodTrackHMS);
@@ -126,8 +126,8 @@ void plot_kinematic_events_fall(int RunNumber = 0){
    auto h_P_cal_all = dCoinGoodTrack.Histo1D({"good track cut","good track cut",100,0.01,2},"P.cal.etottracknorm");
    auto h_P_cal_cut = dCOIN_sidis.Histo1D({"pi cut","pi cut",100,0.01,2},"P.cal.etottracknorm");
    h_P_cal_cut->SetFillColor(kGreen);
-   h_P_cal_all->Draw();
-   h_P_cal_cut->Draw("same");
+   h_P_cal_all->DrawCopy();
+   h_P_cal_cut->DrawCopy("same");
    std::string name_pi = "results/csv_kin/piselection"+std::to_string(RunNumber)+".pdf";
    c_pi->SaveAs(name_pi.c_str());
    

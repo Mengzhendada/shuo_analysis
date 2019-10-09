@@ -20,7 +20,7 @@ double Get_Density(std::string target, double T,double P){
     std::string name = "shuo_analysis/Epic_value/Target_fluid_property/"+target+"_"+std::to_string(T_1)+"d"+std::to_string(T_2)+"K.txt";
     //std::cout<<"file name "<<name<<std::endl;
     std::ifstream infile(name);
-    if(infile.fail()){std::cout<<"H2 fluid property file doesn't exit"<<std::endl;}
+    if(infile.fail()){std::cout<<"H2 fluid property file doesn't exist "<<name<<std::endl;}
     double a,b,t;
     std::vector<double> Pressure,Density;
     std::string line;
@@ -60,7 +60,7 @@ double Get_Density(std::string target, double T,double P){
       int T_2 = (T-T_1)*100;
       std::string name = "shuo_analysis/Epic_value/Target_fluid_property/"+target+"_"+std::to_string(T_1)+"d"+std::to_string(T_2)+"K.txt";
       std::ifstream infile(name);
-      if(infile.fail()){std::cout<<"D2 fluid property file doesn't exit "<<name<<std::endl;}
+      if(infile.fail()){std::cout<<"D2 fluid property file doesn't exist "<<name<<std::endl;}
       double a,b,t;
       std::string line;
       std::vector<double> Pressure,Density;
@@ -103,7 +103,7 @@ double Get_Density(std::string target, double T,double P){
 void plot_target_density_runs(){
   json j;
   {
-    std::ifstream infile("db2/run_list_coin.json");
+    std::ifstream infile("db2/run_info_group.json");
     infile>>j;
   }
   std::string string[11] = {"hcLS218_2_T5","hcLS218_2_T6","hcLS218_2_T7","hcLS218_3_T5","hcLS218_3_T6","hcLS218_3_T7","hcD2_P_Exhaust_R","hcD2_P_Fill_Target_R","hcH2_P_Exhaust_R","hcH2_P_Fill_Target_R"};
@@ -125,9 +125,11 @@ void plot_target_density_runs(){
   for(json::iterator it=j.begin();it!=j.end();++it){
     auto runjs = it.value();
     int runnum = std::stoi(it.key());
-    int target_id = runjs["target"]["target_id"].get<int>();
+    int target_id = runjs["target_id"].get<int>();
     std::cout<<"for run "<<runnum<<" target "<<target_id<<std::endl;
-    if(target_id == 2){
+    switch(target_id){
+      case 2:
+        {
       std::string magnet_file = "Data/magnet_current_" + std::to_string(runnum) +".json";
       std::ifstream magnet_infile(magnet_file);
       if(magnet_infile.good()){
@@ -146,10 +148,11 @@ void plot_target_density_runs(){
         Graph_H2->SetPoint(i_H2,runnum,density);
         ++i_H2;
       }//if magnet file exit
-      else{std::cout<<"magnet file not exit"<<std::endl;}
-    }
-    else{
-      if(target_id ==3){
+      else{std::cout<<"H2 magnet file not exit"<<std::endl;}
+       break;
+        }
+      case 3:
+        {
         std::string magnet_file = "Data/magnet_current_" + std::to_string(runnum) +".json";
         std::ifstream magnet_infile(magnet_file);
         if(magnet_infile.good()){
@@ -165,13 +168,21 @@ void plot_target_density_runs(){
           double tmp = (tmp1+tmp2+tmp3)/3;
           double psi = (psi_in+psi_out)/2;
           double density = Get_Density("D2",tmp,psi);
-        std::cout<<"tmp "<<tmp<<" psi "<<psi<<" density "<<density<<std::endl;
-          Graph_D2->SetPoint(i_D2,runnum,density);
+          //std::cout<<"for run "<<runnum<<" target "<<target_id<<std::endl;
+          std::cout<<"tmp "<<tmp<<" psi "<<psi<<" density "<<density<<std::endl;
+        if(density!=0){  
+        Graph_D2->SetPoint(i_D2,runnum,density);
           ++i_D2;
-        }//if magnet file exit
-        else{std::cout<<"magnet file not exit"<<std::endl;}
-      }
-      else{std::cout<<"Not liquid Target"<<std::endl;}
+        }
+        }//if magnet file exist
+        else{std::cout<<"D2 magnet file not exist"<<std::endl;}
+        break;
+        }
+      case 5:
+        {
+          std::cout<<"Dummy target"<<std::endl;
+          break;
+        }
     }
   }//end of json iterator
   TFile* root = new TFile("results/currentplot/Target_values.root","RECREATE");
@@ -189,6 +200,8 @@ void plot_target_density_runs(){
   //mg_D2->Draw("a");
   //mg_D2->Write("D2_density");
   Graph_D2->Write("D2_density");
+  Graph_D2->GetYaxis()->SetTitle("kg/m3");
+  Graph_D2->GetXaxis()->SetTitle("run number");
   //Graph_D2->SetMarkerStyle(23);
   Graph_D2->SetMarkerSize(1.2);
   c_density->SaveAs("results/currentplot/D2_density.pdf");
@@ -208,7 +221,9 @@ void plot_target_density_runs(){
   auto c_H2_density = new TCanvas();
   Graph_H2->SetMarkerStyle(24);
   Graph_H2->Draw("ap");
-  Graph_H2->GetYaxis()->SetTitle("Density");
+  Graph_H2->GetYaxis()->SetTitle("kg/m3");
+  Graph_H2->GetXaxis()->SetTitle("run number");
+  Graph_H2->Write("H2_density");
   //auto mg_H2 = new TMultiGraph();
   //mg_H2->Add(Graph_H2);
   //mg_H2->Draw("a");

@@ -226,8 +226,9 @@ Graph_D2_Temperature->SetPoint(i_D2,kingroup+3,D2_tmp_pos_value);
 Graph_D2_Pressure->SetPoint(i_D2,kingroup+3,D2_psi_pos_value);
 ++i_D2_psi;
 double density = Get_Density("D2",D2_tmp_pos_value,D2_psi_pos_value);
+if(density !=0){
 Graph_D2->SetPoint(i_D2_Density,kingroup+3,density);
-++i_D2_Density;
+++i_D2_Density;}
 //if(D2_tmp_pos_value!=0){
 //double density_pos = D2_psi_pos_value/D2_tmp_pos_value*2.013553*6.89476/8.314462;
 //std::cout<<"density_D2 "<<density_pos<<" rungroup "<<kingroup<<" psi "<<D2_psi_pos_value<<" tmp "<<D2_tmp_pos_value<<std::endl;
@@ -384,7 +385,7 @@ auto mg_H2 = new TMultiGraph();
 mg_H2->Add(Graph_H2);
 mg_H2->Draw("a");
 mg_H2->Write("H2_density");
-c_H2_density->SaveAs("results/currentplot/H2_Density.pdf");
+c_H2_density->SaveAs("results/currentplot/H2_density.pdf");
 //mg_D2->BuildLegend();
 //mg_H2->BuildLegend();
 //mg_D2->Write("D2 density");

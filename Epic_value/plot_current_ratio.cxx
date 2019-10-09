@@ -24,7 +24,7 @@ R__LOAD_LIBRARY(libfmt.so)
     for(int i = 0; i<v1.size();i++){
       sum1 += v1[i]*v2[i];
       sum2 +=v2[i];
-      std::cout<<"v1 "<<v1[i]<<" v2 "<<v2[i]<<std::endl;
+      //std::cout<<"v1 "<<v1[i]<<" v2 "<<v2[i]<<std::endl;
     }
     //std::cout<<"in function "<<sum1/sum2<<std::endl;
     return sum1/sum2;
@@ -108,7 +108,7 @@ void plot_current_ratio(){
     Graph_Dummy_min_neg->SetTitle("min neg Dummy");
     TGraphErrors* Graph_Dummy_min_pos = new TGraphErrors();
     Graph_Dummy_min_pos->SetTitle("min pos Dummy");
-    std::cout<<"check1"<<std::endl;
+    //std::cout<<"check1"<<std::endl;
     int ii_D2 = 0,ii_H2 = 0,ii_Dummy = 0;
     for (json::iterator it = j.begin(); it != j.end(); ++it) {
       std::cout << it.key() << std::endl;
@@ -194,31 +194,25 @@ void plot_current_ratio(){
       }
       //average weighted for all runs
       double D2_average_neg_value = weighted_average(D2_average_neg,weight_neg_D2);
-      //double D2_first_neg_value = weighted_average(D2_first_neg,weight_neg_D2);
       double D2_first_neg_value = D2_first_neg[0];
-      //double D2_most_neg_value = weighted_average(D2_most_neg,weight_neg_D2);
       double D2_most_neg_value = find_most_common(D2_most_neg,weight_neg_D2);
-      //double D2_max_neg_value = weighted_average(D2_max_neg,weight_neg_D2);
       double D2_max_neg_value = *max_element(D2_max_neg.begin(),D2_max_neg.end());
-      //double D2_min_neg_value = weighted_average(D2_min_neg,weight_neg_D2);
       double D2_min_neg_value = *min_element(D2_min_neg.begin(),D2_min_neg.end());
       double D2_stdder_neg_value = weighted_average(D2_stdder_neg,weight_neg_D2);
       //average weighted for all pos runs
       double D2_average_pos_value = weighted_average(D2_average_pos,weight_pos_D2);
-      //double D2_first_pos_value = weighted_average(D2_first_pos,weight_pos_D2);
       double D2_first_pos_value = D2_first_pos[0];
-      //double D2_most_pos_value = weighted_average(D2_most_pos,weight_pos_D2);
       double D2_most_pos_value = find_most_common(D2_most_pos,weight_pos_D2);
-      //double D2_max_pos_value = weighted_average(D2_max_pos,weight_pos_D2);
       double D2_max_pos_value = *max_element(D2_max_pos.begin(),D2_max_pos.end());
-      //double D2_min_pos_value = weighted_average(D2_min_pos,weight_pos_D2);
       double D2_min_pos_value = *min_element(D2_min_pos.begin(),D2_min_pos.end());
       double D2_stdder_pos_value = weighted_average(D2_stdder_pos,weight_pos_D2);
-      std::cout<<" size "<<D2_average_neg.size()<<" D2_average_pos_value "<<D2_average_pos_value<<std::endl;
+      
+      std::cout<<"first "<<D2_first_pos_value<<"most pos "<<D2_most_pos_value<<"max pos "<<D2_max_pos_value<<std::endl;
+      //std::cout<<" size "<<D2_average_neg.size()<<" D2_average_pos_value "<<D2_average_pos_value<<std::endl;
       double ratio_D2_average,ratio_D2_first_neg,ratio_D2_first_pos,ratio_D2_most_neg,ratio_D2_most_pos,ratio_D2_max_neg,ratio_D2_max_pos,ratio_D2_min_pos,ratio_D2_min_neg,ratio_D2_stdder;
       if (D2_average_pos_value != D2_average_neg_value) {
-        std::cout << " D2 average negative value : " << D2_average_neg_value << std::endl;
-        std::cout << " D2 average postivie value : " << D2_average_pos_value << std::endl;
+        //std::cout << " D2 average negative value : " << D2_average_neg_value << std::endl;
+        //std::cout << " D2 average postivie value : " << D2_average_pos_value << std::endl;
       }
       //if (pos_first != first) {
       //  std::cout << " negative first value : " << first << std::endl;
@@ -237,7 +231,8 @@ void plot_current_ratio(){
         ratio_D2_min_pos = D2_average_neg_value / D2_max_pos_value;
         ratio_D2_stdder = sqrt(pow(D2_average_neg_value/D2_average_pos_value,2)*(pow(D2_stdder_neg_value/D2_average_neg_value,2)+pow(D2_stdder_pos_value/D2_average_pos_value,2)));
 
-        std::cout <<"ratio_D2_average "<< ratio_D2_average << " ";
+        std::cout<<"pos first "<<ratio_D2_first_pos<<" most pos "<<ratio_D2_most_pos<<" max pos "<<ratio_D2_max_pos<<std::endl;
+        //std::cout <<"ratio_D2_average "<< ratio_D2_average << " ";
         Graph_D2_average->SetPoint(ii_D2, kingroup+3, ratio_D2_average);
         Graph_D2_average->SetPointError(ii_D2,0,0,ratio_D2_stdder,ratio_D2_stdder);
         Graph_D2_first_neg->SetPoint(ii_D2, kingroup+3, ratio_D2_first_neg);
@@ -250,7 +245,7 @@ void plot_current_ratio(){
         Graph_D2_min_pos->SetPoint(ii_D2, kingroup+3, ratio_D2_min_pos);
         ++ii_D2;
       } else { }
-      std::cout << ii_D2 << std::endl;
+      //std::cout << ii_D2 << std::endl;
       
       //For H2
       std::vector<int> runs_H2, runs_H2_pos;
@@ -352,11 +347,11 @@ void plot_current_ratio(){
       //double H2_min_pos_value = weighted_average(H2_min_pos,weight_pos_H2);
       double H2_min_pos_value = *min_element(H2_min_pos.begin(),H2_min_pos.end());
       double H2_stdder_pos_value = weighted_average(H2_stdder_pos,weight_pos_H2);
-      std::cout<<" size "<<H2_average_neg.size()<<" H2_average_pos_value "<<H2_average_pos_value<<std::endl;
+      //std::cout<<" size "<<H2_average_neg.size()<<" H2_average_pos_value "<<H2_average_pos_value<<std::endl;
       double ratio_H2_average,ratio_H2_first_neg,ratio_H2_first_pos,ratio_H2_most_neg,ratio_H2_most_pos,ratio_H2_max_neg,ratio_H2_max_pos,ratio_H2_min_pos,ratio_H2_min_neg,ratio_H2_stdder;
       if (H2_average_pos_value != H2_average_neg_value) {
-        std::cout << " H2 average negative value : " << H2_average_neg_value << std::endl;
-        std::cout << " H2 average postivie value : " << H2_average_pos_value << std::endl;
+        //std::cout << " H2 average negative value : " << H2_average_neg_value << std::endl;
+        //std::cout << " H2 average postivie value : " << H2_average_pos_value << std::endl;
       }
       //if (pos_first != first) {
       //  std::cout << " negative first value : " << first << std::endl;
@@ -375,7 +370,7 @@ void plot_current_ratio(){
         ratio_H2_min_pos = H2_average_neg_value / H2_max_pos_value;
         ratio_H2_stdder = sqrt(pow(H2_average_neg_value/H2_average_pos_value,2)*(pow(H2_stdder_neg_value/H2_average_neg_value,2)+pow(H2_stdder_pos_value/H2_average_pos_value,2)));
 
-        std::cout <<"ratio_H2_average "<< ratio_H2_average << " ";
+        //std::cout <<"ratio_H2_average "<< ratio_H2_average << " ";
         Graph_H2_average->SetPoint(ii_H2, kingroup+2, ratio_H2_average);
         Graph_H2_average->SetPointError(ii_H2,0,0,ratio_H2_stdder,ratio_H2_stdder);
         Graph_H2_first_neg->SetPoint(ii_H2, kingroup+2, ratio_H2_first_neg);
@@ -389,7 +384,7 @@ void plot_current_ratio(){
         ++ii_H2;
       } else {
       }
-      std::cout << ii_H2 << std::endl;
+      //std::cout << ii_H2 << std::endl;
       //For Dummy
       std::vector<int> runs_Dummy, runs_Dummy_pos;
       if (runjs["neg"]["Dummy"].get<std::vector<int>>().empty()) {
@@ -490,11 +485,11 @@ void plot_current_ratio(){
       //double Dummy_min_pos_value = weighted_average(Dummy_min_pos,weight_pos_Dummy);
       double Dummy_min_pos_value = *min_element(Dummy_min_pos.begin(),Dummy_min_pos. end());
       double Dummy_stdder_pos_value = weighted_average(Dummy_stdder_pos,weight_pos_Dummy);
-      std::cout<<" size "<<Dummy_average_neg.size()<<" Dummy_average_pos_value "<<Dummy_average_pos_value<<std::endl;
+      //std::cout<<" size "<<Dummy_average_neg.size()<<" Dummy_average_pos_value "<<Dummy_average_pos_value<<std::endl;
       double ratio_Dummy_average,ratio_Dummy_first_neg,ratio_Dummy_first_pos,ratio_Dummy_most_neg,ratio_Dummy_most_pos,ratio_Dummy_max_neg,ratio_Dummy_max_pos,ratio_Dummy_min_pos,ratio_Dummy_min_neg,ratio_Dummy_stdder;
       if (Dummy_average_pos_value != Dummy_average_neg_value) {
-        std::cout << " Dummy average negative value : " << Dummy_average_neg_value << std::endl;
-        std::cout << " Dummy average postivie value : " << Dummy_average_pos_value << std::endl;
+        //std::cout << " Dummy average negative value : " << Dummy_average_neg_value << std::endl;
+        //std::cout << " Dummy average postivie value : " << Dummy_average_pos_value << std::endl;
       }
       //if (pos_first != first) {
       //  std::cout << " negative first value : " << first << std::endl;
@@ -513,7 +508,7 @@ void plot_current_ratio(){
         ratio_Dummy_min_pos = Dummy_average_neg_value / Dummy_max_pos_value;
         ratio_Dummy_stdder = sqrt(pow(Dummy_average_neg_value/Dummy_average_pos_value,2)*(pow(Dummy_stdder_neg_value/Dummy_average_neg_value,2)+pow(Dummy_stdder_pos_value/Dummy_average_pos_value,2)));
 
-        std::cout <<"ratio_Dummy_average "<< ratio_Dummy_average << " ";
+        //std::cout <<"ratio_Dummy_average "<< ratio_Dummy_average << " ";
         Graph_Dummy_average->SetPoint(ii_Dummy, kingroup+5, ratio_Dummy_average);
         Graph_Dummy_average->SetPointError(ii_Dummy,0,0,ratio_Dummy_stdder,ratio_Dummy_stdder);
         Graph_Dummy_first_neg->SetPoint(ii_Dummy, kingroup+5, ratio_Dummy_first_neg);
@@ -527,7 +522,7 @@ void plot_current_ratio(){
         ++ii_Dummy;
       } else {
       }
-      std::cout << ii_Dummy << std::endl;
+      //std::cout << ii_Dummy << std::endl;
    
       //json for loop
     }
@@ -537,24 +532,24 @@ void plot_current_ratio(){
     //c->Divide(2, 2);
     //c->cd(1);
     auto mg = new TMultiGraph();
-    Graph_D2_average->SetMarkerStyle(21);
+    Graph_D2_average->SetMarkerStyle(33);
     Graph_D2_average->SetMarkerSize(1.2);
     mg->Add(Graph_D2_average,"p");
-          Graph_D2_first_neg->SetMarkerStyle(22);
+          Graph_D2_first_neg->SetMarkerStyle(20);
           mg->Add(Graph_D2_first_neg,"p");
-          Graph_D2_first_pos->SetMarkerStyle(23);
+          Graph_D2_first_pos->SetMarkerStyle(24);
           mg->Add(Graph_D2_first_pos,"p");
-          Graph_D2_most_neg->SetMarkerStyle(24);
+          Graph_D2_most_neg->SetMarkerStyle(21);
           mg->Add(Graph_D2_most_neg,"p");
           Graph_D2_most_pos->SetMarkerStyle(25);
           mg->Add(Graph_D2_most_pos,"p");
-          Graph_D2_max_neg->SetMarkerStyle(26);
+          Graph_D2_max_neg->SetMarkerStyle(22);
           mg->Add(Graph_D2_max_neg,"p");
-          Graph_D2_max_pos->SetMarkerStyle(27);
+          Graph_D2_max_pos->SetMarkerStyle(26);
           mg->Add(Graph_D2_max_pos,"p");
-          Graph_D2_min_neg->SetMarkerStyle(28);
+          Graph_D2_min_neg->SetMarkerStyle(23);
           mg->Add(Graph_D2_min_neg,"p");
-          Graph_D2_min_pos->SetMarkerStyle(29);
+          Graph_D2_min_pos->SetMarkerStyle(32);
           mg->Add(Graph_D2_min_pos,"p");
     //Graph_H2_average->SetMarkerStyle(36);
     //Graph_H2_average->SetMarkerSize(1.2);
@@ -566,6 +561,8 @@ void plot_current_ratio(){
     mg->Draw("a");
     mg->GetYaxis()->SetRangeUser(0.99,1.01);
     mg->SetTitle(current.c_str());
+    mg->GetXaxis()->SetTitle("GroupNumber");
+    mg->GetYaxis()->SetTitle("ratio");
     mg->Write(current.c_str());
     auto legend = gPad->BuildLegend();
     legend->SetHeader(current.c_str(),"C");
