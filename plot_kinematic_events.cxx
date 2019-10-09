@@ -64,7 +64,7 @@ auto W2 = [](Pvec4D& pq) {
   return Ptot.Dot(Ptot);
 };
 
-void plot_kinematic_events_fall(int RunNumber = 0){
+void plot_kinematic_events(int RunNumber = 0){
   //std::cout<<"check"<<std::endl;
   if (RunNumber == 0){
     std::cout<<"Enter a Run Number (-1 to exit):";
@@ -72,8 +72,8 @@ void plot_kinematic_events_fall(int RunNumber = 0){
     if(RunNumber<=0)
       return;
   }
-  
-  TFile* root = new TFile("results/csv_kin/kinematics_fall.root","UPDATE");
+  std::string root_name = "results/csv_kin/kinematics_"+std::to_string(RunNumber)+".root"; 
+  TFile* root = new TFile(root_name.c_str(),"RECREATE");
   //std::ifstream infile("db2/fall_good_runlist.txt");
   //while(infile>>RunNumber)
   
@@ -88,7 +88,7 @@ void plot_kinematic_events_fall(int RunNumber = 0){
   std::string goodTrackHMS = "H.gtr.dp>-8 && H.gtr.dp<8";
   // std::string piCerSHMS = "P.ngcer.npeSum<0.5 && P.aero.npeSum>1.0";
   std::string piCerSHMS = "P.aero.npeSum>1.0";
-  std::string piCalSHMS = "P.cal.etottracknorm <0.3 && P.cal.eprtracknorm<0.2";
+  std::string piCalSHMS = "P.cal.etottracknorm <0.6 && P.cal.eprtracknorm<0.2";
   std::string piCutSHMS = piCerSHMS +" && "+ piCalSHMS;
   std::string eCutHMS = "H.cal.etottracknorm >0.80 && H.cal.etottracknorm<2 && H.cer.npeSum>1";
   auto dHMSGoodTrack = d_coin.Filter(goodTrackHMS);
@@ -124,9 +124,10 @@ void plot_kinematic_events_fall(int RunNumber = 0){
   auto c = new TCanvas("CSV kinematics");
   kin_x_Q2->DrawCopy();
   std::string name = "results/csv_kin/kinematics_"+std::to_string(RunNumber)+".pdf";
-  c->SaveAs(name.c_str());
-  kin_x_Q2->Write(std::to_string(RunNumber).c_str());
-  
+  //c->SaveAs(name.c_str());
+  std::string name_xq2 = "x_Q2_"+std::to_string(RunNumber);
+  kin_x_Q2->Write(name_xq2.c_str());
+   std::cout<<name_xq2<<std::endl; 
   //auto x = dCOIN_sidis.Histo1D({})
  // auto kin_x_Q2_ori = dCOIN_sidis.Histo2D({"csv_kin","csv_kin_root",400,0,1,400,0,10},"H.kin.primary.x_bj","H.kin.primary.Q2");
  // kin_x_Q2_ori->GetXaxis()->SetTitle("x");
@@ -147,9 +148,10 @@ void plot_kinematic_events_fall(int RunNumber = 0){
   kin_x_z->DrawCopy();
  // z->DrawCopy();
   std::string name_xz = "results/csv_kin/kinematics_xz_"+std::to_string(RunNumber)+".pdf";
-  c_x_z->SaveAs(name_xz.c_str());
+//  c_x_z->SaveAs(name_xz.c_str());
   std::string name_xz_root = "xz_"+std::to_string(RunNumber);
   kin_x_z->Write(name_xz_root.c_str());
+  std::cout<<name_xz_root<<std::endl;
 
   auto kin_Q2_z = dCOIN_sidis.Histo2D({"Q2_z","Q2_z",400,0,3,400,0,10},"z","Q2");
   kin_Q2_z->GetXaxis()->SetTitle("z");
@@ -157,21 +159,32 @@ void plot_kinematic_events_fall(int RunNumber = 0){
   auto c_Q2_z = new TCanvas("CSV Q2 vs. z");
   kin_Q2_z->DrawCopy();
   std::string name_Q2z = "results/csv_kin/kinematics_q2z_"+std::to_string(RunNumber)+".pdf";
-  c_Q2_z->SaveAs(name_Q2z.c_str());
+  //c_Q2_z->SaveAs(name_Q2z.c_str());
   std::string name_Q2z_root = "q2z_"+std::to_string(RunNumber);
   kin_Q2_z->Write(name_Q2z_root.c_str());
+  std::cout<<name_Q2z_root<<std::endl;
+
+  auto kin_x = dCOIN_sidis.Histo1D({"x","x",400,0,1},"xbj");
+  kin_x->GetXaxis()->SetTitle("x");
+  std::string name_x = "x_"+std::to_string(RunNumber);
+  kin_x->Write(name_x.c_str());
+  std::cout<<name_x<<std::endl;
+
+  auto kin_q2 = dCOIN_sidis.Histo1D({"q2","Q2",400,0,1},"Q2");
+  kin_q2->GetXaxis()->SetTitle("q2");
+  std::string name_q2 = "q2_"+std::to_string(RunNumber);
+  kin_q2->Write(name_q2.c_str());
+  std::cout<<name_q2<<std::endl;
 
 
-
-
-  auto *c_pi = new TCanvas();
-  auto h_P_cal_all = dCoinGoodTrack.Histo1D({"good track cut","good track cut",100,0.01,2},"P.cal.etottracknorm");
-  auto h_P_cal_cut = dCOIN_sidis.Histo1D({"pi cut","pi cut",100,0.01,2},"P.cal.etottracknorm");
-  h_P_cal_cut->SetFillColor(kGreen);
-  h_P_cal_all->DrawCopy();
-  h_P_cal_cut->DrawCopy("same");
-  std::string name_pi = "results/csv_kin/piselection"+std::to_string(RunNumber)+".pdf";
-  c_pi->SaveAs(name_pi.c_str());
+//  auto *c_pi = new TCanvas();
+//  auto h_P_cal_all = dCoinGoodTrack.Histo1D({"good track cut","good track cut",100,0.01,2},"P.cal.etottracknorm");
+//  auto h_P_cal_cut = dCOIN_sidis.Histo1D({"pi cut","pi cut",100,0.01,2},"P.cal.etottracknorm");
+//  h_P_cal_cut->SetFillColor(kGreen);
+//  h_P_cal_all->DrawCopy();
+//  h_P_cal_cut->DrawCopy("same");
+//  std::string name_pi = "results/csv_kin/piselection"+std::to_string(RunNumber)+".pdf";
+//  c_pi->SaveAs(name_pi.c_str());
 
   root->Close();
 }

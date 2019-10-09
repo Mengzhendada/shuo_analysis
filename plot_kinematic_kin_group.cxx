@@ -27,7 +27,7 @@ void plot_kinematic_kin_group(){
   int num[13] = {1,2,3,4,5,6,7,8,9,40,41,42,43};
   //  std::string color[13] = {}
   int i = 0;
-  auto *c = new TCanvas("csv kinematics");
+  auto *c = new TCanvas("csv kinematics","csv kinematic",2200,1450);
   c->Divide(2,1);
   //c->cd(1);
   //h->SetMarkerColorAlpha(2,0.35);
@@ -36,6 +36,18 @@ void plot_kinematic_kin_group(){
   //h1->Draw("ap same");
   TH2F *h_neg_kin_group = new TH2F("CSV pi-","CSV pi-",400,0,1,400,0,10);
   TH2F *h_pos_kin_group = new TH2F("CSV pi+","CSV pi+",400,0,1,400,0,10);
+  auto *c_xz = new TCanvas("x_z","x vs z",2200,1450);
+  c_xz->Divide(2,1);
+  TH2F *h_neg_xz = new TH2F("x_z","x vs z",400,0,3,400,0,1);
+  TH2F *h_pos_xz = new TH2F("x_z","x vs z",400,0,3,400,0,1);
+  auto *c_q2z = new TCanvas("Q2_z","Q2 vs z",2200,1450);
+  c_q2z->Divide(2,1);
+  TH2F *h_neg_q2z = new TH2F("Q2_z","Q2 vs z",400,0,3,400,0,10);
+  TH2F *h_pos_q2z = new TH2F("Q2_z","Q2 vs z",400,0,3,400,0,10);
+  
+  std::ofstream outfile("failedruns.json");
+  json j_failed;
+
   for(json::iterator it = j.begin();it!=j.end();++it)
   {
     double x = std::stod(it.key());
@@ -68,21 +80,37 @@ void plot_kinematic_kin_group(){
           TH2F *h_neg = new TH2F(name_neg.c_str(),name_neg.c_str(),400,0,1,400,0,10);
             int runnum = v_D2_neg[ii];
             if(runnum<7000){
+              if(f_fall->Get(std::to_string(runnum).c_str()))
+              {
               h_neg= (TH2F*)f_fall->Get(std::to_string(runnum).c_str());
               h_neg_all->Add(h_neg);
               std::cout<<runnum<<std::endl;
               h_neg->SetMarkerColorAlpha(num[i],0.35);
               h_neg->SetTitle(name_neg.c_str());
               h_neg->Draw("colz");
+              }
+              else{
+                j_failed[std::to_string(runnum)] = runnum;
+                //j_failed.push_back(runnum);
+                //outfile<<"can't find "<<runnum<<std::endl;
+                }
             }
             else{
+              if(f_spring->Get(std::to_string(runnum).c_str()))
+              {
               h_neg = (TH2F*)f_spring->Get(std::to_string(runnum).c_str());
               h_neg_all->Add(h_neg);
               std::cout<<runnum<<std::endl;
               h_neg->SetMarkerColorAlpha(num[i],0.35);
               h_neg->SetTitle(name_neg.c_str());
               h_neg->Draw("colz");
-            }
+              }
+              else{
+                j_failed[std::to_string(runnum)] = runnum;
+                //j_failed.push_back(runnum);
+                //outfile<<"can't find "<<runnum<<std::endl;
+              }
+              }
           std::string filename = "results/csv_kin/kin_plot/"+std::to_string(runnum)+".png";
           c_neg->SetTitle(name_neg.c_str());
           c_neg->SaveAs(filename.c_str());
@@ -106,20 +134,36 @@ void plot_kinematic_kin_group(){
           TH2F *h_pos = new TH2F(name_pos.c_str(),name_pos.c_str(),400,0,1,400,0,10);
             int runnum = v_D2_pos[ii];
             if(runnum<7000){
+              if(f_fall->Get(std::to_string(runnum).c_str()))
+              {
               h_pos= (TH2F*)f_fall->Get(std::to_string(runnum).c_str());
               h_pos_all->Add(h_pos);
               std::cout<<runnum<<std::endl;
               h_pos->SetMarkerColorAlpha(num[i],0.35);
               h_pos->SetTitle(name_pos.c_str());
               h_pos->Draw("colz");
+              }
+              else{
+                j_failed[std::to_string(runnum)] = runnum;
+                //j_failed.push_back(runnum);
+               // outfile<<"can't find "<<runnum<<std::endl;
+              }
             }
             else{
+              if(f_spring->Get(std::to_string(runnum).c_str()))
+              {
               h_pos = (TH2F*)f_spring->Get(std::to_string(runnum).c_str());
               h_pos_all->Add(h_pos);
               std::cout<<runnum<<std::endl;
               h_pos->SetMarkerColorAlpha(num[i],0.35);
               h_pos->SetTitle(name_pos.c_str());
               h_pos->Draw("colz");
+              }
+              else{
+                j_failed[std::to_string(runnum)] = runnum;
+                //j_failed.push_back(runnum);
+               // outfile<<"can't find "<<runnum<<std::endl;
+               }
             }
           std::string filename = "results/csv_kin/kin_plot/"+std::to_string(runnum) + ".png";
           c_pos->SaveAs(filename.c_str());
@@ -138,11 +182,12 @@ void plot_kinematic_kin_group(){
       }//loop through different Q2
     }//x>0
   }//loop through x
+  outfile<<j_failed.dump(4)<<std::endl;
   c->cd(1);
   h_neg_kin_group->SetMarkerColorAlpha(0,0);
-  h_neg_kin_group->Draw("asame");
+  h_neg_kin_group->Draw("box asame");
   c->cd(2);
   h_pos_kin_group->SetMarkerColorAlpha(0,0);
-  h_pos_kin_group->Draw("asame");
+  h_pos_kin_group->Draw("box asame");
   c->SaveAs("results/csv_kin/kin_plot/kinematics.png");
 }

@@ -66,15 +66,16 @@ auto W2 = [](Pvec4D& pq) {
 
 void plot_kinematic_events_spring(int RunNumber = 0){
   //std::cout<<"check"<<std::endl;
-  //if (RunNumber == 0){
-  //   std::cout<<"Enter a Run Number (-1 to exit):";
-  //   std::cin>>RunNumber;
-  //   if(RunNumber<=0)
-  //     return;
-  // }
+  if (RunNumber == 0){
+     std::cout<<"Enter a Run Number (-1 to exit):";
+     std::cin>>RunNumber;
+     if(RunNumber<=0)
+       return;
+   }
+  
   TFile* root = new TFile("results/csv_kin/kinematics_spring.root","RECREATE");
-  std::ifstream infile("db2/spring_good_runlist.txt");
-  while(infile>>RunNumber){
+  //std::ifstream infile("db2/spring_good_runlist.txt");
+  //while(infile>>RunNumber){
     std::cout<<RunNumber<<std::endl;
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
     ROOT::EnableImplicitMT();
@@ -86,7 +87,7 @@ void plot_kinematic_events_spring(int RunNumber = 0){
     std::string goodTrackHMS = "H.gtr.dp>-8 && H.gtr.dp<8";
     // std::string piCerSHMS = "P.ngcer.npeSum<0.5 && P.aero.npeSum>1.0";
     std::string piCerSHMS = "P.aero.npeSum>1.0";
-    std::string piCalSHMS = "P.cal.etottracknorm <1.0 && P.cal.eprtracknorm<0.2";
+    std::string piCalSHMS = "P.cal.etottracknorm <0.8 && P.cal.eprtracknorm<0.2";
     std::string piCutSHMS = piCerSHMS +" && "+ piCalSHMS;
     std::string eCutHMS = "H.cal.etottracknorm >0.80 && H.cal.etottracknorm<2 && H.cer.npeSum>1";
     auto dHMSGoodTrack = d_coin.Filter(goodTrackHMS);
@@ -155,7 +156,7 @@ void plot_kinematic_events_spring(int RunNumber = 0){
   std::string name_Q2z_root = "q2z_"+std::to_string(RunNumber);
   kin_Q2_z->Write(name_Q2z_root.c_str());
   
-  }
+ // }
   root->Close();
 
 }
