@@ -125,12 +125,12 @@ void plot_kinematic_events_spring(int RunNumber = 0){
     c->SaveAs(name.c_str());
     kin_x_Q2->Write(std::to_string(RunNumber).c_str());
   
-    auto kin_x_Q2_ori = dCOIN_sidis.Hist2D({"csv_kin","csv_kin_root",400,0,1,400,0,10},"H.kin.primary.x_bj","H.kin.primary.Q2");
+    auto kin_x_Q2_ori = dCOIN_sidis.Histo2D({"csv_kin","csv_kin_root",400,0,1,400,0,10},"H.kin.primary.x_bj","H.kin.primary.Q2");
   kin_x_Q2_ori->GetXaxis()->SetTitle("x");
   kin_x_Q2_ori->GetYaxis()->SetTitle("Q2");
   auto c_xq2ori = new TCanvas("x_Q2_root");
   kin_x_Q2_ori->DrawCopy();
-  std::string name_xq2ori = "results/csv_kin/kinematics_xq2_"+std::string(RunNumber)+".pdf";
+  std::string name_xq2ori = "results/csv_kin/kinematics_xq2_"+std::to_string(RunNumber)+".pdf";
   c->SaveAs(name_xq2ori.c_str());
   std::string name_xq2ori_root = "xq2root_"+std::to_string(RunNumber);
   kin_x_Q2_ori->Write(name_xq2ori_root.c_str());
