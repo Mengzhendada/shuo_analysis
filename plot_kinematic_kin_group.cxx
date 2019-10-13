@@ -14,7 +14,7 @@ using json = nlohmann::json;
 void plot_kinematic_kin_group(){
   json j;
   {
-    std::ifstream infile("db2/kin_group.json");
+    std::ifstream infile("db2/kin_group_xQ2.json");
     infile>>j;
   }
   TFile *f_spring = new TFile("results/csv_kin/kinematics_spring.root");
@@ -185,9 +185,9 @@ void plot_kinematic_kin_group(){
   outfile<<j_failed.dump(4)<<std::endl;
   c->cd(1);
   h_neg_kin_group->SetMarkerColorAlpha(0,0);
-  h_neg_kin_group->Draw("box asame");
+  h_neg_kin_group->Draw("ap");
   c->cd(2);
   h_pos_kin_group->SetMarkerColorAlpha(0,0);
-  h_pos_kin_group->Draw("box asame");
+  h_pos_kin_group->Draw("ap");
   c->SaveAs("results/csv_kin/kin_plot/kinematics.png");
 }

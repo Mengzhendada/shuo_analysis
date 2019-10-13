@@ -13,7 +13,7 @@ json j;
   std::ifstream infile("db2/kin_group.json");
   infile>>j;
 }
-int num[13] = {1,2,3,4,5,6,7,8,9,40,41,42,43};
+int num[13] = {46,47,40,48,30,49,31,41,32,42,33,43,44};
 int i =0;
 auto c = new TCanvas();
 for(json::iterator it = j.begin();it!=j.end();++it){
