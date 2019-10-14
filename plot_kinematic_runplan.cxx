@@ -25,7 +25,8 @@ for(json::iterator it = j.begin();it!=j.end();++it){
     std::string title = "x_Q2_"+std::to_string(x).substr(0,4)+"_"+std::to_string(Q2).substr(0,4); 
       TH2F *h_run_plan = new TH2F("CSV run plan","CSV run plan",400,0,1,400,0,10);
       //TH2F *h_run_plan = new TH2F("CSV run plan",title.c_str(),400,0,1,400,0,10);
-h_run_plan->GetXaxis()->SetTitle("x");
+      h_run_plan->SetTitle(title.c_str());
+      h_run_plan->GetXaxis()->SetTitle("x");
 h_run_plan->GetYaxis()->SetTitle("Q2");
     h_run_plan->Fill(x,Q2);
     h_run_plan->SetMarkerStyle(kFullDotLarge);
