@@ -3,7 +3,12 @@
 #include <cmath>
 #include <vector>
 #include <string>
-
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+#include <sstream>
+#include <array>
+#include <iomanip>
+#include "spdlog/spdlog.h"
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
 #include "Math/Vector3D.h"
@@ -12,13 +17,17 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TH2.h"
-#ifdef __cpp_lib_filesystem
-#include <filesystem>
-namespace fs = std::filesystem;
-#else
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#endif
+#include "TH1.h"
+#include "TH2D.h"
+#include "TH1D.h"
+//using namespace std;
+//#ifdef __cpp_lib_filesystem
+//#include <filesystem>
+//namespace fs = std::filesystem;
+//#else
+//#include <experimental/filesystem>
+//namespace fs = std::experimental::filesystem;
+//#endif
 
 
 constexpr const double M_P     = 0.938272;
@@ -40,7 +49,7 @@ auto p_electron = [](double px, double py, double pz) {
   return Pvec4D{px , py , pz , M_e};
 };
 auto p_q = [](Pvec4D& pe ) {
-  return Pvec4D{0.0,0.0,10.214, M_e}-pe;
+  return Pvec4D{0.0,0.0,10.6, M_e}-pe;
 };
 auto t = [](const double Egamma, Pvec4D& jpsi) {
   Pvec4D beam{0, 0, Egamma, 0};
@@ -74,15 +83,23 @@ void plot_kinematic_events(int RunNumber = 0){
   }
   std::string root_name = "results/csv_kin/kinematics_"+std::to_string(RunNumber)+".root"; 
   TFile* root = new TFile(root_name.c_str(),"RECREATE");
-  //std::ifstream infile("db2/fall_good_runlist.txt");
-  //while(infile>>RunNumber)
-  
+  //json j_runinfo;
+  //{
+  //  std::ifstream runinfo("db2/run_info_group.json");
+  //  runinfo>>j_runinfo;
+  //}
+  //double x_plan = j_runinfo[std::to_string(RunNumber)]["x"].get<double>();
+  //double Q2_plan = j_runinfo[std::to_string(RunNumber)]["Q2"].get<double>();
+  //double z_plan = j_runinfo[std::to_string(RunNumber)]["z"].get<double>();
+    //double x_plan = 0;
+    //double Q2_plan = 0;
+    //double z_plan = 0;
     std::cout<<RunNumber<<std::endl;
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
   ROOT::EnableImplicitMT();
   ROOT::RDataFrame d("T",rootfile_name.c_str());
-  auto d_coin = d.Filter("fEvtHdr.fEvtType == 4");
-  //auto d_coin = d;
+  //auto d_coin = d.Filter("fEvtHdr.fEvtType == 4");
+  auto d_coin = d;
   //cuts
   std::string goodTrackSHMS = "P.gtr.dp>-10 && P.gtr.dp<22";
   std::string goodTrackHMS = "H.gtr.dp>-8 && H.gtr.dp<8";
@@ -104,7 +121,8 @@ void plot_kinematic_events(int RunNumber = 0){
   auto dHMS_electron = dCoinGoodTrack.Filter(eCutHMS);
   auto dSHMS_pion = dCoinGoodTrack.Filter(piCutSHMS);
   auto dCOIN_sidis = dCoinGoodTrack.Filter(eCutHMS + " && " + piCutSHMS);
-
+  // auto dCOIN_sidis_beforexq2cut = dCoinGoodTrack.Filter(eCutHMS + " && " + piCutSHMS);
+  //auto dCOIN_sidis = dCOIN_sidis_beforexq2cut.Filter("Q2 > 3.5 && xbj>0.33");
   //   //Timing cuts
   //   //Find the timing peak
   //   //Find the coin peak
@@ -122,10 +140,12 @@ void plot_kinematic_events(int RunNumber = 0){
   kin_x_Q2->GetXaxis()->SetTitle("x");
   kin_x_Q2->GetYaxis()->SetTitle("Q2");
   auto c = new TCanvas("CSV kinematics");
-  kin_x_Q2->DrawCopy();
+  kin_x_Q2->DrawCopy("ap");
   std::string name = "results/csv_kin/kinematics_"+std::to_string(RunNumber)+".pdf";
   //c->SaveAs(name.c_str());
+  //std::string name_xq2 = "x_"+std::to_string(x_plan)+"_Q2_"+std::to_string(Q2_plan)+"_run_"+std::to_string(RunNumber);
   std::string name_xq2 = "x_Q2_"+std::to_string(RunNumber);
+  kin_x_Q2->SetTitle(name_xq2.c_str());
   kin_x_Q2->Write(name_xq2.c_str());
    std::cout<<name_xq2<<std::endl; 
   //auto x = dCOIN_sidis.Histo1D({})
@@ -149,7 +169,9 @@ void plot_kinematic_events(int RunNumber = 0){
  // z->DrawCopy();
   std::string name_xz = "results/csv_kin/kinematics_xz_"+std::to_string(RunNumber)+".pdf";
 //  c_x_z->SaveAs(name_xz.c_str());
-  std::string name_xz_root = "xz_"+std::to_string(RunNumber);
+  //std::string name_xz_root = "x_"+std::to_string(x_plan)+"_z_"+std::to_string(z_plan)+"_run_"+std::to_string(RunNumber);
+  std::string name_xz_root = "x_z_"+std::to_string(RunNumber);
+  kin_x_z->SetTitle(name_xz_root.c_str());
   kin_x_z->Write(name_xz_root.c_str());
   std::cout<<name_xz_root<<std::endl;
 
@@ -160,22 +182,35 @@ void plot_kinematic_events(int RunNumber = 0){
   kin_Q2_z->DrawCopy();
   std::string name_Q2z = "results/csv_kin/kinematics_q2z_"+std::to_string(RunNumber)+".pdf";
   //c_Q2_z->SaveAs(name_Q2z.c_str());
-  std::string name_Q2z_root = "q2z_"+std::to_string(RunNumber);
+  //std::string name_Q2z_root = "q2_"+std::to_string(Q2_plan)+"_z_"+std::to_string(z_plan)+"_run_"+std::to_string(RunNumber);
+  std::string name_Q2z_root = "q2_z_"+std::to_string(RunNumber);
+  kin_Q2_z->SetTitle(name_Q2z_root.c_str());
   kin_Q2_z->Write(name_Q2z_root.c_str());
   std::cout<<name_Q2z_root<<std::endl;
 
   auto kin_x = dCOIN_sidis.Histo1D({"x","x",400,0,1},"xbj");
   kin_x->GetXaxis()->SetTitle("x");
+  //std::string name_x = "x_"+std::to_string(x_plan)+"_run_"+std::to_string(RunNumber);
   std::string name_x = "x_"+std::to_string(RunNumber);
+  kin_x->SetTitle(name_x.c_str());
   kin_x->Write(name_x.c_str());
   std::cout<<name_x<<std::endl;
 
-  auto kin_q2 = dCOIN_sidis.Histo1D({"q2","Q2",400,0,1},"Q2");
+  auto kin_q2 = dCOIN_sidis.Histo1D({"q2","Q2",400,0,10},"Q2");
   kin_q2->GetXaxis()->SetTitle("q2");
+  //std::string name_q2 = "q2_"+std::to_string(Q2_plan)+"_run_"+std::to_string(RunNumber);
   std::string name_q2 = "q2_"+std::to_string(RunNumber);
+  kin_q2->SetTitle(name_q2.c_str());
   kin_q2->Write(name_q2.c_str());
   std::cout<<name_q2<<std::endl;
 
+  auto kin_z = dCOIN_sidis.Histo1D({"z","z",400,0,3},"z");
+  kin_z->GetXaxis()->SetTitle("z");
+  //std::string name_z = "z_"+std::to_string(z_plan)+"_run_"+std::to_string(RunNumber);
+  std::string name_z = "z_"+std::to_string(RunNumber);
+  kin_z->SetTitle(name_z.c_str());
+  kin_z->Write(name_z.c_str());
+  std::cout<<name_z<<std::endl;
 
 //  auto *c_pi = new TCanvas();
 //  auto h_P_cal_all = dCoinGoodTrack.Histo1D({"good track cut","good track cut",100,0.01,2},"P.cal.etottracknorm");

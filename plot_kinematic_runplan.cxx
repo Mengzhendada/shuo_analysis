@@ -15,7 +15,7 @@ json j;
 }
 int num[13] = {46,47,40,48,30,49,31,41,32,42,33,43,44};
 int i =0;
-auto c = new TCanvas();
+auto c_runplan = new TCanvas();
 for(json::iterator it = j.begin();it!=j.end();++it){
   double x = std::stod(it.key());
   auto runjs = it.value();
@@ -38,7 +38,7 @@ h_run_plan->GetYaxis()->SetTitle("Q2");
   }//if x > 0
   
 }//x loop
-c->BuildLegend(0.75,0.65,1,1,"csv run plan","p");
-c->SetTitle("CSV Run Plan");
-c->SaveAs("results/csv_kin/kin_plot/kinematics_runplan.pdf");
+c_runplan->BuildLegend(0.75,0.65,1,1,"csv run plan","p");
+c_runplan->SetTitle("CSV Run Plan");
+c_runplan->SaveAs("results/csv_kin/kin_plot/kinematics_runplan.pdf");
 }
