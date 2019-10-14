@@ -20,6 +20,7 @@ using json = nlohmann::json;
 #include "TH1.h"
 #include "TH2D.h"
 #include "TH1D.h"
+//using namespace std;
 //#ifdef __cpp_lib_filesystem
 //#include <filesystem>
 //namespace fs = std::filesystem;
@@ -97,8 +98,8 @@ void plot_kinematic_events(int RunNumber = 0){
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
   ROOT::EnableImplicitMT();
   ROOT::RDataFrame d("T",rootfile_name.c_str());
-  auto d_coin = d.Filter("fEvtHdr.fEvtType == 4");
-  //auto d_coin = d;
+  //auto d_coin = d.Filter("fEvtHdr.fEvtType == 4");
+  auto d_coin = d;
   //cuts
   std::string goodTrackSHMS = "P.gtr.dp>-10 && P.gtr.dp<22";
   std::string goodTrackHMS = "H.gtr.dp>-8 && H.gtr.dp<8";
@@ -120,7 +121,8 @@ void plot_kinematic_events(int RunNumber = 0){
   auto dHMS_electron = dCoinGoodTrack.Filter(eCutHMS);
   auto dSHMS_pion = dCoinGoodTrack.Filter(piCutSHMS);
   auto dCOIN_sidis = dCoinGoodTrack.Filter(eCutHMS + " && " + piCutSHMS);
-
+  // auto dCOIN_sidis_beforexq2cut = dCoinGoodTrack.Filter(eCutHMS + " && " + piCutSHMS);
+  //auto dCOIN_sidis = dCOIN_sidis_beforexq2cut.Filter("Q2 > 3.5 && xbj>0.33");
   //   //Timing cuts
   //   //Find the timing peak
   //   //Find the coin peak
