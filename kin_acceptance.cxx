@@ -82,7 +82,21 @@ void kin_acceptance(int RunNumber = 0){
     if(RunNumber<=0)
       return;
   }
- 
+
+  json j_run_info;
+  {
+    std::ifstream run_info("db2/run_info_group.json");
+    run_info>>j_run_info;
+  }
+  double x_run_plan = j_run_info[std::to_string(RunNumber)]["x"].get<double>();
+  double q2_run_plan = j_run_info[std::to_string(RunNumber)]["Q2"].get<double>();
+  if(x_run_plan!=0 && q2_run_plan!=0){
+  x_max = x_run_plan+0.07;
+  x_min = x_run_plan-0.07;
+  q2_max = q2_run_plan+0.5;
+  q2_min = q2_run_plan-0.5;
+  }
+
   double shms_angle;
   if(RunNumber <7000){
   json j_fall;
@@ -277,7 +291,7 @@ void kin_acceptance(int RunNumber = 0){
     auto h_z_cut3 = d_cut3.Histo1D({"z_cut3","z after cut3",100,0,3},"z");
 
     std::string kin_rootfile_name = "results/csv_kin/kin_acceptance/kin_rootfile_"+std::to_string(RunNumber)+".root";
-    TFile *kin_rootfile = new TFile(kin_rootfile_name.c_str());
+    TFile *kin_rootfile = new TFile(kin_rootfile_name.c_str(),"RECREATE");
     TCanvas *c_xbj = new TCanvas();
     h_xbj_xq2cut->SetLineColor(coolcolor[0]);
     h_xbj_xq2cut->Write();
