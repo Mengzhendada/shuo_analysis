@@ -242,6 +242,14 @@ void kin_acceptance(int RunNumber = 0){
     double r1square = n1*n1*x_sigma*x_sigma+n1*n1*y_sigma*y_sigma;
     double r2square = n2*n2*x_sigma*x_sigma+n2*n2*y_sigma*y_sigma;
     double r3square = n3*n3*x_sigma*x_sigma+n3*n3*y_sigma*y_sigma;
+    std::string param_file_name = "results/csv_kin/kin_acceptance/acceptance_param_"+std::to_string(RunNumber)+".txt";
+    std::ofstream param_file(param_file_name.c_str());
+    param_file<<x_mean<<"    #"<<std::to_string(RunNumber)<<" x mean position"<<std::endl;
+    param_file<<y_mean<<"    #"<<std::to_string(RunNumber)<<" y mean position"<<std::endl;
+    param_file<<r1square<<"     #"<<std::to_string(RunNumber)<<" r1square for cut 1"<<std::endl;
+    param_file<<r2square<<"     #"<<std::to_string(RunNumber)<<" r2square for cut 2"<<std::endl;
+    param_file<<r3square<<"     #"<<std::to_string(RunNumber)<<" r3square for cut 3"<<std::endl;
+    
     auto cut1 = [x_mean,y_mean,r1square](double p_x, double p_y){return (p_x-x_mean)*(p_x-x_mean)+(p_y-y_mean)*(p_y-y_mean)<r1square;};
     auto cut2 = [x_mean,y_mean,r2square](double p_x, double p_y){return (p_x-x_mean)*(p_x-x_mean)+(p_y-y_mean)*(p_y-y_mean)<r2square;};
     auto cut3 = [x_mean,y_mean,r3square](double p_x, double p_y){return (p_x-x_mean)*(p_x-x_mean)+(p_y-y_mean)*(p_y-y_mean)<r3square;};
