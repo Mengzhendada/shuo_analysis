@@ -115,7 +115,7 @@ void kin_acceptance(int RunNumber = 0){
     shms_angle = j_spring[std::to_string(RunNumber)]["spectrometers"]["shms_angle"].get<double>();
   }
   TRotation r;
-  r.RotateX(-shms_angle*TMath::Pi()/180);
+  r.RotateX(shms_angle*TMath::Pi()/180);
   auto rotate = [r](TVector3 p){return r * p;};
 
  // auto xq2_cut = [x_max,x_min,q2_max,q2_min](double xbj,double q2){ return xbj>x_min && xbj<x_max && q2>q2_min && q2<q2_max;};
@@ -140,8 +140,8 @@ void kin_acceptance(int RunNumber = 0){
   auto dCoinGoodTrack = dHMSGoodTrack.Filter(goodTrackSHMS)
   .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
   .Define("p_proton",p_proton, {"P.gtr.px", "P.gtr.py", "P.gtr.pz"})
-  .Define("p_pion", p_pion, {"P.gtr.px", "P.gtr.py", "P.gtr.pz"})
-  .Define("pion_momentum",pion_momentum,{"P.gtr.px","P.gtr.py","P.gtr.pz"})
+  .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
+  .Define("pion_momentum",pion_momentum,{"P.gtr.py","P.gtr.px","P.gtr.pz"})
   .Define("pion_momentum_rotated",rotate,{"pion_momentum"})
   .Define("pion_momentum_rotated_x",[](TVector3 v){return v.X();},{"pion_momentum_rotated"})
   .Define("pion_momentum_rotated_y",[](TVector3 v){return v.Y();},{"pion_momentum_rotated"})
@@ -160,6 +160,9 @@ void kin_acceptance(int RunNumber = 0){
   auto dCOIN_sidis = dCoinGoodTrack.Filter(eCutHMS + " && " + piCutSHMS);
   std::cout<<*dCOIN_sidis.Count()<<std::endl; 
  // auto dxq2cut = dCOIN_sidis.Filter(xq2_cut,{"xbj","Q2"});
+  
+//  auto dxq2cut = dCOIN_sidis;
+  
   auto dxq2cut = dCOIN_sidis.Filter([x_min](double x){return x>x_min;},{"xbj"})
                             .Filter([x_max](double x){return x<x_max;},{"xbj"})
                             .Filter([q2_min](double q2){return q2>q2_min;},{"Q2"})
