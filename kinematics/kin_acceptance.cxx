@@ -161,20 +161,20 @@ void kin_acceptance(int RunNumber = 0){
   std::cout<<*dCOIN_sidis.Count()<<std::endl; 
  // auto dxq2cut = dCOIN_sidis.Filter(xq2_cut,{"xbj","Q2"});
   
-//  auto dxq2cut = dCOIN_sidis;
+  auto dxq2cut = dCOIN_sidis;
   
-  auto dxq2cut = dCOIN_sidis.Filter([x_min](double x){return x>x_min;},{"xbj"})
-                            .Filter([x_max](double x){return x<x_max;},{"xbj"})
-                            .Filter([q2_min](double q2){return q2>q2_min;},{"Q2"})
-                            .Filter([q2_max](double q2){return q2<q2_max;},{"Q2"})
-                            ; 
+//  auto dxq2cut = dCOIN_sidis.Filter([x_min](double x){return x>x_min;},{"xbj"})
+//                            .Filter([x_max](double x){return x<x_max;},{"xbj"})
+//                            .Filter([q2_min](double q2){return q2>q2_min;},{"Q2"})
+//                            .Filter([q2_max](double q2){return q2<q2_max;},{"Q2"})
+//                            ; 
   auto h_xq2 = dCOIN_sidis.Histo2D({"x_Q2","x_Q2",400,0,1,400,0,10},"xbj","Q2");
-    TBox* xq2_box = new TBox(x_min,q2_min,x_max,q2_max);
+//    TBox* xq2_box = new TBox(x_min,q2_min,x_max,q2_max);
     TCanvas* c_xq2 = new TCanvas("x_Q2");
-    h_xq2->DrawCopy();
-    xq2_box->SetFillStyle(0);
-    xq2_box->SetLineColor(kRed);
-    xq2_box->Draw("l");
+//    h_xq2->DrawCopy();
+//    xq2_box->SetFillStyle(0);
+//    xq2_box->SetLineColor(kRed);
+//    xq2_box->Draw("l");
     std::string xq2filename = "results/csv_kin/kin_acceptance/x_Q2_"+std::to_string(RunNumber)+".pdf";
     c_xq2->SaveAs(xq2filename.c_str());
  // auto dCOIN_sidis_xq2cut = dCOIN_sidis.Filter("xbj>0.4").Filter("Q2>3.5");
