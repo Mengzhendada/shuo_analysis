@@ -98,7 +98,9 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
                  .Define("pion_momentum_rotated_y",[](TVector3 v){return v.Y();},{"pion_momentum_rotated"})
                  ;
   auto dGoodTrack = d_SHMS.Filter(goodTrack);
-  auto dpi = dGoodTrack.Filter(piCut);
+  auto dpi = dGoodTrack
+  //.Filter(piCut)
+  ;
   std::cout<<*dpi.Count()<<std::endl;
     auto h_pion_momentum_x = dpi.Histo1D({"pion_p_x","pion momentum x",500,-5,5},"pion_momentum_rotated_x");
     h_pion_momentum_x->Fit("gaus","0","",-5,5);
