@@ -91,13 +91,14 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
                        " P.cal.etottracknorm<1.0";
   std::string hgc_cut = " p_pion.P() < 2.8 || P.hgcer.npeSum > 1.0";
 
-  auto d_SHMS = d.Filter("fEvtHdr.fEvtType == 2")
+  auto d_SHMS = d.Filter("fEvtHdr.fEvtType == 1")
                  .Define("pion_momentum",pion_momentum,{"P.gtr.py","P.gtr.px","P.gtr.pz"})
                  .Define("pion_momentum_rotated",rotate,{"pion_momentum"})
                  .Define("pion_momentum_rotated_x",[](TVector3 v){return v.X();},{"pion_momentum_rotated"})
                  .Define("pion_momentum_rotated_y",[](TVector3 v){return v.Y();},{"pion_momentum_rotated"})
                  ;
-  auto dGoodTrack = d_SHMS.Filter(goodTrack);
+  auto dGoodTrack = d_SHMS;
+  //.Filter(goodTrack);
   auto dpi = dGoodTrack
   //.Filter(piCut)
   ;
