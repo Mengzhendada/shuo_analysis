@@ -63,7 +63,10 @@ Target_fluid_property: H2 and D2 property from NIST
    
 #kinematics
 `plot_kinematics_events.cxx`,plot_kinematics_events_spring.cxx, plot_kinematics_x_Q2.cxx: plot kinematics for each run   
+
 `plot_kinematic_kin_group.cxx`: plot kinematics for run group and put them on one graph    
+
 `kin_acceptance.cxx`: rotate to shms angle plot pion momentum cross section, get kinematics for each run   
+
 `kin_acceptance_analysis.cxx`: read kinematics from kin_acceptance.cxx output and compare
 
