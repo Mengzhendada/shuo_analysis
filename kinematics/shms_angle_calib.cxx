@@ -70,6 +70,7 @@ void shms_angle_calib(int RunNumber = 0){
     //  std::cout<<"couldn't find in spring json"<<std::endl;
    // }
   }
+  std::cout<<"shms angle"<<shms_angle<<std::endl;
   TRotation r;
   r.RotateX(shms_angle*TMath::Pi()/180);
   auto rotate = [r](TVector3 p){return r * p;};
