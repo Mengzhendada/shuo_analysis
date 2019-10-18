@@ -44,40 +44,58 @@ void shms_angle_calib(int RunNumber = 0){
       return;
   }
   double shms_angle;
+  json j;
+  std::string RunNumber_str = std::to_string(RunNumber);
   if(RunNumber<7000){
-    json j_fall;
-    {
       std::ifstream infile("db2/run_list.json");
-      infile>>j_fall;
+      infile>>j;
+    if(j.find(RunNumber_str)==j.end()){
+      std::cout<<"couldn't find in fall json"<<std::endl;
     }
-    //if(j_fall.find(std::to_string(RunNumber)){
-    shms_angle = j_fall[std::to_string(RunNumber)]["spectrometers"]["shms_angle"].get<double>();
-    //}
-    //else{
-    //  std::cout<<"couldn't find in fall json"<<std::endl;
-   // }
+    else{
+    shms_angle = j[RunNumber_str]["spectrometers"]["shms_angle"].get<double>();
+    }
   }
   else{
-    json j_spring;
-    {
       std::ifstream infile("db2/run_list_update.json");
-      infile>>j_spring;
+      infile>>j;
+    if(j.find(RunNumber_str)==j.end()){
+      std::cout<<"couldn't find in spring json"<<std::endl;
     }
-    //if(j_spring.find(std::to_string(RunNumber)){
-    shms_angle = j_spring[std::to_string(RunNumber)]["spectrometers"]["shms_angle"].get<double>();
-    //}
-    //else{
-    //  std::cout<<"couldn't find in spring json"<<std::endl;
-   // }
+    else{
+    shms_angle = j[RunNumber_str]["spectrometers"]["shms_angle"].get<double>();
+    }
   }
+  
+  //prescale
+  int ps1 = -1;
+  int ps2 = -1;
+  int ps5 = -1;
+  int ps6 = -1;
+  bool singles_trigger = true;
+  if(j[RunNumber_str].find("daq") != j[RunNumber_str].end()){
+    ps1 = j[RunNumber_str]["daq"]["ps1"].get<int>();
+    ps2 = j[RunNumber_str]["daq"]["ps2"].get<int>();
+    ps5 = j[RunNumber_str]["daq"]["ps5"].get<int>();
+    ps6 = j[RunNumber_str]["daq"]["ps6"].get<int>();
+  }  
+  if(ps1 == -1){
+    std::cout<<"No shms singles for run "<<RunNumber_str<<"!, use coin type instead"<<std::endl;
+    singles_trigger = false;
+  }
+
   std::cout<<"shms angle"<<shms_angle<<std::endl;
   TRotation r;
   r.RotateX(shms_angle*TMath::Pi()/180);
   auto rotate = [r](TVector3 p){return r * p;};
 
-  std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+  std::string rootfile_name = "ROOTfiles/coin_replay_production_"+RunNumber_str+"_"+RunNumber_str+".root";
+  if(!root_file_exists(rootfile_name.c_str())){
+    std::cout<<"Rootfile doesn't exists!"<<std::endl;
+  }
+ 
   ROOT::RDataFrame d("T",rootfile_name.c_str());
-
+ 
 // =================================================================================
 // Cuts
 // =================================================================================
@@ -92,7 +110,7 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
                        " P.cal.etottracknorm<1.0";
   std::string hgc_cut = " p_pion.P() < 2.8 || P.hgcer.npeSum > 1.0";
 
-  auto d_SHMS = d.Filter("fEvtHdr.fEvtType == 1")
+  auto d_SHMS = d.Filter(singles_trigger ? "fEvtHdr.fEvtType == 1" : "fEvtHdr.fEvtType == 4")
                  .Define("pion_momentum",pion_momentum,{"P.gtr.py","P.gtr.px","P.gtr.pz"})
                  .Define("pion_momentum_rotated",rotate,{"pion_momentum"})
                  .Define("pion_momentum_rotated_x",[](TVector3 v){return v.X();},{"pion_momentum_rotated"})
@@ -130,9 +148,9 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
     h_pion_momentum_y->DrawCopy();
     Fit_y->DrawCopy("same");
     c_pion_momentum->cd(3);
-    h_pion_momentum_xy->DrawCopy();
+    h_pion_momentum_xy->DrawCopy("colz");
     
-    std::string pion_momentum_name = "results/csv_kin/kin_acceptance/shmssingles_acceptance"+std::to_string(RunNumber)+".pdf";
+    std::string pion_momentum_name = "results/csv_kin/kin_acceptance/shmssingles_acceptance"+RunNumber_str+".pdf";
     c_pion_momentum->SaveAs(pion_momentum_name.c_str());
     
   
