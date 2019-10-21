@@ -183,7 +183,7 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
     std::cout<<"No shms coin for run "<<RunNumber_str<<"!, use single type instead"<<std::endl;
     singles_trigger = true;
   }
-  auto d_SHMS_coin = d.Filter(singles_trigger ? "fEvtHdr.fEvtType == 1" : "fEventHdr.fEventType == 4")
+  auto d_SHMS_coin = d.Filter(singles_trigger ? "fEvtHdr.fEvtType == 1" : "fEvtHdr.fEvtType == 4")
                  .Define("pion_momentum",pion_momentum,{"P.gtr.px","P.gtr.py","P.gtr.pz"})
                  .Define("pion_momentum_rotated",rotate,{"pion_momentum"})
                  .Define("pion_momentum_rotated_x",[](TVector3 v){return v.X();},{"pion_momentum_rotated"})
