@@ -127,7 +127,8 @@ void kin_acceptance(int RunNumber = 0){
   //TFile* rootfile = new TFile(rootfile_name.c_str());
   ROOT::RDataFrame d("T",rootfile_name.c_str());
   auto d_coin = d.Filter("fEvtHdr.fEvtType == 4");
-//  auto d_coin = d;
+  auto d_shmssingles. d.Filter("fEvtHdr.fEvtType == 1");
+  //  auto d_coin = d;
   //cuts
   std::string goodTrackSHMS = "P.gtr.dp>-10 && P.gtr.dp<22";
   std::string goodTrackHMS = "H.gtr.dp>-8 && H.gtr.dp<8";
