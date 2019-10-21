@@ -174,7 +174,16 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
     std::string pion_momentum_name = "results/csv_kin/kin_acceptance/shmssingles_acceptance"+RunNumber_str+".pdf";
     c_pion_momentum->SaveAs(pion_momentum_name.c_str());
     
-  auto d_SHMS_coin = d.Filter("fEvtHdr.fEvtType == 4")
+  int ps4 = -1;
+  singles_trigger = false;
+  if(j[RunNumber_str].find("daq") != j[RunNumber_str].end()){
+    ps4 = j[RunNumber_str]["daq"]["ps4"].get<int>();
+  }  
+  if(ps4 == -1){
+    std::cout<<"No shms coin for run "<<RunNumber_str<<"!, use single type instead"<<std::endl;
+    singles_trigger = true;
+  }
+  auto d_SHMS_coin = d.Filter(singles_trigger ? "fEvtHdr.fEvtType == 1" : "fEventHdr.fEventType == 4")
                  .Define("pion_momentum",pion_momentum,{"P.gtr.px","P.gtr.py","P.gtr.pz"})
                  .Define("pion_momentum_rotated",rotate,{"pion_momentum"})
                  .Define("pion_momentum_rotated_x",[](TVector3 v){return v.X();},{"pion_momentum_rotated"})
