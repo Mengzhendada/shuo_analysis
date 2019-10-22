@@ -35,6 +35,14 @@ auto pion_momentum = [](double px,double py,double pz){
   TVector3 v(px,py,pz);
   return v;
 };
+auto electron_momentum = [](double px, double py, double pz){
+  TVector3 v(px, py, pz);
+  return v;
+};
+auto q_momentum = [double beam_energy](TVector3 v_electron_prime){
+  TVector3 v_0(0,0,beam_energy);
+  return v_0 - v_electron_prime;
+};
 
 void shms_angle_calib(int RunNumber = 0){
   if(RunNumber ==0){
