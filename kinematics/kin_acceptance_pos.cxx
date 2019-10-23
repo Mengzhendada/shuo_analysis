@@ -115,6 +115,7 @@ void kin_acceptance_pos(int RunNumber = 0){
     shms_angle = j_spring[std::to_string(RunNumber)]["spectrometers"]["shms_angle"].get<double>();
   }
   TRotation r;
+  r.RotateZ(TMath::Pi()/2);
   r.RotateX(shms_angle*TMath::Pi()/180);
   auto rotate = [r](TVector3 p){return r * p;};
 
@@ -127,7 +128,8 @@ void kin_acceptance_pos(int RunNumber = 0){
   //TFile* rootfile = new TFile(rootfile_name.c_str());
   ROOT::RDataFrame d("T",rootfile_name.c_str());
   auto d_coin = d.Filter("fEvtHdr.fEvtType == 4");
-//  auto d_coin = d;
+  auto d_shmssingles = d.Filter("fEvtHdr.fEvtType == 1");
+  //  auto d_coin = d;
   //cuts
   std::string goodTrackSHMS = "P.gtr.dp>-10 && P.gtr.dp<22";
   std::string goodTrackHMS = "H.gtr.dp>-8 && H.gtr.dp<8";
@@ -141,7 +143,7 @@ void kin_acceptance_pos(int RunNumber = 0){
   .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
   .Define("p_proton",p_proton, {"P.gtr.px", "P.gtr.py", "P.gtr.pz"})
   .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
-  .Define("pion_momentum",pion_momentum,{"P.gtr.py","P.gtr.px","P.gtr.pz"})
+  .Define("pion_momentum",pion_momentum,{"P.gtr.px","P.gtr.py","P.gtr.pz"})
   .Define("pion_momentum_rotated",rotate,{"pion_momentum"})
   .Define("pion_momentum_rotated_x",[](TVector3 v){return v.X();},{"pion_momentum_rotated"})
   .Define("pion_momentum_rotated_y",[](TVector3 v){return v.Y();},{"pion_momentum_rotated"})
@@ -161,20 +163,20 @@ void kin_acceptance_pos(int RunNumber = 0){
   std::cout<<*dCOIN_sidis.Count()<<std::endl; 
  // auto dxq2cut = dCOIN_sidis.Filter(xq2_cut,{"xbj","Q2"});
   
-//  auto dxq2cut = dCOIN_sidis;
+  auto dxq2cut = dCOIN_sidis;
   
-  auto dxq2cut = dCOIN_sidis.Filter([x_min](double x){return x>x_min;},{"xbj"})
-                            .Filter([x_max](double x){return x<x_max;},{"xbj"})
-                            .Filter([q2_min](double q2){return q2>q2_min;},{"Q2"})
-                            .Filter([q2_max](double q2){return q2<q2_max;},{"Q2"})
-                            ; 
+//  auto dxq2cut = dCOIN_sidis.Filter([x_min](double x){return x>x_min;},{"xbj"})
+//                            .Filter([x_max](double x){return x<x_max;},{"xbj"})
+//                            .Filter([q2_min](double q2){return q2>q2_min;},{"Q2"})
+//                            .Filter([q2_max](double q2){return q2<q2_max;},{"Q2"})
+//                            ; 
   auto h_xq2 = dCOIN_sidis.Histo2D({"x_Q2","x_Q2",400,0,1,400,0,10},"xbj","Q2");
-    TBox* xq2_box = new TBox(x_min,q2_min,x_max,q2_max);
+//    TBox* xq2_box = new TBox(x_min,q2_min,x_max,q2_max);
     TCanvas* c_xq2 = new TCanvas("x_Q2");
-    h_xq2->DrawCopy();
-    xq2_box->SetFillStyle(0);
-    xq2_box->SetLineColor(kRed);
-    xq2_box->Draw("l");
+    h_xq2->DrawCopy("colz");
+//    xq2_box->SetFillStyle(0);
+//    xq2_box->SetLineColor(kRed);
+//    xq2_box->Draw("l");
     std::string xq2filename = "results/csv_kin/kin_acceptance/x_Q2_"+std::to_string(RunNumber)+".pdf";
     c_xq2->SaveAs(xq2filename.c_str());
  // auto dCOIN_sidis_xq2cut = dCOIN_sidis.Filter("xbj>0.4").Filter("Q2>3.5");
@@ -211,23 +213,23 @@ void kin_acceptance_pos(int RunNumber = 0){
  // std::string shms_prime_filename = "results/csv_kin/kin_acceptance/shms_prime_"+std::to_string(RunNumber)+".pdf";
  // c_shms_prime->SaveAs(shms_prime_filename.c_str());
 
-    auto h_pion_momentum_x = dxq2cut.Histo1D({"pion_p_x","pion momentum x",500,-5,5},"pion_momentum_rotated_x");
-    h_pion_momentum_x->Fit("gaus","0","",-5,5);
+    auto h_pion_momentum_x = dxq2cut.Histo1D({"pion_p_x","pion momentum x",500,-2,2},"pion_momentum_rotated_x");
+    h_pion_momentum_x->Fit("gaus","0","",-2,2);
     TF1 *Fit_x = h_pion_momentum_x->GetFunction("gaus");
     double x_mean = Fit_x->GetParameter(1);
     double x_sigma = Fit_x->GetParameter(2);
     Fit_x->SetLineColor(2);
     Fit_x->SetLineWidth(1);
     Fit_x->SetLineStyle(1);
-    auto h_pion_momentum_y = dxq2cut.Histo1D({"pion_p_y","pion momentum y",500,-5,5},"pion_momentum_rotated_y");
-    h_pion_momentum_y->Fit("gaus","0","",-5,5);
+    auto h_pion_momentum_y = dxq2cut.Histo1D({"pion_p_y","pion momentum y",500,-2,2},"pion_momentum_rotated_y");
+    h_pion_momentum_y->Fit("gaus","0","",-2,2);
     TF1 *Fit_y = h_pion_momentum_y->GetFunction("gaus");
     double y_mean = Fit_y->GetParameter(1);
     double y_sigma = Fit_y->GetParameter(2);
     Fit_y->SetLineColor(2);
     Fit_y->SetLineWidth(1);
     Fit_y->SetLineStyle(1);
-    auto h_pion_momentum_xy = dxq2cut.Histo2D({"pion_p_xy","pion momentum x y",500,-5,5,500,-5,5},"pion_momentum_rotated_x","pion_momentum_rotated_y");
+    auto h_pion_momentum_xy = dxq2cut.Histo2D({"pion_p_xy","pion momentum x y",500,-2,2,500,-2,2},"pion_momentum_rotated_x","pion_momentum_rotated_y");
     TCanvas *c_pion_momentum = new TCanvas();
     c_pion_momentum->Divide(2,2);
     c_pion_momentum->cd(1);
@@ -237,7 +239,7 @@ void kin_acceptance_pos(int RunNumber = 0){
     h_pion_momentum_y->DrawCopy();
     Fit_y->DrawCopy("same");
     c_pion_momentum->cd(3);
-    h_pion_momentum_xy->DrawCopy();
+    h_pion_momentum_xy->DrawCopy("colz");
     
     std::string pion_momentum_name = "results/csv_kin/kin_acceptance/kin_acceptance_"+std::to_string(RunNumber)+".pdf";
     c_pion_momentum->SaveAs(pion_momentum_name.c_str());
@@ -245,13 +247,6 @@ void kin_acceptance_pos(int RunNumber = 0){
     double r1square = n1*n1*x_sigma*x_sigma+n1*n1*y_sigma*y_sigma;
     double r2square = n2*n2*x_sigma*x_sigma+n2*n2*y_sigma*y_sigma;
     double r3square = n3*n3*x_sigma*x_sigma+n3*n3*y_sigma*y_sigma;
-    
-    x_mean = 0.00327536;
-    y_mean = -0.410895;
-    r1square = 0.0112553;
-    r2square = 0.04750211;
-    r3square = 0.101291;
-    
     std::string param_file_name = "results/csv_kin/kin_acceptance/acceptance_param_"+std::to_string(RunNumber)+".txt";
     std::ofstream param_file(param_file_name.c_str());
     param_file<<x_mean<<"    #"<<std::to_string(RunNumber)<<" x mean position"<<std::endl;
@@ -259,7 +254,13 @@ void kin_acceptance_pos(int RunNumber = 0){
     param_file<<r1square<<"     #"<<std::to_string(RunNumber)<<" r1square for cut 1"<<std::endl;
     param_file<<r2square<<"     #"<<std::to_string(RunNumber)<<" r2square for cut 2"<<std::endl;
     param_file<<r3square<<"     #"<<std::to_string(RunNumber)<<" r3square for cut 3"<<std::endl;
-    
+   
+    x_mean = -0.003723;
+    y_mean = -0.411317;
+    r1square = 0.0112319;
+    r2square = 0.0449274;
+    r3square = 0.101087;
+
     auto cut1 = [x_mean,y_mean,r1square](double p_x, double p_y){return (p_x-x_mean)*(p_x-x_mean)+(p_y-y_mean)*(p_y-y_mean)<r1square;};
     auto cut2 = [x_mean,y_mean,r2square](double p_x, double p_y){return (p_x-x_mean)*(p_x-x_mean)+(p_y-y_mean)*(p_y-y_mean)<r2square;};
     auto cut3 = [x_mean,y_mean,r3square](double p_x, double p_y){return (p_x-x_mean)*(p_x-x_mean)+(p_y-y_mean)*(p_y-y_mean)<r3square;};

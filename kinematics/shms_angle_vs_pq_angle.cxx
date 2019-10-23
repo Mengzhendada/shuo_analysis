@@ -52,7 +52,7 @@ void shms_angle_vs_pq_angle(int RunNumber = 0){
     if(RunNumber<=0)
       return;
   }
-  double shms_angle;
+  double shms_angle,hms_angle;
   json j;
   std::string RunNumber_str = std::to_string(RunNumber);
   if(RunNumber<7000){
@@ -63,6 +63,7 @@ void shms_angle_vs_pq_angle(int RunNumber = 0){
     }
     else{
     shms_angle = j[RunNumber_str]["spectrometers"]["shms_angle"].get<double>();
+    hms_angle = j[RunNumber_str]["spectrometers"]["hms_angle"].get<double>();
     }
   }
   else{
@@ -73,10 +74,11 @@ void shms_angle_vs_pq_angle(int RunNumber = 0){
     }
     else{
     shms_angle = j[RunNumber_str]["spectrometers"]["shms_angle"].get<double>();
+    hms_angle = j[RunNumber_str]["spectrometers"]["hms_angle"].get<double>();
     }
   }
-  TVector3 shms_p(-std::sin(shms_angle),0,std::cos(shms_angle));
 
+  std::string c_singles_name = "results/csv_kin/kin_acceptance/angle_difference_singles_"+RunNumber_str+".pdf";
   //prescale
   int ps1 = -1;
   int ps2 = -1;
@@ -92,6 +94,7 @@ void shms_angle_vs_pq_angle(int RunNumber = 0){
   if(ps1 == -1){
     std::cout<<"No shms singles for run "<<RunNumber_str<<"!, use coin type instead"<<std::endl;
     singles_trigger = false;
+    c_singles_name = "results/csv_kin/kin_acceptance/angle_difference_coin_"+RunNumber_str+".pdf";
   }
 
 
@@ -132,9 +135,9 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
   auto h_angle_diff_singles = dpi.Histo1D({"","sin(angle) angle between singles q and shmsp",100,-0.1,0.2},"angle_diff");
   TCanvas *c_angle_diff_singles = new TCanvas();
   h_angle_diff_singles->DrawCopy();
-  std::string c_singles_name = "results/csv_kin/kin_acceptance/angle_difference_"+RunNumber_str+".pdf";
   c_angle_diff_singles->SaveAs(c_singles_name.c_str());
 
+  std::string c_coin_name = "results/csv_kin/kin_acceptance/angle_difference_coin_"+RunNumber_str+".pdf";
   int ps4 = -1;
   singles_trigger = false;
   if(j[RunNumber_str].find("daq") != j[RunNumber_str].end()){
@@ -143,6 +146,7 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
   if(ps4 == -1){
     std::cout<<"No shms coin for run "<<RunNumber_str<<"!, use single type instead"<<std::endl;
     singles_trigger = true;
+    c_coin_name = "results/csv_kin/kin_acceptance/angle_difference_singles_"+RunNumber_str+".pdf";
   }
   auto d_SHMS_coin = d.Filter(singles_trigger ? "fEvtHdr.fEvtType == 1" : "fEvtHdr.fEvtType == 4")
                  .Define("electron_p",electron_momentum,{"H.gtr.px","H.gtr.py","H.gtr.pz"})
@@ -160,7 +164,6 @@ std::string eCut = "P.cal.etottracknorm > 0.80 && P.cal.etottracknorm < 2.&&"
   auto h_angle_diff_coin = dpi.Histo1D({"","sin(angle) angle between coin q and shmsp",100,-0.1,0.2},"angle_diff");
   TCanvas *c_angle_diff_coin = new TCanvas();
   h_angle_diff_coin->DrawCopy();
-  std::string c_coin_name = "results/csv_kin/kin_acceptance/angle_difference_"+RunNumber_str+".pdf";
   c_angle_diff_coin->SaveAs(c_coin_name.c_str());
   
 }

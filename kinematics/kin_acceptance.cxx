@@ -11,6 +11,7 @@
 using json = nlohmann::json;
 #include "TMath.h"
 #include "TVector3.h"
+#include "TRatioPlot.h"
 
 #include <iostream>
 #include <fstream>
@@ -115,6 +116,7 @@ void kin_acceptance(int RunNumber = 0){
     shms_angle = j_spring[std::to_string(RunNumber)]["spectrometers"]["shms_angle"].get<double>();
   }
   TRotation r;
+  r.RotateZ(TMath::Pi()/2);
   r.RotateX(shms_angle*TMath::Pi()/180);
   auto rotate = [r](TVector3 p){return r * p;};
 
@@ -127,7 +129,7 @@ void kin_acceptance(int RunNumber = 0){
   //TFile* rootfile = new TFile(rootfile_name.c_str());
   ROOT::RDataFrame d("T",rootfile_name.c_str());
   auto d_coin = d.Filter("fEvtHdr.fEvtType == 4");
-  auto d_shmssingles. d.Filter("fEvtHdr.fEvtType == 1");
+  auto d_shmssingles = d.Filter("fEvtHdr.fEvtType == 1");
   //  auto d_coin = d;
   //cuts
   std::string goodTrackSHMS = "P.gtr.dp>-10 && P.gtr.dp<22";
@@ -142,7 +144,7 @@ void kin_acceptance(int RunNumber = 0){
   .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
   .Define("p_proton",p_proton, {"P.gtr.px", "P.gtr.py", "P.gtr.pz"})
   .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
-  .Define("pion_momentum",pion_momentum,{"P.gtr.py","P.gtr.px","P.gtr.pz"})
+  .Define("pion_momentum",pion_momentum,{"P.gtr.px","P.gtr.py","P.gtr.pz"})
   .Define("pion_momentum_rotated",rotate,{"pion_momentum"})
   .Define("pion_momentum_rotated_x",[](TVector3 v){return v.X();},{"pion_momentum_rotated"})
   .Define("pion_momentum_rotated_y",[](TVector3 v){return v.Y();},{"pion_momentum_rotated"})
@@ -172,7 +174,7 @@ void kin_acceptance(int RunNumber = 0){
   auto h_xq2 = dCOIN_sidis.Histo2D({"x_Q2","x_Q2",400,0,1,400,0,10},"xbj","Q2");
 //    TBox* xq2_box = new TBox(x_min,q2_min,x_max,q2_max);
     TCanvas* c_xq2 = new TCanvas("x_Q2");
-//    h_xq2->DrawCopy();
+    h_xq2->DrawCopy("colz");
 //    xq2_box->SetFillStyle(0);
 //    xq2_box->SetLineColor(kRed);
 //    xq2_box->Draw("l");
@@ -212,23 +214,23 @@ void kin_acceptance(int RunNumber = 0){
  // std::string shms_prime_filename = "results/csv_kin/kin_acceptance/shms_prime_"+std::to_string(RunNumber)+".pdf";
  // c_shms_prime->SaveAs(shms_prime_filename.c_str());
 
-    auto h_pion_momentum_x = dxq2cut.Histo1D({"pion_p_x","pion momentum x",500,-5,5},"pion_momentum_rotated_x");
-    h_pion_momentum_x->Fit("gaus","0","",-5,5);
+    auto h_pion_momentum_x = dxq2cut.Histo1D({"pion_p_x","pion momentum x",500,-2,2},"pion_momentum_rotated_x");
+    h_pion_momentum_x->Fit("gaus","0","",-2,2);
     TF1 *Fit_x = h_pion_momentum_x->GetFunction("gaus");
     double x_mean = Fit_x->GetParameter(1);
     double x_sigma = Fit_x->GetParameter(2);
     Fit_x->SetLineColor(2);
     Fit_x->SetLineWidth(1);
     Fit_x->SetLineStyle(1);
-    auto h_pion_momentum_y = dxq2cut.Histo1D({"pion_p_y","pion momentum y",500,-5,5},"pion_momentum_rotated_y");
-    h_pion_momentum_y->Fit("gaus","0","",-5,5);
+    auto h_pion_momentum_y = dxq2cut.Histo1D({"pion_p_y","pion momentum y",500,-2,2},"pion_momentum_rotated_y");
+    h_pion_momentum_y->Fit("gaus","0","",-2,2);
     TF1 *Fit_y = h_pion_momentum_y->GetFunction("gaus");
     double y_mean = Fit_y->GetParameter(1);
     double y_sigma = Fit_y->GetParameter(2);
     Fit_y->SetLineColor(2);
     Fit_y->SetLineWidth(1);
     Fit_y->SetLineStyle(1);
-    auto h_pion_momentum_xy = dxq2cut.Histo2D({"pion_p_xy","pion momentum x y",500,-5,5,500,-5,5},"pion_momentum_rotated_x","pion_momentum_rotated_y");
+    auto h_pion_momentum_xy = dxq2cut.Histo2D({"pion_p_xy","pion momentum x y",500,-2,2,500,-2,2},"pion_momentum_rotated_x","pion_momentum_rotated_y");
     TCanvas *c_pion_momentum = new TCanvas();
     c_pion_momentum->Divide(2,2);
     c_pion_momentum->cd(1);
@@ -238,7 +240,7 @@ void kin_acceptance(int RunNumber = 0){
     h_pion_momentum_y->DrawCopy();
     Fit_y->DrawCopy("same");
     c_pion_momentum->cd(3);
-    h_pion_momentum_xy->DrawCopy();
+    h_pion_momentum_xy->DrawCopy("colz");
     
     std::string pion_momentum_name = "results/csv_kin/kin_acceptance/kin_acceptance_"+std::to_string(RunNumber)+".pdf";
     c_pion_momentum->SaveAs(pion_momentum_name.c_str());
@@ -320,6 +322,38 @@ void kin_acceptance(int RunNumber = 0){
     c_xbj->BuildLegend();
     std::string c_xbj_name = "results/csv_kin/kin_acceptance/xbj_cuts_"+std::to_string(RunNumber)+".pdf";
     c_xbj->SaveAs(c_xbj_name.c_str());
+
+    //TCanvas *c_xbj_xq2_cut1 = new TCanvas();
+    //double xq2cut_integral = h_xbj_xq2cut->Integral();
+    //double cut1_integral = h_xbj_cut1->Integral();
+    //double scale = xq2cut_integral/cut1_integral;
+    ////h_xbj_xq2cut->DrawCopy();
+    //h_xbj_cut1->Scale(scale);
+    ////h_xbj_cut1->DrawCopy("same");
+    //auto rp_xbj_xq2_cut1 = new TRatioPlot(h_xbj_xq2cut,h_xbj_cut1);
+    //c_xbj_xq2_cut1->SetTicks(0,1);
+    //rp_xbj_xq2_cut1->Draw();
+    //rp_xbj_xq2_cut1->GetLowerRefGraph()->SetMinimum(0.8);
+    //rp_xbj_xq2_cut1->GetLowerRefGraph()->SetMaximum(1.2);
+    //c_xbj_xq2_cut1->Update();
+    //std::string c_xbj_xq2_cut1_name = "results/csv_kin/kin_acceptance/xbj_xq2cut_cut1_"+std::to_string(RunNumber)+".pdf";
+    //c_xbj_xq2_cut1->SaveAs(c_xbj_xq2_cut1_name.c_str());
+    //
+    //TCanvas *c_xbj_cut3_cut1 = new TCanvas();
+    //double cut3cut_integral = h_xbj_cut3->Integral();
+    //cut1_integral = h_xbj_cut1->Integral();
+    //scale = cut3cut_integral/cut1_integral;
+    ////h_xbj_cut3->DrawCopy();
+    //h_xbj_cut1->Scale(scale);
+    ////h_xbj_cut1->DrawCopy("same");
+    //auto rp_xbj_cut3_cut1 = new TRatioPlot(h_xbj_cut3,h_xbj_cut1);
+    //c_xbj_cut3_cut1->SetTicks(0,1);
+    //rp_xbj_cut3_cut1->Draw();
+    //rp_xbj_cut3_cut1->GetLowerRefGraph()->SetMinimum(0.8);
+    //rp_xbj_cut3_cut1->GetLowerRefGraph()->SetMaximum(1.2);
+    //c_xbj_cut3_cut1->Update();
+    //std::string c_xbj_cut3_cut1_name = "results/csv_kin/kin_acceptance/xbj_cut3_cut1_"+std::to_string(RunNumber)+".pdf";
+    //c_xbj_cut3_cut1->SaveAs(c_xbj_cut3_cut1_name.c_str());
 
     TCanvas *c_q2 = new TCanvas();
     h_q2_xq2cut->SetLineColor(coolcolor[0]);
