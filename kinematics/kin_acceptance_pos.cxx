@@ -115,7 +115,7 @@ void kin_acceptance_pos(int RunNumber = 0){
     shms_angle = j_spring[std::to_string(RunNumber)]["spectrometers"]["shms_angle"].get<double>();
   }
   TRotation r;
-  r.RotateZ(-TMath::Pi()/2);
+  r.RotateZ(TMath::Pi()/2);
   r.RotateX(shms_angle*TMath::Pi()/180);
   auto rotate = [r](TVector3 p){return r * p;};
 
