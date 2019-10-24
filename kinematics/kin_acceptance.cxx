@@ -71,7 +71,7 @@ void kin_acceptance(int Rungroup = 0){
   
   if(Rungroup == 0){
     std::cout<<"Enter a Rungroup (-1 to exit):";
-    std::cin>>RunNumber;
+    std::cin>>Rungroup;
     if(Rungroup<=0)
       return;
   }
@@ -144,9 +144,10 @@ void kin_acceptance(int Rungroup = 0){
       //loop over all neg runs in this run group 
     for(std::vector<int>::iterator it = neg_runs.begin();it!= neg_runs.end();++it){
       int RunNumber = *it;
+      std::cout<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
       //TFile* rootfile = new TFile(rootfile_name.c_str());
-      chain.Add(rootfile_name);    
+      chain.Add(rootfile_name.c_str());    
     }//end of neg runs loop
       //dataframe for the chain of this run group 
       ROOT::RDataFrame d(chain);
@@ -408,12 +409,13 @@ void kin_acceptance(int Rungroup = 0){
       //loop over all neg runs in this run group 
     for(std::vector<int>::iterator it = pos_runs.begin();it!= pos_runs.end();++it){
       int RunNumber = *it;
+      std::cout<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
       //TFile* rootfile = new TFile(rootfile_name.c_str());
-      chain_pos.Add(rootfile_name);    
+      chain_pos.Add(rootfile_name.c_str());    
     }//end of neg runs loop
       //dataframe for the chain of this run group 
-      ROOT::RDataFrame d_pos(chain);
+      ROOT::RDataFrame d_pos(chain_pos);
 
       auto d_coin_pos = d_pos.Filter("fEvtHdr.fEvtType == 4");
       auto d_shmssingles_pos = d_pos.Filter("fEvtHdr.fEvtType == 1");
@@ -471,8 +473,8 @@ void kin_acceptance(int Rungroup = 0){
     c_pion_momentum_pos->cd(3);
     h_pion_momentum_xy_pos->DrawCopy("colz");
     
-    std::string pion_momentum_name = "results/csv_kin/kin_acceptance/kin_pos_acceptance_"+std::to_string(Rungroup)+".pdf";
-    c_pion_momentum->SaveAs(pion_momentum_name.c_str());
+    std::string pion_momentum_name_pos = "results/csv_kin/kin_acceptance/kin_pos_acceptance_"+std::to_string(Rungroup)+".pdf";
+    c_pion_momentum->SaveAs(pion_momentum_name_pos.c_str());
   
     
     auto d_cut1_pos = dxq2cut_pos.Filter(cut1,{"pion_momentum_rotated_x","pion_momentum_rotated_y"});

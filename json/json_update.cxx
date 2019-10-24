@@ -16,7 +16,7 @@ void json_update(){
   using nlohmann::json;
   json j;
   {
-    std::ifstream json_input_file("/group/c-csv/shuo/online_csv/db2/run_list_updated.json");
+    std::ifstream json_input_file("shuo_analysis/dbase/run_list_updated.json");
     json_input_file >> j;
   }
 
@@ -28,9 +28,9 @@ void json_update(){
   //auto runjs = it.value();
     if(std::stoi(it.key())>7593)
     { //std::cout<<it.value()<<std::endl;
-      it.value()["beam_energy"]=10.214;
+      it.value()["run_info"]["beam_energy"]=10.214;
   }
   }
-  std::ofstream o("runlist_updated.json");
-  o<<j<<std::endl;
+  std::ofstream o("run_list_updated.json");
+  o<<j.dump(2)<<std::endl;
 }
