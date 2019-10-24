@@ -115,7 +115,7 @@ void kin_acceptance_pos(int RunNumber = 0){
     shms_angle = j_spring[std::to_string(RunNumber)]["spectrometers"]["shms_angle"].get<double>();
   }
   TRotation r;
-  r.RotateZ(TMath::Pi()/2);
+  r.RotateZ(-TMath::Pi()/2);
   r.RotateX(shms_angle*TMath::Pi()/180);
   auto rotate = [r](TVector3 p){return r * p;};
 
@@ -255,11 +255,11 @@ void kin_acceptance_pos(int RunNumber = 0){
     param_file<<r2square<<"     #"<<std::to_string(RunNumber)<<" r2square for cut 2"<<std::endl;
     param_file<<r3square<<"     #"<<std::to_string(RunNumber)<<" r3square for cut 3"<<std::endl;
    
-    x_mean = -0.003723;
-    y_mean = -0.411317;
-    r1square = 0.0112319;
-    r2square = 0.0449274;
-    r3square = 0.101087;
+    x_mean = 0.00155114;
+    y_mean = -0.0120576;
+    r1square = 0.002404;
+    r2square = 0.00961601;
+    r3square = 0.021636;
 
     auto cut1 = [x_mean,y_mean,r1square](double p_x, double p_y){return (p_x-x_mean)*(p_x-x_mean)+(p_y-y_mean)*(p_y-y_mean)<r1square;};
     auto cut2 = [x_mean,y_mean,r2square](double p_x, double p_y){return (p_x-x_mean)*(p_x-x_mean)+(p_y-y_mean)*(p_y-y_mean)<r2square;};
@@ -292,22 +292,22 @@ void kin_acceptance_pos(int RunNumber = 0){
     auto h_xbj_xq2cut = dxq2cut.Histo1D({"xbj_xq2cut","xfor selected x_q2 region",100,0,1},"xbj");
     auto h_q2_xq2cut = dxq2cut.Histo1D({"q2_xq2cut","Q2 for selected x_q2 region",100,0,10},"Q2");
     auto h_Wprime_xq2cut = dxq2cut.Histo1D({"Wprime_xq2cut","W prime for selected x_q2 region",100,-10,0},"Wp2");
-    auto h_z_xq2cut = dxq2cut.Histo1D({"z_xq2cut","z for selected x_q2_region",100,0,3},"z");
+    auto h_z_xq2cut = dxq2cut.Histo1D({"z_xq2cut","z for selected x_q2_region",100,0,1},"z");
 
     auto h_xbj_cut1 = d_cut1.Histo1D({"xbj_cut1","x after cut1",100,0,1},"xbj");
     auto h_q2_cut1 = d_cut1.Histo1D({"q2_cut1","Q2 after cut1",100,0,10},"Q2");
     auto h_Wprime_cut1 = d_cut1.Histo1D({"Wprime_cut1","W prime after cut1",100,-10,0},"Wp2");
-    auto h_z_cut1 = d_cut1.Histo1D({"z_cut1","z after cut1",100,0,3},"z");
+    auto h_z_cut1 = d_cut1.Histo1D({"z_cut1","z after cut1",100,0,1},"z");
     
     auto h_xbj_cut2 = d_cut2.Histo1D({"xbj_cut2","x after cut2",100,0,1},"xbj");
     auto h_q2_cut2 = d_cut2.Histo1D({"q2_cut2","Q2 after cut2",100,0,10},"Q2");
     auto h_Wprime_cut2 = d_cut2.Histo1D({"Wprime_cut2","W prime after cut2",100,-10,0},"Wp2");
-    auto h_z_cut2 = d_cut2.Histo1D({"z_cut2","z after cut2",100,0,3},"z");
+    auto h_z_cut2 = d_cut2.Histo1D({"z_cut2","z after cut2",100,0,1},"z");
 
     auto h_xbj_cut3 = d_cut3.Histo1D({"xbj_cut3","x after cut3",100,0,1},"xbj");
     auto h_q2_cut3 = d_cut3.Histo1D({"q2_cut3","Q2 after cut3",100,0,10},"Q2");
     auto h_Wprime_cut3 = d_cut3.Histo1D({"Wprime_cut3","W prime after cut3",100,-10,0},"Wp2");
-    auto h_z_cut3 = d_cut3.Histo1D({"z_cut3","z after cut3",100,0,3},"z");
+    auto h_z_cut3 = d_cut3.Histo1D({"z_cut3","z after cut3",100,0,1},"z");
 
     std::string kin_rootfile_name = "results/csv_kin/kin_acceptance/kin_rootfile_"+std::to_string(RunNumber)+".root";
     TFile *kin_rootfile = new TFile(kin_rootfile_name.c_str(),"RECREATE");
