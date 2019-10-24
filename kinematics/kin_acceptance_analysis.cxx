@@ -6,14 +6,17 @@
 #include <vector>
 #include "TRatioPlot.h"
 
-void kin_acceptance_analysis(){
-int group_neg_first[4] = {6111,6115,6124,6136};
-int group_pos_first[4] = {6145,6170,6178,6185};
+void kin_acceptance_analysis(int Rungroup=0){
 
-int run1 = 6136;
-int run2 = 6185;
-std::string root_file_neg_name = "results/csv_kin/kin_acceptance/kin_rootfile_"+std::to_string(run1)+".root";
-std::string root_file_pos_name = "results/csv_kin/kin_acceptance/kin_rootfile_"+std::to_string(run2)+".root";
+if(Rungroup ==0){
+  std::cout<<"Enter a Rungroup (-1 to exit):";
+  std::cin>>Rungroup;
+  if(Rungroup<=0)
+    return;
+}
+
+std::string root_file_neg_name = "results/csv_kin/kin_acceptance/kin_neg_rootfile_"+std::to_string(run1)+".root";
+std::string root_file_pos_name = "results/csv_kin/kin_acceptance/kin_pos_rootfile_"+std::to_string(run2)+".root";
 TFile *root_file_neg = new TFile(root_file_neg_name.c_str());
 TFile *root_file_pos = new TFile(root_file_pos_name.c_str());
 double neg_xbj_integral, pos_xbj_integral,scale_xbj;
