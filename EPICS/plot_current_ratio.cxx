@@ -605,8 +605,8 @@ void plot_current_ratio(){
     
     TCanvas* c_average = new TCanvas("",current.c_str(),1900,1000);
     Graph_D2_average->Draw("ap");
-    std::string average_name = current + "_average";
-    Graph_D2_average->Write(average_name.c_str());
+    std::string average_name_root = current + "_average";
+    Graph_D2_average->Write(average_name_root.c_str());
     std::string average_name = "results/currentplot/"+current +".pdf";
     c_average->SaveAs(average_name.c_str());
   
