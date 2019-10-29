@@ -571,8 +571,8 @@ void plot_current_ratio(){
     // char outname = "currentplot/"+current+".pdf";
     //c->SaveAs(fmt::format("results/plot_current_ratio/{}.pdf", current).c_str());
     //c->SaveAs(fmt::format("results/plot_current_ratio/{}.png", current).c_str());
-    std::string pdfname = "results/currentplot/"+current+".pdf";
-    std::string pngname = "results/currentplot/"+current+".png";
+    std::string pdfname = "results/currentplot/"+current+"_all.pdf";
+    std::string pngname = "results/currentplot/"+current+"_all.png";
     c->SaveAs(pdfname.c_str());
     c->SaveAs(pngname.c_str());
     //root->Close();
@@ -602,7 +602,14 @@ void plot_current_ratio(){
     legend_2->SetHeader(current.c_str(),"C");
     gPad->Update();
     gPad->Write(name.c_str());
-
+    
+    TCanvas* c_average = new TCanvas("",current.c_str(),1900,1000);
+    Graph_D2_average->Draw("ap");
+    std::string average_name = current + "_average";
+    Graph_D2_average->Write(average_name.c_str());
+    std::string average_name = "results/currentplot/"+current +".pdf";
+    c_average->SaveAs(average_name.c_str());
+  
   }
   root->Close();
 }

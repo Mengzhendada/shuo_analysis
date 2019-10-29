@@ -455,7 +455,7 @@ void kin_acceptance(int Rungroup = 0){
       //    xq2_box->SetFillStyle(0);
       //    xq2_box->SetLineColor(kRed);
       //    xq2_box->Draw("l");
-      std::string xq2filename_pos = "results/csv_kin/kin_acceptance/x_Q2_pos_"+std::to_string(RunNumber)+".pdf";
+      std::string xq2filename_pos = "results/csv_kin/kin_acceptance/x_Q2_pos_"+std::to_string(Rungroup)+".pdf";
       c_xq2_pos->SaveAs(xq2filename_pos.c_str());
 
     std::cout<<*dxq2cut_pos.Count()<<std::endl;
@@ -474,7 +474,7 @@ void kin_acceptance(int Rungroup = 0){
     h_pion_momentum_xy_pos->DrawCopy("colz");
     
     std::string pion_momentum_name_pos = "results/csv_kin/kin_acceptance/kin_pos_acceptance_"+std::to_string(Rungroup)+".pdf";
-    c_pion_momentum->SaveAs(pion_momentum_name_pos.c_str());
+    c_pion_momentum_pos->SaveAs(pion_momentum_name_pos.c_str());
   
     
     auto d_cut1_pos = dxq2cut_pos.Filter(cut1,{"pion_momentum_rotated_x","pion_momentum_rotated_y"});
