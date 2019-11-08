@@ -115,6 +115,6 @@ void yield_kinematics_runs(int RunNumber=0){
   h_xbj->Write();
   auto h_z = d_Coin_sidis.Histo1D({"z","z;z;yield",100,0,1},"z");
   h_z->Scale(1/charge);
-  h_xbj->Write();
+  h_z->Write();
   rootfile_out->Close();
 }
