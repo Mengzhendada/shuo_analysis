@@ -1,3 +1,19 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <istream>
+#include <vector>
+#include <cmath>
+#include <ios>
+#include <iosfwd>
+#include <iomanip>
+#include <streambuf>
+
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+using namespace std;
+
 #include "ROOT/RDataFrame.hxx"
 #include "TCanvas.h"
 #include "TChain.h"
@@ -8,14 +24,6 @@
 #include "ROOT/RVec.hxx"
 #include "TVector3.h"
 
-#include "nlohmann/json.hpp"
-using json = nlohmann::json;
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
 
 constexpr const double M_P     = 0.938272;
 constexpr const double M_P2    = M_P * M_P;
@@ -67,12 +75,15 @@ auto W2 = [](Pvec4D& pq) {
 std::string goodTrackSHMS = "P.gtr.dp>-10 && P.gtr.dp<22";
 std::string goodTrackHMS = "H.gtr.dp>-10 && H.gtr.dp<10";
 
-std::string piCutSHMS = "P.aero.npeSum >1.0 && P.cal.eprtracknorm <0.2 && P.cal.etottracknorm<1.0";
+std::string piCutSHMS = " P.cal.eprtracknorm <0.2 && P.cal.etottracknorm<0.6";
+std::string hgcerCutSHMS = " P.hgcer.npeSum>1.0 ";
+std::string aeroCutSHMS = " P.aero.npeSum >1.0 ";
+bool shms_momentum_high = true;
 std::string eCutHMS = "H.cal.etottracknorm >0.8 && H.cal.etottracknorm <2. && "
                        "H.cer.npeSum > 1.";
-std::string epiCut = "P.aero.npeSum > 1.0 && P.cal.eprtracknorm <0.2 && "
-                     "H.cer.npeSum > 1.0 && H.cal.etottracknorm > 0.6 && "
-                     "H.cal.etottracknorm < 2.0 && P.cal.etottracknorm <1.0";
+//std::string epiCut = "P.aero.npeSum > 1.0 && P.cal.eprtracknorm <0.2 && "
+//                     "H.cer.npeSum > 1.0 && H.cal.etottracknorm > 0.6 && "
+//                     "H.cal.etottracknorm < 2.0 && P.cal.etottracknorm <1.0";
 
 void yield_kinematics_runs(int RunNumber=0){
   
@@ -82,7 +93,21 @@ void yield_kinematics_runs(int RunNumber=0){
     if(RunNumber<=0)
       return;
   }
- 
+
+  //json j_file;
+  //if(RunNumber <7000){
+  //  std::ifstream infile;
+  //  infile.open("db2/run_list.json");
+  //  infile>>j_file;
+  //}
+  //
+  //double shms_p = j_file[std::to_string(RunNumber)]["spectrometers"]["shms_momentum"].get<double>();
+  ////double shms_p = 3.22;
+  //std::cout<<shms_p<<std::endl;
+  //if(shms_p<2.7){
+  //  shms_momentum_high = false;
+  //}
+
   std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
   ROOT::RDataFrame d("T",rootfile_name);
   ROOT::RDataFrame d_scale("TSP",rootfile_name);
@@ -93,7 +118,9 @@ void yield_kinematics_runs(int RunNumber=0){
   auto d_CoinGoodTrack = d_coin.Filter(goodTrackHMS)
   .Filter(goodTrackSHMS)
   ;
-  auto d_Coin_sidis = d_CoinGoodTrack.Filter(epiCut)
+  auto d_Coin_sidis = d_CoinGoodTrack.Filter(piCutSHMS)
+      .Filter(eCutHMS)
+//      .Filter(shms_momentum_high ? hgcerCutSHMS : aeroCutSHMS)
       .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
       .Define("p_proton",p_proton, {"P.gtr.px", "P.gtr.py", "P.gtr.pz"})
       .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
@@ -107,14 +134,19 @@ void yield_kinematics_runs(int RunNumber=0){
       .Define("W","std::sqrt(W2)")
       .Define("Wp","std::sqrt(Wp2)")
       ;
-    
+ 
+  auto d_hgcer = d_Coin_sidis.Filter(hgcerCutSHMS);
+  auto d_aero = d_Coin_sidis.Filter(aeroCutSHMS);
   std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
   TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
-  auto h_xbj = d_Coin_sidis.Histo1D({"xbj","xbj;xbj;yield",100,0,1},"xbj");
-  h_xbj->Scale(1/charge);
-  h_xbj->Write();
-  auto h_z = d_Coin_sidis.Histo1D({"z","z;z;yield",100,0,1},"z");
-  h_z->Scale(1/charge);
-  h_z->Write();
+  auto h_xbj_hgcer = d_hgcer.Histo1D({"xbj_hgcer","xbj;xbj;yield",100,0,1},"xbj");
+  h_xbj_hgcer->Write();
+  auto h_z_hgcer = d_hgcer.Histo1D({"z_hgcer","z;z;yield",100,0,1},"z");
+  h_z_hgcer->Write();
+  auto h_xbj_aero = d_aero.Histo1D({"xbj_aero","xbj;xbj;yield",100,0,1},"xbj");
+  h_xbj_aero->Write();
+  auto h_z_aero = d_aero.Histo1D({"z_aero","z;z;yield",100,0,1},"z");
+  h_z_aero->Write();
+
   rootfile_out->Close();
 }

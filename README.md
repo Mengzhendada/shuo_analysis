@@ -70,3 +70,8 @@ Target_fluid_property: H2 and D2 property from NIST
 
 `kin_acceptance_analysis.cxx`: read kinematics from kin_acceptance.cxx output and compare
 
+#HMS_Cal_calib_param process
+pid/HMS_cal_runs.cxx: fit e/p peak for each runs and save in hms_cal.txt file
+json/txt_json.cxx: convert hms_cal.txt to hms_cal.json
+pid/HMS_cal_plots.cxx: from hms_cal.json plot two graph mean and sigma
+pid/HMS_cal_performance: tooooo slow plot two graph
