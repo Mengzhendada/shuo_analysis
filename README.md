@@ -70,8 +70,17 @@ Target_fluid_property: H2 and D2 property from NIST
 
 `kin_acceptance_analysis.cxx`: read kinematics from kin_acceptance.cxx output and compare
 
+#Yield
+Yield/ statictics for all runs with rough pid cutsds
+
 #HMS_Cal_calib_param process
 pid/HMS_cal_runs.cxx: fit e/p peak for each runs and save in hms_cal.txt file
 json/txt_json.cxx: convert hms_cal.txt to hms_cal.json
 pid/HMS_cal_plots.cxx: from hms_cal.json plot two graph mean and sigma
 pid/HMS_cal_performance: tooooo slow plot two graph
+
+#HMS_PID e efficiency and pion rejection factor
+pid/HMS_cuts.json: cuts that used to get statistics
+pid/HMS_PID_RunGroup_cercut.cxx: get statistics from raw data file for cerkov detector for each run group and save to json file
+pid/HMS_PID_RunGroup_calcut.cxx: get statistics from raw data files for calorimeter detector for each run group and save to json file
+pid/HMS_PID_plots.cxx: Plot the graphs that lead to e efficiency and pion rejection factor
