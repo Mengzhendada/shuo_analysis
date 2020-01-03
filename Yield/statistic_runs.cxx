@@ -63,6 +63,6 @@ void statistic_runs(){
     jout[it.key()]["nentries"] = entries;
   jout[it.key()]["charge"] = charge;
   }
- std::ofstream outfile("results/statistics_run.json");
+ std::ofstream outfile("results/statistics/statistics_run.json");
  outfile<<jout.dump(4)<<std::endl;
 }

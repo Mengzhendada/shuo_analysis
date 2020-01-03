@@ -21,7 +21,7 @@ void statistic_kin(){
   }
   json j_info;
   {
-    std::ifstream runs("results/statistics_run.json");
+    std::ifstream runs("results/statistics/statistics_run.json");
     runs>>j_info;
   }
 
