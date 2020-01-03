@@ -100,7 +100,7 @@ void statistic_kin(){
       g_charge_neg->SetTitle("pi-");
       mg_charge->Add(g_charge_neg,"p");
       g_charge_pos->SetMarkerStyle(21);
-      g_charge_pos->SetMarkerColor(3);
+      g_charge_pos->SetMarkerColor(4);
       g_charge_pos->SetTitle("pi+");
       mg_charge->Add(g_charge_pos,"p");
       //mg_charge->SetTitle(title.c_str());
@@ -114,7 +114,7 @@ void statistic_kin(){
       g_counts_neg->SetTitle("pi-");
       mg_counts->Add(g_counts_neg,"p");
       g_counts_pos->SetMarkerStyle(21);
-      g_counts_pos->SetMarkerColor(3);
+      g_counts_pos->SetMarkerColor(4);
       g_counts_pos->SetTitle("pi+");
       mg_counts->Add(g_counts_pos,"p");
       //mg_counts->SetTitle(title.c_str());
@@ -128,7 +128,7 @@ void statistic_kin(){
       g_yield_neg->SetTitle("pi-");
       mg_yield->Add(g_yield_neg,"p");
       g_yield_pos->SetMarkerStyle(21);
-      g_yield_pos->SetMarkerColor(3);
+      g_yield_pos->SetMarkerColor(4);
       g_yield_pos->SetTitle("pi+");
       mg_yield->Add(g_yield_pos,"p");
       //mg_yield->SetTitle(title.c_str());
