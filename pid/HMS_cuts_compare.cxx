@@ -41,6 +41,12 @@ void HMS_cuts_compare(int RunGroup = 0){
     std::ifstream infile(infilename.c_str());
     infile>>j_cer;
   }
+  json j_cuts;
+  {
+    std::string infilename = "shuo_analysis/pid/HMS_cuts.json";
+    std::ifstream infile(infilename.c_str());
+    infile>>j_cuts;
+  }
   
   //calorimeter neg runs part
   TGraph *g_cal_neg_e = new TGraph();
@@ -66,7 +72,8 @@ void HMS_cuts_compare(int RunGroup = 0){
   cal_neg_e = j_cal[(std::to_string(RunGroup)).c_str()]["pos_c"]["e"].get<std::vector<double>>();
   cal_neg_pion = j_cal[(std::to_string(RunGroup)).c_str()]["pos_c"]["pi"].get<std::vector<double>>();
   int n_cal_cuts = (int)cal_neg_e.size();
-  std::vector<double> cal_cut = {0.6,0.65,0.7,0.75,0.8,0.85};
+  std::vector<double> cal_cut = j_cuts["cal_cuts"].get<std::vector<double>>(); 
+  //std::vector<double> cal_cut = {0.6,0.65,0.7,0.75,0.8,0.85};
   for(int i = 0;i<n_cal_cuts;++i){
     double e_eff = cal_neg_e[i]/cal_neg_e_all;
     g_cal_neg_e->SetPoint(i,cal_cut[i],e_eff);
@@ -242,7 +249,8 @@ void HMS_cuts_compare(int RunGroup = 0){
   cer_neg_e = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["e"].get<std::vector<double>>();
   cer_neg_pion = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["pi"].get<std::vector<double>>();
   int n_cer_cuts = (int)cer_neg_e.size();
-  std::vector<double> cer_cut = {5,6,7,8,9,10};
+  std::vector<double> cer_cut = j_cuts["cer_cuts"].get<std::vector<double>>();
+  //std::vector<double> cer_cut = {5,6,7,8,9,10};
   for(int i = 0;i<n_cer_cuts;++i){
     double e_eff = cer_neg_e[i]/cer_neg_e_all;
     g_cer_neg_e->SetPoint(i,cer_cut[i],e_eff);

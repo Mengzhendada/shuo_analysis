@@ -12,7 +12,10 @@ using json = nlohmann::json;
 #include "TF1.h"
 #include "TGraphErrors.h"
 #include "TLine.h"
+#include "TH2.h"
 
+void ReverseXAxis(TH2 *h);
+void ReverseYAxis(TH2 *h);
 void HMS_PID_plots(int RunGroup = 0){
   json j_cuts;
   {
@@ -65,11 +68,12 @@ void HMS_PID_plots(int RunGroup = 0){
     double e_cercut = j_cuts["cer_e"].get<double>();
     double pion_cercut = j_cuts["cer_pi"].get<double>();
     double e_calcut_low = j_cuts["cal_e"].get<double>();
-    double pion_calcut = j_cuts["cal_pi"].get<double>();
+    double pion_calcut_high = j_cuts["cal_pi_high"].get<double>();
+    double pion_calcut_low = j_cuts["cal_pi_low"].get<double>();
     std::string e_cer_cut = "H.cer.npeSum > "+std::to_string(e_cercut);
     std::string pion_cer_cut = "H.cer.npeSum < "+std::to_string(pion_cercut);
     std::string e_cal_cut = std::to_string(e_calcut_low)+" < H.cal.etottracknorm";
-    std::string pion_cal_cut = "H.cal.etottracknorm < "+std::to_string(pion_calcut);
+    std::string pion_cal_cut = "H.cal.etottracknorm > "+std::to_string(pion_calcut_low)+ " && H.cal.etottracknorm < "+std::to_string(pion_calcut_high);
   auto d_neg_e_cercut = d_neg.Filter(e_cer_cut); 
   auto d_neg_pion_cercut = d_neg.Filter(pion_cer_cut);
   auto d_pos_e_cercut = d_pos.Filter(e_cer_cut);
@@ -109,7 +113,7 @@ void HMS_PID_plots(int RunGroup = 0){
     c_neg->cd(4);
     h_neg->Draw("hist");
     h_neg_pion_cercut->Draw("hist same");
-    std::string neg_canvasname  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"_neg.pdf";
+    std::string neg_canvasname  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cal_neg.pdf";
     c_neg->SaveAs(neg_canvasname.c_str());
 
     auto h_pos = d_pos.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"H.cal.etottracknorm");
@@ -133,7 +137,7 @@ void HMS_PID_plots(int RunGroup = 0){
     c_pos->cd(4);
     h_pos->Draw("hist");
     h_pos_pion_cercut->Draw("hist same");
-    std::string pos_canvasname  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"_pos.pdf";
+    std::string pos_canvasname  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cal_pos.pdf";
     c_pos->SaveAs(pos_canvasname.c_str());
 
   
@@ -188,7 +192,22 @@ void HMS_PID_plots(int RunGroup = 0){
     h_pos_pion_calcut->Draw("hist same");
     std::string pos_canvasname_cer  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cer_pos.pdf";
     c_pos_cer->SaveAs(pos_canvasname_cer.c_str());
-   
+    
+    TCanvas *c_neg_lego = new TCanvas();
+    double npeSum_uplimit = 30;
+    auto d_neg_lego = d_neg.Filter("H.cal.etottracknorm>0.00001")
+      .Filter("H.cer.npeSum>0.001")
+    //.Define("reverse_npeSum",[npeSum_uplimit](double npeSum){return npeSum_uplimit-npeSum;},{"H.cer.npeSum"})
+    ;
+    TH2D* h_neg_cal_cer_lego = new TH2D(*d_neg_lego.Histo2D({"pi-","cal_cer",100,0,1.5,100,0,npeSum_uplimit},"H.cal.etottracknorm","H.cer.npeSum").GetPtr());
+    gStyle->SetPalette(kBird);
+    //TVirtualPad *pad_neg_lego = c_neg_lego->cd();
+    //pad_neg_lego->SetLogz();
+    h_neg_cal_cer_lego->Draw("LEGO2Z");
+    //ReverseYAxis(h_neg_cal_cer_lego);
+    std::string c_neg_lego_name = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"_lego.pdf";
+    c_neg_lego->SaveAs(c_neg_lego_name.c_str());
+    return c_neg_lego;
 
 //   auto h_neg_e_cercut_1 = d_neg.Filter("H.cer.npeSum > 5").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
 //   auto h_neg_e_cercut_2 = d_neg.Filter("H.cer.npeSum > 6").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
@@ -274,4 +293,39 @@ void HMS_PID_plots(int RunGroup = 0){
 }
 
 
+void ReverseXAxis (TH2 *h)
+{
+  // Remove the current axis
+  h->GetXaxis()->SetLabelOffset(999);
+  h->GetXaxis()->SetTickLength(0);
 
+  // Redraw the new axis 
+  gPad->Update();
+  TGaxis *newaxis = new TGaxis(gPad->GetUxmax(), 
+      gPad->GetUymin(),
+      gPad->GetUxmin(),
+      gPad->GetUymin(),
+      h->GetXaxis()->GetXmin(),
+      h->GetXaxis()->GetXmax(),
+      510,"-");
+  newaxis->SetLabelOffset(-0.03);
+  newaxis->Draw();
+}
+void ReverseYAxis (TH2 *h)
+{
+  // Remove the current axis
+  h->GetYaxis()->SetLabelOffset(999);
+  h->GetYaxis()->SetTickLength(0);
+
+  // Redraw the new axis
+  gPad->Update();
+  TGaxis *newaxis = new TGaxis(gPad->GetUxmin(),
+      gPad->GetUymax(),
+      gPad->GetUxmin()-0.001,
+      gPad->GetUymin(),
+      h->GetYaxis()->GetXmin(),
+      h->GetYaxis()->GetXmax(),
+      510,"+");
+  newaxis->SetLabelOffset(-0.03);
+  newaxis->Draw();
+}
