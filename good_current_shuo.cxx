@@ -37,8 +37,8 @@ void good_current_shuo(int RunNumber = 0){
   gPad->Print("current_time.pdf");
 
   //auto h_evNumber = d_scaler.Histo1D({"evNumber","",100,0,})
-  auto scaler_current_list = d_scaler_good.Take<double>("P.BCM4B.scalerCurrent"); 
-  auto scaler_event_list = d_scaler_good.Take<double>("evNumber");
+  auto scaler_current_list = d_scaler.Take<double>("P.BCM4B.scalerCurrent"); 
+  auto scaler_event_list = d_scaler.Take<double>("evNumber");
   
   //for (auto it = scaler_current_list->begin();it!=scaler_current_list->end();++it){
   //  int eventNumber = scaler_event_list->at(it-scaler_current_list->begin());
