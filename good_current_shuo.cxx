@@ -37,17 +37,28 @@ void good_current_shuo(int RunNumber = 0){
   gPad->Print("current_time.pdf");
 
   //auto h_evNumber = d_scaler.Histo1D({"evNumber","",100,0,})
-  
+  auto scaler_current_list = d_scaler_good.Take<double>("P.BCM4B.scalerCurrent"); 
   auto scaler_event_list = d_scaler_good.Take<double>("evNumber");
-  //auto 
-  int i_true= 0;
-  for (auto it = has_good_current_list->begin();it!=has_good_current_list->end();++it){
-    int eventNumber = scaler_event_list->at(it-has_good_current_list->begin());
-    std::cout<<"for event "<<eventNumber <<" it's "<<*it<<std::endl;
-    if(*it){++i_true;}
+  
+  //for (auto it = scaler_current_list->begin();it!=scaler_current_list->end();++it){
+  //  int eventNumber = scaler_event_list->at(it-scaler_current_list->begin());
+  //  std::cout<<"for event "<<eventNumber <<" it's "<<*it<<std::endl;
+  //}
+
+  double get_current = [&](int eventNum){
+    int i=0;
+    while(eventNum>scaler_event_list[i]){
+    ++i;
+    }
+    return scaler_current_list[i];
   }
-  std::cout<<" true events "<<i_true<<std::endl;
 
+  auto d_events_current = d_events.Define("current",get_current,{"fEvtHdr.fEvtNum"});
 
+  auto h_event_current = d_events_current.Histo1D({"","",1000,0,100},"current");
+  TCanvas* c_event_current = new TCanvas();
+  h_event_current->SetMarkerStyle(8);
+  h_event_current->DrawClone();
+  c_event_current->SaveAs("event_current.pdf");
 }
 
