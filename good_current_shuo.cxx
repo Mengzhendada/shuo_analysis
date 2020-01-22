@@ -37,12 +37,6 @@ void good_current_shuo(int RunNumber = 0){
 
   //auto h_evNumber = d_scaler.Histo1D({"evNumber","",100,0,})
   
-  auto d_scaler_good = d_scaler.Define("has_good_current",[=](double current){
-      return (fabs(current - target_current) < current_tolerance);
-      },
-      {"P.BCM4B.scalerCurrent"});
-
-  auto has_good_current_list = d_scaler_good.Take<bool>("has_good_current");
   auto scaler_event_list = d_scaler_good.Take<double>("evNumber");
   //auto 
   //int i_true= 0;
@@ -52,6 +46,7 @@ void good_current_shuo(int RunNumber = 0){
   //  if(*it){++i_true;}
   //}
   //std::cout<<" true events "<<i_true<<std::endl;
+
 
 }
 
