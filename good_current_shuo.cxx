@@ -32,6 +32,7 @@ void good_current_shuo(int RunNumber = 0){
   std::cout << "Setting tolerance to to +/- " << current_tolerance << "uA\n";
   
   auto h_current_time = d_scaler.Histo2D({"current vs. time", "",1000,0,3000,1000,0,100},"P.1MHz.scalerTime","P.BCM4B.scalerCurrent");
+  h_current_time->SetMarkerStyle(8);
   h_current_time->DrawClone();
   gPad->Print("current_time.pdf");
 
@@ -45,13 +46,13 @@ void good_current_shuo(int RunNumber = 0){
   auto has_good_current_list = d_scaler_good.Take<bool>("has_good_current");
   auto scaler_event_list = d_scaler_good.Take<double>("evNumber");
   //auto 
-  //int i_true= 0;
-  //for (auto it = has_good_current_list->begin();it!=has_good_current_list->end();++it){
-  //  int eventNumber = scaler_event_list->at(it-has_good_current_list->begin());
-  //  std::cout<<"for event "<<eventNumber <<" it's "<<*it<<std::endl;
-  //  if(*it){++i_true;}
-  //}
-  //std::cout<<" true events "<<i_true<<std::endl;
+  int i_true= 0;
+  for (auto it = has_good_current_list->begin();it!=has_good_current_list->end();++it){
+    int eventNumber = scaler_event_list->at(it-has_good_current_list->begin());
+    std::cout<<"for event "<<eventNumber <<" it's "<<*it<<std::endl;
+    if(*it){++i_true;}
+  }
+  std::cout<<" true events "<<i_true<<std::endl;
 
 }
 
