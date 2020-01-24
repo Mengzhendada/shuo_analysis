@@ -24,17 +24,19 @@ void good_current_shuo(int RunNumber = 0){
 
   auto h_current = d_scaler.Histo1D({"current","",10000,10,100},"P.BCM4B.scalerCurrent");
   double target_current = h_current->GetBinCenter(h_current->GetMaximumBin());
-  double current_tolerance = 3;
+  double current_offset = 0.8; 
+  TCanvas* c_current = new TCanvas();
   h_current->DrawClone();
-  gPad->Print("current.pdf");
+  c_current->SaveAs("current.pdf");
   std::cout << "Most prevalent current in this run is: " << target_current
             << "uA\n";
-  std::cout << "Setting tolerance to to +/- " << current_tolerance << "uA\n";
+  std::cout << "Setting current offset at  " << current_offset*target_current << "uA\n";
   
   auto h_current_time = d_scaler.Histo2D({"current vs. time", "",1000,0,3000,1000,0,100},"P.1MHz.scalerTime","P.BCM4B.scalerCurrent");
+  TCanvas *c_current_time = new TCanvas;
   h_current_time->SetMarkerStyle(8);
   h_current_time->DrawClone();
-  gPad->Print("current_time.pdf");
+  c_current_time->SaveAs("current_time.pdf");
 
   //auto h_evNumber = d_scaler.Histo1D({"evNumber","",100,0,})
   auto scaler_current_list = d_scaler.Take<double>("P.BCM4B.scalerCurrent"); 
@@ -45,13 +47,14 @@ void good_current_shuo(int RunNumber = 0){
   //  std::cout<<"for event "<<eventNumber <<" it's "<<*it<<std::endl;
   //}
 
-  double get_current = [&](int eventNum){
+  auto get_current = [&](unsigned int eventNum){
     int i=0;
-    while(eventNum>scaler_event_list[i]){
+    while(eventNum>scaler_event_list->at(i)){
     ++i;
     }
-    return scaler_current_list[i];
-  }
+    //std::cout<<scaler_current_list->at(i)<<std::endl;
+    return scaler_current_list->at(i);
+  };
 
   auto d_events_current = d_events.Define("current",get_current,{"fEvtHdr.fEvtNum"});
 
@@ -59,6 +62,19 @@ void good_current_shuo(int RunNumber = 0){
   TCanvas* c_event_current = new TCanvas();
   h_event_current->SetMarkerStyle(8);
   h_event_current->DrawClone();
-  c_event_current->SaveAs("event_current.pdf");
+  c_event_current->SaveAs("current.pdf");
+
+  auto event_current = d_events_current.Graph("fEvtHdr.fEvtNum","current");
+  std::string good_current = "current >= "+std::to_string(current_offset*target_current);
+  std::cout<<good_current<<std::endl;
+  auto event_current_good = d_events_current.Filter(good_current).Graph("fEvtHdr.fEvtNum","current");
+  TCanvas* c_graph = new TCanvas();
+  event_current->SetMarkerStyle(8);
+  event_current->Draw("ap");
+  event_current_good->SetMarkerStyle(8);
+  event_current_good->SetMarkerColor(2);
+  event_current_good->Draw("p same");
+  c_graph->SaveAs("event_current.pdf");
+
 }
 
