@@ -70,7 +70,7 @@ void plot_kinematic_kin_group(){
         TH2F *h_pos_all = new TH2F(name_neg.c_str(),name_neg.c_str(),400,0,1,400,0,10);
         h_pos_all->GetXaxis()->SetTitle("x");
         h_pos_all->GetYaxis()->SetTitle("Q2");
-        TH2F *h_neg_all = new TH2F(name_pos.c_str(),name_pos.c_str(),400,0,1,400,0,10);
+        TH2F *h_neg_all = new TH2F(name_pos.c_str(),name_pos.c_str(),10,0,1,10,0,10);
         h_neg_all->GetXaxis()->SetTitle("x");
         h_neg_all->GetYaxis()->SetTitle("Q2");
         // std::cout<<i<<std::endl;
