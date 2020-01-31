@@ -287,13 +287,23 @@ void HMS_cer_pion(int RunGroup = 0){
     l_centralp->Draw("same");
     h_npeSum_p_all_neg->Add(h_npeSum_p_neg);
   }
-  TF1* f1 = new TF1("","12000*((1-(x*x+0.139*0.139)/(x*x*1.0006349*1.0006349)))",3.9,10);
+  //TF1* f1 = new TF1("","12000*((1-(x*x+0.139*0.139)/(x*x*1.0006349*1.0006349)))",3.9,10);
+  std::string npe_pion = "12000*((1-(x*x+0.139*0.139)/(x*x*1.0006349*1.0006349)))";
+  std::string npe_e = "12000*((1-(x*x+0.00051*0.00051)/(x*x*1.0006349*1.0006349)))";
+  TF1* f_pion = new TF1("",npe_pion.c_str(),3.9,10);
+  TF1* f_e = new TF1("",npe_e.c_str(),3.9,10);
   c_npeSum_p_method1->cd();
-  f1->Draw("same");
+  f_pion->Draw("same");
+  f_e->Draw("same");
   std::string c_npeSum_p_method1_name = "results/pid/all_npeSum_p_"+std::to_string(GroupNum[0])+"_1.pdf";
   c_npeSum_p_method1->SaveAs(c_npeSum_p_method1_name.c_str());
   TCanvas* c_npeSum_p = new TCanvas();
+  h_npeSum_p_all_neg->SetMaximum(50);
+  h_npeSum_p_all_neg->SetBit(TH1::kNoStats);
+  gStyle->SetPalette(kBird);
   h_npeSum_p_all_neg->Draw("colz");
+  f_pion->Draw("same");
+  f_e->Draw("same");
   for(auto it = GroupNum.begin();it!=GroupNum.end();++it){
     int RunGroup = *it;
     RunGroup = 10*RunGroup;
