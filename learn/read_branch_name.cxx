@@ -12,7 +12,7 @@ void read_branch_name(){
   std::cout<<"try"<<std::endl;
   //auto h1 = d.Filter("!P.hod.1x.negAdcPulseAmpRaw.empty()").Define("test","P.hod.1x.negAdcPulseAmpRaw[0]").Histo1D("test");
   //auto h2 = d.Histo1D("P.hod.1x.negAdcPulseAmpRaw");
-   auto d1 = d.Define("test","P.hgcer.npe[2]");
+   auto d1 = d.Define("test","P.hgcer.npe");
    
   std::cout<<"try1"<<std::endl;
    auto h1 = d1.Histo1D({"","",100,0,50},"test");
@@ -20,6 +20,7 @@ void read_branch_name(){
   std::cout<<"try2"<<std::endl;
   auto h2 = d.Histo1D({"","",100,0,50},"P.hgcer.npeSum");
   std::cout<<"try3"<<std::endl;
+  std::cout<<h1->GetEntries()<<std::endl;
   TCanvas *c = new TCanvas("","",1900,1000);
   c->Divide(1,2);
   c->cd(1);
