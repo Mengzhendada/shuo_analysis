@@ -29,7 +29,7 @@ void find_current(int RunGroup =0){
  // }
   TGraph *g_D2_neg = new TGraph();
   TGraph *g_D2_pos = new TGraph();
-  auto h_D2_neg = new TH2I("h1","D2_neg",1000,0,550,1000,5,80);
+  auto h_D2_neg = new TH2D("h1","D2_neg",55,0,550,100,5,80);
   int i_D2_neg=0,i_D2_pos=0;
   std::ofstream outfile("results/bcm/current_D2_neg.txt");
   std::ofstream out2("results/bcm/current_D2_neg_weird.txt");
@@ -83,11 +83,11 @@ void find_current(int RunGroup =0){
   TCanvas *c_D2_neg = new TCanvas();
   //g_D2_neg->SetMarkerStyle(8);
   c_D2_neg->SetGrid();
-  h_D2_neg->SetBarWidth(10);
-  h_D2_neg->SetBarOffset(0);
+  h_D2_neg->SetBarWidth(0.4);
+  h_D2_neg->SetBarOffset(-0.1);
   h_D2_neg->SetFillColor(kYellow);
   h_D2_neg->SetFillStyle(1001);
-  h_D2_neg->Draw("candle2");
+  h_D2_neg->Draw("candle3");
   std::string D2_neg_name = "results/bcm/current_D2_neg.pdf";
   c_D2_neg->SaveAs(D2_neg_name.c_str());
   
