@@ -3,7 +3,7 @@
   "cal_pi_low": 0.0015,
   "cal_pi_high": 0.6,
   "cer_e": 10,
-  "cer_pi": 0.1,
+  "cer_pi": 5,
   "cal_cuts":[
       0.3,
       0.35,

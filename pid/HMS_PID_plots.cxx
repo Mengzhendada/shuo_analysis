@@ -27,6 +27,9 @@ void HMS_PID_plots(int RunGroup = 0){
   std::vector<int> cercut;
   cercut = j_cuts["cer_cuts"].get<std::vector<int>>();
   int n_cuts = (int)cercut.size();
+  std::vector<double> calcut;
+  calcut = j_cuts["cal_cuts"].get<std::vector<double>>();
+  int n_cal_cuts = (int)calcut.size();
 
   if(RunGroup == 0){
     std::cout<<"Enter RunGroup Number(-1 to exit)";
@@ -39,7 +42,7 @@ void HMS_PID_plots(int RunGroup = 0){
     std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
   }
-  RunGroup = 10*RunGroup;
+  RunGroup = RunGroup;
   std::vector<int> neg_D2,pos_D2;
   neg_D2 = j_rungroup[std::to_string(RunGroup).c_str()]["neg"]["D2"].get<std::vector<int>>();
   pos_D2 = j_rungroup[std::to_string(RunGroup).c_str()]["pos"]["D2"].get<std::vector<int>>();
@@ -113,6 +116,11 @@ void HMS_PID_plots(int RunGroup = 0){
     c_neg->cd(4);
     h_neg->Draw("hist");
     h_neg_pion_cercut->Draw("hist same");
+    for(int i = 0; i < n_cal_cuts; ++i){
+      TLine *line = new TLine(calcut[i],0,calcut[i],40000);
+      line->SetLineColor(coolcolor[i]);
+      line->Draw("same");
+    }
     std::string neg_canvasname  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cal_neg.pdf";
     c_neg->SaveAs(neg_canvasname.c_str());
 
@@ -137,6 +145,11 @@ void HMS_PID_plots(int RunGroup = 0){
     c_pos->cd(4);
     h_pos->Draw("hist");
     h_pos_pion_cercut->Draw("hist same");
+    for(int i = 0; i < n_cal_cuts; ++i){
+      TLine *line = new TLine(calcut[i],0,calcut[i],4000);
+      line->SetLineColor(coolcolor[i]);
+      line->Draw("same");
+    }
     std::string pos_canvasname  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cal_pos.pdf";
     c_pos->SaveAs(pos_canvasname.c_str());
 
@@ -162,7 +175,7 @@ void HMS_PID_plots(int RunGroup = 0){
     h_neg_cer->Draw("hist");
     h_neg_pion_calcut->Draw("hist same");
     for(int i = 0; i < n_cuts; ++i){
-      TLine *line = new TLine(cercut[i],0,cercut[i],4000);
+      TLine *line = new TLine(cercut[i],0,cercut[i],40000);
       line->SetLineColor(coolcolor[i]);
       line->Draw("same");
     }
@@ -190,6 +203,11 @@ void HMS_PID_plots(int RunGroup = 0){
     c_pos_cer->cd(4);
     h_pos_cer->Draw("hist");
     h_pos_pion_calcut->Draw("hist same");
+    for(int i = 0; i < n_cuts; ++i){
+      TLine *line = new TLine(cercut[i],0,cercut[i],40000);
+      line->SetLineColor(coolcolor[i]);
+      line->Draw("same");
+    }
     std::string pos_canvasname_cer  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cer_pos.pdf";
     c_pos_cer->SaveAs(pos_canvasname_cer.c_str());
     

@@ -21,7 +21,7 @@ void HMS_PID_RunGroup_cercut(int RunGroup = 0){
     ifs>>j_cuts;
   }
   std::vector<double> cer_cut;
-  cer_cut = j_cuts["cer_cuts"].get<std::vector<int>>();
+  cer_cut = j_cuts["cer_cuts"].get<std::vector<double>>();
   int n_cuts = (int)cer_cut.size();
   std::vector<int> coolcolor;
   coolcolor = j_cuts["coolcolor"].get<std::vector<int>>();
@@ -32,7 +32,7 @@ void HMS_PID_RunGroup_cercut(int RunGroup = 0){
     if(RunGroup <0)
       return;
   }
-  RunGroup = RunGroup*10;
+  RunGroup = RunGroup;
   json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -55,8 +55,9 @@ void HMS_PID_RunGroup_cercut(int RunGroup = 0){
      ROOT::RDataFrame d_neg_raw("T",files_neg);
      auto d_neg_SHMS = d_neg_raw.Filter("-10 < P.gtr.dp && P.gtr.dp < 22");
      auto d_neg = d_neg_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 10");
-     int neg_cal_pion_calcut_n = j_cuts["cal_pi"].get<int>();
-     std::string neg_cal_pion_calcut = "H.cal.etottracknorm < "+std::to_string(neg_cal_pion_calcut_n);
+     double neg_cal_pion_calcut_low = j_cuts["cal_pi_low"].get<double>();
+     double neg_cal_pion_calcut_high = j_cuts["cal_pi_high"].get<double>();
+     std::string neg_cal_pion_calcut = "H.cal.etottracknorm < "+std::to_string(neg_cal_pion_calcut_high)+" && "+"H.cal.etottracknorm > " + std::to_string(neg_cal_pion_calcut_low);
      auto d_neg_cal_pion = d_neg.Filter(neg_cal_pion_calcut);
      auto h_neg_pion_calcut = d_neg_cal_pion.Histo1D({"","",100,0,30},"H.cer.npeSum");
      int n_neg_pion_calcut = (int)h_neg_pion_calcut->GetEntries();
@@ -100,8 +101,9 @@ void HMS_PID_RunGroup_cercut(int RunGroup = 0){
      ROOT::RDataFrame d_pos_raw("T",files_pos);
      auto d_pos_SHMS = d_pos_raw.Filter("-10 < P.gtr.dp && P.gtr.dp < 22");
      auto d_pos = d_pos_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 10");
-     int pos_cal_pion_calcut_n = j_cuts["cal_pi"].get<int>();
-       std::string pos_cal_pion_calcut = "H.cal.etottracknorm < "+std::to_string(pos_cal_pion_calcut_n);
+     double pos_cal_pion_calcut_low = j_cuts["cal_pi_low"].get<double>();
+     double pos_cal_pion_calcut_high = j_cuts["cal_pi_high"].get<double>();
+     std::string pos_cal_pion_calcut = "H.cal.etottracknorm < "+std::to_string(pos_cal_pion_calcut_high)+" && "+"H.cal.etottracknorm > " + std::to_string(pos_cal_pion_calcut_low);
      auto d_pos_cal_pion = d_pos.Filter(pos_cal_pion_calcut);
      auto h_pos_pion_calcut = d_pos_cal_pion.Histo1D({"","",100,0,30},"H.cer.npeSum");
      int n_pos_pion_calcut = (int)h_pos_pion_calcut->GetEntries();

@@ -21,7 +21,7 @@ void HMS_cuts_compare(int RunGroup = 0){
       return;
   }
 
-  RunGroup = 10*RunGroup;
+  RunGroup = RunGroup;
  // json j_rungroup;
  // {
  //   std::ifstream infile("db2/ratio_run_group_updated.json");

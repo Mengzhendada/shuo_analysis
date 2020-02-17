@@ -17,14 +17,14 @@ using json = nlohmann::json;
 void HMS_PID_RunGroup_calcut(int RunGroup = 0){
   json j_cuts;
   {
-    st::ifstream ifs("db2/HMS_cuts.json");
+    std::ifstream ifs("db2/HMS_cuts.json");
     ifs>>j_cuts;
   }
   std::vector<double> cal_cut_low;
-  cal_cut_low = j_cuts["cal_cuts"].get<std::vector<int>>();
+  cal_cut_low = j_cuts["cal_cuts"].get<std::vector<double>>();
   int n_cuts = (int)cal_cut_low.size();
   std::vector<double> cer_cut;
-  cer_cut = j_cuts["cer_cuts"].get<std::vector<int>>();
+  cer_cut = j_cuts["cer_cuts"].get<std::vector<double>>();
 
   if(RunGroup == 0){
     std::cout<<"Enter RunGroup Number(-1 to exit)";
@@ -32,7 +32,7 @@ void HMS_PID_RunGroup_calcut(int RunGroup = 0){
     if(RunGroup <0)
       return;
   }
-  RunGroup = RunGroup*10;
+  RunGroup = RunGroup;
   json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -59,7 +59,7 @@ void HMS_PID_RunGroup_calcut(int RunGroup = 0){
      std::string neg_cal_e_cercut = "H.cer.npeSum > "+std::to_string(neg_cal_e_cercut_n);
      auto d_neg_cal_e = d_neg.Filter(neg_cal_e_cercut);
      //auto h_neg_cal_e = d_neg.Histo1D({"","",100,0.1,2},"H.cal.etottracknorm");
-     auto h_neg_e_cercut = d_neg_cal_e.Histo1D({"","",100,0.1,2},"H.cal.etottracknorm");
+     auto h_neg_e_cercut = d_neg_cal_e.Histo1D({"","",100,0.001,2},"H.cal.etottracknorm");
      double n_neg_e_cercut = (double)h_neg_e_cercut->GetEntries();
      std::cout<<n_neg_e_cercut<<std::endl;
      jout[std::to_string(RunGroup)]["neg_c"]["e_all"] = n_neg_e_cercut;
@@ -73,7 +73,7 @@ void HMS_PID_RunGroup_calcut(int RunGroup = 0){
      for(int i = 0;i<n_cuts;++i){
        TAxis *axis_neg_e_cal = h_neg_e_cercut->GetXaxis();
        int bmin_neg_e_cal = axis_neg_e_cal->FindBin(cal_cut_low[i]);
-       int bmax_neg_e_cal = axis_neg_e_cal->FindBin(cal_cut_high[i]);
+       int bmax_neg_e_cal = axis_neg_e_cal->GetLast();
        double n_neg_e_cercut_cal = (double)h_neg_e_cercut->Integral(bmin_neg_e_cal,bmax_neg_e_cal);
        std::cout<<i<<std::endl;
        std::cout<<"e "<<n_neg_e_cercut_cal<<std::endl;
@@ -81,7 +81,7 @@ void HMS_PID_RunGroup_calcut(int RunGroup = 0){
 
        TAxis *axis_neg_pion_cal = h_neg_pion_cercut->GetXaxis();
        int bmin_neg_pion_cal = axis_neg_pion_cal->FindBin(cal_cut_low[i]);
-       int bmax_neg_pion_cal = axis_neg_pion_cal->FindBin(cal_cut_high[i]);
+       int bmax_neg_pion_cal = axis_neg_pion_cal->GetLast();
        double n_neg_pion_cercut_cal = (double)h_neg_pion_cercut->Integral(bmin_neg_pion_cal,bmax_neg_pion_cal);
        std::cout<<"pion "<<n_neg_pion_cercut_cal<<std::endl;
        n_neg_pion_cal.push_back(n_neg_pion_cercut_cal);
@@ -116,7 +116,7 @@ void HMS_PID_RunGroup_calcut(int RunGroup = 0){
      for(int i = 0;i<n_cuts;++i){
        TAxis *axis_pos_e_cal = h_pos_e_cercut->GetXaxis();
        int bmin_pos_e_cal = axis_pos_e_cal->FindBin(cal_cut_low[i]);
-       int bmax_pos_e_cal = axis_pos_e_cal->FindBin(cal_cut_high[i]);
+       int bmax_pos_e_cal = axis_pos_e_cal->GetLast();
        double n_pos_e_cercut_cal = (double)h_pos_e_cercut->Integral(bmin_pos_e_cal,bmax_pos_e_cal);
        std::cout<<i<<std::endl;
        std::cout<<"e "<<n_pos_e_cercut_cal<<std::endl;
@@ -124,7 +124,7 @@ void HMS_PID_RunGroup_calcut(int RunGroup = 0){
 
        TAxis *axis_pos_pion_cal = h_pos_pion_cercut->GetXaxis();
        int bmin_pos_pion_cal = axis_pos_pion_cal->FindBin(cal_cut_low[i]);
-       int bmax_pos_pion_cal = axis_pos_pion_cal->FindBin(cal_cut_high[i]);
+       int bmax_pos_pion_cal = axis_pos_pion_cal->GetLast();
        double n_pos_pion_cercut_cal = (double)h_pos_pion_cercut->Integral(bmin_pos_pion_cal,bmax_pos_pion_cal);
        std::cout<<"pion "<<n_pos_pion_cercut_cal<<std::endl;
        n_pos_pion_cal.push_back(n_pos_pion_cercut_cal);
