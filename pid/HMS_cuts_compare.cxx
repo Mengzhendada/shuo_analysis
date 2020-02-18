@@ -1,5 +1,6 @@
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
+
 #include "TGraphErrors.h"
 #include "TH1.h"
 #include "TCanvas.h"
@@ -7,6 +8,7 @@ using json = nlohmann::json;
 #include "TAxis.h"
 #include "TGaxis.h"
 #include "TLegend.h"
+#include "TStyle.h"
 
 #include <vector>
 #include <string>
@@ -34,6 +36,7 @@ void HMS_cuts_compare(int RunGroup = 0){
     std::ifstream infile(infilename.c_str());
     infile>>j_cal;
   }
+  std::cout<<"check"<<std::endl;
   json j_cer;
   {
     std::string infilename = "results/pid/HMS_cer_cuts_"+std::to_string(RunGroup)+".json";
@@ -43,7 +46,7 @@ void HMS_cuts_compare(int RunGroup = 0){
   }
   json j_cuts;
   {
-    std::string infilename = "shuo_analysis/pid/HMS_cuts.json";
+    std::string infilename = "db2/HMS_cuts.json";
     std::ifstream infile(infilename.c_str());
     infile>>j_cuts;
   }
@@ -245,7 +248,7 @@ void HMS_cuts_compare(int RunGroup = 0){
   std::vector<double> cer_neg_e,cer_neg_pion;
   double cer_neg_e_all,cer_neg_pion_all;
   cer_neg_e_all = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["e_all"].get<double>();
-  cer_neg_pion_all = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["pion_all"].get<double>();
+  cer_neg_pion_all = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["pi_all"].get<double>();
   cer_neg_e = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["e"].get<std::vector<double>>();
   cer_neg_pion = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["pi"].get<std::vector<double>>();
   int n_cer_cuts = (int)cer_neg_e.size();
@@ -335,7 +338,7 @@ void HMS_cuts_compare(int RunGroup = 0){
   std::vector<double> cer_pos_e,cer_pos_pion;
   double cer_pos_e_all,cer_pos_pion_all;
   cer_pos_e_all = j_cer[(std::to_string(RunGroup)).c_str()]["pos_cal"]["e_all"].get<double>();
-  cer_pos_pion_all = j_cer[(std::to_string(RunGroup)).c_str()]["pos_cal"]["pion_all"].get<double>();
+  cer_pos_pion_all = j_cer[(std::to_string(RunGroup)).c_str()]["pos_cal"]["pi_all"].get<double>();
   cer_pos_e = j_cer[(std::to_string(RunGroup)).c_str()]["pos_cal"]["e"].get<std::vector<double>>();
   cer_pos_pion = j_cer[(std::to_string(RunGroup)).c_str()]["pos_cal"]["pi"].get<std::vector<double>>();
   for(int i = 0;i<n_cer_cuts;++i){

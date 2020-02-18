@@ -211,21 +211,21 @@ void HMS_PID_plots(int RunGroup = 0){
     std::string pos_canvasname_cer  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cer_pos.pdf";
     c_pos_cer->SaveAs(pos_canvasname_cer.c_str());
     
-    TCanvas *c_neg_lego = new TCanvas();
-    double npeSum_uplimit = 30;
-    auto d_neg_lego = d_neg.Filter("H.cal.etottracknorm>0.00001")
-      .Filter("H.cer.npeSum>0.001")
-    //.Define("reverse_npeSum",[npeSum_uplimit](double npeSum){return npeSum_uplimit-npeSum;},{"H.cer.npeSum"})
-    ;
-    TH2D* h_neg_cal_cer_lego = new TH2D(*d_neg_lego.Histo2D({"pi-","cal_cer",100,0,1.5,100,0,npeSum_uplimit},"H.cal.etottracknorm","H.cer.npeSum").GetPtr());
-    gStyle->SetPalette(kBird);
-    //TVirtualPad *pad_neg_lego = c_neg_lego->cd();
-    //pad_neg_lego->SetLogz();
-    h_neg_cal_cer_lego->Draw("LEGO2Z");
-    //ReverseYAxis(h_neg_cal_cer_lego);
-    std::string c_neg_lego_name = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"_lego.pdf";
-    c_neg_lego->SaveAs(c_neg_lego_name.c_str());
-    return c_neg_lego;
+    //TCanvas *c_neg_lego = new TCanvas();
+    //double npeSum_uplimit = 30;
+    //auto d_neg_lego = d_neg.Filter("H.cal.etottracknorm>0.00001")
+    //  .Filter("H.cer.npeSum>0.001")
+    ////.Define("reverse_npeSum",[npeSum_uplimit](double npeSum){return npeSum_uplimit-npeSum;},{"H.cer.npeSum"})
+    //;
+    //TH2D* h_neg_cal_cer_lego = new TH2D(*d_neg_lego.Histo2D({"pi-","cal_cer",100,0,1.5,100,0,npeSum_uplimit},"H.cal.etottracknorm","H.cer.npeSum").GetPtr());
+    //gStyle->SetPalette(kBird);
+    ////TVirtualPad *pad_neg_lego = c_neg_lego->cd();
+    ////pad_neg_lego->SetLogz();
+    //h_neg_cal_cer_lego->Draw("LEGO2Z");
+    ////ReverseYAxis(h_neg_cal_cer_lego);
+    //std::string c_neg_lego_name = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"_lego.pdf";
+    //c_neg_lego->SaveAs(c_neg_lego_name.c_str());
+    //return c_neg_lego;
 
 //   auto h_neg_e_cercut_1 = d_neg.Filter("H.cer.npeSum > 5").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
 //   auto h_neg_e_cercut_2 = d_neg.Filter("H.cer.npeSum > 6").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
@@ -311,39 +311,39 @@ void HMS_PID_plots(int RunGroup = 0){
 }
 
 
-void ReverseXAxis (TH2 *h)
-{
-  // Remove the current axis
-  h->GetXaxis()->SetLabelOffset(999);
-  h->GetXaxis()->SetTickLength(0);
-
-  // Redraw the new axis 
-  gPad->Update();
-  TGaxis *newaxis = new TGaxis(gPad->GetUxmax(), 
-      gPad->GetUymin(),
-      gPad->GetUxmin(),
-      gPad->GetUymin(),
-      h->GetXaxis()->GetXmin(),
-      h->GetXaxis()->GetXmax(),
-      510,"-");
-  newaxis->SetLabelOffset(-0.03);
-  newaxis->Draw();
-}
-void ReverseYAxis (TH2 *h)
-{
-  // Remove the current axis
-  h->GetYaxis()->SetLabelOffset(999);
-  h->GetYaxis()->SetTickLength(0);
-
-  // Redraw the new axis
-  gPad->Update();
-  TGaxis *newaxis = new TGaxis(gPad->GetUxmin(),
-      gPad->GetUymax(),
-      gPad->GetUxmin()-0.001,
-      gPad->GetUymin(),
-      h->GetYaxis()->GetXmin(),
-      h->GetYaxis()->GetXmax(),
-      510,"+");
-  newaxis->SetLabelOffset(-0.03);
-  newaxis->Draw();
-}
+//void ReverseXAxis (TH2 *h)
+//{
+//  // Remove the current axis
+//  h->GetXaxis()->SetLabelOffset(999);
+//  h->GetXaxis()->SetTickLength(0);
+//
+//  // Redraw the new axis 
+//  gPad->Update();
+//  TGaxis *newaxis = new TGaxis(gPad->GetUxmax(), 
+//      gPad->GetUymin(),
+//      gPad->GetUxmin(),
+//      gPad->GetUymin(),
+//      h->GetXaxis()->GetXmin(),
+//      h->GetXaxis()->GetXmax(),
+//      510,"-");
+//  newaxis->SetLabelOffset(-0.03);
+//  newaxis->Draw();
+//}
+//void ReverseYAxis (TH2 *h)
+//{
+//  // Remove the current axis
+//  h->GetYaxis()->SetLabelOffset(999);
+//  h->GetYaxis()->SetTickLength(0);
+//
+//  // Redraw the new axis
+//  gPad->Update();
+//  TGaxis *newaxis = new TGaxis(gPad->GetUxmin(),
+//      gPad->GetUymax(),
+//      gPad->GetUxmin()-0.001,
+//      gPad->GetUymin(),
+//      h->GetYaxis()->GetXmin(),
+//      h->GetYaxis()->GetXmax(),
+//      510,"+");
+//  newaxis->SetLabelOffset(-0.03);
+//  newaxis->Draw();
+//}
