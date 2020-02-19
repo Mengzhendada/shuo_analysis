@@ -15,7 +15,7 @@ using json = nlohmann::json;
 #include <iostream>
 #include <fstream>
 
-void HMS_cuts_compare(int RunGroup = 0){
+void SHMS_cuts_compare(int RunGroup = 0){
   if(RunGroup ==0){
     std::cout<<"Enter RunGroup (-1 to exit)";
     cin>>RunGroup;
@@ -31,7 +31,7 @@ void HMS_cuts_compare(int RunGroup = 0){
  // }
   json j_cal;
   {
-    std::string infilename = "results/pid/HMS_cal_cuts_"+std::to_string(RunGroup)+".json";
+    std::string infilename = "results/pid/SHMS_cal_cuts_"+std::to_string(RunGroup)+".json";
     std::cout<<"json file "<<infilename<<std::endl;
     std::ifstream infile(infilename.c_str());
     infile>>j_cal;
@@ -39,7 +39,7 @@ void HMS_cuts_compare(int RunGroup = 0){
   std::cout<<"check"<<std::endl;
   json j_cer;
   {
-    std::string infilename = "results/pid/HMS_cer_cuts_"+std::to_string(RunGroup)+".json";
+    std::string infilename = "results/pid/SHMS_cer_cuts_"+std::to_string(RunGroup)+".json";
     std::cout<<"json file "<<infilename<<std::endl;
     std::ifstream infile(infilename.c_str());
     infile>>j_cer;
@@ -75,7 +75,7 @@ void HMS_cuts_compare(int RunGroup = 0){
   cal_neg_e = j_cal[(std::to_string(RunGroup)).c_str()]["pos_c"]["e"].get<std::vector<double>>();
   cal_neg_pion = j_cal[(std::to_string(RunGroup)).c_str()]["pos_c"]["pi"].get<std::vector<double>>();
   int n_cal_cuts = (int)cal_neg_e.size();
-  std::vector<double> cal_cut = j_cuts["HMS"]["cal_cuts"].get<std::vector<double>>(); 
+  std::vector<double> cal_cut = j_cuts["SHMS"]["cal_cuts"].get<std::vector<double>>(); 
   //std::vector<double> cal_cut = {0.6,0.65,0.7,0.75,0.8,0.85};
   for(int i = 0;i<n_cal_cuts;++i){
     double e_eff = cal_neg_e[i]/cal_neg_e_all;
@@ -133,12 +133,12 @@ void HMS_cuts_compare(int RunGroup = 0){
       leg_cal_neg->SetFillColor(gPad->GetFillColor());
       leg_cal_neg->SetTextFont(lfont_cal_neg);
       leg_cal_neg->SetTextSize(lsize_cal_neg);
-      std::string cal_neg_title = "HMS calorimter for run group "+std::to_string(RunGroup)+" neg runs";
+      std::string cal_neg_title = "SHMS calorimter for run group "+std::to_string(RunGroup)+" neg runs";
       leg_cal_neg->SetHeader(cal_neg_title.c_str());
       leg_cal_neg->Draw();
       gPad->Update();
 
-      std::string cal_neg_name = "results/pid/HMS_cal_neg_"+std::to_string(RunGroup)+".pdf";
+      std::string cal_neg_name = "results/pid/SHMS_cal_neg_"+std::to_string(RunGroup)+".pdf";
       c_cal_neg->SaveAs(cal_neg_name.c_str());
 
       //calorimeter pos runs part 
@@ -220,12 +220,12 @@ void HMS_cuts_compare(int RunGroup = 0){
       leg_cal_pos->SetFillColor(gPad->GetFillColor());
       leg_cal_pos->SetTextFont(lfont_cal_pos);
       leg_cal_pos->SetTextSize(lsize_cal_pos);
-      std::string cal_pos_title = "HMS calorimter for run group "+std::to_string(RunGroup)+" pos runs";
+      std::string cal_pos_title = "SHMS calorimter for run group "+std::to_string(RunGroup)+" pos runs";
       leg_cal_pos->SetHeader(cal_pos_title.c_str());
       leg_cal_pos->Draw();
       gPad->Update();
       
-      std::string cal_pos_name = "results/pid/HMS_cal_pos_"+std::to_string(RunGroup)+".pdf";
+      std::string cal_pos_name = "results/pid/SHMS_cal_pos_"+std::to_string(RunGroup)+".pdf";
       c_cal_pos->SaveAs(cal_pos_name.c_str());
 
       //cer neg runs 
@@ -252,7 +252,7 @@ void HMS_cuts_compare(int RunGroup = 0){
   cer_neg_e = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["e"].get<std::vector<double>>();
   cer_neg_pion = j_cer[(std::to_string(RunGroup)).c_str()]["neg_cal"]["pi"].get<std::vector<double>>();
   int n_cer_cuts = (int)cer_neg_e.size();
-  std::vector<double> cer_cut = j_cuts["HMS"]["cer_cuts"].get<std::vector<double>>();
+  std::vector<double> cer_cut = j_cuts["SHMS"]["HGC_cuts"].get<std::vector<double>>();
   //std::vector<double> cer_cut = {5,6,7,8,9,10};
   for(int i = 0;i<n_cer_cuts;++i){
     double e_eff = cer_neg_e[i]/cer_neg_e_all;
@@ -310,15 +310,15 @@ void HMS_cuts_compare(int RunGroup = 0){
       leg_cer_neg->SetFillColor(gPad->GetFillColor());
       leg_cer_neg->SetTextFont(lfont_cer_neg);
       leg_cer_neg->SetTextSize(lsize_cer_neg);
-      std::string cer_neg_title = "HMS cer for run group "+std::to_string(RunGroup)+" neg runs";
+      std::string cer_neg_title = "SHMS cer for run group "+std::to_string(RunGroup)+" neg runs";
       leg_cer_neg->SetHeader(cer_neg_title.c_str());
       leg_cer_neg->Draw();
       gPad->Update();
       
-      std::string cer_neg_name = "results/pid/HMS_cer_neg_"+std::to_string(RunGroup)+".pdf";
+      std::string cer_neg_name = "results/pid/SHMS_cer_neg_"+std::to_string(RunGroup)+".pdf";
       c_cer_neg->SaveAs(cer_neg_name.c_str());
 
-      // HMS cer for pos runs part 
+      // SHMS cer for pos runs part 
   TGraph *g_cer_pos_e = new TGraph();
   g_cer_pos_e->SetTitle("cer;cerenkov cut;efficiency");
   g_cer_pos_e->SetMarkerStyle(8);
@@ -397,10 +397,10 @@ void HMS_cuts_compare(int RunGroup = 0){
       leg_cer_pos->SetFillColor(gPad->GetFillColor());
       leg_cer_pos->SetTextFont(lfont_cer_pos);
       leg_cer_pos->SetTextSize(lsize_cer_pos);
-      std::string cer_pos_title = "HMS cer for run group "+std::to_string(RunGroup)+" pos runs";
+      std::string cer_pos_title = "SHMS cer for run group "+std::to_string(RunGroup)+" pos runs";
       leg_cer_pos->SetHeader(cer_pos_title.c_str());
       leg_cer_pos->Draw();
       gPad->Update();
-      std::string cer_pos_name = "results/pid/HMS_cer_pos_"+std::to_string(RunGroup)+".pdf";
+      std::string cer_pos_name = "results/pid/SHMS_cer_pos_"+std::to_string(RunGroup)+".pdf";
       c_cer_pos->SaveAs(cer_pos_name.c_str());
 }

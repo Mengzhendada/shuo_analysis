@@ -16,7 +16,7 @@ using json = nlohmann::json;
 
 void ReverseXAxis(TH2 *h);
 void ReverseYAxis(TH2 *h);
-void HMS_PID_plots(int RunGroup = 0){
+void SHMS_PID_plots(int RunGroup = 0){
   json j_cuts;
   {
     std::ifstream ifs("db2/PID_test.json");
@@ -25,10 +25,10 @@ void HMS_PID_plots(int RunGroup = 0){
   std::vector<int> coolcolor;
   coolcolor = j_cuts["coolcolor"].get<std::vector<int>>();
   std::vector<int> cercut;
-  cercut = j_cuts["HMS"]["cer_cuts"].get<std::vector<int>>();
+  cercut = j_cuts["SHMS"]["HGC_cuts"].get<std::vector<int>>();
   int n_cuts = (int)cercut.size();
   std::vector<double> calcut;
-  calcut = j_cuts["HMS"]["cal_cuts"].get<std::vector<double>>();
+  calcut = j_cuts["SHMS"]["cal_cuts"].get<std::vector<double>>();
   int n_cal_cuts = (int)calcut.size();
 
   if(RunGroup == 0){
@@ -68,15 +68,15 @@ void HMS_PID_plots(int RunGroup = 0){
     auto d_pos_SHMS = d_pos_raw.Filter("-10 < P.gtr.dp && P.gtr.dp < 22");
     auto d_pos = d_pos_SHMS = d_pos_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 22");
 
-    double e_cercut = j_cuts["HMS"]["cer_e"].get<double>();
-    double pion_cercut = j_cuts["HMS"]["cer_pi"].get<double>();
-    double e_calcut_low = j_cuts["HMS"]["cal_e"].get<double>();
-    double pion_calcut_high = j_cuts["HMS"]["cal_pi_high"].get<double>();
-    double pion_calcut_low = j_cuts["HMS"]["cal_pi_low"].get<double>();
-    std::string e_cer_cut = "H.cer.npeSum > "+std::to_string(e_cercut);
-    std::string pion_cer_cut = "H.cer.npeSum < "+std::to_string(pion_cercut);
-    std::string e_cal_cut = std::to_string(e_calcut_low)+" < H.cal.etottracknorm";
-    std::string pion_cal_cut = "H.cal.etottracknorm > "+std::to_string(pion_calcut_low)+ " && H.cal.etottracknorm < "+std::to_string(pion_calcut_high);
+    double e_cercut = j_cuts["SHMS"]["HGC_e"].get<double>();
+    double pion_cercut = j_cuts["SHMS"]["HGC_pi"].get<double>();
+    double e_calcut_low = j_cuts["SHMS"]["cal_e"].get<double>();
+    double pion_calcut_high = j_cuts["SHMS"]["cal_pi_high"].get<double>();
+    double pion_calcut_low = j_cuts["SHMS"]["cal_pi_low"].get<double>();
+    std::string e_cer_cut = "P.hgcer.npeSum > "+std::to_string(e_cercut);
+    std::string pion_cer_cut = "P.hgcer.npeSum < "+std::to_string(pion_cercut);
+    std::string e_cal_cut = std::to_string(e_calcut_low)+" < P.cal.etottracknorm";
+    std::string pion_cal_cut = "P.cal.etottracknorm > "+std::to_string(pion_calcut_low)+ " && P.cal.etottracknorm < "+std::to_string(pion_calcut_high);
   auto d_neg_e_cercut = d_neg.Filter(e_cer_cut); 
   auto d_neg_pion_cercut = d_neg.Filter(pion_cer_cut);
   auto d_pos_e_cercut = d_pos.Filter(e_cer_cut);
@@ -85,22 +85,22 @@ void HMS_PID_plots(int RunGroup = 0){
   auto d_neg_pion_calcut = d_neg.Filter(pion_cal_cut);
   auto d_pos_e_calcut = d_pos.Filter(e_cal_cut);
   auto d_pos_pion_calcut = d_pos.Filter(pion_cal_cut);
-   // auto d_neg_e_cercut = d_neg.Filter("H.cer.npeSum >10");
-   // auto d_neg_pion_cercut = d_neg.Filter("H.cer.npeSum <0.1");
-   // auto d_pos_e_cercut = d_pos.Filter("H.cer.npeSum >10");
-   // auto d_pos_pion_cercut = d_pos.Filter("H.cer.npeSum <0");
-   // auto d_neg_e_calcut = d_neg.Filter("0.85 < H.cal.etottracknorm && H.cal.etottracknorm <1.5");
-   // auto d_neg_pion_calcut = d_neg.Filter("H.cal.etottracknorm < 0.6 ");
-   // auto d_pos_e_calcut = d_pos.Filter("0.85 < H.cal.etottracknorm && H.cal.etottracknorm <1.5");
-   // auto d_pos_pion_calcut = d_pos.Filter("H.cal.etottracknorm < 0.6 ");
+   // auto d_neg_e_cercut = d_neg.Filter("P.hgcer.npeSum >10");
+   // auto d_neg_pion_cercut = d_neg.Filter("P.hgcer.npeSum <0.1");
+   // auto d_pos_e_cercut = d_pos.Filter("P.hgcer.npeSum >10");
+   // auto d_pos_pion_cercut = d_pos.Filter("P.hgcer.npeSum <0");
+   // auto d_neg_e_calcut = d_neg.Filter("0.85 < P.cal.etottracknorm && P.cal.etottracknorm <1.5");
+   // auto d_neg_pion_calcut = d_neg.Filter("P.cal.etottracknorm < 0.6 ");
+   // auto d_pos_e_calcut = d_pos.Filter("0.85 < P.cal.etottracknorm && P.cal.etottracknorm <1.5");
+   // auto d_pos_pion_calcut = d_pos.Filter("P.cal.etottracknorm < 0.6 ");
     
 
-    auto h_neg = d_neg.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"H.cal.etottracknorm");
-    auto h_neg_e_cercut = d_neg_e_cercut.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"H.cal.etottracknorm");
+    auto h_neg = d_neg.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"P.cal.etottracknorm");
+    auto h_neg_e_cercut = d_neg_e_cercut.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"P.cal.etottracknorm");
     h_neg_e_cercut->SetLineColor(kRed);
-    auto h_neg_pion_cercut = d_neg_pion_cercut.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"H.cal.etottracknorm");
+    auto h_neg_pion_cercut = d_neg_pion_cercut.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"P.cal.etottracknorm");
     h_neg_pion_cercut->SetLineColor(kRed);
-    auto h_neg_cer = d_neg.Histo1D({"","Cer;npe;counts",100,0,30},"H.cer.npeSum");
+    auto h_neg_cer = d_neg.Histo1D({"","Cer;npe;counts",100,0,30},"P.hgcer.npeSum");
     //TLine *l_cercut = 
     TCanvas *c_neg = new TCanvas();
     c_neg->Divide(2,2);  
@@ -121,15 +121,15 @@ void HMS_PID_plots(int RunGroup = 0){
       line->SetLineColor(coolcolor[i]);
       line->Draw("same");
     }
-    std::string neg_canvasname  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cal_neg.pdf";
+    std::string neg_canvasname  = "results/pid/SHMS_PID_"+std::to_string(RunGroup)+"cal_neg.pdf";
     c_neg->SaveAs(neg_canvasname.c_str());
 
-    auto h_pos = d_pos.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"H.cal.etottracknorm");
-    auto h_pos_e_cercut = d_pos_e_cercut.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"H.cal.etottracknorm");
+    auto h_pos = d_pos.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"P.cal.etottracknorm");
+    auto h_pos_e_cercut = d_pos_e_cercut.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"P.cal.etottracknorm");
     h_pos_e_cercut->SetLineColor(kRed);
-    auto h_pos_pion_cercut = d_pos_pion_cercut.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"H.cal.etottracknorm");
+    auto h_pos_pion_cercut = d_pos_pion_cercut.Histo1D({"","E/p;E/p;counts",100,0.1,1.5},"P.cal.etottracknorm");
     h_pos_pion_cercut->SetLineColor(kRed);
-    auto h_pos_cer = d_pos.Histo1D({"","Cer;npe;counts",100,0,30},"H.cer.npeSum");
+    auto h_pos_cer = d_pos.Histo1D({"","Cer;npe;counts",100,0,30},"P.hgcer.npeSum");
     //TLine *l_cercut = 
     TCanvas *c_pos = new TCanvas();
     c_pos->Divide(2,2);  
@@ -150,14 +150,14 @@ void HMS_PID_plots(int RunGroup = 0){
       line->SetLineColor(coolcolor[i]);
       line->Draw("same");
     }
-    std::string pos_canvasname  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cal_pos.pdf";
+    std::string pos_canvasname  = "results/pid/SHMS_PID_"+std::to_string(RunGroup)+"cal_pos.pdf";
     c_pos->SaveAs(pos_canvasname.c_str());
 
   
     
-    auto h_neg_e_calcut = d_neg_e_calcut.Histo1D({"","cer;cer;counts",100,0,30},"H.cer.npeSum");
+    auto h_neg_e_calcut = d_neg_e_calcut.Histo1D({"","cer;cer;counts",100,0,30},"P.hgcer.npeSum");
     h_neg_e_calcut->SetLineColor(kRed);
-    auto h_neg_pion_calcut = d_neg_pion_calcut.Histo1D({"","cer;cer;counts",100,0,30},"H.cer.npeSum");
+    auto h_neg_pion_calcut = d_neg_pion_calcut.Histo1D({"","cer;cer;counts",100,0,30},"P.hgcer.npeSum");
     h_neg_pion_calcut->SetLineColor(kRed);
     //TLine *l_cercut = 
     TCanvas *c_neg_cer = new TCanvas();
@@ -180,12 +180,12 @@ void HMS_PID_plots(int RunGroup = 0){
       line->Draw("same");
     }
     
-    std::string neg_canvasname_cer  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cer_neg.pdf";
+    std::string neg_canvasname_cer  = "results/pid/SHMS_PID_"+std::to_string(RunGroup)+"cer_neg.pdf";
     c_neg_cer->SaveAs(neg_canvasname_cer.c_str());
 
-    auto h_pos_e_calcut = d_pos_e_calcut.Histo1D({"","cer;cer;counts",100,0,30},"H.cer.npeSum");
+    auto h_pos_e_calcut = d_pos_e_calcut.Histo1D({"","cer;cer;counts",100,0,30},"P.hgcer.npeSum");
     h_pos_e_calcut->SetLineColor(kRed);
-    auto h_pos_pion_calcut = d_pos_pion_calcut.Histo1D({"","cer;cer;counts",100,0,30},"H.cer.npeSum");
+    auto h_pos_pion_calcut = d_pos_pion_calcut.Histo1D({"","cer;cer;counts",100,0,30},"P.hgcer.npeSum");
     h_pos_pion_calcut->SetLineColor(kRed);
     //TLine *l_cercut = 
     TCanvas *c_pos_cer = new TCanvas();
@@ -208,37 +208,37 @@ void HMS_PID_plots(int RunGroup = 0){
       line->SetLineColor(coolcolor[i]);
       line->Draw("same");
     }
-    std::string pos_canvasname_cer  = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"cer_pos.pdf";
+    std::string pos_canvasname_cer  = "results/pid/SHMS_PID_"+std::to_string(RunGroup)+"cer_pos.pdf";
     c_pos_cer->SaveAs(pos_canvasname_cer.c_str());
     
     //TCanvas *c_neg_lego = new TCanvas();
     //double npeSum_uplimit = 30;
-    //auto d_neg_lego = d_neg.Filter("H.cal.etottracknorm>0.00001")
-    //  .Filter("H.cer.npeSum>0.001")
-    ////.Define("reverse_npeSum",[npeSum_uplimit](double npeSum){return npeSum_uplimit-npeSum;},{"H.cer.npeSum"})
+    //auto d_neg_lego = d_neg.Filter("P.cal.etottracknorm>0.00001")
+    //  .Filter("P.hgcer.npeSum>0.001")
+    ////.Define("reverse_npeSum",[npeSum_uplimit](double npeSum){return npeSum_uplimit-npeSum;},{"P.hgcer.npeSum"})
     //;
-    //TH2D* h_neg_cal_cer_lego = new TH2D(*d_neg_lego.Histo2D({"pi-","cal_cer",100,0,1.5,100,0,npeSum_uplimit},"H.cal.etottracknorm","H.cer.npeSum").GetPtr());
+    //TH2D* h_neg_cal_cer_lego = new TH2D(*d_neg_lego.Histo2D({"pi-","cal_cer",100,0,1.5,100,0,npeSum_uplimit},"P.cal.etottracknorm","P.hgcer.npeSum").GetPtr());
     //gStyle->SetPalette(kBird);
     ////TVirtualPad *pad_neg_lego = c_neg_lego->cd();
     ////pad_neg_lego->SetLogz();
     //h_neg_cal_cer_lego->Draw("LEGO2Z");
     ////ReverseYAxis(h_neg_cal_cer_lego);
-    //std::string c_neg_lego_name = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"_lego.pdf";
+    //std::string c_neg_lego_name = "results/pid/SHMS_PID_"+std::to_string(RunGroup)+"_lego.pdf";
     //c_neg_lego->SaveAs(c_neg_lego_name.c_str());
     //return c_neg_lego;
 
-//   auto h_neg_e_cercut_1 = d_neg.Filter("H.cer.npeSum > 5").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_neg_e_cercut_2 = d_neg.Filter("H.cer.npeSum > 6").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_neg_e_cercut_3 = d_neg.Filter("H.cer.npeSum > 7").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_neg_e_cercut_4 = d_neg.Filter("H.cer.npeSum > 8").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_neg_e_cercut_5 = d_neg.Filter("H.cer.npeSum > 9").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_neg_e_cercut_6 = d_neg.Filter("H.cer.npeSum > 10").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_pos_e_cercut_1 = d_pos.Filter("H.cer.npeSum > 5").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_pos_e_cercut_2 = d_pos.Filter("H.cer.npeSum > 6").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_pos_e_cercut_3 = d_pos.Filter("H.cer.npeSum > 7").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_pos_e_cercut_4 = d_pos.Filter("H.cer.npeSum > 8").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_pos_e_cercut_5 = d_pos.Filter("H.cer.npeSum > 9").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
-//   auto h_pos_e_cercut_6 = d_pos.Filter("H.cer.npeSum > 10").Histo1D({"","",100,0.1,1.5},"H.cal.etottracknorm"); 
+//   auto h_neg_e_cercut_1 = d_neg.Filter("P.hgcer.npeSum > 5").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_neg_e_cercut_2 = d_neg.Filter("P.hgcer.npeSum > 6").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_neg_e_cercut_3 = d_neg.Filter("P.hgcer.npeSum > 7").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_neg_e_cercut_4 = d_neg.Filter("P.hgcer.npeSum > 8").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_neg_e_cercut_5 = d_neg.Filter("P.hgcer.npeSum > 9").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_neg_e_cercut_6 = d_neg.Filter("P.hgcer.npeSum > 10").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_pos_e_cercut_1 = d_pos.Filter("P.hgcer.npeSum > 5").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_pos_e_cercut_2 = d_pos.Filter("P.hgcer.npeSum > 6").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_pos_e_cercut_3 = d_pos.Filter("P.hgcer.npeSum > 7").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_pos_e_cercut_4 = d_pos.Filter("P.hgcer.npeSum > 8").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_pos_e_cercut_5 = d_pos.Filter("P.hgcer.npeSum > 9").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
+//   auto h_pos_e_cercut_6 = d_pos.Filter("P.hgcer.npeSum > 10").Histo1D({"","",100,0.1,1.5},"P.cal.etottracknorm"); 
 //   h_neg_e_cercut_1->SetLineColor(coolcolor[0]);
 //   h_neg_e_cercut_2->SetLineColor(coolcolor[1]);
 //   h_neg_e_cercut_3->SetLineColor(coolcolor[2]);   
@@ -271,10 +271,10 @@ void HMS_PID_plots(int RunGroup = 0){
 //   h_neg_e_cercut_6->Draw("hist same");
 //
 //   //for(int i = 0;i<n_cuts;++i){
-//   //  std::string cercuts = "H.cer.npeSum > "+std::to_string(cercut[i]);
+//   //  std::string cercuts = "P.hgcer.npeSum > "+std::to_string(cercut[i]);
 //   //  std::cout<<"cercuts "<<cercuts<<std::endl;
 //   //  auto h_neg_e_cercut = d_neg.Filter(cercuts)
-//   //                             .Histo1D({"","E/P;E/P;counts",100,0.1,1.5},"H.cal.etottracknorm");
+//   //                             .Histo1D({"","E/P;E/P;counts",100,0.1,1.5},"P.cal.etottracknorm");
 //   //  h_neg_e_cercut->SetLineColor(coolcolor[i]);
 //   //  c_check->cd(2);
 //   //  h_neg_e_cercut->Draw("hist same");
@@ -296,16 +296,16 @@ void HMS_PID_plots(int RunGroup = 0){
 //   h_pos_e_cercut_5->Draw("hist same");
 //   h_pos_e_cercut_6->Draw("hist same");
 //   //for(int i = 0;i<n_cuts;++i){
-//   //  std::string cercuts = "H.cer.npeSum > "+std::to_string(cercut[i]);
+//   //  std::string cercuts = "P.hgcer.npeSum > "+std::to_string(cercut[i]);
 //   //  std::cout<<"cercuts "<<cercuts<<std::endl;
 //   //  auto h_pos_e_cercut = d_pos.Filter(cercuts)
-//   //                             .Histo1D({"","E/P;E/P;counts",100,0.1,1.5},"H.cal.etottracknorm");
+//   //                             .Histo1D({"","E/P;E/P;counts",100,0.1,1.5},"P.cal.etottracknorm");
 //   //  h_pos_e_cercut->SetLineColor(coolcolor[i]);
 //   //  c_check->cd(4);
 //   //  h_pos_e_cercut->Draw("hist same");
 //   //}
 //   c_check->Update();
-//   std::string check_name = "results/pid/HMS_PID_"+std::to_string(RunGroup)+"_check.pdf";
+//   std::string check_name = "results/pid/SHMS_PID_"+std::to_string(RunGroup)+"_check.pdf";
 //   c_check->SaveAs(check_name.c_str());
   }
 }

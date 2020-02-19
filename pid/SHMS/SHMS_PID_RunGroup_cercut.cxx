@@ -14,14 +14,14 @@
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
-void HMS_PID_RunGroup_cercut(int RunGroup = 0){
+void SHMS_PID_RunGroup_cercut(int RunGroup = 0){
   json j_cuts;
   {
     std::ifstream ifs("db2/PID_test.json");
     ifs>>j_cuts;
   }
   std::vector<double> cer_cut;
-  cer_cut = j_cuts["HMS"]["cer_cuts"].get<std::vector<double>>();
+  cer_cut = j_cuts["SHMS"]["HGC_cuts"].get<std::vector<double>>();
   int n_cuts = (int)cer_cut.size();
   std::vector<int> coolcolor;
   coolcolor = j_cuts["coolcolor"].get<std::vector<int>>();
@@ -55,18 +55,18 @@ void HMS_PID_RunGroup_cercut(int RunGroup = 0){
      ROOT::RDataFrame d_neg_raw("T",files_neg);
      auto d_neg_SHMS = d_neg_raw.Filter("-10 < P.gtr.dp && P.gtr.dp < 22");
      auto d_neg = d_neg_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 10");
-     double neg_cal_pion_calcut_low = j_cuts["HMS"]["cal_pi_low"].get<double>();
-     double neg_cal_pion_calcut_high = j_cuts["HMS"]["cal_pi_high"].get<double>();
-     std::string neg_cal_pion_calcut = "H.cal.etottracknorm < "+std::to_string(neg_cal_pion_calcut_high)+" && "+"H.cal.etottracknorm > " + std::to_string(neg_cal_pion_calcut_low);
+     double neg_cal_pion_calcut_low = j_cuts["SHMS"]["cal_pi_low"].get<double>();
+     double neg_cal_pion_calcut_high = j_cuts["SHMS"]["cal_pi_high"].get<double>();
+     std::string neg_cal_pion_calcut = "P.cal.etottracknorm < "+std::to_string(neg_cal_pion_calcut_high)+" && "+"P.cal.etottracknorm > " + std::to_string(neg_cal_pion_calcut_low);
      auto d_neg_cal_pion = d_neg.Filter(neg_cal_pion_calcut);
-     auto h_neg_pion_calcut = d_neg_cal_pion.Histo1D({"","",100,0,30},"H.cer.npeSum");
+     auto h_neg_pion_calcut = d_neg_cal_pion.Histo1D({"","",100,0,30},"P.hgcer.npeSum");
      int n_neg_pion_calcut = (int)h_neg_pion_calcut->GetEntries();
      jout[std::to_string(RunGroup)]["neg_cal"]["pi_all"] = n_neg_pion_calcut;
-     int neg_cal_e_calcut_n = j_cuts["HMS"]["cal_e"].get<int>();
-       std::string neg_cal_e_calcut = "H.cal.etottracknorm > "+std::to_string(neg_cal_e_calcut_n);
+     int neg_cal_e_calcut_n = j_cuts["SHMS"]["cal_e"].get<int>();
+       std::string neg_cal_e_calcut = "P.cal.etottracknorm > "+std::to_string(neg_cal_e_calcut_n);
        auto d_neg_cal_e = d_neg.Filter(neg_cal_e_calcut);
-     auto h_neg_e_calcut = d_neg_cal_e.Histo1D({"","",100,0,30},"H.cer.npeSum");
-     auto h_neg_e_calcut_cal = d_neg.Histo1D({"","",100,0,30},"H.cal.etottracknorm");
+     auto h_neg_e_calcut = d_neg_cal_e.Histo1D({"","",100,0,30},"P.hgcer.npeSum");
+     auto h_neg_e_calcut_cal = d_neg.Histo1D({"","",100,0,30},"P.cal.etottracknorm");
      int n_neg_e_calcut = (int)h_neg_e_calcut->GetEntries();
      jout[std::to_string(RunGroup)]["neg_cal"]["e_all"] = n_neg_e_calcut;
      std::vector<double> n_neg_e_cer,n_neg_pion_cer,n_neg_e_cer_cal;
@@ -101,18 +101,18 @@ void HMS_PID_RunGroup_cercut(int RunGroup = 0){
      ROOT::RDataFrame d_pos_raw("T",files_pos);
      auto d_pos_SHMS = d_pos_raw.Filter("-10 < P.gtr.dp && P.gtr.dp < 22");
      auto d_pos = d_pos_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 10");
-     double pos_cal_pion_calcut_low = j_cuts["HMS"]["cal_pi_low"].get<double>();
-     double pos_cal_pion_calcut_high = j_cuts["HMS"]["cal_pi_high"].get<double>();
-     std::string pos_cal_pion_calcut = "H.cal.etottracknorm < "+std::to_string(pos_cal_pion_calcut_high)+" && "+"H.cal.etottracknorm > " + std::to_string(pos_cal_pion_calcut_low);
+     double pos_cal_pion_calcut_low = j_cuts["SHMS"]["cal_pi_low"].get<double>();
+     double pos_cal_pion_calcut_high = j_cuts["SHMS"]["cal_pi_high"].get<double>();
+     std::string pos_cal_pion_calcut = "P.cal.etottracknorm < "+std::to_string(pos_cal_pion_calcut_high)+" && "+"P.cal.etottracknorm > " + std::to_string(pos_cal_pion_calcut_low);
      auto d_pos_cal_pion = d_pos.Filter(pos_cal_pion_calcut);
-     auto h_pos_pion_calcut = d_pos_cal_pion.Histo1D({"","",100,0,30},"H.cer.npeSum");
+     auto h_pos_pion_calcut = d_pos_cal_pion.Histo1D({"","",100,0,30},"P.hgcer.npeSum");
      int n_pos_pion_calcut = (int)h_pos_pion_calcut->GetEntries();
      jout[std::to_string(RunGroup)]["pos_cal"]["pi_all"] = n_pos_pion_calcut;
-     int pos_cal_e_calcut_n = j_cuts["HMS"]["cal_e"].get<int>();
-       std::string pos_cal_e_calcut = "H.cal.etottracknorm > "+std::to_string(pos_cal_e_calcut_n);
+     int pos_cal_e_calcut_n = j_cuts["SHMS"]["cal_e"].get<int>();
+       std::string pos_cal_e_calcut = "P.cal.etottracknorm > "+std::to_string(pos_cal_e_calcut_n);
      auto d_pos_cal_e = d_pos.Filter(pos_cal_e_calcut);
-     auto h_pos_e_calcut = d_pos_cal_e.Histo1D({"","",100,0,30},"H.cer.npeSum");
-     auto h_pos_e_calcut_cal = d_pos.Histo1D({"","",100,0,30},"H.cal.etottracknorm");
+     auto h_pos_e_calcut = d_pos_cal_e.Histo1D({"","",100,0,30},"P.hgcer.npeSum");
+     auto h_pos_e_calcut_cal = d_pos.Histo1D({"","",100,0,30},"P.cal.etottracknorm");
      int n_pos_e_calcut = (int)h_pos_e_calcut->GetEntries();
      jout[std::to_string(RunGroup)]["pos_cal"]["e_all"] = n_pos_e_calcut;
      std::vector<double> n_pos_e_cer,n_pos_pion_cer,n_pos_e_cer_cal;
@@ -138,8 +138,8 @@ void HMS_PID_RunGroup_cercut(int RunGroup = 0){
      jout[std::to_string(RunGroup)]["pos_cal"]["pi"] = n_pos_pion_cer;
   }//if normal production runs
   std::ofstream outfile;
-  std::string outfile_name = "results/pid/HMS_cer_cuts_"+std::to_string(RunGroup)+".json";
+  std::string outfile_name = "results/pid/SHMS_cer_cuts_"+std::to_string(RunGroup)+".json";
   outfile.open(outfile_name.c_str());
-  //outfile.open("results/HMS_PID_statistics.json",std::ofstream::out | std::ofstream::app);
+  //outfile.open("results/SHMS_PID_statistics.json",std::ofstream::out | std::ofstream::app);
   outfile<<jout.dump(4)<<std::endl;
 }
