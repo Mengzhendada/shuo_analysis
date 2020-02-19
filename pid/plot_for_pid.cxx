@@ -7,7 +7,14 @@
 using json = nlohmann::json;
 
 void plot_for_pid(int RunNumber = 0){
-  RunNumber = 7593;
+  //RunNumber = 7647;
+  
+  if(RunNumber == 0){
+    std::cout<<"Enter RunNumber(-1 to exit)";
+    std::cin>>RunNumber;
+    if(RunNumber < 0)
+      return;
+  }
   std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
   ROOT::RDataFrame d("T",rootfile_name.c_str());
   auto d_good = d.Filter("-10 < P.gtr.dp && P.gtr.dp < 22").Filter("-10 < H.gtr.dp && H.gtr.dp < 10");
