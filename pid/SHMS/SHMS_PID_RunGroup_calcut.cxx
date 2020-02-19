@@ -54,10 +54,17 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
   
      ROOT::RDataFrame d_neg_raw("T",files_neg);
      auto d_neg_SHMS = d_neg_raw.Filter("-10 < P.gtr.dp && P.gtr.dp < 22");
-     auto d_neg = d_neg_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 10")
+     auto d_neg_HMS_e = d_neg_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 10")
                             .Filter("H.cer.npeSum > 10")
                             .Filter("H.cal.etottracknorm >0.85")
-                            .Filter("");
+                            .Filter("fEvtHdr.fEvtType == 4");
+     auto h_coin_time = d_neg_HMS_e.Histo1D({"coin_time","coin_time;cointime;counts",800,0,100},"CTime.ePositronCoinTime_ROC2");
+     int coin_peak_bin = h_coin_time->GetMaximumBin();
+     double coin_peak_center = h_coin_time->GetBinCenter(coin_peak_bin);
+     auto d_neg = d_neg_HMS_e.Filter(
+       
+       );
+     
      int neg_cal_e_cercut_n = j_cuts["SHMS"]["HGC_e"].get<int>();
      std::string neg_cal_e_cercut = "P.hgcer.npeSum > "+std::to_string(neg_cal_e_cercut_n);
      auto d_neg_cal_e = d_neg.Filter(neg_cal_e_cercut);
