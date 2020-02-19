@@ -4,6 +4,8 @@
 #include "TChain.h"
 #include "TPaveText.h"
 #include "TAxis.h"
+#include "TF1.h"
+#include "TLine.h"
 #include <vector>
 #include <string>
 #include <iostream>
@@ -63,14 +65,29 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
      double coin_peak_center = h_coin_time->GetBinCenter(coin_peak_bin);
      auto d_neg = d_neg_HMS_e.Filter(
        [=](double coin_time){return std::abs(coin_time - coin_peak_center) < 2.0;},{"CTime,ePositronCoinTime_ROC2"});
-    auto h_cal_e = d_neg.Histo1D({"","SHMS cal;E/P;counts",100,0.7,2},"P.cal.etottracknorm");
-    int etottracknorm_peak_bin = h_cal_e->GetMaximumBin();
-    
-     
+    auto h_cal_e = d_neg.Histo1D({"","SHMS cal;E/P;counts",100,0.1,2},"P.cal.etottracknorm");
+    h_cal_e->Fit("gaus","O","",0.5,1.5);
+    TF1 *fit_cal = h_cal_e->GetFunction("gaus");
+    double cal_mean = fit_cal->GetParameter(1);
+    double cal_sigma = fit_cal->GetParameter(2);
+    double cal_e_cut_low = cal_mean - 3*cal_sigma;
+    double cal_e_cut_high = cal_mean + 3*cal_sigma;
+    TLine *l_cal_e_cut_low = new TLine(cal_e_cut_low,0,cal_e_cut_low,1000);
+    TLine *l_cal_e_cut_high = new TLine(cal_e_cut_high,0,cal_e_cut_high,1000);
+
+    TCanvas *c_cal = new TCanvas();
+    h_cal_e->DrawCopy("hist");
+    fit_cal->SetLineColor(kRed);
+    fit_cal->Draw("same");
+    l_cal_e_cut_low->SetLineColor(kRed);
+    l_cal_e_cut_low->Draw("same");
+    l_cal_e_cut_high->SetLineColor(kRed);
+    l_cal_e_cut_high->Draw("same");
+    c_cal->SaveAs("results/pid/SHMS_cal_e_cut.pdf");
   }//if normal production runs
-  std::ofstream outfile;
-  std::string outfile_name = "results/pid/SHMS_cal_cuts_"+std::to_string(RunGroup)+".json";
-  outfile.open(outfile_name.c_str());
-  //outfile.open("results/HMS_PID_statistics.json",std::ofstream::out | std::ofstream::app);
-  outfile<<jout.dump(4)<<std::endl;
+ // std::ofstream outfile;
+ // std::string outfile_name = "results/pid/SHMS_cal_cuts_"+std::to_string(RunGroup)+".json";
+ // outfile.open(outfile_name.c_str());
+ // //outfile.open("results/HMS_PID_statistics.json",std::ofstream::out | std::ofstream::app);
+ // outfile<<jout.dump(4)<<std::endl;
 }
