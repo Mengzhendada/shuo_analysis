@@ -41,6 +41,8 @@ void plot_for_pid(int RunNumber = 0){
   auto p_aero_npeSum2 = d_coin.Histo1D({"","aero npeSum2;npeSum;counts",100,0,50},"P.aero.npeSum");
   auto p_cal2 = d_coin.Histo1D({"","shms cal2;E/P;counts",100,0,2},"P.cal.etottracknorm");
 
+   
+
   TCanvas *c_p_cal = new TCanvas();
   p_cal->DrawCopy("hist");
   TCanvas *c_h_cal = new TCanvas();
@@ -98,4 +100,13 @@ void plot_for_pid(int RunNumber = 0){
   p_cal2->DrawCopy("hist");
   c_aftercoincut->SaveAs("results/pid/aftercointime.pdf");
 
+  auto h_P_x_fp = d_coin.Histo1D({"","",100,-40,40},"P.dc.x_fp");
+  auto h_P_xp_fp = d_coin.Histo1D({"","",100,-0.2,0.2},"P.dc.xp_fp");
+  TCanvas *c_fp = new TCanvas();
+  c_fp->Divide(1,2);
+  c_fp->cd(1);
+  h_P_x_fp->DrawCopy("hist");
+  c_fp->cd(2);
+  h_P_xp_fp->DrawCopy("hist");
+  c_fp->SaveAs("results/pid/SHMS_fp.pdf");
 }
