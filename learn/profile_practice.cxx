@@ -44,6 +44,7 @@ void profile_practice(){
     reject = true;
     h_npe_shmsp->Fit(f1,"0");
     reject = false;
+    TCanvas *c = new TCanvas();
     TF1 *fleft = new TF1("fleft",fline,0.9*3.15,0.95*3.15,1);
     fleft->SetParameters(f1->GetParameters());
     h_npe_shmsp->GetListOfFunctions()->Add(fleft);
@@ -53,6 +54,5 @@ void profile_practice(){
     h_npe_shmsp->GetListOfFunctions()->Add(fright);
     gROOT->GetListOfFunctions()->Remove(fright);
     h_npe_shmsp->Draw();
- // TCanvas *c = new TCanvas();
- // h2->Fit(f1,"R");
+    c->SaveAs("results/pid/shms_2d.pdf");
 }

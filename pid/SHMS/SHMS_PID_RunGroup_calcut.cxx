@@ -6,6 +6,7 @@
 #include "TAxis.h"
 #include "TF1.h"
 #include "TLine.h"
+#include "TProfile.h"
 #include <vector>
 #include <string>
 #include <iostream>
@@ -15,6 +16,7 @@
 
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
+bool reject;
 
 void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
   json j_cuts;
@@ -74,20 +76,28 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     double coin_peak_center = h_coin_time->GetBinCenter(coin_peak_bin);
     auto d_neg = d_neg_HMS_e.Filter(
         [=](double coin_time){return std::abs(coin_time - coin_peak_center) < 2.0;},{"CTime.ePositronCoinTime_ROC2"});
-
+    auto h_coin_time_cut = d_neg.Histo1D({"","",800,0,100},"CTime.ePositronCoinTime_ROC2");
+    TCanvas *c_coin_time_neg = new TCanvas();
+    h_coin_time->DrawCopy("hist");
+    h_coin_time_cut->SetLineColor(kRed);
+    h_coin_time_cut->DrawCopy("hist same");
+    std::string coin_time_neg_name = "results/pid/SHMS_coin_time_"+std::to_string(RunGroup)+"_neg.pdf";
+    c_coin_time_neg->SaveAs(coin_time_neg_name.c_str());
 
     //hgcer and aerocer no cuts
     auto h_hgcer_npeSum = d_neg.Histo1D({"","cointime cut;npeSum;counts",100,0,50},"P.hgcer.npeSum");
     auto h_aero_npeSum =  d_neg.Histo1D({"","cointime cut;npeSum;counts",100,0,50},"P.aero.npeSum");
 
     //cut electrons from calorimeter
-    auto h_cal_e = d_neg.Histo1D({"","SHMS cal;E/P;counts",100,0.1,2},"P.cal.etottracknorm");
+    auto h_cal_e = d_neg.Histo1D({"","SHMS cal;E/P;counts",100,0.01,2},"P.cal.etottracknorm");
     h_cal_e->Fit("gaus","O","",1,1.2);
     TF1 *fit_cal = h_cal_e->GetFunction("gaus");
     double cal_mean = fit_cal->GetParameter(1);
     double cal_sigma = fit_cal->GetParameter(2);
     double cal_e_cut_low = cal_mean - 3*cal_sigma;
     double cal_e_cut_high = cal_mean + 3*cal_sigma;
+    double cal_e_cut_low_set = j_cuts["SHMS"]["cal_e"].get<double>();
+    if(cal_e_cut_low < cal_e_cut_low_set){cal_e_cut_low = cal_e_cut_low_set;}
     TLine *l_cal_e_cut_low = new TLine(cal_e_cut_low,0,cal_e_cut_low,1000);
     TLine *l_cal_e_cut_high = new TLine(cal_e_cut_high,0,cal_e_cut_high,1000);
 
@@ -118,7 +128,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     h_hgcer_npeSum->DrawCopy("hist");
     h_hgcer_npeSum_picut->SetLineColor(kRed);
     h_hgcer_npeSum_picut->DrawCopy("hist same");
-    gPad->BuildLegend(0.7,0.7,0.9,0.9,"hgcer","f");
+    c_hgcer->BuildLegend(0.7,0.7,1,1,"hgcer","f");
     std::string c_hgcer_name = "results/pid/SHMS_hgcer_"+std::to_string(RunGroup)+"_neg.pdf";
     c_hgcer->SaveAs(c_hgcer_name.c_str());
 
@@ -152,20 +162,59 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     c_hgcer_pi_efficiency->SaveAs(c_hgcer_pi_efficiency_name.c_str());
 
     auto h_hgcer_dp = d_neg_pi.Histo2D({"","hgcer npeSum vs. shms_p;shms_p;npeSum",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.hgcer.npeSum");
-    TF1 *f1 = new TF1("f1","12000*((1-(x*x+0.139*0.139)/(x*x*1.00137*1.00137)))",0.9*SHMS_P,1.22*SHMS_P);
-    std::string hgcer_dp_cut = "shms_p < "+std::to_string(0.95*SHMS_P)+" && shms_p > "+std::to_string(1.05*SHMS_P);
-    auto h_hgcer_dp_fit = d_neg_pi.Filter(hgcer_dp_cut).Histo2D({"","",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.hgcer.npeSum");
-    h_hgcer_dp_fit->Fit("f1","R");
-    //double constant = *f1->GetParameter(1);
-    //std::cout<<constant<<std::endl;
+    TProfile *prof_hgcer_p = h_hgcer_dp->ProfileX("h1",1,-1,"d");
+
+    auto fline = [SHMS_P](double *x, double *par){
+      if(reject && x[0] > 0.95*SHMS_P && x[0] < 1.05*SHMS_P){
+        TF1::RejectPoint();
+        return 0.0;
+      }
+      return par[0]*(1-1/(1.00317*1.00317)-(0.139*0.139)/(1.00137*1.00137*x[0]*x[0]));
+    }; 
+    TF1 *f1 = new TF1("f1",fline,0.9*SHMS_P,1.22*SHMS_P,1);
+    reject = true;
+    prof_hgcer_p->Fit(f1,"0");
+    reject = false;
 
     TCanvas *c_npe_vs_dp = new TCanvas();
-    h_hgcer_dp->SetMaximum(30);
-    h_hgcer_dp->DrawCopy("colz");
-    f1->SetLineColor(kRed);
-    f1->Draw("same");
+
+    TF1 *fleft = new TF1("fleft",fline,0.9*SHMS_P,0.95*SHMS_P,1);
+    fleft->SetParameters(f1->GetParameters());
+    prof_hgcer_p->GetListOfFunctions()->Add(fleft);
+    gROOT->GetListOfFunctions()->Remove(fleft);
+    TF1 *fright = new TF1("fright",fline,1.05*SHMS_P,1.22*SHMS_P,1);
+    fright->SetParameters(f1->GetParameters());
+    prof_hgcer_p->GetListOfFunctions()->Add(fright);
+    gROOT->GetListOfFunctions()->Remove(fright);
+    prof_hgcer_p->Draw();
     std::string c_npe_vs_dp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_neg.pdf";
     c_npe_vs_dp->SaveAs(c_npe_vs_dp_name.c_str());
+
+    auto h_hgcernpeSum_xfp = d_neg_pi.Histo2D({"","hgcer npeSum vs. x_fp;x_fp;hgcer npeSum",100,-30,30,100,0,30},"P.dc.x_fp","P.hgcer.npeSum");
+    TCanvas *c_npe_vs_xfp = new TCanvas();
+    h_hgcernpeSum_xfp->SetMaximum(50);
+    h_hgcernpeSum_xfp->DrawCopy("colz");
+    std::string c_npe_vs_xfp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_xfp_neg.pdf";
+    c_npe_vs_xfp->SaveAs(c_npe_vs_xfp_name.c_str());
+    auto h_hgcernpeSum_yfp = d_neg_pi.Histo2D({"","hgcer npeSum vs. y_fp;y_fp;hgcer npeSum",100,-20,20,100,0,30},"P.dc.y_fp","P.hgcer.npeSum");
+    TCanvas *c_npe_vs_yfp = new TCanvas();
+    h_hgcernpeSum_yfp->SetMaximum(80);
+    h_hgcernpeSum_yfp->DrawCopy("colz");
+    std::string c_npe_vs_yfp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_yfp_neg.pdf";
+    c_npe_vs_yfp->SaveAs(c_npe_vs_yfp_name.c_str());
+    auto h_hgcernpeSum_xpfp = d_neg_pi.Histo2D({"","hgcer npeSum vs. xp_fp;xp_fp;hgcer npeSum",100,-0.1,0.1,100,0,30},"P.dc.xp_fp","P.hgcer.npeSum");
+    TCanvas *c_npe_vs_xpfp = new TCanvas();
+    //h_hgcernpeSum_xpfp->SetMaximum(30);
+    h_hgcernpeSum_xpfp->DrawCopy("colz");
+    std::string c_npe_vs_xpfp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_xpfp_neg.pdf";
+    c_npe_vs_xpfp->SaveAs(c_npe_vs_xpfp_name.c_str());
+    auto h_hgcernpeSum_ypfp = d_neg_pi.Histo2D({"","hgcer npeSum vs. yp_fp;yp_fp;hgcer npeSum",100,-0.1,0.1,100,0,30},"P.dc.yp_fp","P.hgcer.npeSum");
+    TCanvas *c_npe_vs_ypfp = new TCanvas();
+    //h_hgcernpeSum_xpfp->SetMaximum(30);
+    h_hgcernpeSum_ypfp->DrawCopy("colz");
+    std::string c_npe_vs_ypfp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_ypfp_neg.pdf";
+    c_npe_vs_ypfp->SaveAs(c_npe_vs_ypfp_name.c_str());
+    
 
     double hgcer_pi = j_cuts["SHMS"]["HGC_pi"].get<double>();
     std::string hgcer_pi_cut = "P.hgcer.npeSum < "+std::to_string(hgcer_pi);
@@ -177,80 +226,89 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     h_aero_npeSum_picut->DrawCopy("hist same");
     h_aero_npeSum_kcut->SetLineColor(kBlue);
     h_aero_npeSum_kcut->DrawCopy("hist same");
-    gPad->BuildLegend(0.7,0.7,0.9,0.9,"aero","f");
+    gPad->BuildLegend(0.7,0.7,1,1,"aero","f");
     std::string c_aero_name = "results/pid/SHMS_aero_"+std::to_string(RunGroup)+"_neg.pdf";
     c_aero->SaveAs(c_aero_name.c_str());
 
     //for pos part
-   // for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
-   //   int RunNumber = *it;
-   //   std::cout<<RunNumber<<std::endl;
-   //   std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
-   //   files_pos.push_back(rootfile_name);
-   // }
+   for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+     int RunNumber = *it;
+     std::cout<<RunNumber<<std::endl;
+     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+     files_pos.push_back(rootfile_name);
+   }
 
-   // //add momentum
-   // ROOT::RDataFrame d_pos_raw("T",files_pos);
-   // auto d_pos_SHMS = d_pos_raw.Filter("-10 < P.gtr.dp && P.gtr.dp < 22");
-   // auto d_pos_HMS_e = d_pos_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 10")
-   //   .Filter("H.cer.npeSum > 10")
-   //   .Filter("H.cal.etottracknorm >0.85")
-   //   .Filter("fEvtHdr.fEvtType == 4")
-   //   .Define("shms_p",shms_p_calculate,{"P.gtr.dp"});
+   //add momentum
+   ROOT::RDataFrame d_pos_raw("T",files_pos);
+   auto d_pos_SHMS = d_pos_raw.Filter("-10 < P.gtr.dp && P.gtr.dp < 22");
+   auto d_pos_HMS_e = d_pos_SHMS.Filter("-10 < H.gtr.dp && H.gtr.dp < 10")
+     .Filter("H.cer.npeSum > 10")
+     .Filter("H.cal.etottracknorm >0.85")
+     .Filter("fEvtHdr.fEvtType == 4")
+     .Define("shms_p",shms_p_calculate,{"P.gtr.dp"});
 
-   // //coin time cut
-   // auto h_coin_time_pos = d_pos_HMS_e.Histo1D({"coin_time","coin_time;cointime;counts",800,0,100},"CTime.ePositronCoinTime_ROC2");
-   // int coin_peak_bin_pos = h_coin_time_pos->GetMaximumBin();
-   // double coin_peak_center = h_coin_time->GetBinCenter(coin_peak_bin);
-   // auto d_pos = d_pos_HMS_e.Filter(
-   //     [=](double coin_time){return std::abs(coin_time - coin_peak_center) < 2.0;},{"CTime.ePositronCoinTime_ROC2"});
+   //coin time cut
+   auto h_coin_time_pos = d_pos_HMS_e.Histo1D({"coin_time","coin_time;cointime;counts",800,0,100},"CTime.ePositronCoinTime_ROC2");
+   int coin_peak_bin_pos = h_coin_time_pos->GetMaximumBin();
+   double coin_peak_center_pos = h_coin_time_pos->GetBinCenter(coin_peak_bin_pos);
+   auto d_pos = d_pos_HMS_e.Filter(
+       [=](double coin_time){return std::abs(coin_time - coin_peak_center_pos) < 1.5;},{"CTime.ePositronCoinTime_ROC2"});
+   auto h_cointime_2ndpeak = d_pos_HMS_e.Filter([=](double coin_time){return coin_time > coin_peak_center+2;},{"CTime.ePositronCoinTime_ROC2"}).Histo1D({"","",800,coin_peak_center,100},"CTime.ePositronCoinTime_ROC2");
+   int coin_2ndpeak_bin_pos = h_cointime_2ndpeak->GetMaximumBin();
+   double coin_2ndpeak_center_pos = h_cointime_2ndpeak->GetBinCenter(coin_2ndpeak_bin_pos);
+   //coin_2ndpeak_center_pos = 46;
+   std::cout<<"first peak "<<coin_peak_center_pos<<" second peak "<<coin_2ndpeak_center_pos <<std::endl;
+   auto d_pos_proton = d_pos_HMS_e.Filter(
+   [=](double coin_time){return std::abs(coin_time - coin_2ndpeak_center_pos) < 1.5;},{"CTime.ePositronCoinTime_ROC2"});
+   std::cout<<"first peak "<<*d_pos.Count()<<" second peak "<<*d_pos_proton.Count()<<std::endl;
+  auto h_1stpeak_pos = d_pos.Histo1D({"","1st peak",800,0,100},"CTime.ePositronCoinTime_ROC2");
+  auto h_2ndpeak_pos = d_pos_proton.Histo1D({"","2nd peak",800,0,100},"CTime.ePositronCoinTime_ROC2");
+  TCanvas *c_pos_cointime = new TCanvas();
+  h_coin_time_pos->DrawCopy("hist");
+  h_1stpeak_pos->SetLineColor(kRed);
+  h_1stpeak_pos->DrawCopy("hist same");
+  h_2ndpeak_pos->SetLineColor(kGreen);
+  h_2ndpeak_pos->DrawCopy("hist same");
+  std::string c_pos_cointime_name = "results/pid/SHMS_coin_time_"+std::to_string(RunGroup)+"_pos.pdf";
+  c_pos_cointime->SaveAs(c_pos_cointime_name.c_str());
+  
+   //hgcer and aerocer no cuts
+   auto h_hgcer_npeSum_pos = d_pos.Histo1D({"","coin time 1st;npeSum;counts",100,0,50},"P.hgcer.npeSum");
+   auto h_aero_npeSum_pos =  d_pos.Histo1D({"","coin time 1st;npeSum;counts",100,0,50},"P.aero.npeSum");
+   auto h_hgcer_npeSum_pos2 = d_pos_proton.Histo1D({"","coin time 2nd;npeSum;counts",100,0,50},"P.hgcer.npeSum");
+   auto h_aero_npeSum_pos2 =  d_pos_proton.Histo1D({"","coin time 2nd;npeSum;counts",100,0,50},"P.aero.npeSum");
+
+   //cut electrons from calorimeter
+   auto h_cal_e_pos = d_pos.Histo1D({"","SHMS cal e;E/P;counts",100,0.01,2},"P.cal.etottracknorm");
+
+   TCanvas *c_cal_pos = new TCanvas();
+   h_cal_e_pos->DrawCopy("hist");
+   l_cal_e_cut_low->SetLineColor(kRed);
+   l_cal_e_cut_low->Draw("same");
+   l_cal_e_cut_high->SetLineColor(kRed);
+   l_cal_e_cut_high->Draw("same");
+   l_cal_pi_cut_low->SetLineColor(kBlue);
+   l_cal_pi_cut_low->Draw("same");
+   std::string c_cal_pos_name = "results/pid/SHMS_cal_e_cut_"+std::to_string(RunGroup)+"_pos.pdf";
+   c_cal_pos->SaveAs(c_cal_pos_name.c_str());
 
 
-   // //hgcer and aerocer no cuts
-   // auto h_hgcer_npeSum = d_pos.Histo1D({"","hgcer;npeSum;counts",100,0,50},"P.hgcer.npeSum");
-   // auto h_aero_npeSum =  d_pos.Histo1D({"","aero;npeSum;counts",100,0,50},"P.aero.npeSum");
+   auto d_pos_pi = d_pos.Filter(shms_cal_pi_cut);
+   auto h_hgcer_npeSum_picut_pos = d_pos_pi.Histo1D({"","cal pi;npeSum;counts",100,0,50},"P.hgcer.npeSum");
+   auto h_aero_npeSum_picut_pos = d_pos_pi.Histo1D({"","cal pi;npeSum;counts",100,0,50},"P.aero.npeSum");
+   auto h_hgcer_npeSum_proton_pos = d_pos_proton.Histo1D({"","coin time proton;npeSum;counts",100,0,50},"P.hgcer.npeSum");
+   auto h_aero_npeSum_proton_pos = d_pos_proton.Histo1D({"","coin time proton;npeSum;counts",100,0,50},"P.aero.npeSum");
 
-   // //cut electrons from calorimeter
-   // auto h_cal_e = d_pos.Histo1D({"","SHMS cal;E/P;counts",100,0.1,2},"P.cal.etottracknorm");
-   // h_cal_e->Fit("gaus","O","",1,1.2);
-   // TF1 *fit_cal = h_cal_e->GetFunction("gaus");
-   // double cal_mean = fit_cal->GetParameter(1);
-   // double cal_sigma = fit_cal->GetParameter(2);
-   // double cal_e_cut_low = cal_mean - 3*cal_sigma;
-   // double cal_e_cut_high = cal_mean + 3*cal_sigma;
-   // TLine *l_cal_e_cut_low = new TLine(cal_e_cut_low,0,cal_e_cut_low,1000);
-   // TLine *l_cal_e_cut_high = new TLine(cal_e_cut_high,0,cal_e_cut_high,1000);
-
-   // double cal_pi_cut_low = j_cuts["SHMS"]["cal_pi_low"].get<double>();
-   // TLine *l_cal_pi_cut_low = new TLine(cal_pi_cut_low,0,cal_pi_cut_low,1000);
-
-   // TCanvas *c_cal = new TCanvas();
-   // h_cal_e->DrawCopy("hist");
-   // fit_cal->SetLineColor(kRed);
-   // fit_cal->Draw("same");
-   // l_cal_e_cut_low->SetLineColor(kRed);
-   // l_cal_e_cut_low->Draw("same");
-   // l_cal_e_cut_high->SetLineColor(kRed);
-   // l_cal_e_cut_high->Draw("same");
-   // l_cal_pi_cut_low->SetLineColor(kBlue);
-   // l_cal_pi_cut_low->Draw("same");
-   // std::string c_cal_name = "results/pid/SHMS_cal_e_cut_"+std::to_string(RunGroup)+".pdf";
-   // c_cal->SaveAs(c_cal_name.c_str());
-
-
-   // std::string shms_cal_pi_cut = "P.cal.etottracknorm >" +std::to_string(cal_pi_cut_low)+" && P.cal.etottracknorm < "+ std::to_string(cal_e_cut_low);
-   // auto d_pos_pi = d_pos.Filter(shms_cal_pi_cut);
-   // auto h_hgcer_npeSum_picut = d_pos_pi.Histo1D({"","cal pi cut;npeSum;counts",100,0,50},"P.hgcer.npeSum");
-   // auto h_aero_npeSum_picut = d_pos_pi.Histo1D({"","cal pi cut;npeSum;counts",100,0,50},"P.aero.npeSum");
-
-   // //1D histos for cerenkov
-   // TCanvas *c_hgcer = new TCanvas();
-   // h_hgcer_npeSum->DrawCopy("hist");
-   // h_hgcer_npeSum_picut->SetLineColor(kRed);
-   // h_hgcer_npeSum_picut->DrawCopy("hist same");
-   // c_hgcer->BuildLegend();
-   // std::string c_hgcer_name = "results/pid/SHMS_hgcer_"+std::to_string(RunGroup)+"_pos.pdf";
-   // c_hgcer->SaveAs(c_hgcer_name.c_str());
+   //1D histos for cerenkov
+   TCanvas *c_hgcer_pos = new TCanvas();
+   h_hgcer_npeSum_pos->DrawCopy("hist");
+   h_hgcer_npeSum_picut_pos->SetLineColor(kRed);
+   h_hgcer_npeSum_picut_pos->DrawCopy("hist same");
+   h_hgcer_npeSum_proton_pos->SetLineColor(kGreen);
+   h_hgcer_npeSum_proton_pos->DrawCopy("hist same");
+   gPad->BuildLegend(0.7,0.7,0.9,0.9,"hgcer npeSum","f");
+   std::string c_hgcer_pos_name = "results/pid/SHMS_hgcer_"+std::to_string(RunGroup)+"_pos.pdf";
+   c_hgcer_pos->SaveAs(c_hgcer_pos_name.c_str());
 
    // auto h_hgcer_dp = d_pos_pi.Histo2D({"","hgcer npeSum vs. shms_p;shms_p;npeSum",100,0.9*SHMS_P,1.22*SHMS_P,100,0,50},"P.hgcer.npeSum","shms_p");
    // TCanvas *c_npe_vs_dp = new TCanvas();
@@ -258,19 +316,30 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
    // std::string c_npe_vs_dp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_pos.pdf";
    // c_npe_vs_dp->SaveAs(c_npe_vs_dp_name.c_str());
 
-   // double hgcer_pi = j_cuts["SHMS"]["HGC_pi"].get<double>();
-   // std::string hgcer_pi_cut = "P.hgcer.npeSum < "+std::to_string(hgcer_pi);
-   // auto d_pos_k = d_pos_pi.Filter(hgcer_pi_cut.c_str());
-   // auto h_aero_npeSum_kcut = d_pos_k.Histo1D({"","karon cut on HGC;npeSum;counts",100,0,50},"P.aero.npeSum");
-   // TCanvas *c_aero = new TCanvas();
-   // h_aero_npeSum->DrawCopy("hist");
-   // h_aero_npeSum_picut->SetLineColor(kRed);
-   // h_aero_npeSum_picut->DrawCopy("hist same");
-   // h_aero_npeSum_kcut->SetLineColor(kBlue);
-   // h_aero_npeSum_kcut->DrawCopy("hist same");
-   // c_aero->BuildLegend();
-   // std::string c_aero_name = "results/pid/SHMS_aero_"+std::to_string(RunGroup)+"_pos.pdf";
-   // c_aero->SaveAs(c_aero_name.c_str());
+    auto d_pos_k = d_pos_pi.Filter(hgcer_pi_cut.c_str());
+    auto h_aero_npeSum_kcut_pos = d_pos_k.Histo1D({"","karon cut on HGC;npeSum;counts",100,0,50},"P.aero.npeSum");
+    TCanvas *c_aero_pos = new TCanvas();
+    h_aero_npeSum_pos->DrawCopy("hist");
+    h_aero_npeSum_picut_pos->SetLineColor(kRed);
+    h_aero_npeSum_picut_pos->DrawCopy("hist same");
+    h_aero_npeSum_kcut_pos->SetLineColor(kBlue);
+    h_aero_npeSum_kcut_pos->DrawCopy("hist same");
+    h_aero_npeSum_proton_pos->SetLineColor(kGreen);
+    h_aero_npeSum_proton_pos->DrawCopy("hist same");
+    gPad->BuildLegend(0.7,0.7,0.9,0.9,"aero npeSum");
+    std::string c_aero_pos_name = "results/pid/SHMS_aero_"+std::to_string(RunGroup)+"_pos.pdf";
+    c_aero_pos->SaveAs(c_aero_pos_name.c_str());
+  
+    auto h_beta_p = d_pos.Histo2D({"","1st coin peak;momentum;beta",100,0.9*SHMS_P,1.1*SHMS_P,100,0.8,1.1},"shms_p","P.gtr.beta");
+    auto h_beta_p_proton = d_pos_proton.Histo2D({"","2nd coin peak;momentum;beta",100,0.9*SHMS_P,1.1*SHMS_P,100,0.8,1.1},"shms_p","P.gtr.beta");
+    TCanvas* c_beta_pos = new TCanvas();
+    c_beta_pos->Divide(1,2);
+    c_beta_pos->cd(1);
+    h_beta_p->Draw("colz");
+    c_beta_pos->cd(2);
+    h_beta_p_proton->Draw("colz");
+    std::string c_beta_pos_name = "results/pid/SHMS_beta_p_"+std::to_string(RunGroup)+"_pos.pdf";
+    c_beta_pos->SaveAs(c_beta_pos_name.c_str());
   }//if normal production runs
   // std::ofstream outfile;
   // std::string outfile_name = "results/pid/SHMS_cal_cuts_"+std::to_string(RunGroup)+".json";
