@@ -169,12 +169,9 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
         TF1::RejectPoint();
         return 0.0;
       }
-      //return par[0]*(1-1/(1.00137*1.00137)-(0.139*0.139)/(1.00137*1.00137*x[0]*x[0]));
-      //return par[0]*(1-(x[0]*x[0]+0.139*0.139)/(par[1]*par[1]*x[0]*x[0]));
-      //return par[0]*(((par[1]*par[1]-1)*x[0]*x[0]-(0.139*0.139))/(par[1]*par[1]*x[0]*x[0]));
-      return par[0]*(par[1]-1-(0.139*0.139)/(x[0]*x[0]));
+      return par[0]*((1-par[1]*(x[0]*x[0]+0.139*0.139)/(x[0]*x[0]*1.00137*1.00137)));
     }; 
-    TF1 *f1 = new TF1("f1",fline,0.9*SHMS_P,1.22*SHMS_P,1);
+    TF1 *f1 = new TF1("f1",fline,0.9*SHMS_P,1.22*SHMS_P,2);
     //f1->SetParameters(8000,1.000137);
     reject = true;
     prof_hgcer_p->Fit(f1,"0");
@@ -182,11 +179,11 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
 
     TCanvas *c_npe_vs_dp = new TCanvas();
 
-    TF1 *fleft = new TF1("fleft",fline,0.9*SHMS_P,0.93*SHMS_P,1);
+    TF1 *fleft = new TF1("fleft",fline,0.9*SHMS_P,0.93*SHMS_P,2);
     fleft->SetParameters(f1->GetParameters());
     prof_hgcer_p->GetListOfFunctions()->Add(fleft);
     gROOT->GetListOfFunctions()->Remove(fleft);
-    TF1 *fright = new TF1("fright",fline,1.05*SHMS_P,1.22*SHMS_P,1);
+    TF1 *fright = new TF1("fright",fline,1.05*SHMS_P,1.22*SHMS_P,2);
     fright->SetParameters(f1->GetParameters());
     prof_hgcer_p->GetListOfFunctions()->Add(fright);
     gROOT->GetListOfFunctions()->Remove(fright);

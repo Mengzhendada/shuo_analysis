@@ -32,24 +32,23 @@ void profile_practice(){
   auto h_npe_shmsp = d_SHMS_coin.Histo2D({"","",100,0.9*3.15,1.22*3.15,100,0,30},"shms_p","P.hgcer.npeSum")->ProfileX("h1",1,-1,"d");
      auto fline = [SHMS_P](double* x,double *par){
       //double shms_p = 3.15;
-      if(reject && x[0] > 0.95*SHMS_P && x[0] < 1.05*SHMS_P){
+      if(reject && x[0] > 0.93*SHMS_P && x[0] < 1.05*SHMS_P){
         TF1::RejectPoint();
         return 0.0;
       }
-      //return par[0]*((1-(x[0]*x[0]+0.139*0.139)/(x[0]*x[0]*1.00137*1.00137)));
-      return par[0]*(1-1/(1.00137*1.00137)-(0.139*0.139)/(1.00137*1.00137*x[0]*x[0]));
+      return par[0]*((1-par[1]*(x[0]*x[0]+0.139*0.139)/(x[0]*x[0]*1.00137*1.00137)));
     };
-    TF1 *f1 = new TF1("f1",fline,0.9*SHMS_P,1.22*SHMS_P,1);
+    TF1 *f1 = new TF1("f1",fline,0.9*SHMS_P,1.22*SHMS_P,2);
     //f1->SetParameter(0,SHMS_P);
     reject = true;
     h_npe_shmsp->Fit(f1,"0");
     reject = false;
     TCanvas *c = new TCanvas();
-    TF1 *fleft = new TF1("fleft",fline,0.9*3.15,0.95*3.15,1);
+    TF1 *fleft = new TF1("fleft",fline,0.9*3.15,0.93*3.15,2);
     fleft->SetParameters(f1->GetParameters());
     h_npe_shmsp->GetListOfFunctions()->Add(fleft);
     gROOT->GetListOfFunctions()->Remove(fleft);
-    TF1 *fright = new TF1("fright",fline,1.05*3.15,1.22*3.15,1);
+    TF1 *fright = new TF1("fright",fline,1.05*3.15,1.22*3.15,2);
     fright->SetParameters(f1->GetParameters());
     h_npe_shmsp->GetListOfFunctions()->Add(fright);
     gROOT->GetListOfFunctions()->Remove(fright);
