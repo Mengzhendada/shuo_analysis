@@ -7,6 +7,7 @@
 #include "TF1.h"
 #include "TLine.h"
 #include "TProfile.h"
+#include "TPaveText.h"
 #include <vector>
 #include <string>
 #include <iostream>
@@ -177,6 +178,14 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     prof_hgcer_p->Fit(f1,"0");
     reject = false;
 
+    double p0 = f1->GetParameter(0);
+    double p1 = f1->GetParameter(1);
+    std::cout<<" get parameters "<<p0<<" "<<p1<<std::endl;
+    std::string parameter_1 = "p0 = "+std::to_string(p0);
+    std::string parameter_2 = "p1 = "+std::to_string(p1);
+    TPaveText *pt_neg = new TPaveText(0.6,0.15,0.9,0.25,"brNDC");
+    pt_neg->AddText(parameter_1.c_str());
+    pt_neg->AddText(parameter_2.c_str());
     TCanvas *c_npe_vs_dp = new TCanvas();
 
     TF1 *fleft = new TF1("fleft",fline,0.9*SHMS_P,0.93*SHMS_P,2);
@@ -190,8 +199,14 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     double p0_neg = *f1->GetParameters();
     gPad->BuildLegend(0.7,0.7,1,1,(std::to_string(p0_neg)).c_str());
     prof_hgcer_p->Draw();
+    c_neg_vs_dp->cd();
+    pt->Draw();
     std::string c_npe_vs_dp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_neg.pdf";
     c_npe_vs_dp->SaveAs(c_npe_vs_dp_name.c_str());
+
+//initialize p0,p1 to use in pos runs
+    p0 = 0;
+    p1 = 0;
 
     auto h_hgcernpeSum_xfp = d_neg_pi.Histo2D({"","hgcer npeSum vs. x_fp;x_fp;hgcer npeSum",100,-30,30,100,0,30},"P.dc.x_fp","P.hgcer.npeSum");
     TProfile* prof_hgcer_xfp = h_hgcernpeSum_xfp->ProfileX("h1",1,-1,"d");
@@ -278,7 +293,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
   h_coin_time_pos->DrawCopy("hist");
   h_1stpeak_pos->SetLineColor(kRed);
   h_1stpeak_pos->DrawCopy("hist same");
-  h_2ndpeak_pos->SetLineColor(kGreen);
+  h_2ndpeak_pos->SetLineColor(8);
   h_2ndpeak_pos->DrawCopy("hist same");
   std::string c_pos_cointime_name = "results/pid/SHMS_coin_time_"+std::to_string(RunGroup)+"_pos.pdf";
   c_pos_cointime->SaveAs(c_pos_cointime_name.c_str());
@@ -312,7 +327,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
 
    //1D histos for cerenkov
    TCanvas *c_hgcer_pos = new TCanvas();
-   h_hgcer_npeSum_proton_pos->SetLineColor(kGreen);
+   h_hgcer_npeSum_proton_pos->SetLineColor(8);
    h_hgcer_npeSum_proton_pos->DrawCopy("hist");
    h_hgcer_npeSum_pos->DrawCopy("hist same");
    h_hgcer_npeSum_picut_pos->SetLineColor(kRed);
@@ -327,6 +342,15 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     reject = true;
     prof_hgcer_p_pos->Fit(f1,"0");
     reject = false;
+    
+    p0 = f1->GetParameter(0);
+    p1 = f1->GetParameter(1);
+    std::cout<<" get parameters "<<p0<<" "<<p1<<std::endl;
+    parameter_1 = "p0 = "+std::to_string(p0);
+    parameter_2 = "p1 = "+std::to_string(p1);
+    TPaveText *pt_pos = new TPaveText(0.6,0.15,0.9,0.25,"brNDC");
+    pt_pos->AddText(parameter_1.c_str());
+    pt_pos->AddText(parameter_2.c_str());
 
     TCanvas *c_npe_vs_dp_pos = new TCanvas();
 
@@ -342,6 +366,8 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     gPad->BuildLegend(0.7,0.7,1,1,(std::to_string(p0_pos)).c_str());
 
     prof_hgcer_p_pos->Draw();
+    c_npe_vs_dp_pos->cd();
+    pt_pos->Draw();
     std::string c_npe_vs_dp_pos_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_pos.pdf";
     c_npe_vs_dp_pos->SaveAs(c_npe_vs_dp_pos_name.c_str());
 
@@ -382,7 +408,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     auto d_pos_k = d_pos_pi.Filter(hgcer_pi_cut.c_str());
     auto h_aero_npeSum_kcut_pos = d_pos_k.Histo1D({"","karon cut on HGC;npeSum;counts",100,0,50},"P.aero.npeSum");
     TCanvas *c_aero_pos = new TCanvas();
-    h_aero_npeSum_proton_pos->SetLineColor(kGreen);
+    h_aero_npeSum_proton_pos->SetLineColor(8);
     h_aero_npeSum_proton_pos->DrawCopy("hist");
     h_aero_npeSum_pos->DrawCopy("hist same");
     h_aero_npeSum_picut_pos->SetLineColor(kRed);

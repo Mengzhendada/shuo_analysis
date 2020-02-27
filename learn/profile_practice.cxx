@@ -6,6 +6,8 @@
 #include "TProfile.h"
 #include "TF1.h"
 #include "TH1.h"
+#include "TLatex.h"
+#include "TPaveText.h"
 bool reject;
 void profile_practice(){
   std::string rootfile_name = "ROOTfiles/coin_replay_production_7593_7593.root";
@@ -43,7 +45,17 @@ void profile_practice(){
     reject = true;
     h_npe_shmsp->Fit(f1,"0");
     reject = false;
+    double p0 = f1->GetParameter(0);
+    double p1 = f1->GetParameter(1);
+    std::cout<<" parameters "<<p0<<" "<<p1<<std::endl;
+    std::string parameter_1 = "p0 = "+std::to_string(p0);
+    std::string parameter_2 = "p1 = "+std::to_string(p1);
+
+    //c->cd();
+    //return c;
     TCanvas *c = new TCanvas();
+    //c->Divide(1,2);
+    //c->cd(1);
     TF1 *fleft = new TF1("fleft",fline,0.9*3.15,0.93*3.15,2);
     fleft->SetParameters(f1->GetParameters());
     h_npe_shmsp->GetListOfFunctions()->Add(fleft);
@@ -52,6 +64,12 @@ void profile_practice(){
     fright->SetParameters(f1->GetParameters());
     h_npe_shmsp->GetListOfFunctions()->Add(fright);
     gROOT->GetListOfFunctions()->Remove(fright);
+    TPaveText *pt  = new  TPaveText(0.6,0.15,0.9,0.25,"brNDC");
+    pt->AddText(parameter_1.c_str());
+    pt->AddText(parameter_2.c_str());
+    h_npe_shmsp->SetBit(TH1::kNoStats);
     h_npe_shmsp->Draw();
+    c->cd();
+    pt->Draw();
     c->SaveAs("results/pid/shms_2d.pdf");
 }
