@@ -29,13 +29,13 @@ void HMS_cer_pion(int RunGroup = 0){
   }
   json j_cuts;
   {
-    std::ifstream ifs("db2/HMS_cuts.json");
+    std::ifstream ifs("db2/PID_test.json");
     ifs>>j_cuts;
   }
   std::vector<int> coolcolor;
   coolcolor = j_cuts["coolcolor"].get<std::vector<int>>();
-  double cal_pi_low = j_cuts["cal_pi_low"].get<double>();
-  double cal_pi_high = j_cuts["cal_pi_high"].get<double>();
+  double cal_pi_low = j_cuts["HMS"]["cal_pi_low"].get<double>();
+  double cal_pi_high = j_cuts["HMS"]["cal_pi_high"].get<double>();
   std::string cal_pion_cut = "H.cal.etottracknorm > "+std::to_string(cal_pi_low)+" && H.cal.etottracknorm < "+std::to_string(cal_pi_high);
   json j_rungroup;
   {
@@ -43,7 +43,7 @@ void HMS_cer_pion(int RunGroup = 0){
     ifs>>j_rungroup;
   }
   std::vector<double> all_p;
-  double P_pion_threshold = j_cuts["cer_pi_threshold"].get<double>();
+  double P_pion_threshold = j_cuts["HMS"]["cer_pi_threshold"].get<double>();
   for(auto it = GroupNum.begin();it!=GroupNum.end();++it){
     std::cout<<*it<<std::endl;
     int RunGroup = *it;
@@ -267,7 +267,7 @@ void HMS_cer_pion(int RunGroup = 0){
   //std::vector<TH1D*> vector_p_neg,vector_p_pos;
   TH1D* h_npeSum_all_neg = new TH1D("","",100,0,30);
   TH1D* h_p_all_neg = new TH1D("","",100,all_p_min,all_p_max);
-  TH2D* h_npeSum_p_all_neg = new TH2D("","",100,all_p_min,all_p_max,100,0,30); 
+  TH2D* h_npeSum_p_all_neg = new TH2D("","HMS npeSum vs p;momentum;cer npeSum",100,all_p_min,all_p_max,100,0,30); 
   std::vector<int> counts_neg;
   TCanvas* c_npeSum_p_method1 = new TCanvas();
   for(auto it = GroupNum.begin();it!=GroupNum.end();++it){
