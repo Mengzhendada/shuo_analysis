@@ -346,7 +346,7 @@ void coin_time(int RunGroup = 0){
   h_hod_starttime_1st->DrawCopy("hist same");
   h_hod_starttime_2nd->SetLineColor(kBlue);
   h_hod_starttime_2nd->DrawCopy("hist same");
-  gPad->BuildLegend(0.85,0,85,1,1);
+  gPad->BuildLegend(0.85,0,85,1,1,"f");
   c_hod->cd(2);
   h_time_diff3_pos->DrawCopy("hist");
   h_time_diff3_1st->SetLineColor(kRed);
@@ -378,8 +378,8 @@ void coin_time(int RunGroup = 0){
   h_npeSum_2nd->DrawCopy("hist same");
   c_npeSum_pos->SaveAs("results/pid/coin_time_pos_hgcer.pdf");
 
-  auto h_time_diff_1st = d_pos_first.Histo1D({"h_rf_time","type4,cointime cut;rf_time",200,-10,10},"rf_minus_fp_time");
-  int time_diff_pos_bin_min = h_time_diff_pos->GetMinumBin();
+  //auto h_time_diff_1st = d_pos_first.Histo1D({"h_rf_time","type4,cointime cut;rf_time",200,-10,10},"rf_minus_fp_time");
+  int time_diff_pos_bin_min = h_time_diff_pos->GetMinimumBin();
   double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
   double offset_pos = 400.8-time_diff_pos_min;
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
