@@ -20,6 +20,8 @@ using json = nlohmann::json;
 bool reject;
 
 void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
+  std::ofstream ofs;
+  ofs.open("npe_p_fit_param.txt",std::ofstream::out | std::ofstream::app);
   json j_cuts;
   {
     std::ifstream ifs("db2/PID_test.json");
@@ -129,7 +131,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     h_hgcer_npeSum->DrawCopy("hist");
     h_hgcer_npeSum_picut->SetLineColor(kRed);
     h_hgcer_npeSum_picut->DrawCopy("hist same");
-    c_hgcer->BuildLegend(0.7,0.7,1,1,"hgcer","f");
+    c_hgcer->BuildLegend(0.7,0.7,1,1,"hgcer");
     std::string c_hgcer_name = "results/pid/SHMS_hgcer_"+std::to_string(RunGroup)+"_neg.pdf";
     c_hgcer->SaveAs(c_hgcer_name.c_str());
 
@@ -180,10 +182,13 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
 
     double p0 = f1->GetParameter(0);
     double p1 = f1->GetParameter(1);
+    ofs<<RunGroup<<" "<<p0<<" "<<p1;
     std::cout<<" get parameters "<<p0<<" "<<p1<<std::endl;
+    std::string shms_p_text = "SHMS p = "+std::to_string(SHMS_P);
     std::string parameter_1 = "p0 = "+std::to_string(p0);
     std::string parameter_2 = "p1 = "+std::to_string(p1);
     TPaveText *pt_neg = new TPaveText(0.6,0.15,0.9,0.25,"brNDC");
+    pt_neg->AddText(shms_p_text.c_str());
     pt_neg->AddText(parameter_1.c_str());
     pt_neg->AddText(parameter_2.c_str());
     TCanvas *c_npe_vs_dp = new TCanvas();
@@ -196,11 +201,10 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     fright->SetParameters(f1->GetParameters());
     prof_hgcer_p->GetListOfFunctions()->Add(fright);
     gROOT->GetListOfFunctions()->Remove(fright);
-    double p0_neg = *f1->GetParameters();
-    gPad->BuildLegend(0.7,0.7,1,1,(std::to_string(p0_neg)).c_str());
+    prof_hgcer_p->SetBit(TH1::kNoStats);
     prof_hgcer_p->Draw();
-    c_neg_vs_dp->cd();
-    pt->Draw();
+    c_npe_vs_dp->cd();
+    pt_neg->Draw();
     std::string c_npe_vs_dp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_neg.pdf";
     c_npe_vs_dp->SaveAs(c_npe_vs_dp_name.c_str());
 
@@ -213,6 +217,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     TCanvas *c_npe_vs_xfp = new TCanvas();
     h_hgcernpeSum_xfp->SetMaximum(50);
     //h_hgcernpeSum_xfp->DrawCopy("colz");
+    prof_hgcer_xfp->SetBit(TH1::kNoStats);
     prof_hgcer_xfp->Draw();
     std::string c_npe_vs_xfp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_xfp_neg.pdf";
     c_npe_vs_xfp->SaveAs(c_npe_vs_xfp_name.c_str());
@@ -221,6 +226,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     TCanvas *c_npe_vs_yfp = new TCanvas();
     h_hgcernpeSum_yfp->SetMaximum(80);
     //h_hgcernpeSum_yfp->DrawCopy("colz");
+    prof_hgcer_yfp->SetBit(TH1::kNoStats);
     prof_hgcer_yfp->Draw();
     std::string c_npe_vs_yfp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_yfp_neg.pdf";
     c_npe_vs_yfp->SaveAs(c_npe_vs_yfp_name.c_str());
@@ -229,6 +235,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     TCanvas *c_npe_vs_xpfp = new TCanvas();
     //h_hgcernpeSum_xpfp->SetMaximum(30);
     //h_hgcernpeSum_xpfp->DrawCopy("colz");
+    prof_hgcernpeSum_xpfp->SetBit(TH1::kNoStats);
     prof_hgcernpeSum_xpfp->Draw();
     std::string c_npe_vs_xpfp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_xpfp_neg.pdf";
     c_npe_vs_xpfp->SaveAs(c_npe_vs_xpfp_name.c_str());
@@ -237,6 +244,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     TCanvas *c_npe_vs_ypfp = new TCanvas();
     //h_hgcernpeSum_xpfp->SetMaximum(30);
     //h_hgcernpeSum_ypfp->DrawCopy("colz");
+    prof_hgcer_ypfp->SetBit(TH1::kNoStats);
     prof_hgcer_ypfp->Draw();
     std::string c_npe_vs_ypfp_name = "results/pid/SHMS_hgcer_2D_"+std::to_string(RunGroup)+"_ypfp_neg.pdf";
     c_npe_vs_ypfp->SaveAs(c_npe_vs_ypfp_name.c_str());
@@ -247,12 +255,16 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     auto d_neg_k = d_neg_pi.Filter(hgcer_pi_cut.c_str());
     auto h_aero_npeSum_kcut = d_neg_k.Histo1D({"","karon cut on HGC;npeSum;counts",100,0,50},"P.aero.npeSum");
     TCanvas *c_aero = new TCanvas();
+    h_aero_npeSum->SetBit(TH1::kNoStats);
     h_aero_npeSum->DrawCopy("hist");
     h_aero_npeSum_picut->SetLineColor(kRed);
+    h_aero_npeSum_picut->SetBit(TH1::kNoStats);
     h_aero_npeSum_picut->DrawCopy("hist same");
     h_aero_npeSum_kcut->SetLineColor(kBlue);
+    h_aero_npeSum_kcut->SetBit(TH1::kNoStats);
     h_aero_npeSum_kcut->DrawCopy("hist same");
-    gPad->BuildLegend(0.7,0.7,1,1,"aero","f");
+
+    gPad->BuildLegend(0.7,0.7,1,1,"aero");
     std::string c_aero_name = "results/pid/SHMS_aero_"+std::to_string(RunGroup)+"_neg.pdf";
     c_aero->SaveAs(c_aero_name.c_str());
 
@@ -290,10 +302,13 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
   auto h_1stpeak_pos = d_pos.Histo1D({"","1st peak",800,0,100},"CTime.ePositronCoinTime_ROC2");
   auto h_2ndpeak_pos = d_pos_proton.Histo1D({"","2nd peak",800,0,100},"CTime.ePositronCoinTime_ROC2");
   TCanvas *c_pos_cointime = new TCanvas();
+  h_coin_time_pos->SetBit(TH1::kNoStats);
   h_coin_time_pos->DrawCopy("hist");
   h_1stpeak_pos->SetLineColor(kRed);
+  h_1stpeak_pos->SetBit(TH1::kNoStats);
   h_1stpeak_pos->DrawCopy("hist same");
   h_2ndpeak_pos->SetLineColor(8);
+  h_2ndpeak_pos->SetBit(TH1::kNoStats);
   h_2ndpeak_pos->DrawCopy("hist same");
   std::string c_pos_cointime_name = "results/pid/SHMS_coin_time_"+std::to_string(RunGroup)+"_pos.pdf";
   c_pos_cointime->SaveAs(c_pos_cointime_name.c_str());
@@ -308,8 +323,10 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
    auto h_cal_e_pos = d_pos.Histo1D({"","SHMS cal e;E/P;counts",100,0.01,2},"P.cal.etottracknorm");
 
    TCanvas *c_cal_pos = new TCanvas();
+   h_cal_e_pos->SetBit(TH1::kNoStats);
    h_cal_e_pos->DrawCopy("hist");
    l_cal_e_cut_low->SetLineColor(kRed);
+   l_cal_e_cut_low->SetBit(TH1::kNoStats);
    l_cal_e_cut_low->Draw("same");
    l_cal_e_cut_high->SetLineColor(kRed);
    l_cal_e_cut_high->Draw("same");
@@ -322,17 +339,18 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
    auto d_pos_pi = d_pos.Filter(shms_cal_pi_cut);
    auto h_hgcer_npeSum_picut_pos = d_pos_pi.Histo1D({"","cal pi;npeSum;counts",100,0,50},"P.hgcer.npeSum");
    auto h_aero_npeSum_picut_pos = d_pos_pi.Histo1D({"","cal pi;npeSum;counts",100,0,50},"P.aero.npeSum");
-   auto h_hgcer_npeSum_proton_pos = d_pos_proton.Histo1D({"","coin time proton;npeSum;counts",100,0,50},"P.hgcer.npeSum");
-   auto h_aero_npeSum_proton_pos = d_pos_proton.Histo1D({"","coin time proton;npeSum;counts",100,0,50},"P.aero.npeSum");
+   auto h_hgcer_npeSum_proton_pos = d_pos_proton.Histo1D({"","coin time second peak;npeSum;counts",100,0,50},"P.hgcer.npeSum");
+   auto h_aero_npeSum_proton_pos = d_pos_proton.Histo1D({"","coin time second peak;npeSum;counts",100,0,50},"P.aero.npeSum");
 
    //1D histos for cerenkov
    TCanvas *c_hgcer_pos = new TCanvas();
+   c_hgcer_pos->SetLogy();
    h_hgcer_npeSum_proton_pos->SetLineColor(8);
    h_hgcer_npeSum_proton_pos->DrawCopy("hist");
    h_hgcer_npeSum_pos->DrawCopy("hist same");
    h_hgcer_npeSum_picut_pos->SetLineColor(kRed);
    h_hgcer_npeSum_picut_pos->DrawCopy("hist same");
-   gPad->BuildLegend(0.7,0.7,0.9,0.9,"hgcer npeSum","f");
+   gPad->BuildLegend(0.7,0.7,0.9,0.9,"hgcer npeSum");
    std::string c_hgcer_pos_name = "results/pid/SHMS_hgcer_"+std::to_string(RunGroup)+"_pos.pdf";
    c_hgcer_pos->SaveAs(c_hgcer_pos_name.c_str());
 
@@ -346,25 +364,25 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     p0 = f1->GetParameter(0);
     p1 = f1->GetParameter(1);
     std::cout<<" get parameters "<<p0<<" "<<p1<<std::endl;
+    ofs<<RunGroup<<" "<<SHMS_P<<" "<<p0<<" "<<p1<<" "<<std::endl;
     parameter_1 = "p0 = "+std::to_string(p0);
     parameter_2 = "p1 = "+std::to_string(p1);
     TPaveText *pt_pos = new TPaveText(0.6,0.15,0.9,0.25,"brNDC");
+    pt_pos->AddText(shms_p_text.c_str());
     pt_pos->AddText(parameter_1.c_str());
     pt_pos->AddText(parameter_2.c_str());
 
     TCanvas *c_npe_vs_dp_pos = new TCanvas();
 
-    TF1 *fleft_p = new TF1("fleft_pos",fline,0.9*SHMS_P,0.95*SHMS_P,1);
+    TF1 *fleft_p = new TF1("fleft_pos",fline,0.9*SHMS_P,0.93*SHMS_P,2);
     fleft_p->SetParameters(f1->GetParameters());
     prof_hgcer_p_pos->GetListOfFunctions()->Add(fleft_p);
     gROOT->GetListOfFunctions()->Remove(fleft_p);
-    TF1 *fright_p = new TF1("fright",fline,1.05*SHMS_P,1.22*SHMS_P,1);
+    TF1 *fright_p = new TF1("fright",fline,1.05*SHMS_P,1.22*SHMS_P,2);
     fright_p->SetParameters(f1->GetParameters());
     prof_hgcer_p_pos->GetListOfFunctions()->Add(fright_p);
     gROOT->GetListOfFunctions()->Remove(fright_p);
-    double p0_pos = *f1->GetParameters();
-    gPad->BuildLegend(0.7,0.7,1,1,(std::to_string(p0_pos)).c_str());
-
+    prof_hgcer_p_pos->SetBit(TH1::kNoStats);
     prof_hgcer_p_pos->Draw();
     c_npe_vs_dp_pos->cd();
     pt_pos->Draw();
@@ -408,6 +426,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     auto d_pos_k = d_pos_pi.Filter(hgcer_pi_cut.c_str());
     auto h_aero_npeSum_kcut_pos = d_pos_k.Histo1D({"","karon cut on HGC;npeSum;counts",100,0,50},"P.aero.npeSum");
     TCanvas *c_aero_pos = new TCanvas();
+    c_aero_pos->SetLogy();
     h_aero_npeSum_proton_pos->SetLineColor(8);
     h_aero_npeSum_proton_pos->DrawCopy("hist");
     h_aero_npeSum_pos->DrawCopy("hist same");
@@ -415,13 +434,14 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     h_aero_npeSum_picut_pos->DrawCopy("hist same");
     h_aero_npeSum_kcut_pos->SetLineColor(kBlue);
     h_aero_npeSum_kcut_pos->DrawCopy("hist same");
-    gPad->BuildLegend(0.7,0.7,0.9,0.9,"aero npeSum");
+    gPad->BuildLegend(0.7,0.7,1,1,"aero npeSum");
     std::string c_aero_pos_name = "results/pid/SHMS_aero_"+std::to_string(RunGroup)+"_pos.pdf";
     c_aero_pos->SaveAs(c_aero_pos_name.c_str());
   
     auto h_beta_p = d_pos.Histo2D({"","1st coin peak;momentum;beta",100,0.9*SHMS_P,1.1*SHMS_P,100,0.8,1.1},"shms_p","P.gtr.beta");
     TProfile *prof_beta_p = h_beta_p->ProfileX("h1",1,-1,"d");
     TCanvas* c_beta_pos = new TCanvas();
+    prof_beta_p->SetTitle("beta vs shmsp");
     prof_beta_p->Draw();
     //h_beta_p_proton->Draw("colz");
     std::string c_beta_pos_name = "results/pid/SHMS_beta_p_"+std::to_string(RunGroup)+"_pion_pos.pdf";
@@ -430,6 +450,7 @@ void SHMS_PID_RunGroup_calcut(int RunGroup = 0){
     auto h_beta_p_proton = d_pos_proton.Histo2D({"","2nd coin peak;momentum;beta",100,0.9*SHMS_P,1.1*SHMS_P,100,0.8,1.1},"shms_p","P.gtr.beta");
     TProfile *prof_beta_p_proton = h_beta_p_proton->ProfileX("h1",1,-1,"d");
     TCanvas *c_beta_pos_proton = new TCanvas();
+    prof_beta_p_proton->SetTitle("beta vs shmsp");
     prof_beta_p_proton->Draw();
     std::string c_beta_pos_proton_name = "results/pid/SHMS_beta_p_"+std::to_string(RunGroup)+"_proton_pos.pdf";
     c_beta_pos_proton->SaveAs(c_beta_pos_proton_name.c_str());
