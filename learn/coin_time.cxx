@@ -378,15 +378,135 @@ void coin_time(int RunGroup = 0){
   h_npeSum_2nd->DrawCopy("hist same");
   c_npeSum_pos->SaveAs("results/pid/coin_time_pos_hgcer.pdf");
 
-  auto h_time_diff_pos
   auto h_time_diff_1st = d_pos_first.Histo1D({"h_rf_time","type4,cointime cut;rf_time",200,-10,10},"rf_minus_fp_time");
   int time_diff_pos_bin_min = h_time_diff_pos->GetMinumBin();
   double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
   double offset_pos = 400.8-time_diff_pos_min;
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
+  auto d_mod_pos = d_pos_1st.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
+  .Fefine("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
+  auto h_mod_pos = d_mod_pos.Histo1D({"","mod",100,-1,5},"diff_time_mod");
+  h_mod_pos->Fit("gaus","0","",0,4);
+  TF1 *fit_mod_pos = h_mod_pos->GetFunction("gaus");
+  double mod_mean_pos = fit_mod_pos->GetParameter(1);
+  double mod_sigma_pos = fit_mod_pos->GetParameter(2);
+  TCanvas *c_mod_pos = new TCanvas();
+  h_mod_pos->DrawCopy("hist");
+  fit_mod_pos->Draw("same");
+  c_mod_pos->SaveAs("results/pid/coin_time_pos5.pdf");
   
+  double time_cut_low_pos = mod_mean_pos-3*mod_sigma_pos;
+  double time_cut_high_pos = mod_mean_pos+3*mod_sigma_pos;
+  std::string time_cut_pos = "diff_time_mod > "+std::to_string(time_cut_low_pos)+" && diff_time_mod < "+std::to_string(time_cut_high_pos);
+  auto d_time_cut_pos = d_mod_pos.Filter(time_cut_pos);
+  auto h_shmsp_diffcut_pos = d_time_cut_pos
+     .Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+    .Histo1D({"","type4,cointime,modcut,calhardroncut",100,-10,22},"P.gtr.dp");
+  auto h_shmsp_pos = d_pos_1st.Histo1D({"","type4,cointime",100,-10,22},"P.gtr.dp");
+  auto h_shmsp_pi_pos = d_poso_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                     .Histo1D({"","type4,cointime,calhardroncut",100,-10,22},"P.gtr.dp");
+  TCanvas *c_counts_pos = new TCanvas();
+  c_counts_pos->SetLogy();
+  h_shmsp_pos->DrawCopy("hist");
+  h_shmsp_diffcut_pos->SetLineColor(kRed);
+  h_shmsp_diffcut_pos->DrawCopy("hist same");
+  h_shmsp_pi_pos->SetLineColor(kBlue);
+  h_shmsp_pi_pos->DrawCopy("hist same");
+  c_counts_pos->BuildLegend(0.7,0.7,1,1);
+  TPaveText *pt_counts_pos = new TPaveText(0.7,0.6,1,0.7,"brNDC");
+  pt_counts_pos->AddText(("shms_p = +"+std::to_string(SHMS_P)).c_str());
+  c_counts->cd();
+  pt_counts_pos->Draw();
+  c_counts->SaveAs("results/pid/coin_time_pos6.pdf");
+
+  auto h_npeSum_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                            .Histo1D({"","mod cut",100,0,30},"P.hgcer.npeSum");
+  auto h_npeSum_coin_pos = d_pos_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                        .Histo1D({"","cointimecut",100,0,30},"P.hgcer.npeSum");
+  TCanvas *c_hgcernpeSum_pos = new TCanvas();
+  h_npeSum_pos->DrawCopy("hist");
+  h_npeSum_coin_pos->SetLineColor(kRed);
+  h_npeSum_coin_pos->DrawCopy("hist same");
+  c_hgcernpeSum_pos->SaveAs("results/pid/coin_time_pos7.pdf");
+
+  auto h_npe_shmsp_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                      .Histo2D({"","",100,-10,22,100,0,30},"P.gtr.dp","P.hgcer.npeSum")
+                      ->ProfileX();
+  TCanvas *c_2d_1_pos = new TCanvas();
+  h_npe_shmsp_pos->Draw();
+  c_2d_1_pos->SaveAs("results/pid/coin_time_pos7_1.pdf");
+  auto h_npe_shmsp_pi_pos = d_pos_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                      .Histo2D({"","",100,-10,22,100,0,30},"P.gtr.dp","P.hgcer.npeSum")
+                      ->ProfileX();
+  TCanvas *c_2d_2_pos = new TCanvas();
+  h_npe_shmsp_pi_pos->Draw();
+  c_2d_2_pos->SaveAs("results/pid/coin_time_pos7_2.pdf");
   }
-  else{}
+  else{
+  auto h_time_diff_1st = d_pos_first.Histo1D({"h_rf_time","type4,cointime cut;rf_time",200,-10,10},"rf_minus_fp_time");
+  int time_diff_pos_bin_min = h_time_diff_pos->GetMinumBin();
+  double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
+  double offset_pos = 400.8-time_diff_pos_min;
+  std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
+  auto d_mod_pos = d_pos_1st.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
+  .Fefine("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
+  auto h_mod_pos = d_mod_pos.Histo1D({"","mod",100,-1,5},"diff_time_mod");
+  h_mod_pos->Fit("gaus","0","",0,4);
+  TF1 *fit_mod_pos = h_mod_pos->GetFunction("gaus");
+  double mod_mean_pos = fit_mod_pos->GetParameter(1);
+  double mod_sigma_pos = fit_mod_pos->GetParameter(2);
+  TCanvas *c_mod_pos = new TCanvas();
+  h_mod_pos->DrawCopy("hist");
+  fit_mod_pos->Draw("same");
+  c_mod_pos->SaveAs("results/pid/coin_time_pos5.pdf");
+  
+  double time_cut_low_pos = mod_mean_pos-3*mod_sigma_pos;
+  double time_cut_high_pos = mod_mean_pos+3*mod_sigma_pos;
+  std::string time_cut_pos = "diff_time_mod > "+std::to_string(time_cut_low_pos)+" && diff_time_mod < "+std::to_string(time_cut_high_pos);
+  auto d_time_cut_pos = d_mod_pos.Filter(time_cut_pos);
+  auto h_shmsp_diffcut_pos = d_time_cut_pos
+     .Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+    .Histo1D({"","type4,cointime,modcut,calhardroncut",100,-10,22},"P.gtr.dp");
+  auto h_shmsp_pos = d_pos_1st.Histo1D({"","type4,cointime",100,-10,22},"P.gtr.dp");
+  auto h_shmsp_pi_pos = d_poso_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                     .Histo1D({"","type4,cointime,calhardroncut",100,-10,22},"P.gtr.dp");
+  TCanvas *c_counts_pos = new TCanvas();
+  c_counts_pos->SetLogy();
+  h_shmsp_pos->DrawCopy("hist");
+  h_shmsp_diffcut_pos->SetLineColor(kRed);
+  h_shmsp_diffcut_pos->DrawCopy("hist same");
+  h_shmsp_pi_pos->SetLineColor(kBlue);
+  h_shmsp_pi_pos->DrawCopy("hist same");
+  c_counts_pos->BuildLegend(0.7,0.7,1,1);
+  TPaveText *pt_counts_pos = new TPaveText(0.7,0.6,1,0.7,"brNDC");
+  pt_counts_pos->AddText(("shms_p = +"+std::to_string(SHMS_P)).c_str());
+  c_counts->cd();
+  pt_counts_pos->Draw();
+  c_counts->SaveAs("results/pid/coin_time_pos6.pdf");
+
+  auto h_npeSum_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                            .Histo1D({"","mod cut",100,0,30},"P.hgcer.npeSum");
+  auto h_npeSum_coin_pos = d_pos_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                        .Histo1D({"","cointimecut",100,0,30},"P.hgcer.npeSum");
+  TCanvas *c_hgcernpeSum_pos = new TCanvas();
+  h_npeSum_pos->DrawCopy("hist");
+  h_npeSum_coin_pos->SetLineColor(kRed);
+  h_npeSum_coin_pos->DrawCopy("hist same");
+  c_hgcernpeSum_pos->SaveAs("results/pid/coin_time_pos7.pdf");
+
+  auto h_npe_shmsp_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                      .Histo2D({"","",100,-10,22,100,0,30},"P.gtr.dp","P.hgcer.npeSum")
+                      ->ProfileX();
+  TCanvas *c_2d_1_pos = new TCanvas();
+  h_npe_shmsp_pos->Draw();
+  c_2d_1_pos->SaveAs("results/pid/coin_time_pos7_1.pdf");
+  auto h_npe_shmsp_pi_pos = d_pos_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+                      .Histo2D({"","",100,-10,22,100,0,30},"P.gtr.dp","P.hgcer.npeSum")
+                      ->ProfileX();
+  TCanvas *c_2d_2_pos = new TCanvas();
+  h_npe_shmsp_pi_pos->Draw();
+  c_2d_2_pos->SaveAs("results/pid/coin_time_pos7_2.pdf");
+  }
   
   }
 }
