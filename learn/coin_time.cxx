@@ -378,6 +378,7 @@ void coin_time(int RunGroup = 0){
   h_npeSum_2nd->DrawCopy("hist same");
   c_npeSum_pos->SaveAs("results/pid/coin_time_pos_hgcer.pdf");
 
+  //below are same for both cases
   //auto h_time_diff_1st = d_pos_first.Histo1D({"h_rf_time","type4,cointime cut;rf_time",200,-10,10},"rf_minus_fp_time");
   int time_diff_pos_bin_min = h_time_diff_pos->GetMinimumBin();
   double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
@@ -419,15 +420,15 @@ void coin_time(int RunGroup = 0){
   pt_counts_pos->Draw();
   c_counts->SaveAs("results/pid/coin_time_pos6.pdf");
 
-  auto h_npeSum_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
-                            .Histo1D({"","mod cut",100,0,30},"P.hgcer.npeSum");
-  auto h_npeSum_coin_pos = d_pos_first.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
-                        .Histo1D({"","cointimecut",100,0,30},"P.hgcer.npeSum");
-  TCanvas *c_hgcernpeSum_pos = new TCanvas();
-  h_npeSum_pos->DrawCopy("hist");
-  h_npeSum_coin_pos->SetLineColor(kRed);
-  h_npeSum_coin_pos->DrawCopy("hist same");
-  c_hgcernpeSum_pos->SaveAs("results/pid/coin_time_pos7.pdf");
+  //auto h_npeSum_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+  //                          .Histo1D({"","mod cut",100,0,30},"P.hgcer.npeSum");
+  //auto h_npeSum_coin_pos = d_pos_first.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+  //                      .Histo1D({"","cointimecut",100,0,30},"P.hgcer.npeSum");
+  //TCanvas *c_hgcernpeSum_pos = new TCanvas();
+  //h_npeSum_pos->DrawCopy("hist");
+  //h_npeSum_coin_pos->SetLineColor(kRed);
+  //h_npeSum_coin_pos->DrawCopy("hist same");
+  //c_hgcernpeSum_pos->SaveAs("results/pid/coin_time_pos7.pdf");
 
   auto h_npe_shmsp_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                       .Histo2D({"","",100,-10,22,100,0,30},"P.gtr.dp","P.hgcer.npeSum")
@@ -443,8 +444,7 @@ void coin_time(int RunGroup = 0){
   c_2d_2_pos->SaveAs("results/pid/coin_time_pos7_2.pdf");
   }
   else{
-  auto h_time_diff_1st = d_pos_first.Histo1D({"h_rf_time","type4,cointime cut;rf_time",200,-10,10},"rf_minus_fp_time");
-  int time_diff_pos_bin_min = h_time_diff_pos->GetMinumBin();
+  int time_diff_pos_bin_min = h_time_diff_pos->GetMinimumBin();
   double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
   double offset_pos = 400.8-time_diff_pos_min;
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
