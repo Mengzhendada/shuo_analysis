@@ -346,7 +346,7 @@ void coin_time(int RunGroup = 0){
   h_hod_starttime_1st->DrawCopy("hist same");
   h_hod_starttime_2nd->SetLineColor(kBlue);
   h_hod_starttime_2nd->DrawCopy("hist same");
-  gPad->BuildLegend(0.85,0,85,1,1,"f");
+  gPad->BuildLegend(0.85,0.85,1,1,"hod start");
   c_hod->cd(2);
   h_time_diff3_pos->DrawCopy("hist");
   h_time_diff3_1st->SetLineColor(kRed);
@@ -381,11 +381,11 @@ void coin_time(int RunGroup = 0){
   //below are same for both cases
   //auto h_time_diff_1st = d_pos_first.Histo1D({"h_rf_time","type4,cointime cut;rf_time",200,-10,10},"rf_minus_fp_time");
   int time_diff_pos_bin_min = h_time_diff_pos->GetMinimumBin();
-  double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
+  double time_diff_pos_min = h_time_diff_pos->GetBinCenter(time_diff_pos_bin_min);
   double offset_pos = 400.8-time_diff_pos_min;
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
   auto d_mod_pos = d_pos_first.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
-  .Fefine("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
+  .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
   auto h_mod_pos = d_mod_pos.Histo1D({"","mod",100,-1,5},"diff_time_mod");
   h_mod_pos->Fit("gaus","0","",0,4);
   TF1 *fit_mod_pos = h_mod_pos->GetFunction("gaus");
@@ -404,7 +404,7 @@ void coin_time(int RunGroup = 0){
      .Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
     .Histo1D({"","type4,cointime,modcut,calhardroncut",100,-10,22},"P.gtr.dp");
   auto h_shmsp_pos = d_pos_first.Histo1D({"","type4,cointime",100,-10,22},"P.gtr.dp");
-  auto h_shmsp_pi_pos = d_poso_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+  auto h_shmsp_pi_pos = d_pos_first.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                      .Histo1D({"","type4,cointime,calhardroncut",100,-10,22},"P.gtr.dp");
   TCanvas *c_counts_pos = new TCanvas();
   c_counts_pos->SetLogy();
@@ -444,12 +444,13 @@ void coin_time(int RunGroup = 0){
   c_2d_2_pos->SaveAs("results/pid/coin_time_pos7_2.pdf");
   }
   else{
+  auto h_time_diff_pos = d_pos.Histo1D({"h_rf_time","type4;rf_time",200,-10,10},"rf_minus_fp_time");
   int time_diff_pos_bin_min = h_time_diff_pos->GetMinimumBin();
-  double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
+  double time_diff_pos_min = h_time_diff_pos->GetBinCenter(time_diff_pos_bin_min);
   double offset_pos = 400.8-time_diff_pos_min;
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
   auto d_mod_pos = d_pos_first.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
-  .Fefine("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
+  .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
   auto h_mod_pos = d_mod_pos.Histo1D({"","mod",100,-1,5},"diff_time_mod");
   h_mod_pos->Fit("gaus","0","",0,4);
   TF1 *fit_mod_pos = h_mod_pos->GetFunction("gaus");
@@ -468,7 +469,7 @@ void coin_time(int RunGroup = 0){
      .Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
     .Histo1D({"","type4,cointime,modcut,calhardroncut",100,-10,22},"P.gtr.dp");
   auto h_shmsp_pos = d_pos_first.Histo1D({"","type4,cointime",100,-10,22},"P.gtr.dp");
-  auto h_shmsp_pi_pos = d_poso_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+  auto h_shmsp_pi_pos = d_pos_first.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                      .Histo1D({"","type4,cointime,calhardroncut",100,-10,22},"P.gtr.dp");
   TCanvas *c_counts_pos = new TCanvas();
   c_counts_pos->SetLogy();
