@@ -383,7 +383,7 @@ void coin_time(int RunGroup = 0){
   double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
   double offset_pos = 400.8-time_diff_pos_min;
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
-  auto d_mod_pos = d_pos_1st.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
+  auto d_mod_pos = d_pos_first.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
   .Fefine("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
   auto h_mod_pos = d_mod_pos.Histo1D({"","mod",100,-1,5},"diff_time_mod");
   h_mod_pos->Fit("gaus","0","",0,4);
@@ -402,7 +402,7 @@ void coin_time(int RunGroup = 0){
   auto h_shmsp_diffcut_pos = d_time_cut_pos
      .Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
     .Histo1D({"","type4,cointime,modcut,calhardroncut",100,-10,22},"P.gtr.dp");
-  auto h_shmsp_pos = d_pos_1st.Histo1D({"","type4,cointime",100,-10,22},"P.gtr.dp");
+  auto h_shmsp_pos = d_pos_first.Histo1D({"","type4,cointime",100,-10,22},"P.gtr.dp");
   auto h_shmsp_pi_pos = d_poso_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                      .Histo1D({"","type4,cointime,calhardroncut",100,-10,22},"P.gtr.dp");
   TCanvas *c_counts_pos = new TCanvas();
@@ -421,7 +421,7 @@ void coin_time(int RunGroup = 0){
 
   auto h_npeSum_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                             .Histo1D({"","mod cut",100,0,30},"P.hgcer.npeSum");
-  auto h_npeSum_coin_pos = d_pos_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+  auto h_npeSum_coin_pos = d_pos_first.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                         .Histo1D({"","cointimecut",100,0,30},"P.hgcer.npeSum");
   TCanvas *c_hgcernpeSum_pos = new TCanvas();
   h_npeSum_pos->DrawCopy("hist");
@@ -435,7 +435,7 @@ void coin_time(int RunGroup = 0){
   TCanvas *c_2d_1_pos = new TCanvas();
   h_npe_shmsp_pos->Draw();
   c_2d_1_pos->SaveAs("results/pid/coin_time_pos7_1.pdf");
-  auto h_npe_shmsp_pi_pos = d_pos_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+  auto h_npe_shmsp_pi_pos = d_pos_first.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                       .Histo2D({"","",100,-10,22,100,0,30},"P.gtr.dp","P.hgcer.npeSum")
                       ->ProfileX();
   TCanvas *c_2d_2_pos = new TCanvas();
@@ -448,7 +448,7 @@ void coin_time(int RunGroup = 0){
   double time_diff_pos_min = h_time_diff_pos->GetBinConstent(time_diff_pos_bin_min);
   double offset_pos = 400.8-time_diff_pos_min;
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
-  auto d_mod_pos = d_pos_1st.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
+  auto d_mod_pos = d_pos_first.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
   .Fefine("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
   auto h_mod_pos = d_mod_pos.Histo1D({"","mod",100,-1,5},"diff_time_mod");
   h_mod_pos->Fit("gaus","0","",0,4);
@@ -467,7 +467,7 @@ void coin_time(int RunGroup = 0){
   auto h_shmsp_diffcut_pos = d_time_cut_pos
      .Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
     .Histo1D({"","type4,cointime,modcut,calhardroncut",100,-10,22},"P.gtr.dp");
-  auto h_shmsp_pos = d_pos_1st.Histo1D({"","type4,cointime",100,-10,22},"P.gtr.dp");
+  auto h_shmsp_pos = d_pos_first.Histo1D({"","type4,cointime",100,-10,22},"P.gtr.dp");
   auto h_shmsp_pi_pos = d_poso_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                      .Histo1D({"","type4,cointime,calhardroncut",100,-10,22},"P.gtr.dp");
   TCanvas *c_counts_pos = new TCanvas();
@@ -486,7 +486,7 @@ void coin_time(int RunGroup = 0){
 
   auto h_npeSum_pos = d_time_cut_pos.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                             .Histo1D({"","mod cut",100,0,30},"P.hgcer.npeSum");
-  auto h_npeSum_coin_pos = d_pos_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+  auto h_npeSum_coin_pos = d_pos_first.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                         .Histo1D({"","cointimecut",100,0,30},"P.hgcer.npeSum");
   TCanvas *c_hgcernpeSum_pos = new TCanvas();
   h_npeSum_pos->DrawCopy("hist");
@@ -500,7 +500,7 @@ void coin_time(int RunGroup = 0){
   TCanvas *c_2d_1_pos = new TCanvas();
   h_npe_shmsp_pos->Draw();
   c_2d_1_pos->SaveAs("results/pid/coin_time_pos7_1.pdf");
-  auto h_npe_shmsp_pi_pos = d_pos_1st.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
+  auto h_npe_shmsp_pi_pos = d_pos_first.Filter("P.cal.etottracknorm > 0.015 && P.cal.etottracknorm < 0.85")
                       .Histo2D({"","",100,-10,22,100,0,30},"P.gtr.dp","P.hgcer.npeSum")
                       ->ProfileX();
   TCanvas *c_2d_2_pos = new TCanvas();
