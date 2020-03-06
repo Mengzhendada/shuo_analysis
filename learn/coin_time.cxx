@@ -106,8 +106,8 @@ void coin_time(int RunGroup = 0){
   h_rf_time2_1->SetLineColor(kRed);
   h_rf_time2_1->DrawCopy("hist same");
   TPaveText *pt_types_neg = new TPaveText(0,0.7,0.2,0.85,"brNDC");
-  std::string type4 = "Type 4 entries "+std::to_string((double)h_rf_time2_4->GetEntries());
-  std::string type1 = "Type 2 entries "+std::to_string((double)h_rf_time2_1->GetEntries());
+  std::string type4 = "Type 4 entries "+std::to_string((int)h_rf_time2_4->GetEntries());
+  std::string type1 = "Type 2 entries "+std::to_string((int)h_rf_time2_1->GetEntries());
   std::string momentum = "shms_p is "+std::to_string(SHMS_P);
   pt_types_neg->AddText(type4.c_str());
   pt_types_neg->AddText(type1.c_str());
@@ -386,7 +386,10 @@ void coin_time(int RunGroup = 0){
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
   auto d_mod_pos = d_pos_first.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
   .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
+  auto d_mod_second= d_pos_second.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"rf_minus_fp_time"})
+  .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"});
   auto h_mod_pos = d_mod_pos.Histo1D({"","mod",100,-1,5},"diff_time_mod");
+  auto h_mod_2nd = d_mod_second.Histo1D({"","mod",100,-1,5},"diff_time_mod");
   h_mod_pos->Fit("gaus","0","",0,4);
   TF1 *fit_mod_pos = h_mod_pos->GetFunction("gaus");
   double mod_mean_pos = fit_mod_pos->GetParameter(1);
@@ -394,6 +397,12 @@ void coin_time(int RunGroup = 0){
   TCanvas *c_mod_pos = new TCanvas();
   h_mod_pos->DrawCopy("hist");
   fit_mod_pos->Draw("same");
+  h_mod_2nd->SetLineColor(kBlue);
+  h_mod_2nd->DrawCopy("hist same");
+  TPaveText *pt_mod_pos = new TPaveText(0.9,0.9,1,1);
+  pt_mod_pos->AddText(("shme_p = "+std::to_string(SHMS_P)).c_str());
+  c_mod_pos->cd();
+  pt_mod_pos->Draw();
   c_mod_pos->SaveAs("results/pid/coin_time_pos5.pdf");
   
   double time_cut_low_pos = mod_mean_pos-3*mod_sigma_pos;
