@@ -250,12 +250,14 @@ void rftime_pid(int RunGroup =0){
   
   auto h_aero_pirfcut = d_mod_first_pirfcut.Histo1D({"","pions;shmsp;aero",100,0,30},"P.aero.npeSum");
   auto h_aero_Krfcut = d_mod_first_Krfcut.Histo1D({"","second cut;shmsp;aero",100,0,30},"P.aero.npeSum");
+  TF1 *g1 = new TF1("g1","gaus",0,30);
   TCanvas *c_aero = new TCanvas();
   gStyle->SetOptTitle(0);
   gStyle->SetPalette(kBird);
   h_aero_pirfcut->SetLineColor(kRed);
-  h_aero_pirfcut->Fit("gaus","0","",0,30); 
+  h_aero_pirfcut->Fit(g1,"R");
   h_aero_pirfcut->DrawCopy("hist");
+
   
   h_aero_Krfcut->SetLineColor(kOrange);
   h_aero_Krfcut->DrawCopy("hist same");
