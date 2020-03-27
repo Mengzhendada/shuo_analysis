@@ -62,16 +62,16 @@ void rftime_pid(int RunGroup =0){
   double coin_2ndpeak_center_pos = h_cointime_pos_2ndpeak->GetBinCenter(coin_2ndpeak_bin_pos);
   double coin_2ndpeak_content = h_cointime_pos_2ndpeak->GetBinContent(coin_2ndpeak_bin_pos);
   bool enough;
-  if(std::abs(coin_peak_center_pos-coin_2ndpeak_center_pos)>2 && coin_2ndpeak_content>0.33*coin_1stpeak_content){enough = true;}
+  if(std::abs(coin_peak_center_pos-coin_2ndpeak_center_pos)>2 && coin_2ndpeak_content>0.2*coin_1stpeak_content){enough = true;}
   else{enough = false;}
   std::cout<<"if we can separate two coin peaks(separation > 2)? "<<enough<<" with 2nd/1st peak height " <<coin_2ndpeak_content/coin_1stpeak_content<<std::endl;
-  auto first_peak = [=](double coin_time){return enough ? std::abs(coin_time-coin_peak_center_pos)<1.5 : std::abs(coin_time-coin_peak_center_pos)<1.5 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.5;};
-  auto second_peak = [=](double coin_time){return enough ? std::abs(coin_time-coin_2ndpeak_center_pos)<1.5 : std::abs(coin_time-coin_peak_center_pos)<1.5 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.5;};
-  auto all_peak = [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<1.5 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.5;};
+  auto first_peak = [=](double coin_time){return enough ? std::abs(coin_time-coin_peak_center_pos)<1.25 : std::abs(coin_time-coin_peak_center_pos)<1.25 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.25;};
+  auto second_peak = [=](double coin_time){return enough ? std::abs(coin_time-coin_2ndpeak_center_pos)<3 : std::abs(coin_time-coin_peak_center_pos)<3 || std::abs(coin_time-coin_2ndpeak_center_pos)<3;};
+  auto all_peak = [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<1.25 || std::abs(coin_time-coin_2ndpeak_center_pos)<3;};
     auto d_pos_first = d_pos.Filter(first_peak,{"CTime.ePiCoinTime_ROC2"});
     auto d_pos_second = d_pos.Filter(second_peak,{"CTime.ePiCoinTime_ROC2"});
     auto d_pos_both = d_pos.Filter(
-        [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<1.5 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.5;},{"CTime.ePiCoinTime_ROC2"});
+        [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<1.25 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.25;},{"CTime.ePiCoinTime_ROC2"});
     
     //plot cointime
     auto h_cointime_all = d_pos.Histo1D({"","",100,40,55},"CTime.ePiCoinTime_ROC2");
@@ -121,21 +121,21 @@ void rftime_pid(int RunGroup =0){
   std::cout<<"time of flight for pi-e for this setting "<<tpi<<std::endl;
     //"offset for predictions "<<1-tpi<<std::endl;
   double offset_pre = 1-tpi;
-  auto t_hardron = [=](double *x,double *p){
+  auto t_hadron = [=](double *x,double *p){
     return std::fmod((p[0]*std::sqrt(x[0]*x[0]+p[1]*p[1])*1e9/(299792458*x[0]))-(p[0]*std::sqrt(x[0]*x[0]+p[2]*p[2])*1e9/(299792458*x[0]))+offset_pre,4.008);};
   //no time correction(electron time corrected)
-  TF1 *f_proton = new TF1("t_proton",t_hardron,0.9*SHMS_P,1.22*SHMS_P,3);
+  TF1 *f_proton = new TF1("t_proton",t_hadron,0.9*SHMS_P,1.22*SHMS_P,3);
   f_proton->SetParameters(shms_central_length,0.938,0.00051);
   f_proton->SetParNames("track_length","m_proton","m_e");
-  TF1 *f_pi = new TF1("t_pi",t_hardron,0.9*SHMS_P,1.22*SHMS_P,3);
+  TF1 *f_pi = new TF1("t_pi",t_hadron,0.9*SHMS_P,1.22*SHMS_P,3);
   f_pi->SetParameters(shms_central_length,0.139,0.00051);
   f_pi->SetParNames("track_length","m_pi","m_e");
-  TF1 *f_K = new TF1("t_K",t_hardron,0.9*SHMS_P,1.22*SHMS_P,3);
+  TF1 *f_K = new TF1("t_K",t_hadron,0.9*SHMS_P,1.22*SHMS_P,3);
   f_K->SetParameters(shms_central_length,0.493,0.00051);
   f_K->SetParNames("track_length","m_K","m_e");
   
   //draw first cointime peak, no matter if we can separate two peaks
-  auto h_rf_shmsp_pos = d_mod_first.Histo2D({"","first coin peak;shms_p;diff_time_mod",100,0.9*SHMS_P,1.22*SHMS_P,100,-1,5},"shms_p","diff_time_mod");
+  auto h_rf_shmsp_pos = d_mod_first.Histo2D({"","coin peak;shms_p;diff_time_mod",100,0.9*SHMS_P,1.22*SHMS_P,100,-1,5},"shms_p","diff_time_mod");
   TCanvas *c_rf_shmsp_pos = new TCanvas();
   h_rf_shmsp_pos->DrawCopy("colz");
   f_pi->SetLineColor(kRed);
@@ -143,7 +143,7 @@ void rftime_pid(int RunGroup =0){
   f_K->SetLineColor(kOrange);
   f_K->Draw("same");
   TPaveText *pt_1st = new TPaveText(0.75,0.75,1,1,"brNDC");
-    pt_1st->AddText("no hardron time corrected");
+    pt_1st->AddText("no hadron time corrected");
     pt_1st->AddText(("RunGroup "+std::to_string(RunGroup)).c_str());
     pt_1st->AddText(("momentum "+std::to_string(SHMS_P)).c_str());
     pt_1st->AddText(enough?"two_cointime_peak":"mixed_cointime_peak");
@@ -157,32 +157,72 @@ void rftime_pid(int RunGroup =0){
   //double rf_high = 1+range;
   //double rf_low = 1-range;
   //double rf_K_high = 1+2*range;
-  double rf_pi_low = 0.7;
-  double rf_pi_high = 1.3;
-  double rf_K_low = 1.3;
-  double rf_K_high = 1.5;
-  
-
+ // auto rf_pi_low = [=](double shmsp){return 0.6;};
+ // auto rf_pi_high = [=](double shmsp){return 1.4;};
+ // auto rf_K_low = [=](double shmsp){return 1.4;};
+ // auto rf_K_high = [=](double shmsp){return 1.6;};
+ // auto rf_proton_low = [=](double shmsp){
+ //   double slop = (1.5-2)/(0.32*SHMS_P);
+ //   return slop*shmsp+2-slop*0.9*SHMS_P;};
+ // auto rf_proton_high = [=](double shmsp){return 3.4;};
+  json j_rfcut;
+  {
+    std::ifstream ifs("db2/rftime_cut.json");
+    ifs>>j_rfcut;
+  }
+  double rf_pi_low = j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_low"].get<double>();
+  std::cout<<rf_pi_low<<std::endl;
+  double rf_pi_high =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_high"].get<double>();
+  std::cout<<rf_pi_high<<std::endl;
+  double rf_K_low =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_K_low"].get<double>();
+  std::cout<<rf_K_low<<std::endl;
+  double rf_K_high =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_K_high"].get<double>();
+  std::cout<<rf_K_high<<std::endl;
+  double rf_proton_low =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_proton_low"].get<double>();
+  std::cout<<rf_proton_low<<std::endl;
+  double rf_proton_high =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_proton_high"].get<double>();
+  std::cout<<rf_proton_high<<std::endl;
   TLine *f_pi_low = new TLine(0.9*SHMS_P,rf_pi_low,1.22*SHMS_P,rf_pi_low);
   TLine *f_pi_high = new TLine(0.9*SHMS_P,rf_pi_high,1.22*SHMS_P,rf_pi_high);
   TLine *f_K_low = new TLine(0.9*SHMS_P,rf_K_low,1.22*SHMS_P,rf_K_low);
   TLine *f_K_high = new TLine(0.9*SHMS_P,rf_K_high,1.22*SHMS_P,rf_K_high);
+  TLine *f_proton_low = new TLine(0.9*SHMS_P,rf_proton_low,1.22*SHMS_P,rf_proton_low);
+  TLine *f_proton_high = new TLine(0.9*SHMS_P,rf_proton_high,1.22*SHMS_P,rf_proton_high);
+  //TF1 *f_pi_low = new TF1("pi_low",rf_pi_low,0.9*SHMS_P,1.22*SHMS_P,0);
+  //TF1 *f_pi_high = new TF1("pi_high",rf_pi_high,0.9*SHMS_P,1.22*SHMS_P,0);
+  //TF1 *f_proton_low = new TF1("proton_low",rf_proton_low,0.9*SHMS_P,1.22*SHMS_P,0);
+  //TF1 *f_proton_high = new TF1("pi_low",rf_proton_low,0.9*SHMS_P,1.22*SHMS_P,0);
   TCanvas *c_cut = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
+  h_rf_shmsp_pos->SetBit(TH1::kNoStats);
   h_rf_shmsp_pos->DrawCopy("colz");
+
   f_pi_low->Draw("same");
   f_pi_high->Draw("same");
   f_K_low->Draw("same");
   f_K_high->Draw("same");
+  f_proton_low->Draw("same");
+  f_proton_high->Draw("same");
   std::string c_cut_name = "results/pid/rftime/rf_shmsp_pos_1st_"+std::to_string(RunGroup)+"_cuts.pdf";
   c_cut->SaveAs(c_cut_name.c_str());
 
+  
   //build dataframe
-  auto d_mod_first_pirfcut = d_mod_first.Filter([=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"}); 
-  auto d_mod_first_Krfcut = d_mod_first.Filter([=](double difftime){return difftime < rf_K_high && difftime > rf_K_low;},{"diff_time_mod"}); 
+  auto d_mod_first_pirfcut = d_mod_first.Filter(
+      //[=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"}); 
+      [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"}); 
+  auto d_mod_first_Krfcut = d_mod_first.Filter(
+      [=](double difftime){return difftime < rf_K_high && difftime > rf_K_low;},{"diff_time_mod"}); 
+  auto d_mod_first_protonrfcut = d_mod_first.Filter(
+      [=](double difftime){return difftime < rf_proton_high && difftime > rf_proton_low;},{"diff_time_mod"}); 
+      //[=](double difftime){return difftime < rf_proton_high && difftime > rf_proton_low;},{"diff_time_mod"}); 
   //draw histos
   auto h_hgcer_pirfcut = d_mod_first_pirfcut.Histo1D({"","pions;shmsp;hgcer",100,0,30},"P.hgcer.npeSum");
-  auto h_hgcer_Krfcut = d_mod_first_Krfcut.Histo1D({"","pions;shmsp;hgcer",100,0,30},"P.hgcer.npeSum");
+  auto h_hgcer_Krfcut = d_mod_first_Krfcut.Histo1D({"","hadron;shmsp;hgcer",100,0,30},"P.hgcer.npeSum");
   TCanvas *c_hgc = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
   h_hgcer_pirfcut->SetLineColor(kRed);
   h_hgcer_pirfcut->DrawCopy("hist");
   h_hgcer_Krfcut->SetLineColor(kOrange);
@@ -192,36 +232,74 @@ void rftime_pid(int RunGroup =0){
   auto h_hgcer_shmsp_pirfcut = d_mod_first_pirfcut.Histo2D({"","pions;shmsp;hgcer",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.hgcer.npeSum");
   TProfile *h_hgcer_shmsp_pirfcut_prof = h_hgcer_shmsp_pirfcut->ProfileX();
   TCanvas *c_hgcer_2d = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
+  h_hgcer_shmsp_pirfcut_prof->GetYaxis()->SetTitle("pi hgcer");
   h_hgcer_shmsp_pirfcut_prof->Draw();
   std::string c_hgcer_2d_name = "results/pid/rftime/hgcer_rfcut_2d_"+std::to_string(RunGroup)+"_picut.pdf";
   c_hgcer_2d->SaveAs(c_hgcer_2d_name.c_str());
-  auto h_hgcer_shmsp_Krfcut = d_mod_first_Krfcut.Histo2D({"","K cut;shmsp;hgcer",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.hgcer.npeSum");
+  auto h_hgcer_shmsp_Krfcut = d_mod_first_Krfcut.Histo2D({"","second cut;shmsp;hgcer",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.hgcer.npeSum");
   TProfile *h_hgcer_shmsp_Krfcut_prof = h_hgcer_shmsp_Krfcut->ProfileX();
   TCanvas *c_hgcer_2d_K = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
+  h_hgcer_shmsp_Krfcut_prof->GetYaxis()->SetTitle("hadron hgcer");
   h_hgcer_shmsp_Krfcut_prof->Draw();
   std::string c_hgcer_2d_K_name = "results/pid/rftime/hgcer_rfcut_2d_"+std::to_string(RunGroup)+"_Kcut.pdf";
   c_hgcer_2d_K->SaveAs(c_hgcer_2d_K_name.c_str());
   
   auto h_aero_pirfcut = d_mod_first_pirfcut.Histo1D({"","pions;shmsp;aero",100,0,30},"P.aero.npeSum");
-  auto h_aero_Krfcut = d_mod_first_Krfcut.Histo1D({"","pions;shmsp;aero",100,0,30},"P.aero.npeSum");
+  auto h_aero_Krfcut = d_mod_first_Krfcut.Histo1D({"","second cut;shmsp;aero",100,0,30},"P.aero.npeSum");
   TCanvas *c_aero = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
   h_aero_pirfcut->SetLineColor(kRed);
+  h_aero_pirfcut->Fit("gaus","0","",0,30); 
   h_aero_pirfcut->DrawCopy("hist");
+  
   h_aero_Krfcut->SetLineColor(kOrange);
   h_aero_Krfcut->DrawCopy("hist same");
   std::string c_aero_name = "results/pid/rftime/aero_rfcut_"+std::to_string(RunGroup)+".pdf";
   c_aero->SaveAs(c_aero_name.c_str());
   
+  auto h_aero_rftime = d_mod_first.Histo2D({"","pions;rftime;aero",100,0,4,100,0,30},"diff_time_mod","P.aero.npeSum");
+  TCanvas *c_aero_rftime_pi = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
+  h_aero_rftime->SetMaximum(30);
+  h_aero_rftime->DrawCopy("colz");
+  std::string c_aero_rftime_pi_name = "results/pid/rftime/aero_rftime_pirfcut_"+std::to_string(RunGroup)+".pdf";
+  c_aero_rftime_pi->SaveAs(c_aero_rftime_pi_name.c_str());
+  
+  auto h_beta_rftime = d_mod_first.Histo2D({"","pions;rftime;beta",100,0,4,100,0.5,1.5},"diff_time_mod","P.gtr.beta");
+  TCanvas *c_beta_rftime_pi = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
+  h_beta_rftime->SetMaximum(30);
+  h_beta_rftime->DrawCopy("colz");
+  std::string c_beta_rftime_pi_name = "results/pid/rftime/beta_rftime_pirfcut_"+std::to_string(RunGroup)+".pdf";
+  c_beta_rftime_pi->SaveAs(c_beta_rftime_pi_name.c_str());
+  
   auto h_aero_shmsp_pirfcut = d_mod_first_pirfcut.Histo2D({"","pions;shmsp;aero",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.aero.npeSum");
-  TProfile *h_aero_shmsp_pirfcut_prof = h_hgcer_shmsp_pirfcut->ProfileX();
+  TProfile *h_aero_shmsp_pirfcut_prof = h_aero_shmsp_pirfcut->ProfileX();
   TCanvas *c_aero_2d = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
+  h_aero_shmsp_pirfcut_prof->GetYaxis()->SetTitle("pi aero");
   h_aero_shmsp_pirfcut_prof->Draw();
   std::string c_aero_2d_name = "results/pid/rftime/aero_rfcut_2d_"+std::to_string(RunGroup)+"_picut.pdf";
   c_aero_2d->SaveAs(c_aero_2d_name.c_str());
-  auto h_aero_shmsp_Krfcut = d_mod_first_Krfcut.Histo2D({"","pions;shmsp;aero",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.aero.npeSum");
-  TProfile *h_aero_shmsp_Krfcut_prof = h_hgcer_shmsp_Krfcut->ProfileX();
+  
+
+  auto h_aero_shmsp_Krfcut = d_mod_first_Krfcut.Histo2D({"","second cut;shmsp;aero",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.aero.npeSum");
+  TProfile *h_aero_shmsp_Krfcut_prof = h_aero_shmsp_Krfcut->ProfileX();
   TCanvas *c_aero_2d_K = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
+  h_aero_shmsp_Krfcut_prof->GetYaxis()->SetTitle("aero hadron");
   h_aero_shmsp_Krfcut_prof->Draw();
+  //h_aero_shmsp_Krfcut->GetYaxis()->SetTitle("aero hadron");
+  //h_aero_shmsp_Krfcut->DrawCopy("colz");
   std::string c_aero_2d_K_name = "results/pid/rftime/aero_rfcut_2d_"+std::to_string(RunGroup)+"_Kcut.pdf";
   c_aero_2d_K->SaveAs(c_aero_2d_K_name.c_str());
   
