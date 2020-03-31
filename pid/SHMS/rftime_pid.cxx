@@ -6,6 +6,7 @@
 #include "TF1.h"
 #include "TH1.h"
 #include "TLine.h"
+#include "TStyle.h"
 
 using json = nlohmann::json;
 void rftime_pid(int RunGroup =0){
@@ -250,20 +251,55 @@ void rftime_pid(int RunGroup =0){
   
   auto h_aero_pirfcut = d_mod_first_pirfcut.Histo1D({"","pions;shmsp;aero",100,0,30},"P.aero.npeSum");
   auto h_aero_Krfcut = d_mod_first_Krfcut.Histo1D({"","second cut;shmsp;aero",100,0,30},"P.aero.npeSum");
-  TF1 *g1 = new TF1("g1","gaus",0,30);
+  TF1 *g1 = new TF1("g1","gaus",2,30);
   TCanvas *c_aero = new TCanvas();
   gStyle->SetOptTitle(0);
   gStyle->SetPalette(kBird);
   h_aero_pirfcut->SetLineColor(kRed);
   h_aero_pirfcut->Fit(g1,"R");
+  double aero_1_mean = g1->GetParameter(1);
+  double aero_1_sigm = g1->GetParameter(2);
   h_aero_pirfcut->DrawCopy("hist");
-
-  
+  g1->Draw("same");
+  TPaveText *pt_aero = new TPaveText(0.75,0.75,1,1,"brNDC");
+  pt_aero->AddText(("shms_p = "+std::to_string(SHMS_P)).c_str());
+  pt_aero->AddText(("1st fit mean :"+std::to_string(aero_1_mean)).c_str());
+  pt_aero->AddText(("1st fit sigma :"+std::to_string(aero_1_sigm)).c_str());
   h_aero_Krfcut->SetLineColor(kOrange);
   h_aero_Krfcut->DrawCopy("hist same");
+  c_aero->cd();
+  pt_aero->Draw();
   std::string c_aero_name = "results/pid/rftime/aero_rfcut_"+std::to_string(RunGroup)+".pdf";
   c_aero->SaveAs(c_aero_name.c_str());
-  
+ 
+  //double K_aero_low = 2;
+  //double K_aero_high = 15;
+  //double pi_aero_low = 6;
+  //double pi_aero_high = 30;
+  double K_aero_low = j_rfcut[(std::to_string(RunGroup)).c_str()]["K_aero_npe_low"].get<double>();
+  double K_aero_high = j_rfcut[(std::to_string(RunGroup)).c_str()]["K_aero_npe_high"].get<double>();
+  double pi_aero_low = j_rfcut[(std::to_string(RunGroup)).c_str()]["pi_aero_npe_low"].get<double>();
+  double pi_aero_high = j_rfcut[(std::to_string(RunGroup)).c_str()]["pi_aero_npe_high"].get<double>();
+  if(K_aero_high !=0){
+  double par[6];
+  TCanvas *c_aero_2nd = new TCanvas();
+  gStyle->SetOptTitle(0);
+  gStyle->SetPalette(kBird);
+  h_aero_pirfcut->DrawCopy("hist");
+  TF1 *f1 = new TF1("f1","gaus",pi_aero_low,pi_aero_high);
+  TF1 *f2 = new TF1("f1","gaus",K_aero_low,K_aero_high);
+  TF1 *all = new TF1("all","gaus(0)+gaus(3)",2,30);
+  all->SetLineColor(2);
+  h_aero_pirfcut->Fit(f1,"R");
+  h_aero_pirfcut->Fit(f2,"R+");
+  f1->GetParameters(&par[0]);
+  f2->GetParameters(&par[3]);
+  all->SetParameters(par);
+  h_aero_pirfcut->Fit(all,"R+");
+  std::string c_aero_2nd_name = "results/pid/rftime/aero_rfcut_2nd_"+std::to_string(RunGroup)+".pdf";
+  c_aero_2nd->SaveAs(c_aero_2nd_name.c_str());
+  }
+
   auto h_aero_rftime = d_mod_first.Histo2D({"","pions;rftime;aero",100,0,4,100,0,30},"diff_time_mod","P.aero.npeSum");
   TCanvas *c_aero_rftime_pi = new TCanvas();
   gStyle->SetOptTitle(0);
