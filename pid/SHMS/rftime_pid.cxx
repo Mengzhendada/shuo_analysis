@@ -50,7 +50,7 @@ void rftime_pid(int RunGroup =0){
                 .Filter("H.cer.npeSum>10")
                 .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
                 ;
-  auto h_cointime_pos = d_pos.Histo1D({"","coin_time",800,0,100},"CTime.ePiCoinTime_ROC2");
+  auto h_cointime_pos = d_pos.Histo1D({"","coin_time",800,42,46},"CTime.ePiCoinTime_ROC2");
   int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
   double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
   double coin_1stpeak_content = h_cointime_pos->GetBinContent(coin_peak_bin_pos);
@@ -75,10 +75,10 @@ void rftime_pid(int RunGroup =0){
         [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<1.25 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.25;},{"CTime.ePiCoinTime_ROC2"});
     
     //plot cointime
-    auto h_cointime_all = d_pos.Histo1D({"","",100,40,55},"CTime.ePiCoinTime_ROC2");
-    auto h_cointime_first = d_pos_first.Histo1D({"","",100,40,55},"CTime.ePiCoinTime_ROC2");
-    auto h_cointime_second = d_pos_second.Histo1D({"","",100,40,55},"CTime.ePiCoinTime_ROC2");
-    auto h_cointime_both = d_pos_both.Histo1D({"","",100,40,55},"CTime.ePiCoinTime_ROC2");
+    auto h_cointime_all = d_pos.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
+    auto h_cointime_first = d_pos_first.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
+    auto h_cointime_second = d_pos_second.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
+    auto h_cointime_both = d_pos_both.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
     TCanvas *c_cointime = new TCanvas();
     h_cointime_all->DrawCopy("hist");
     h_cointime_second->SetLineColor(kBlue);
