@@ -327,6 +327,24 @@ void compare_sim_data(int RunGroup = 0){
   pion_mmiss_sim_pos->DrawCopy("hist same");
   std::string c_missmass_name = "results/simc/missmass_"+std::to_string(RunGroup)+".pdf";
   c_missmass->SaveAs(c_missmass_name.c_str());
+  
+  //for z
+  auto pion_z_neg = d_neg_pi.Histo1D({"z_neg","z neg",100,0,2},"z");
+  auto pion_z_pos = d_pos_pi.Histo1D({"z_pos","z pos",100,0,2},"z");
+  auto pion_z_sim_neg = d_sim_neg.Histo1D({"z_neg_sim","z neg sim", 100,0,2},"missmass");
+  auto pion_z_sim_pos = d_sim_pos.Histo1D({"z_pos_sim","z pos sim", 100,0,2},"missmass");
+  TCanvas *c_missmass = new TCanvas();
+  c_missmass->Divide(1,2);
+  c_missmass->cd(1);
+  pion_z_neg->DrawCopy("hist");
+  pion_z_pos->SetLineColor(kRed);
+  pion_z_pos->DrawCopy("hist same");
+  c_missmass->cd(2);
+  pion_z_sim_neg->DrawCopy("hist");
+  pion_z_sim_pos->SetLineColor(kRed);
+  pion_z_sim_pos->DrawCopy("hist same");
+  std::string c_missmass_name = "results/simc/z_"+std::to_string(RunGroup)+".pdf";
+  c_missmass->SaveAs(c_missmass_name.c_str());
   //for neg runs
 
   auto p_xfp_neg = d_neg_pi.Histo1D({"pxfp","SHMS x fp data",100,-30,30},"P.dc.x_fp");
