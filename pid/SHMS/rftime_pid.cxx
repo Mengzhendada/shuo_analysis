@@ -66,13 +66,13 @@ void rftime_pid(int RunGroup =0){
   if(std::abs(coin_peak_center_pos-coin_2ndpeak_center_pos)>2 && coin_2ndpeak_content>0.2*coin_1stpeak_content){enough = true;}
   else{enough = false;}
   std::cout<<"if we can separate two coin peaks(separation > 2)? "<<enough<<" with 2nd/1st peak height " <<coin_2ndpeak_content/coin_1stpeak_content<<std::endl;
-  auto first_peak = [=](double coin_time){return enough ? std::abs(coin_time-coin_peak_center_pos)<1.25 : std::abs(coin_time-coin_peak_center_pos)<1.25 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.25;};
+  auto first_peak = [=](double coin_time){return enough ? std::abs(coin_time-coin_peak_center_pos)<2 : std::abs(coin_time-coin_peak_center_pos)<2 || std::abs(coin_time-coin_2ndpeak_center_pos)<3;};
   auto second_peak = [=](double coin_time){return enough ? std::abs(coin_time-coin_2ndpeak_center_pos)<3 : std::abs(coin_time-coin_peak_center_pos)<3 || std::abs(coin_time-coin_2ndpeak_center_pos)<3;};
-  auto all_peak = [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<1.25 || std::abs(coin_time-coin_2ndpeak_center_pos)<3;};
+  auto all_peak = [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<2 || std::abs(coin_time-coin_2ndpeak_center_pos)<3;};
     auto d_pos_first = d_pos.Filter(first_peak,{"CTime.ePiCoinTime_ROC2"});
     auto d_pos_second = d_pos.Filter(second_peak,{"CTime.ePiCoinTime_ROC2"});
     auto d_pos_both = d_pos.Filter(
-        [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<1.25 || std::abs(coin_time-coin_2ndpeak_center_pos)<1.25;},{"CTime.ePiCoinTime_ROC2"});
+        [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<2 || std::abs(coin_time-coin_2ndpeak_center_pos)<2;},{"CTime.ePiCoinTime_ROC2"});
     
     //plot cointime
     auto h_cointime_all = d_pos.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
@@ -98,7 +98,7 @@ void rftime_pid(int RunGroup =0){
 
 
     //move pi peak to 1
-  auto h_time_diff_pos = d_pos_first.Histo1D({"h_rf_time","type4;rf_time",200,-10,10},"fptime_minus_rf");
+  auto h_time_diff_pos = d_pos_first.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
   int time_diff_pos_bin_max = h_time_diff_pos->GetMaximumBin();
   double time_diff_pos_max = h_time_diff_pos->GetBinCenter(time_diff_pos_bin_max);
   double offset_pos = 401.8-time_diff_pos_max;
