@@ -6,8 +6,9 @@ void trackingeff(int RunNumber=0){
      if(RunNumber <= 0)
      return;
      }
-TString filename = Form("ROOTfiles/coin_replay_production_%d_-1.root", RunNumber);
-TFile *f = new TFile(filename, "READ");
+//TString filename = Form("ROOTfiles/coin_replay_production_%d_%d.root", RunNumber);
+   std::string filename = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+   TFile *f = new TFile(filename.c_str(), "READ");
 TTree *tdata = (TTree*) f->Get("T");
 TTree *tscal = (TTree*) f->Get("TSP");
 
@@ -95,7 +96,7 @@ double pelclean;
 using nlohmann::json;
 json j;
 {
-std::ifstream json_input_file("run_list_coin.json");
+std::ifstream json_input_file("db2/run_list_coin.json");
 json_input_file >> j;
 }
 
