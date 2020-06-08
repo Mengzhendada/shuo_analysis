@@ -54,20 +54,20 @@ void event_display(int RunNumber){
    TTree *tdata = (TTree*) f->Get("T");
    //TTree *tscal = (TTree*) f->Get("TSP");
 
-   double x_fp;
-   double y_fp;
-   double 1x_pos;
-   double 1y_pos;
-   double 2x_pos;
-   double 2y_pos;
+    x_fp;
+    y_fp;
+    1x_pos;
+    1y_pos;
+    2x_pos;
+    2y_pos;
    tdata->SetBranchAddress("P.dc.x_fp",&x_fp);
    tdata->SetBranchAddress("P.dc.y_fp",&y_fp);
    tdata->SetBranchAddress("P.hod.1x.Clus.Pos",&1x_pos);//position
    tdata->SetBranchAddress("P.hod.1y.Clus.Pos",&1y_pos);
    tdata->SetBranchAddress("P.hod.2x.Clus.Pos",&2x_pos);
    tdata->SetBranchAddress("P.hod.2y.Clus.Pos",&2y_pos);
-   TH2D* h_fp = new TH1D("fp","fp",100,-30,30,100,-30,30);
-   TH2D* h_hod_1xy = new TH1D("hod1","hod1",100,-50,50,100,-50,50);
+  // TH2D* h_fp = new TH2D("fp","fp",100,-30,30,100,-30,30);
+  // TH2D* h_hod_1xy = new TH2D("hod1","hod1",100,-50,50,100,-50,50);
    TGraphErrors* g_fp = new TGraphErrors();
    TGraphErrors* g_1xy = new TGraphErrors();
    TGraphErrors* g_2xy = new TGraphErrors();
@@ -75,7 +75,7 @@ void event_display(int RunNumber){
 
    int n = 1;//continue or not
    int i = 1;//ith event
-   while(n = 1){
+   while(n == 1){
      std::cout<<"This is "<<i<<"th event"<<std::endl;
      tdata->GetEntry(i);
      g_fp->SetPoint(1,x_fp,y_fp);
