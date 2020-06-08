@@ -408,7 +408,7 @@ void compare_sim_data(int RunGroup = 0){
 
   auto p_xptar_neg = d_neg_pi.Histo1D({"shms xp_tar","shms xp_tar",100,-0.1,0.1},"P.gtr.th");
   auto p_yptar_neg = d_neg_pi.Histo1D({"shms yp_tar","shms yp_tar",100,-0.1,0.1},"P.gtr.ph");
-  auto p_ytar_neg = d_neg_pi.Histo1D({"shms yp_tar","shms yp_tar",100,-4,4},"P.gtr.y");
+  auto p_ytar_neg = d_neg_pi.Histo1D({"shms y_tar","shms y_tar",100,-4,4},"P.gtr.y");
   auto p_delta_neg = d_neg_pi.Histo1D({"shms dp","shms dp",100,-10,22},"P.gtr.dp");
   auto p_xptar_sim_neg = d_sim_neg.Histo1D({"shms xp_tar","shms xp_tar sim",100,-0.1,0.1},"ssxptar","weight_neg");
   auto p_yptar_sim_neg = d_sim_neg.Histo1D({"shms yp_tar","shms yp_tar sim",100,-0.1,0.1},"ssyptar","weight_neg");

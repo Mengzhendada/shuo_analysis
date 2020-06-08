@@ -42,7 +42,7 @@ namespace fs = std::experimental::filesystem;
 #include <vector>
 #include <string>
 
-void(int RunGroup =0){
+void shms_TE(int RunGroup = 0){
   if(RunGroup == 0){
     std::cout<<"Enter RunGroup Number(-1 to exit) ";
     std::cin>>RunGroup;
@@ -57,11 +57,7 @@ void(int RunGroup =0){
   std::vector<int> neg_D2,pos_D2;
   neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
   pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
-  json j_info;
-  {
-    std::ifstream ifs("db2/rungroup_info.json");
-    ifs>>j_info;
-  }
+  
   if(!neg_D2.empty() && !pos_D2.empty()){
   std::vector<std::string> files_neg,files_pos;
   double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
@@ -83,112 +79,171 @@ void(int RunGroup =0){
   }
 
   ROOT::RDataFrame d_neg_raw("T",files_neg);
-  auto d_neg_dpcut = d_neg_raw
-    .Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
-    .Filter("P.gtr.dp > -10 && P.gtr.dp < 22")
-    .Filter("H.gtr.dp > -10 && H.gtr.dp < 10")
-    .Filter("H.cal.etottracknorm >0.85")
-    .Filter("H.cer.npeSum>10")
-    //.Filter("P.cal.etottracknorm > 0.1 && P.cal.etottracknorm < 0.8")
-    .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime");
   ROOT::RDataFrame d_pos_raw("T",files_pos);
-  auto d_pos_dpcut = d_pos_raw
-    .Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
-    .Filter("P.gtr.dp > -10 && P.gtr.dp < 22")
+
+  auto h_cointime_raw_pos = d_pos_raw.Histo1D({"","cointime pos",100,20,40},"CTime.CoinTime_RAW_ROC2");
+  auto h_cointime_raw_neg = d_neg_raw.Histo1D({"","cointime neg",100,20,40},"CTime.CoinTime_RAW_ROC2");
+  auto h_cal_raw_pos = d_pos_raw.Histo1D({"","etot pos",100,0.01,2},"P.cal.etotnorm");
+  auto h_cal_raw_neg = d_neg_raw.Histo1D({"","etot neg",100,0.01,2},"P.cal.etotnorm");
+  auto h_hodo_goodscin_pos = d_pos_raw.Histo1D({"","goodscin pos",2,0,2},"P.hod.goodscinhit");
+  auto h_hodo_goodscin_neg = d_neg_raw.Histo1D({"","goodscin neg",2,0,2},"P.hod.goodscinhit");
+  auto h_hod_betanotrack_pos = d_pos_raw.Histo1D({"","betanotrk pos",100,0,1.2},"P.hod.betanotrack");
+  auto h_hod_betanotrack_neg = d_neg_raw.Histo1D({"","betanotrk neg",100,0,1.2},"P.hod.betanotrack");
+  
+
+  auto h_dc_ntrack_pos = d_pos_raw.Histo1D({"","dcntrack pos",10,0,10},"P.dc.ntrack");
+  auto h_dc_ntrack_neg = d_neg_raw.Histo1D({"","dcntrack neg",10,0,10},"P.dc.ntrack");
+  auto h_dc_inside_pos = d_pos_raw.Histo1D({"","dc inside pos",10,0,2},"P.dc.InsideDipoleExit");
+  auto h_dc_inside_neg = d_neg_raw.Histo1D({"","dc inside neg",10,0,2},"P.dc.InsideDipoleExit");
+
+  TCanvas* c_hod_1 = new TCanvas();
+  c_hod_1->Divide(2,2);
+  c_hod_1->cd(1);
+  h_cointime_raw_pos->DrawCopy("hist");
+  c_hod_1->cd(2);
+  h_cointime_raw_neg->DrawCopy("hist");
+  c_hod_1->cd(3);
+  h_cal_raw_pos->DrawCopy("hist");
+  c_hod_1->cd(4);
+  h_cal_raw_neg->DrawCopy("hist");
+  std::string c_hod_1_name = "results/TE/hod_1_"+std::to_string(RunGroup)+".pdf";
+  c_hod_1->SaveAs(c_hod_1_name.c_str());
+
+  TCanvas* c_hod_2 = new TCanvas();
+  c_hod_2->Divide(2,2);
+  c_hod_2->cd(1);
+  h_hodo_goodscin_pos->DrawCopy("hist");
+  c_hod_2->cd(2);
+  h_hodo_goodscin_neg->DrawCopy("hist");
+  c_hod_2->cd(3);
+  h_hod_betanotrack_pos->DrawCopy("hist");
+  c_hod_2->cd(4);
+  h_hod_betanotrack_pos->DrawCopy("hist");
+  std::string c_hod_2_name = "results/TE/hod_2_"+std::to_string(RunGroup)+".pdf";
+  c_hod_2->SaveAs(c_hod_2_name.c_str());
+
+  TCanvas* c_dc = new TCanvas();
+  c_dc->Divide(2,2);
+  c_dc->cd(1);
+  h_dc_ntrack_pos->DrawCopy("hist");
+  c_dc->cd(2);
+  h_dc_ntrack_neg->DrawCopy("hist");
+  c_dc->cd(3);
+  h_dc_inside_pos->DrawCopy("hist");
+  c_dc->cd(4);
+  h_dc_inside_neg->DrawCopy("hist");
+  std::string c_dc_name = "results/TE/dc_"+std::to_string(RunGroup)+".pdf";
+  c_dc->SaveAs(c_dc_name.c_str());
+  
+  double cointime_low,cointime_high;
+  cointime_low = 28;
+  cointime_high = 32;
+  auto d_pos_calcut = d_pos_raw.Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
+    .Filter([](double aero){return aero>2;},{"P.aero.npeSum"})
+    ;
+  auto h_cointime_pi_pos = d_pos_calcut.Histo1D({"","cointime pos",100,20,40},"CTime.CoinTime_RAW_ROC2");
+  auto h_goodscin_pi_pos = d_pos_calcut.Histo1D({"","good scin pos",2,0,2},"P.hod.goodscinhit");
+  TCanvas* c_coin_pi = new TCanvas();
+  c_coin_pi->Divide(1,2);
+  c_coin_pi->cd(1);
+  h_cointime_pi_pos->DrawCopy("hist");
+  c_coin_pi->cd(2);
+  h_goodscin_pi_pos->DrawCopy("hist");
+  std::string c_coin_pi_name = "results/TE/cointime_pi_pos"+std::to_string(RunGroup)+".pdf";
+  c_coin_pi->SaveAs(c_coin_pi_name.c_str());
+
+  auto d_pos_pi_hod = d_pos_raw
+    .Filter("P.hod.goodscinhit==1")
+    .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"CTime.CoinTime_RAW_ROC2"})
+    .Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
+    .Filter("P.aero.npeSum > 2")
+    .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"P.hod.betanotrack"})
+    .Filter([](double h_delta){return h_delta > -10 && h_delta < 10;},{"P.gtr.dp"})
+    ;  
+  auto d_pos_pi_dc = d_pos_pi_hod
+    .Filter("P.dc.ntrack>=1")
+    .Filter("P.dc.InsideDipoleExit == 1")
+    .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"P.gtr.dp"})
+    ;
+    auto d_pos_pi_dc_2 = d_pos_pi_hod
+    .Filter("P.dc.ntrack>=1")
+    .Filter("P.dc.InsideDipoleExit == 1")
+    .Filter("P.gtr.dp > -10 && P.gtr.dp< 22")
     .Filter("H.gtr.dp > -10 && H.gtr.dp < 10")
-    .Filter("H.cal.etottracknorm >0.85")
-    .Filter("H.cer.npeSum>10")
-    //.Filter("P.cal.etottracknorm > 0.1 && P.cal.etottracknorm < 0.8")
-    .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime");
-    
-    //pos rftime cut
-    auto h_time_diff_pos = d_pos_dpcut.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
-  int time_diff_pos_bin_max = h_time_diff_pos->GetMaximumBin();
-  double time_diff_pos_max = h_time_diff_pos->GetBinCenter(time_diff_pos_bin_max);
-  double offset_pos = 401.8-time_diff_pos_max;
-  std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
-  auto d_mod_first = d_pos_dpcut.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
-  .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
-  ;
-  auto h_diff_mod_pos = d_mod_first.Histo1D({"mod","mod pos",100,0,4.008},"diff_time_mod");
-  json j_rfcut;
-  {
-    std::ifstream ifs("db2/rftime_cut.json");
-    ifs>>j_rfcut;
-  }
-  double rf_pi_low = j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_low"].get<double>();
-  std::cout<<rf_pi_low<<std::endl;
-  double rf_pi_high =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_high"].get<double>();
-  std::cout<<rf_pi_high<<std::endl;
-  auto d_pos_pi = d_mod_first
-    .Filter([=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-    .Filter("P.aero.npeSum > 2")
-    ; 
-  auto h_2d_pos = d_pos_pi.Histo2D({"2d","2d pos",100,0,4.008,100,0,30},"diff_time_mod","P.aero.npeSum");
-  
-  //just a check of coin time for pos pion after rftime cut
-  auto h_cointime_pos = d_pos_pi.Histo1D({"","coin_time",800,40,55},"CTime.ePiCoinTime_ROC2");
-  int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
-  double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
-  std::cout<<"coin time peak "<<coin_peak_center_pos<<std::endl;
-  double coin_1stpeak_content = h_cointime_pos->GetBinContent(coin_peak_bin_pos);
-  auto d_first = d_pos_pi
-                .Filter(
-                  [=](double cointime){return std::abs(cointime-coin_peak_center_pos)<2.004;},{"CTime.ePiCoinTime_ROC2"});
-  auto h_cointime_pos_first = d_first.Histo1D({"","first peak",800,0,100},"CTime.ePiCoinTime_ROC2");
-  auto h_cointime_pos_2ndpeak = d_pos_pi.Filter([=](double coin_time){return std::abs(coin_time - coin_peak_center_pos)>2.004;},{"CTime.ePiCoinTime_ROC2"}).Histo1D({"","",800,coin_peak_center_pos,100},"CTime.ePiCoinTime_ROC2");
-  int coin_2ndpeak_bin_pos = h_cointime_pos_2ndpeak->GetMaximumBin();
-  double coin_2ndpeak_center_pos = h_cointime_pos_2ndpeak->GetBinCenter(coin_2ndpeak_bin_pos);
-  double coin_2ndpeak_content = h_cointime_pos_2ndpeak->GetBinContent(coin_2ndpeak_bin_pos);
-  bool enough;
-  if(std::abs(coin_peak_center_pos-coin_2ndpeak_center_pos)>2.004 && coin_2ndpeak_content>0.2*coin_1stpeak_content){enough = true;}
-  else{enough = false;}
-  std::cout<<"if we can separate two coin peaks(separation > 2)? "<<enough<<" with 2nd/1st peak height " <<coin_2ndpeak_content/coin_1stpeak_content<<std::endl;
+    .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"P.gtr.dp"})
+    //.Filter("H.cal.etottracknorm > 0.85")
 
-  
-  // rfcut for neg runs
-  auto h_time_diff_neg = d_neg_dpcut.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
-  int time_diff_neg_bin_max = h_time_diff_neg->GetMaximumBin();
-  double time_diff_neg_max = h_time_diff_neg->GetBinCenter(time_diff_neg_bin_max);
-  double offset_neg = 401.8-time_diff_neg_max;
-  std::cout<<"offset for neg runs "<<offset_neg<<std::endl;
-  auto d_mod_neg = d_neg_dpcut.Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
-  .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
-  ;
-  auto h_diff_mod_neg = d_mod_neg.Histo1D({"mod","mod neg",100,0,4.008},"diff_time_mod");
-  auto d_neg_pi = d_mod_neg.Filter(
-      [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-    .Filter("P.aero.npeSum > 2")
-    ; 
-  auto h_2d_neg = d_neg_pi.Histo2D({"2d","2d neg",100,0,4.008,100,0,30},"diff_time_mod","P.aero.npeSum");
-  //cointime plot for pion after rftime cut(just to check)
-  auto h_cointime_neg = d_neg_pi.Histo1D({"","neg coin_time",800,40,55},"CTime.ePiCoinTime_ROC2");
-  int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
-  double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
-  std::cout<<"coin time peak "<<coin_peak_center_neg<<std::endl;
-  TCanvas *c_monitor = new TCanvas();
-  c_monitor->Divide(2,3);
-  c_monitor->cd(1);
-  h_cointime_neg->DrawCopy("hist");
-  c_monitor->cd(2);
-  h_cointime_pos->DrawCopy("hist");
-  c_monitor->cd(3);
-  h_diff_mod_neg->DrawCopy("hist");
-  c_monitor->cd(4);
-  h_diff_mod_pos->DrawCopy("hist");
-  c_monitor->cd(5);
-  h_2d_neg->DrawCopy("hist");
-  c_monitor->cd(6);
-  h_2d_pos->DrawCopy("hist");
-  std::string c_monitor_name = "results/TE/monitor_"+std::to_string(RunGroup)+".pdf";
-  c_monitor->SaveAs(c_monitor_name.c_str());
-  //use d_neg_pi and d_pos_pi
+    //.Filter("H.cer.npeSum > 10")
+    ;
+    auto d_pos_pi_dc_3 = d_pos_pi_hod
+    .Filter("P.dc.ntrack>=1")
+    .Filter("P.dc.InsideDipoleExit == 1")
+    .Filter("P.gtr.dp > -10 && P.gtr.dp< 22")
+    .Filter("H.gtr.dp > -10 && H.gtr.dp < 10")
+    //.Filter("H.cal.etottracknorm > 0.85")
+    //.Filter("H.cer.npeSum > 10")
+    .Filter("fEvtHdr.fEvtType == 4")
+    .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"P.gtr.dp"})
+    ;
 
+  auto d_neg_pi_hod = d_neg_raw
+    .Filter("P.hod.goodscinhit==1")
+    .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"CTime.CoinTime_RAW_ROC2"})
+    .Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
+    .Filter("P.aero.npeSum > 2")
+    .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"P.hod.betanotrack"})
+    .Filter([](double h_delta){return h_delta > -10 && h_delta < 10;},{"P.gtr.dp"})
+    ;  
+  auto d_neg_pi_dc = d_neg_pi_hod
+    .Filter("P.dc.ntrack>=1")
+    .Filter("P.dc.InsideDipoleExit == 1")
+    .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"P.gtr.dp"})
+    ;
+    auto d_neg_pi_dc_2 = d_neg_pi_hod
+    .Filter("P.dc.ntrack>=1")
+    .Filter("P.dc.InsideDipoleExit == 1")
+    .Filter("P.gtr.dp > -10 && P.gtr.dp< 22")
+    .Filter("H.gtr.dp > -10 && H.gtr.dp < 10")
+    //.Filter("H.cal.etottracknorm > 0.85")
+
+    //.Filter("H.cer.npeSum > 10")
+    .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"P.gtr.dp"})
+    ;
+    auto d_neg_pi_dc_3 = d_neg_pi_hod
+    .Filter("P.dc.ntrack>=1")
+    .Filter("P.dc.InsideDipoleExit == 1")
+    .Filter("P.gtr.dp > -10 && P.gtr.dp< 22")
+    .Filter("H.gtr.dp > -10 && H.gtr.dp < 10")
+    //.Filter("H.cal.etottracknorm > 0.85")
+    //.Filter("H.cer.npeSum > 10")
+    .Filter("fEvtHdr.fEvtType == 4")
+    .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"P.gtr.dp"})
+    ;
+  double pos_pi_expected = *d_pos_pi_hod.Count();
+  double  pos_pi_found = *d_pos_pi_dc.Count();
+  double  pos_pi_found_2 = *d_pos_pi_dc_2.Count();
+  double  pos_pi_found_3 = *d_pos_pi_dc_3.Count();
+  double  neg_pi_expected = *d_neg_pi_hod.Count();
+  double  neg_pi_found = *d_neg_pi_dc.Count();
+  double  neg_pi_found_2 = *d_neg_pi_dc_2.Count();
+  double  neg_pi_found_3 = *d_neg_pi_dc_3.Count();
   json j_out;
-  {
+  
     std::ifstream ifs("results/TE/trackingeff_info.json");
     ifs>>j_out;
-  }
+  
+  j_out[(std::to_string(RunGroup)).c_str()]["pos"]["SHMS_pi_expected"] = pos_pi_expected;
+  j_out[(std::to_string(RunGroup)).c_str()]["pos"]["SHMS_pi_found_1"] = pos_pi_found;
+  j_out[(std::to_string(RunGroup)).c_str()]["pos"]["SHMS_pi_found_2"] = pos_pi_found_2;
+  j_out[(std::to_string(RunGroup)).c_str()]["pos"]["SHMS_pi_found_3"] = pos_pi_found_3;
+  j_out[(std::to_string(RunGroup)).c_str()]["neg"]["SHMS_pi_expected"] = neg_pi_expected;
+  j_out[(std::to_string(RunGroup)).c_str()]["neg"]["SHMS_pi_found_1"] = neg_pi_found;
+  j_out[(std::to_string(RunGroup)).c_str()]["neg"]["SHMS_pi_found_2"] = neg_pi_found_2;
+  j_out[(std::to_string(RunGroup)).c_str()]["neg"]["SHMS_pi_found_3"] = neg_pi_found_3;
+  
+  std::ofstream ofs("results/TE/trackingeff_info.json");
+   ofs<<j_out.dump(4)<<std::endl;
+
   
   
 
