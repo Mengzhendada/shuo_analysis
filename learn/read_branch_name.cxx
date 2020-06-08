@@ -4,10 +4,10 @@
 #include "TCanvas.h"
 
 void read_branch_name(){
-  std::string root_name = "ROOTfiles/coin_replay_production_7593_7593.root";
+  std::string root_name = "ROOTfiles/coin_replay_production_7647_7647.root";
   ROOT::RDataFrame d("TSP",root_name.c_str());
   auto colNames = d.GetColumnNames();
-  std::ofstream of("results/name.txt");
+  std::ofstream of("results/tsp_name.txt");
   for (auto &&colName : colNames) of << colName << std::endl;
   std::cout<<"try"<<std::endl;
   //auto h1 = d.Filter("!P.hod.1x.negAdcPulseAmpRaw.empty()").Define("test","P.hod.1x.negAdcPulseAmpRaw[0]").Histo1D("test");
