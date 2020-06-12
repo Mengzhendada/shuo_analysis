@@ -6,6 +6,9 @@ R__LOAD_LIBRARY(libfmt.so)
   using json = nlohmann::json;
 #include <cmath>
 #include <iostream>
+#include <sstream>
+#include <locale>
+#include <iomanip>
 
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
@@ -83,6 +86,38 @@ void shms_rate(int RunGroup){
           std::ifstream ifs("db2/run_list_coin.json");
           ifs>>j_runs;
         }
+        std::string start_time = j_runs[(std::to_string(RunNumber)).c_str()]["start_time"].get<std::string>();
+        std::cout<<start_time<<std::endl;
+        std::string starttime,startdate;
+        starttime = start_time.substr(0,start_time.size()-13);
+        startdate = start_time.substr(8,start_time.size()-4);
+        std::cout<<starttime<<"at"<<startdate<<std::endl;
+        char time_char[10];
+        char date_char[10];
+        int hour;
+        int minute;
+        int second;
+        int month;
+        int date;
+        int year;
+        std::istringstream time_ss(starttime.c_str());
+        time_ss>>time_char;
+        std::sscanf(time_char,"%d:%d:%d",&hour,&minute,&second);
+        std::istringstream date_ss(startdate.c_str());
+        date_ss>>date_char;
+        std::sscanf(date_char,"%d/%d/%d",&month,&date,&year);
+        std::cout<<hour<<":"<<minute<<":"<<second<<" "<<month<<"/"<<date<<"/"<<year<<std::endl;
+        jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["start_time"]["hour"] = hour;
+        jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["start_time"]["minute"] = minute;
+        jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["start_time"]["second"] = second;
+        jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["start_time"]["month"] = month;
+        jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["start_time"]["date"] = date;
+        jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["start_time"]["year"] = year;
+        //std::tm t = {};
+        //std::istringstream ss(start_time.c_str());
+        //ss.imbue(std::locale("de_DE.utf-8"));
+        //ss>>get_time(&t,"%H:%M:%S %m-%d-%y");
+        //std::cout<<t.tm_hour<<":"<<t.tm_min<<":"<<t.tm_sec<<std::endl;
         //int ps1 = -1;
         //int ps2 = -1;
         //int ps5 = -1;
@@ -130,6 +165,33 @@ void shms_rate(int RunGroup){
           std::ifstream ifs("db2/run_list_coin.json");
           ifs>>j_runs;
         }
+        std::string start_time = j_runs[(std::to_string(RunNumber)).c_str()]["start_time"].get<std::string>();
+        std::cout<<start_time<<std::endl;
+        std::string starttime,startdate;
+        starttime = start_time.substr(0,start_time.size()-13);
+        startdate = start_time.substr(8,start_time.size()-4);
+        std::cout<<starttime<<"at"<<startdate<<std::endl;
+        char time_char[10];
+        char date_char[10];
+        int hour;
+        int minute;
+        int second;
+        int month;
+        int date;
+        int year;
+        std::istringstream time_ss(starttime.c_str());
+        time_ss>>time_char;
+        std::sscanf(time_char,"%d:%d:%d",&hour,&minute,&second);
+        std::istringstream date_ss(startdate.c_str());
+        date_ss>>date_char;
+        std::sscanf(date_char,"%d/%d/%d",&month,&date,&year);
+        std::cout<<hour<<":"<<minute<<":"<<second<<" "<<month<<"/"<<date<<"/"<<year<<std::endl;
+        jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["start_time"]["hour"] = hour;
+        jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["start_time"]["minute"] = minute;
+        jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["start_time"]["second"] = second;
+        jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["start_time"]["month"] = month;
+        jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["start_time"]["date"] = date;
+        jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["start_time"]["year"] = year;
         //int ps1 = -1;
         //int ps2 = -1;
         //int ps5 = -1;

@@ -143,6 +143,12 @@ R__LOAD_LIBRARY(libGenVector.so)
           G_te_all_neg_runs->SetPoint(i_neg,RunNumber,te);
           i_neg++;
           std::cout<<"check neg "<<it_neg.key()<<std::endl;
+         int start_hour = ik_neg["start_time"]["hour"].get<int>();
+         int start_minute = ik_neg["start_time"]["minute"].get<int>();
+         int start_second = ik_neg["start_time"]["second"].get<int>();
+         int start_month = ik_neg["start_time"]["month"].get<int>();
+         int start_date = ik_neg["start_time"]["date"].get<int>();
+         int start_year = ik_neg["start_time"]["year"].get<int>();
          }
          else{std::cout<<"no counts for "<<it_neg.key()<<std::endl;;}
           }
@@ -170,6 +176,12 @@ R__LOAD_LIBRARY(libGenVector.so)
          G_te_all_pos_runs->SetPoint(i_pos,RunNumber,te);
          i_pos++;
          std::cout<<"check pos"<<it_pos.key()<<std::endl;
+         int start_hour = ik_pos["start_time"]["hour"].get<int>();
+         int start_minute = ik_pos["start_time"]["minute"].get<int>();
+         int start_second = ik_pos["start_time"]["second"].get<int>();
+         int start_month = ik_pos["start_time"]["month"].get<int>();
+         int start_date = ik_pos["start_time"]["date"].get<int>();
+         int start_year = ik_pos["start_time"]["year"].get<int>();
          }
          else{std::cout<<"no counts for "<<it_pos.key()<<std::endl;;}
          }
