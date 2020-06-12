@@ -90,11 +90,14 @@ R__LOAD_LIBRARY(libGenVector.so)
           ;
         double  neg_pi_expected = *d_neg_pi_hod.Count();
         double  neg_pi_found = *d_neg_pi_dc.Count();
+        double neg_all = *d_neg_raw.Count();
         json j_out;
 
         std::ifstream ifs("results/TE/trackingeff_info.json");
         ifs>>j_out;
 
+        
+        j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["counts"] = neg_all;
         j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["SHMS_pi_expected"] = neg_pi_expected;
         j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["SHMS_pi_found_1"] = neg_pi_found;
         std::ofstream ofs("results/TE/trackingeff_info.json");
@@ -132,11 +135,13 @@ R__LOAD_LIBRARY(libGenVector.so)
           ;
         double pos_pi_expected = *d_pos_pi_hod.Count();
         double  pos_pi_found = *d_pos_pi_dc.Count();
+        double pos_all = *d_pos_raw.Count();
         json j_out;
 
         std::ifstream ifs("results/TE/trackingeff_info.json");
         ifs>>j_out;
 
+        j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["counts"] = pos_all;
         j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["SHMS_pi_expected"] = pos_pi_expected;
         j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["SHMS_pi_found_1"] = pos_pi_found;
         std::ofstream ofs("results/TE/trackingeff_info.json");

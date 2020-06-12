@@ -101,11 +101,14 @@ void shms_rate(int RunGroup){
 
        // auto h_ptrig1 = d_neg_scale.Histo1D({"","",}) 
         double total_charge = *d_neg_scale.Max("P.BCM4B.scalerChargeCut")/1000.0;
-        double time_1MHz_cut = *d_neg_scale.Max("P.BCM4B.scalerChargeCut");
+        double time_1MHz_cut = *d_neg_scale.Max("P.1MHz.scalerTimeCut");
         int scaler_events = *d_neg_scale.Count();
+        long int datacounts = *d_neg_scale.Max("P.pTRIG1.scaler"); 
+        std::cout<<"data counts "<<datacounts<<std::endl;
         jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["charge"] = total_charge;
         jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["time"] = time_1MHz_cut;
         jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["scaler_n"] = scaler_events;
+        jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
         //jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["daq"]["ps6"] = ps6;
         //jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["ps_factor"] = ps_factor;
 
@@ -145,11 +148,15 @@ void shms_rate(int RunGroup){
 
 
         double total_charge = *d_pos_scale.Max("P.BCM4B.scalerChargeCut")/1000.0;
-        double time_1MHz_cut = *d_pos_scale.Max("P.BCM4B.scalerChargeCut");
+        double time_1MHz_cut = *d_pos_scale.Max("P.1MHz.scalerTimeCut");
         int scaler_events = *d_pos_scale.Count();
+        long int datacounts = *d_pos_scale.Max("P.pTRIG1.scaler"); 
+        std::cout<<"data counts "<<datacounts<<std::endl;
         jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["charge"] = total_charge;
         jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["time"] = time_1MHz_cut;
         jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["scaler_n"] = scaler_events;
+        jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
+        
         //jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["daq"]["ps6"] = ps6;
         //jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["ps_factor"] = ps_factor;
       }

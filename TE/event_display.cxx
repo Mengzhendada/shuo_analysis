@@ -54,12 +54,12 @@ void event_display(int RunNumber){
    TTree *tdata = (TTree*) f->Get("T");
    //TTree *tscal = (TTree*) f->Get("TSP");
 
-    x_fp;
-    y_fp;
-    1x_pos;
-    1y_pos;
-    2x_pos;
-    2y_pos;
+   double x_fp;
+   double y_fp;
+   double 1x_pos;
+   double 1y_pos;
+   double 2x_pos;
+   double 2y_pos;
    tdata->SetBranchAddress("P.dc.x_fp",&x_fp);
    tdata->SetBranchAddress("P.dc.y_fp",&y_fp);
    tdata->SetBranchAddress("P.hod.1x.Clus.Pos",&1x_pos);//position

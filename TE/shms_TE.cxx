@@ -227,6 +227,10 @@ void shms_TE(int RunGroup = 0){
   double  neg_pi_found = *d_neg_pi_dc.Count();
   double  neg_pi_found_2 = *d_neg_pi_dc_2.Count();
   double  neg_pi_found_3 = *d_neg_pi_dc_3.Count();
+  double neg_all = *d_neg_raw.Count();
+  double pos_all = *d_pos_raw.Count();
+  j_out[(std::to_string(RunGroup)).c_str()]["neg"]["counts"] = neg_all;
+  j_out[(std::to_string(RunGroup)).c_str()]["pos"]["counts"] = pos_all;
   json j_out;
   
     std::ifstream ifs("results/TE/trackingeff_info.json");
