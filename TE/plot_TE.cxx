@@ -102,6 +102,9 @@ R__LOAD_LIBRARY(libGenVector.so)
     TGraphErrors* G_te_all_pos_runs = new TGraphErrors();
     TGraphErrors* G_te_all_neg_runs = new TGraphErrors();
     G_te_all_neg_runs->SetTitle("SHMS TE; runs;TE");
+    TGraphErrors* G_te_all_pos_realtime = new TGraphErrors();
+    TGraphErrors* G_te_all_neg_realtime = new TGraphErrors();
+    G_te_all_neg_realtime->SetTitle("SHMS TE; time;TE");
     for(auto it = j_te.begin();it!=j_te.end();it++){
       int RunGroup;
       RunGroup = std::stoi(it.key());
@@ -149,6 +152,9 @@ R__LOAD_LIBRARY(libGenVector.so)
          int start_month = ik_neg["start_time"]["month"].get<int>();
          int start_date = ik_neg["start_time"]["date"].get<int>();
          int start_year = ik_neg["start_time"]["year"].get<int>();
+         TDatime datime_neg(start_year,start_month,start_date,start_hour,start_minute,start_second);
+         G_te_all_neg_realtime->SetPoint(i_neg,datime_neg,te);
+         
          }
          else{std::cout<<"no counts for "<<it_neg.key()<<std::endl;;}
           }
@@ -182,6 +188,8 @@ R__LOAD_LIBRARY(libGenVector.so)
          int start_month = ik_pos["start_time"]["month"].get<int>();
          int start_date = ik_pos["start_time"]["date"].get<int>();
          int start_year = ik_pos["start_time"]["year"].get<int>();
+         TDatime datime_pos(start_year,start_month,start_date,start_hour,start_minute,start_second);
+         G_te_all_pos_realtime->SetPoint(i_pos,datime_pos,te);
          }
          else{std::cout<<"no counts for "<<it_pos.key()<<std::endl;;}
          }
@@ -241,5 +249,22 @@ R__LOAD_LIBRARY(libGenVector.so)
     G_te_all_neg_runs->Draw("p");
     std::string c_te_all_runs_name = "results/TE/pi_te_all_runs.pdf";
     c_te_all_runs->SaveAs(c_te_all_runs_name.c_str());
-  
+
+    TCanvas* c_te_all_realtime = new TCanvas();
+    c_te_all_realtime->SetGrid();
+    G_te_all_pos_realtime->SetMarkerColor(kRed);
+    G_te_all_pos_realtime->SetMarkerStyle(8);
+    G_te_all_pos->Draw("ap");
+    G_te_all_pos_realtime->GetXaxis()->SetTimeDIsplay(1);
+    G_te_all_pos_realtime->GetXaxis()->SetNdivisions(503);
+    G_te_all_pos_realtime->GetXaxis()->SetTimeFOrmat("%Y-%m-%d %H");
+    G_te_all_pos_realtime->SetTimeOffset(0,"gmt");
+
+    G_te_all_neg_realtime->SetMarkerColor(kBlack);
+    G_te_all_neg_realtime->SetMarkerStyle(8);
+    G_te_all_neg->Draw("p");
+    G_te_all_neg_realtime->GetXaxis()->SetTimeDIsplay(1);
+    G_te_all_neg_realtime->GetXaxis()->SetNdivisions(503);
+    G_te_all_neg_realtime->GetXaxis()->SetTimeFOrmat("%Y-%m-%d %H");
+    G_te_all_neg_realtime->SetTimeOffset(0,"gmt");
   }
