@@ -157,7 +157,7 @@ R__LOAD_LIBRARY(libGenVector.so)
               double time = ik_neg["time"].get<double>();
               double counts = ik_neg["data_n"].get<double>();
               double te = pi_found/pi_expected;
-              double yield = pi_expected/charge;
+              double yield = pi_found/charge;
               double rate = counts/(1000*time);
               double neg_fit_value;
               double te_corr;
@@ -217,7 +217,7 @@ R__LOAD_LIBRARY(libGenVector.so)
               double time = ik_pos["time"].get<double>();
               double counts = ik_pos["data_n"].get<double>();
               double te = pi_found/pi_expected;
-              double yield = pi_expected/charge;
+              double yield = pi_found/charge;
               if(yield>2000){std::cout<<"yield greater than 2000 "<<RunNumber<<std::endl;}
               double rate = counts/(1000*time);
               double pos_fit_value;
