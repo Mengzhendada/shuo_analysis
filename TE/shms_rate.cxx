@@ -76,20 +76,25 @@ void shms_rate(int RunGroup){
         std::cout<<RunNumber<<std::endl;
         std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
         ROOT::RDataFrame d_neg_scale("TSP",rootfile_name);
+        std::string start_time;
         json j_runs;
         if(RunNumber < 7000)
         {
           std::ifstream ifs("db2/run_list.json");//no daq info here, need to fix this
           ifs>>j_runs;
+        start_time = j_runs[(std::to_string(RunNumber)).c_str()]["start_time"].get<std::string>();
+        std::cout<<start_time<<" "<<start_time.size()<<std::endl;
         }
         else{
           std::ifstream ifs("db2/run_list_coin.json");
           ifs>>j_runs;
+        start_time = j_runs[(std::to_string(RunNumber)).c_str()]["run_info"]["start_time"].get<std::string>();
+        std::cout<<start_time<<" "<<start_time.size()<<std::endl;
         }
-        std::string start_time = j_runs[(std::to_string(RunNumber)).c_str()]["start_time"].get<std::string>();
-        std::cout<<start_time<<std::endl;
+        std::cout<< "start_time " <<start_time<<std::endl;
         std::string starttime,startdate;
         starttime = start_time.substr(0,start_time.size()-13);
+        std::cout<<"only time "<<starttime<<" start_time "<<start_time<<std::endl;
         startdate = start_time.substr(8,start_time.size()-4);
         std::cout<<starttime<<"at"<<startdate<<std::endl;
         char time_char[10];
@@ -155,17 +160,20 @@ void shms_rate(int RunGroup){
         std::cout<<RunNumber<<std::endl;
         std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
         ROOT::RDataFrame d_pos_scale("TSP",rootfile_name);
+        std::string start_time;
         json j_runs;
         if(RunNumber < 7000)
         {
           std::ifstream ifs("db2/run_list.json");//no daq info here, need to fix this
           ifs>>j_runs;
+        start_time = j_runs[(std::to_string(RunNumber)).c_str()]["start_time"].get<std::string>();
+
         }
         else{
           std::ifstream ifs("db2/run_list_coin.json");
           ifs>>j_runs;
+        start_time = j_runs[(std::to_string(RunNumber)).c_str()]["run_info"]["start_time"].get<std::string>();
         }
-        std::string start_time = j_runs[(std::to_string(RunNumber)).c_str()]["start_time"].get<std::string>();
         std::cout<<start_time<<std::endl;
         std::string starttime,startdate;
         starttime = start_time.substr(0,start_time.size()-13);
