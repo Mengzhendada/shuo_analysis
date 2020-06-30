@@ -13,6 +13,7 @@ void print_run_info(){
   }
   json k,l;
   json l2;
+  json l3;
   //{
   //  std::ifstream infile("kin_group.json");
   //  infile>>l2;
@@ -42,6 +43,7 @@ void print_run_info(){
       k[std::to_string(runnum)]["run_group"] = run_group;
       k[std::to_string(runnum)]["target_id"] = 3;
       l2[std::to_string(x)][std::to_string(Q2)][std::to_string(z)]["neg"]["D2"].push_back(runnum);
+      l3[std::to_string(Q2)][std::to_string(z)][std::to_string(x)]["neg"]["D2"].push_back(runnum);
       }
       v_runs.clear();
     }
@@ -60,6 +62,7 @@ void print_run_info(){
       k[std::to_string(runnum)]["target_id"] = 2;
       v_runs.push_back(runnum);
       l2[std::to_string(x)][std::to_string(Q2)][std::to_string(z)]["neg"]["H2"].push_back(runnum);
+      l3[std::to_string(Q2)][std::to_string(z)][std::to_string(x)]["neg"]["H2"].push_back(runnum);
       }
       v_runs.clear();
     }
@@ -78,6 +81,7 @@ void print_run_info(){
       k[std::to_string(runnum)]["target_id"] = 5;
       v_runs.push_back(runnum);
       l2[std::to_string(x)][std::to_string(Q2)][std::to_string(z)]["neg"]["Dummy"].push_back(runnum);
+      l3[std::to_string(Q2)][std::to_string(z)][std::to_string(x)]["neg"]["Dummy"].push_back(runnum);
       }
       v_runs.clear();
     }
@@ -96,6 +100,7 @@ void print_run_info(){
       k[std::to_string(runnum)]["target_id"] = 3;
       v_runs.push_back(runnum);
       l2[std::to_string(x)][std::to_string(Q2)][std::to_string(z)]["pos"]["D2"].push_back(runnum);
+      l3[std::to_string(Q2)][std::to_string(z)][std::to_string(x)]["pos"]["D2"].push_back(runnum);
       }
       v_runs.clear();
     }
@@ -114,6 +119,7 @@ void print_run_info(){
       k[std::to_string(runnum)]["target_id"] = 2;
       v_runs.push_back(runnum);
       l2[std::to_string(x)][std::to_string(Q2)][std::to_string(z)]["pos"]["H2"].push_back(runnum);
+      l3[std::to_string(Q2)][std::to_string(z)][std::to_string(x)]["pos"]["H2"].push_back(runnum);
       }
       v_runs.clear();
     }
@@ -132,6 +138,7 @@ void print_run_info(){
       k[std::to_string(runnum)]["target_id"] = 5;
       v_runs.push_back(runnum);
       l2[std::to_string(x)][std::to_string(Q2)][std::to_string(z)]["pos"]["Dummy"].push_back(runnum);
+      l3[std::to_string(Q2)][std::to_string(z)][std::to_string(x)]["pos"]["Dummy"].push_back(runnum);
       }
       v_runs.clear();
     }
@@ -147,4 +154,6 @@ void print_run_info(){
   outfile<<k.dump(4)<<std::endl;
   std::ofstream out2("kin_group_xQ2z.json");
   out2<<l2.dump(4)<<std::endl;
+  std::ofstream out3("kin_group_Q2zx.json");
+  out3<<l3.dump(4)<<std::endl;
 }

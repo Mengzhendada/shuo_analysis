@@ -63,7 +63,19 @@ R__LOAD_LIBRARY(libGenVector.so)
     G_te_all_pos_vs_rate->SetTitle("SHMS TE; rate; TE");
     TGraphErrors* G_te_all_pos_vs_yield = new TGraphErrors();
     TGraphErrors* G_te_all_neg_vs_yield = new TGraphErrors();
-    G_te_all_pos_vs_yield->SetTitle("SHMS TE; yield;TE");
+    G_te_all_pos_vs_yield->SetTitle("SHMS TE; rate;raw yield");
+    G_te_all_pos_vs_yield->GetXaxis()->SetRangeUser(0,600);
+    G_te_all_neg_vs_yield->GetXaxis()->SetRangeUser(0,600);
+    TGraphErrors* G_te_all_pos_yieldte = new TGraphErrors();
+    TGraphErrors* G_te_all_neg_yieldte = new TGraphErrors();
+    G_te_all_pos_yieldte->SetTitle("SHMS TE; rate;TE corrected yield");
+    G_te_all_pos_yieldte->GetXaxis()->SetRangeUser(0,600);
+    G_te_all_neg_yieldte->GetXaxis()->SetRangeUser(0,600);
+    TGraphErrors* G_te_all_pos_yieldteratecorr = new TGraphErrors();
+    TGraphErrors* G_te_all_neg_yieldteratecorr = new TGraphErrors();
+    G_te_all_pos_yieldteratecorr->GetXaxis()->SetRangeUser(0,600);
+    G_te_all_neg_yieldteratecorr->GetXaxis()->SetRangeUser(0,600);
+    G_te_all_pos_yieldteratecorr->SetTitle("SHMS TE; rate;rate corrected TE corrected yield");
     TGraphErrors* G_te_all_pos_vs_yieldrate = new TGraphErrors();
     TGraphErrors* G_te_all_neg_vs_yieldrate = new TGraphErrors();
     G_te_all_pos_vs_yieldrate->SetTitle("SHMS TE; yieldrate;TE");
@@ -122,7 +134,13 @@ R__LOAD_LIBRARY(libGenVector.so)
     TGraph* G_te_pos_vs_momentum_ratecorr = new TGraph();
     G_te_pos_vs_momentum_ratecorr->SetTitle("SHMS TE;momentum;TE");
     TGraph* G_te_neg_vs_momentum_ratecorr = new TGraph();
-    
+
+    json j_runsinfo;
+    {
+      std::ifstream ifs("results/yield/runs_info.json");
+      ifs>>j_runsinfo;
+    }
+
     for(auto it = j_te.begin();it!=j_te.end();it++){
       int RunGroup;
       RunGroup = std::stoi(it.key());
@@ -163,18 +181,23 @@ R__LOAD_LIBRARY(libGenVector.so)
               double te_corr;
               if(RunNumber<7000)
               { 
-                neg_fit_value = -6.81818e-5*rate+0.98;
+                neg_fit_value = -2.396e-5*rate+0.98;
                 te_corr = te*(0.98/neg_fit_value);
               }
               else{
-                neg_fit_value = -8.10808e-5*rate+1;
+                neg_fit_value = -2.134e-5*rate+0.974;
                 te_corr = te*(0.974/neg_fit_value);
               }
    
               if(rate < 0){std::cout<< "Alert "<<it_neg.key()<<std::endl;}
               double yieldrate = pi_expected/(charge*time);
+              double yield_te = yield/te;
+              double yield_teratecorr = yield/te_corr;
               G_te_all_neg_vs_rate->SetPoint(i_neg,rate,te);
               G_te_all_neg_vs_yield->SetPoint(i_neg,rate,yield);
+              G_te_all_neg_yieldte->SetPoint(i_neg,rate,yield_te);
+              G_te_all_neg_yieldteratecorr->SetPoint(i_neg,rate,yield_teratecorr);
+
               G_te_all_neg_vs_yieldrate->SetPoint(i_neg,yieldrate,te);
               G_te_all_neg_runs->SetPoint(i_neg,RunNumber,te);
               G_te_all_neg_ratecorr_vs_rate->SetPoint(i_neg,rate,te_corr);
@@ -219,44 +242,50 @@ R__LOAD_LIBRARY(libGenVector.so)
               double te = pi_found/pi_expected;
               double yield = pi_found/charge;
               if(yield>2000){std::cout<<"yield greater than 2000 "<<RunNumber<<std::endl;}
-              double rate = counts/(1000*time);
-              double pos_fit_value;
-              double te_corr;
-              if(RunNumber < 7000){
-                 pos_fit_value = -6.13616e-5*rate+1;
-                 te_corr = te*(1/pos_fit_value);
-              }
               else{
-                 pos_fit_value = -7.8496e-5*rate+1;
-                 te_corr = te*(1/pos_fit_value);
+                double rate = counts/(1000*time);
+                double pos_fit_value;
+                double te_corr;
+                if(RunNumber < 7000){
+                  pos_fit_value = -5.219e-5*rate+0.997;
+                  te_corr = te*(0.997/pos_fit_value);
+                }
+                else{
+                  pos_fit_value = -2.601e-5*rate+0.977;
+                  te_corr = te*(0.977/pos_fit_value);
+                }
+                if(rate<0){std::cout<<"Alert "<<it_pos.key()<<std::endl;}
+                double yieldrate = pi_expected/(charge*time);
+              double yield_te = yield/te;
+              double yield_teratecorr = yield/te_corr;
+                G_te_all_pos_vs_rate->SetPoint(i_pos,rate,te);
+                G_te_all_pos_vs_yield->SetPoint(i_pos,rate,yield);
+                G_te_all_pos_yieldte->SetPoint(i_pos,rate,yield_te);
+                G_te_all_pos_yieldteratecorr->SetPoint(i_pos,rate,yield_teratecorr);
+                G_te_all_pos_vs_yieldrate->SetPoint(i_pos,yieldrate,te);
+                G_te_all_pos_runs->SetPoint(i_pos,RunNumber,te);
+                G_te_all_pos_ratecorr_vs_rate->SetPoint(i_pos,rate,te_corr);
+                std::cout<<"check pos"<<it_pos.key()<<std::endl;
+                int start_hour = ik_pos["start_time"]["hour"].get<int>();
+                int start_minute = ik_pos["start_time"]["minute"].get<int>();
+                int start_second = ik_pos["start_time"]["second"].get<int>();
+                int start_month = ik_pos["start_time"]["month"].get<int>();
+                int start_date = ik_pos["start_time"]["date"].get<int>();
+                int start_year = ik_pos["start_time"]["year"].get<int>();
+                start_year = start_year+2000;
+                TDatime datime_pos(2018,11,8,start_hour,start_minute,start_second);
+                //TDatime datime_pos(start_year,start_month,start_date,start_hour,start_minute,start_second);
+                double realtime = datime_pos.Convert();
+                G_te_all_pos_realtime->SetPoint(i_pos,realtime,te);
+                G_te_all_pos_realtime_ratecorr->SetPoint(i_pos,realtime,te_corr);
+                // std::cout<<"end of "<<it_pos.key()<<" pos"<<std::endl;
+                G_te_pos_vs_momentum->SetPoint(i_pos,momentum,te);
+                G_te_pos_vs_momentum_ratecorr->SetPoint(i_pos,momentum,te_corr);
+                G_te_pos_index->SetPoint(i_pos,i_index,te);
+                G_te_pos_index_ratecorr->SetPoint(i_pos,i_index,te_corr);
+                i_index++;
+                i_pos++;
               }
-              if(rate<0){std::cout<<"Alert "<<it_pos.key()<<std::endl;}
-              double yieldrate = pi_expected/(charge*time);
-              G_te_all_pos_vs_rate->SetPoint(i_pos,rate,te);
-              G_te_all_pos_vs_yield->SetPoint(i_pos,rate,yield);
-              G_te_all_pos_vs_yieldrate->SetPoint(i_pos,yieldrate,te);
-              G_te_all_pos_runs->SetPoint(i_pos,RunNumber,te);
-              G_te_all_pos_ratecorr_vs_rate->SetPoint(i_pos,rate,te_corr);
-              std::cout<<"check pos"<<it_pos.key()<<std::endl;
-              int start_hour = ik_pos["start_time"]["hour"].get<int>();
-              int start_minute = ik_pos["start_time"]["minute"].get<int>();
-              int start_second = ik_pos["start_time"]["second"].get<int>();
-              int start_month = ik_pos["start_time"]["month"].get<int>();
-              int start_date = ik_pos["start_time"]["date"].get<int>();
-              int start_year = ik_pos["start_time"]["year"].get<int>();
-              start_year = start_year+2000;
-              TDatime datime_pos(2018,11,8,start_hour,start_minute,start_second);
-              //TDatime datime_pos(start_year,start_month,start_date,start_hour,start_minute,start_second);
-              double realtime = datime_pos.Convert();
-              G_te_all_pos_realtime->SetPoint(i_pos,realtime,te);
-              G_te_all_pos_realtime_ratecorr->SetPoint(i_pos,realtime,te_corr);
-             // std::cout<<"end of "<<it_pos.key()<<" pos"<<std::endl;
-              G_te_pos_vs_momentum->SetPoint(i_pos,momentum,te);
-              G_te_pos_vs_momentum_ratecorr->SetPoint(i_pos,momentum,te_corr);
-            G_te_pos_index->SetPoint(i_pos,i_index,te);
-            G_te_pos_index_ratecorr->SetPoint(i_pos,i_index,te_corr);
-            i_index++;
-              i_pos++;
             }
             else{std::cout<<"missing info for "<<it_pos.key()<<std::endl;;}
           }
@@ -290,7 +319,7 @@ R__LOAD_LIBRARY(libGenVector.so)
     G_te_all_pos_vs_rate->SetMarkerStyle(8);
     G_te_all_pos_vs_rate->GetYaxis()->SetRangeUser(0.95,1.01);
     TF1 *pos_fit = new TF1("pol1","pol1",0,500);
-    pos_fit->FixParameter(0,1);
+  //  pos_fit->FixParameter(0,1);
     G_te_all_pos_vs_rate->Fit(pos_fit);
     pos_fit = G_te_all_pos_vs_rate->GetFunction("pol1");
     pos_fit->SetLineColor(kRed);
@@ -301,7 +330,7 @@ R__LOAD_LIBRARY(libGenVector.so)
     G_te_all_neg_vs_rate->SetMarkerStyle(8);
     G_te_all_neg_vs_rate->GetYaxis()->SetRangeUser(0.95,1.01);
     TF1 *neg_fit = new TF1("pol1","pol1",0,500);
-    neg_fit->FixParameter(0,1);
+  //  neg_fit->FixParameter(0,1);
     G_te_all_neg_vs_rate->Fit(neg_fit);
     neg_fit = G_te_all_neg_vs_rate->GetFunction("pol1");
     neg_fit->Draw("same");
@@ -328,6 +357,28 @@ R__LOAD_LIBRARY(libGenVector.so)
     std::string c_te_all_ratecorr_name = "results/TE/pi_te_both_vs_rate_ratecorr.pdf";
     c_te_all_ratecorr->SaveAs(c_te_all_ratecorr_name.c_str());
 
+    TCanvas* c_te_all_yieldte = new TCanvas();
+    c_te_all_yieldte->SetGrid();
+    G_te_all_pos_yieldte->SetMarkerColor(kRed);
+    G_te_all_pos_yieldte->SetMarkerStyle(8);
+    G_te_all_pos_yieldte->Draw("ap");
+    G_te_all_neg_yieldte->SetMarkerColor(kBlack);
+    G_te_all_neg_yieldte->SetMarkerStyle(8);
+    G_te_all_neg_yieldte->Draw("p");
+    std::string c_te_all_yieldte_name = "results/TE/pi_te_both_yieldte.pdf";
+    c_te_all_yieldte->SaveAs(c_te_all_yieldte_name.c_str());
+
+    TCanvas* c_te_all_yieldteratecorr = new TCanvas();
+    c_te_all_yieldteratecorr->SetGrid();
+    G_te_all_pos_yieldteratecorr->SetMarkerColor(kRed);
+    G_te_all_pos_yieldteratecorr->SetMarkerStyle(8);
+    G_te_all_pos_yieldteratecorr->Draw("ap");
+    G_te_all_neg_yieldteratecorr->SetMarkerColor(kBlack);
+    G_te_all_neg_yieldteratecorr->SetMarkerStyle(8);
+    G_te_all_neg_yieldteratecorr->Draw("p");
+    std::string c_te_all_yieldteratecorr_name = "results/TE/pi_te_both_yieldteratecorr.pdf";
+    c_te_all_yieldteratecorr->SaveAs(c_te_all_yieldteratecorr_name.c_str());
+    
     TCanvas* c_te_all_yieldrate = new TCanvas();
     c_te_all_yieldrate->SetGrid();
     G_te_all_pos_vs_yieldrate->SetMarkerColor(kRed);
@@ -338,7 +389,7 @@ R__LOAD_LIBRARY(libGenVector.so)
     G_te_all_neg_vs_yieldrate->Draw("p");
     std::string c_te_all_yieldrate_name = "results/TE/pi_te_both_vs_yieldrate.pdf";
     c_te_all_yieldrate->SaveAs(c_te_all_yieldrate_name.c_str());
-
+    
     TCanvas* c_te_all_runs = new TCanvas();
     c_te_all_runs->SetGrid();
     G_te_all_pos_runs->SetMarkerColor(kRed);

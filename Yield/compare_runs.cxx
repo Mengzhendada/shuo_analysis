@@ -268,6 +268,7 @@ void compare_runs(int Rungroup = 0){
   std::cout<<"check"<<std::endl;
   TCanvas *c1 = new TCanvas();
   h_neg_all->DrawCopy();
+  h_pos_all->SetLineColor(kRed);
   h_pos_all->DrawCopy("same");
   auto rp_all = new TRatioPlot(h_neg_all.GetPtr(),h_pos_all.GetPtr());
   rp_all->Draw();
