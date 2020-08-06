@@ -1,0 +1,50 @@
+{
+  "420":{
+    "rf_pi_low": 0.6,
+    "rf_pi_high": 1.4,
+    "rf_K_low": 1.4,
+    "rf_K_high": 2.2,
+    "rf_proton_low": 2.2,
+    "rf_proton_high": 4,
+    "pi_aero_npe_low": 6,
+    "pi_aero_npe_high": 30,
+    "K_aero_npe_low": 1,
+    "K_aero_npe_high": 12
+  },
+  "430":{
+    "rf_pi_low": 0.6,
+    "rf_pi_high": 1.4,
+    "rf_K_low": 1.4,
+    "rf_K_high": 2.2,
+    "rf_proton_low": 2.2,
+    "rf_proton_high": 4,
+    "pi_aero_npe_low": 6,
+    "pi_aero_npe_high": 30,
+    "K_aero_npe_low": 1,
+    "K_aero_npe_high": 12
+  },
+  "450":{
+    "rf_pi_low": 0.6,
+    "rf_pi_high": 1.4,
+    "rf_K_low": 2.4,
+    "rf_K_high": 4,
+    "rf_proton_low": 1.4,
+    "rf_proton_high": 2.4,
+    "pi_aero_npe_low": 2,
+    "pi_aero_npe_high": 20,
+    "K_aero_npe_low": 0,
+    "K_aero_npe_high": 0
+  },
+  "490":{
+    "rf_pi_low": 0.6,
+    "rf_pi_high": 1.45,
+    "rf_K_low": 1.8,
+    "rf_K_high": 3.4,
+    "rf_proton_low": 1.8,
+    "rf_proton_high": 3.4,
+    "pi_aero_npe_low": 6,
+    "pi_aero_npe_high": 30,
+    "K_aero_npe_low": 2,
+    "K_aero_npe_high": 15
+  }
+}
