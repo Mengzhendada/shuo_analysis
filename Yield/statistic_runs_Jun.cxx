@@ -104,14 +104,20 @@ void statistic_runs_Jun(int RunGroup=0){
   double SHMS_low = j_cuts["P_cal_pi_low"].get<double>();
   double SHMS_high = j_cuts["P_cal_pi_high"].get<double>();
   std::string piCutSHMS = (" P.cal.etottracknorm > "+std::to_string(SHMS_low)+" && P.cal.etottracknorm < " + std::to_string(SHMS_high)).c_str();
+  std::cout<<"picutSHMS "<<piCutSHMS<<std::endl;
   double P_aero = j_cuts["P_aero"].get<double>();
   std::string aeroCutSHMS = (" P.aero.npeSum > "+std::to_string(P_aero)).c_str();
+  std::cout<<"P_aerocut "<<aeroCutSHMS<<std::endl;
   double H_cal_low = j_cuts["H_cal_low"].get<double>();
   double H_cal_high = j_cuts["H_cal_high"].get<double>();
   double H_cer = j_cuts["H_cer"].get<double>();
   std::string eCutHMS = ("H.cal.etottracknorm > "+std::to_string(H_cal_low)+" && H.cal.etottracknorm < "+std::to_string(H_cal_high)+" && H.cer.npeSum > "+std::to_string(H_cer)).c_str();
-
+  std::cout<<"cCutHMS"<<eCutHMS<<std::endl;
   json jout;
+  {
+    std::ifstream ifs("results/yield/runs_info.json");
+    ifs>>jout;
+  }
 
   if(!neg_D2.empty() && !pos_D2.empty()){
     std::vector<std::string> files_neg,files_pos;
@@ -173,12 +179,15 @@ void statistic_runs_Jun(int RunGroup=0){
     double cointime_lowcut = j_cuts["cointime_low"].get<double>();
     double cointime_highcut = j_cuts["cointime_high"].get<double>();
     //cointime cut
-    double cointime_low_pos = coin_peak_center_pos-cointime_lowcut;
+    double cointime_low_pos = coin_peak_center_pos+cointime_lowcut;
     double cointime_high_pos = coin_peak_center_pos+cointime_highcut;
     auto d_pos_first = d_pos
       .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"});
+    auto h_coin_pos = d_pos.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+    auto h_coin_poscut = d_pos_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
     //rftime cut
     auto h_time_diff_pos = d_pos_first.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
+    auto h_time_diff_poscheck = d_pos_first.Histo1D({"h_rf_time","type4;rf_time",200,-100,100},"fptime_minus_rf");
     int time_diff_pos_bin_max = h_time_diff_pos->GetMaximumBin();
     double time_diff_pos_max = h_time_diff_pos->GetBinCenter(time_diff_pos_bin_max);
     //offset
@@ -193,7 +202,6 @@ void statistic_runs_Jun(int RunGroup=0){
       std::cout<<rf_pi_low<<std::endl;
       double rf_pi_high =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_high"].get<double>();
       std::cout<<rf_pi_high<<std::endl;
-
     //loop over each pos runs data
     for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
       int RunNumber = *it;
@@ -213,7 +221,8 @@ void statistic_runs_Jun(int RunGroup=0){
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
         ;
       auto h_diff_mod_pos = d_mod_first.Histo1D({"mod","mod pos",100,0,4.008},"diff_time_mod");
-      auto d_pos_pi = d_mod_first.Filter(
+      auto d_pos_pi = d_mod_first
+        .Filter(
           [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
         .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
         .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
@@ -230,10 +239,31 @@ void statistic_runs_Jun(int RunGroup=0){
         //.Define("emiss",Emiss,{"p_pion","p_electron"})
         //.Define("mmiss",mmiss,{"p_pion","p_electron"})
         ;
+     TCanvas* c_check = new TCanvas();
+     c_check->Divide(2,2);
+     c_check->cd(1);
+     h_coin_pos->DrawCopy("hist");
+     h_coin_poscut->SetLineColor(kRed);
+     h_coin_poscut->DrawCopy("hist same");
+     c_check->cd(2);
+     h_time_diff_poscheck->DrawCopy("hist");
+     c_check->cd(3);
+     h_time_diff_pos->DrawCopy("hist");
+     c_check->cd(4);
+     h_diff_mod_pos->DrawCopy("hist");
+     c_check->SaveAs("results/yield/check.pdf");
       int pion_counts = *d_pos_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_counts;
 
+      std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
+      TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
+      auto h_xbj = d_pos_pi.Histo1D({"xbj","xbj",100,0,1},"xbj");
+      h_xbj->Write();
+      auto h_z = d_pos_pi.Histo1D({"z","z",100,0,1},"z");
+      h_z->Write();
+      rootfile_out->Close();
     }
+
 
 
     //for neg runs
@@ -249,20 +279,23 @@ void statistic_runs_Jun(int RunGroup=0){
       ;
     //coin time cut for neg
     auto h_cointime_neg = d_neg.Histo1D({"","coin_time",800,40,55},"CTime.ePiCoinTime_ROC2");
+    auto h_coin_neg = d_neg.Histo1D({"","coin_time",800,0,100},"CTime.ePiCoinTime_ROC2");
     int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
     double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
     std::cout<<"coin time peak "<<coin_peak_center_neg<<std::endl;
     //cointime cut
-    double cointime_low_neg = coin_peak_center_neg-cointime_lowcut;
+    double cointime_low_neg = coin_peak_center_neg+cointime_lowcut;
     double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
     // auto neg_peak = [=](double coin_time){return std::abs(coin_time-coin_peak_center_neg)<2;};
     auto d_neg_coin = d_neg
       .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"});
     //.Filter(neg_peak,{"CTime.ePiCoinTime_ROC2"})
     ;
+    auto h_coin_negcut = d_neg_coin.Histo1D({"","coin_time",800,0,100},"CTime.ePiCoinTime_ROC2");
 
     //rftime cut for neg
     auto h_time_diff_neg = d_neg_coin.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
+    auto h_time_diff_negcheck = d_neg_coin.Histo1D({"h_rf_time","type4;rf_time",200,-100,100},"fptime_minus_rf");
     int time_diff_neg_bin_max = h_time_diff_neg->GetMaximumBin();
     double time_diff_neg_max = h_time_diff_neg->GetBinCenter(time_diff_neg_bin_max);
     double offset_neg = 401.8-time_diff_neg_max;
@@ -320,9 +353,29 @@ void statistic_runs_Jun(int RunGroup=0){
         //.Define("emiss",Emiss,{"p_pion","p_electron"})
         //.Define("mmiss",mmiss,{"p_pion","p_electron"})
         ;
+     TCanvas* c_check = new TCanvas();
+     c_check->Divide(2,2);
+     c_check->cd(1);
+     h_coin_neg->DrawCopy("hist");
+     h_coin_negcut->SetLineColor(kRed);
+     h_coin_negcut->DrawCopy("hist same");
+     c_check->cd(2);
+     h_time_diff_negcheck->DrawCopy("hist");
+     c_check->cd(3);
+     h_time_diff_neg->DrawCopy("hist");
+     c_check->cd(4);
+     h_diff_mod_neg->DrawCopy("hist");
+     c_check->SaveAs("results/yield/checkneg.pdf");
       int pion_counts = *d_neg_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_counts;
 
+      std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
+      TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
+      auto h_xbj = d_neg_pi.Histo1D({"xbj","xbj",100,0,1},"xbj");
+      h_xbj->Write();
+      auto h_z = d_neg_pi.Histo1D({"z","z",100,0,1},"z");
+      h_z->Write();
+      rootfile_out->Close();
     }
   std::ofstream outfile("results/yield/runs_info.json");
   outfile<<jout.dump(4)<<std::endl;
