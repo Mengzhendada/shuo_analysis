@@ -134,7 +134,13 @@ R__LOAD_LIBRARY(libGenVector.so)
     TGraph* G_te_pos_vs_momentum_ratecorr = new TGraph();
     G_te_pos_vs_momentum_ratecorr->SetTitle("SHMS TE;momentum;TE");
     TGraph* G_te_neg_vs_momentum_ratecorr = new TGraph();
-    
+
+    json j_runsinfo;
+    {
+      std::ifstream ifs("results/yield/runs_info.json");
+      ifs>>j_runsinfo;
+    }
+
     for(auto it = j_te.begin();it!=j_te.end();it++){
       int RunGroup;
       RunGroup = std::stoi(it.key());
@@ -475,5 +481,6 @@ R__LOAD_LIBRARY(libGenVector.so)
     gPad->SetGrid();
     G_te_neg_index_ratecorr->SetMarkerStyle(8);
     G_te_neg_index_ratecorr->Draw("ap");
-    std::string c_te_index_ratecorr_name =  "results/TE/pi_te_index_both_ratecorr.pdf"; c_te_index_ratecorr->SaveAs(c_te_index_ratecorr_name.c_str());
+    std::string c_te_index_ratecorr_name =  "results/TE/pi_te_index_both_ratecorr.pdf";
+    c_te_index_ratecorr->SaveAs(c_te_index_ratecorr_name.c_str());
   }
