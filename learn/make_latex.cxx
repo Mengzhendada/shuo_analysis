@@ -29,9 +29,9 @@ void make_latex(){
       ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/hgcer_rfcut_"<<RunGroup_str<<".pdf}"<<std::endl;
       ofs<<"\\end{frame}"<<std::endl;
       
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/hgcer_npe_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
+      //ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
+      //ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/hgcer_npe_"<<RunGroup_str<<".pdf}"<<std::endl;
+      //ofs<<"\\end{frame}"<<std::endl;
       
       ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
       ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/hgcer_rfcut_2d_"<<RunGroup_str<<"_picut.pdf}"<<std::endl;
@@ -41,9 +41,9 @@ void make_latex(){
       ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/hgcer_rfcut_2d_"<<RunGroup_str<<"_Kcut.pdf}"<<std::endl;
       ofs<<"\\end{frame}"<<std::endl;
       
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/aero_npe_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
+      //ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
+      //ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/aero_npe_"<<RunGroup_str<<".pdf}"<<std::endl;
+      //ofs<<"\\end{frame}"<<std::endl;
       
       ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
       ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/aero_rftime_pirfcut_"<<RunGroup_str<<".pdf}"<<std::endl;
@@ -64,6 +64,19 @@ void make_latex(){
       ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
       ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/aero_rfcut_2d_"<<RunGroup_str<<"_Kcut.pdf}"<<std::endl;
       ofs<<"\\end{frame}"<<std::endl;
+      
+      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/rf_hgc_"<<RunGroup_str<<".pdf}"<<std::endl;
+      ofs<<"\\end{frame}"<<std::endl;
+      
+      //ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
+      //ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/rf_hgc_2d_"<<RunGroup_str<<".pdf}"<<std::endl;
+      //ofs<<"\\end{frame}"<<std::endl;
+    
+      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.7\\textwidth]{rftime/compare_rf_hgc_"<<RunGroup_str<<"_aero.pdf}"<<std::endl;
+      ofs<<"\\end{frame}"<<std::endl;
+    
     }
     else{  
     ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
