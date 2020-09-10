@@ -9,7 +9,7 @@
 #include "TStyle.h"
 
 using json = nlohmann::json;
-void rftime_pid(int RunGroup =0){
+void rftime_hgc_compare(int RunGroup =0){
   if(RunGroup ==0){
    std::cout<<"Enter Run group Number , -1 to exit";
    std::cin>>RunGroup;
