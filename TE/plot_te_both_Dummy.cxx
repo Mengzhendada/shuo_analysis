@@ -43,7 +43,7 @@ R__LOAD_LIBRARY(libGenVector.so)
 #include <vector>
 #include <string>
 #include <locale>
-  void plot_te_both(){
+  void plot_te_both_Dummy(){
     json j_te;
     { 
       std::ifstream ifs("results/TE/trackingeff_info.json");
@@ -146,10 +146,11 @@ R__LOAD_LIBRARY(libGenVector.so)
       RunGroup = std::stoi(it.key());
     int i_index = 0;
     int i_index_neg = 0;
-      if(RunGroup<410){
+      if(RunGroup>10){
         auto runjs = it.value();
         double momentum = runjs["shms_p"].get<double>();
-       // double pi_expected_pos = runjs["pos"]["SHMS_pi_expected"].get<double>();
+        
+        // double pi_expected_pos = runjs["pos"]["SHMS_pi_expected"].get<double>();
        // double pi_found_pos_1 = runjs["pos"]["SHMS_pi_found_1"].get<double>();
        // double pi_found_pos_2 = runjs["pos"]["SHMS_pi_found_2"].get<double>();
        // double pi_found_pos_3 = runjs["pos"]["SHMS_pi_found_3"].get<double>();
@@ -168,62 +169,65 @@ R__LOAD_LIBRARY(libGenVector.so)
           if(std::isdigit(neg_key[0])){
             int RunNumber = std::stoi(it_neg.key());
             auto ik_neg = it_neg.value();
-            if(ik_neg.find("data_n") != ik_neg.end() && ik_neg.find("SHMS_pi_expected") != ik_neg.end() && ik_neg.find("time") != ik_neg.end() && ik_neg.find("start_time")!= ik_neg.end()){
-              double pi_expected = ik_neg["SHMS_pi_expected"].get<double>();
-              double pi_found = ik_neg["SHMS_pi_found_1"].get<double>();
-              double charge = ik_neg["charge"].get<double>();
-              double time = ik_neg["time"].get<double>();
-              double counts = ik_neg["data_n"].get<double>();
-              double te = pi_found/pi_expected;
-              double yield = pi_found/charge;
-              double rate = counts/(1000*time);
-              double neg_fit_value;
-              double te_corr;
-              if(RunNumber<7000)
-              { 
-                neg_fit_value = -2.396e-5*rate+0.98;
-                te_corr = te*(0.98/neg_fit_value);
-              }
-              else{
-                neg_fit_value = -2.134e-5*rate+0.974;
-                te_corr = te*(0.974/neg_fit_value);
-              }
-   
-              if(rate < 0){std::cout<< "Alert "<<it_neg.key()<<std::endl;}
-              double yieldrate = pi_expected/(charge*time);
-              double yield_te = yield/te;
-              double yield_teratecorr = yield/te_corr;
-              G_te_all_neg_vs_rate->SetPoint(i_neg,rate,te);
-              G_te_all_neg_vs_yield->SetPoint(i_neg,rate,yield);
-              G_te_all_neg_yieldte->SetPoint(i_neg,rate,yield_te);
-              G_te_all_neg_yieldteratecorr->SetPoint(i_neg,rate,yield_teratecorr);
+            if(ik_neg["target"]=="Dummy"){
+              std::cout<<" Dummy "<<std::endl;
+              if(ik_neg.find("data_n") != ik_neg.end() && ik_neg.find("SHMS_pi_expected") != ik_neg.end() && ik_neg.find("time") != ik_neg.end() && ik_neg.find("start_time")!= ik_neg.end()){
+                double pi_expected = ik_neg["SHMS_pi_expected"].get<double>();
+                double pi_found = ik_neg["SHMS_pi_found_1"].get<double>();
+                double charge = ik_neg["charge"].get<double>();
+                double time = ik_neg["time"].get<double>();
+                double counts = ik_neg["data_n"].get<double>();
+                double te = pi_found/pi_expected;
+                double yield = pi_found/charge;
+                double rate = counts/(1000*time);
+                double neg_fit_value;
+                double te_corr;
+                if(RunNumber<7000)
+                { 
+                  neg_fit_value = -2.396e-5*rate+0.98;
+                  te_corr = te*(0.98/neg_fit_value);
+                }
+                else{
+                  neg_fit_value = -2.134e-5*rate+0.974;
+                  te_corr = te*(0.974/neg_fit_value);
+                }
 
-              G_te_all_neg_vs_yieldrate->SetPoint(i_neg,yieldrate,te);
-              G_te_all_neg_runs->SetPoint(i_neg,RunNumber,te);
-              G_te_all_neg_ratecorr_vs_rate->SetPoint(i_neg,rate,te_corr);
-              
-              std::cout<<"check neg "<<it_neg.key()<<std::endl;
-              int start_hour = ik_neg["start_time"]["hour"].get<int>();
-              int start_minute = ik_neg["start_time"]["minute"].get<int>();
-              int start_second = ik_neg["start_time"]["second"].get<int>();
-              int start_month = ik_neg["start_time"]["month"].get<int>();
-              int start_date = ik_neg["start_time"]["date"].get<int>();
-              int start_year = ik_neg["start_time"]["year"].get<int>();
-              start_year = start_year+2000;
-              TDatime datime_neg(2018,11,8,start_hour,start_minute,start_second);
-              //TDatime datime_neg(start_year,start_month,start_date,start_hour,start_minute,start_second);
-              double realtime = datime_neg.Convert();
-              G_te_all_neg_realtime->SetPoint(i_neg,realtime,te);
-              G_te_all_neg_realtime_ratecorr->SetPoint(i_neg,realtime,te_corr);
-              G_te_neg_vs_momentum->SetPoint(i_neg,momentum,te);
-              G_te_neg_vs_momentum_ratecorr->SetPoint(i_neg,momentum,te_corr);
-            G_te_neg_index->SetPoint(i_neg,i_index_neg,te);
-            G_te_neg_index_ratecorr->SetPoint(i_neg,i_index_neg,te_corr);
-            i_index_neg++;
-              i_neg++;
-              //std::cout<<"end of "<<it_neg.key()<<" neg"<<std::endl;
+                if(rate < 0){std::cout<< "Alert "<<it_neg.key()<<std::endl;}
+                double yieldrate = pi_expected/(charge*time);
+                double yield_te = yield/te;
+                double yield_teratecorr = yield/te_corr;
+                G_te_all_neg_vs_rate->SetPoint(i_neg,rate,te);
+                G_te_all_neg_vs_yield->SetPoint(i_neg,rate,yield);
+                G_te_all_neg_yieldte->SetPoint(i_neg,rate,yield_te);
+                G_te_all_neg_yieldteratecorr->SetPoint(i_neg,rate,yield_teratecorr);
+
+                G_te_all_neg_vs_yieldrate->SetPoint(i_neg,yieldrate,te);
+                G_te_all_neg_runs->SetPoint(i_neg,RunNumber,te);
+                G_te_all_neg_ratecorr_vs_rate->SetPoint(i_neg,rate,te_corr);
+
+                std::cout<<"check neg "<<it_neg.key()<<std::endl;
+                int start_hour = ik_neg["start_time"]["hour"].get<int>();
+                int start_minute = ik_neg["start_time"]["minute"].get<int>();
+                int start_second = ik_neg["start_time"]["second"].get<int>();
+                int start_month = ik_neg["start_time"]["month"].get<int>();
+                int start_date = ik_neg["start_time"]["date"].get<int>();
+                int start_year = ik_neg["start_time"]["year"].get<int>();
+                start_year = start_year+2000;
+                TDatime datime_neg(2018,11,8,start_hour,start_minute,start_second);
+                //TDatime datime_neg(start_year,start_month,start_date,start_hour,start_minute,start_second);
+                double realtime = datime_neg.Convert();
+                G_te_all_neg_realtime->SetPoint(i_neg,realtime,te);
+                G_te_all_neg_realtime_ratecorr->SetPoint(i_neg,realtime,te_corr);
+                G_te_neg_vs_momentum->SetPoint(i_neg,momentum,te);
+                G_te_neg_vs_momentum_ratecorr->SetPoint(i_neg,momentum,te_corr);
+                G_te_neg_index->SetPoint(i_neg,i_index_neg,te);
+                G_te_neg_index_ratecorr->SetPoint(i_neg,i_index_neg,te_corr);
+                i_index_neg++;
+                i_neg++;
+                //std::cout<<"end of "<<it_neg.key()<<" neg"<<std::endl;
+              }
+              else{std::cout<<"missing info for "<<it_neg.key()<<std::endl;;}
             }
-            else{std::cout<<"missing info for "<<it_neg.key()<<std::endl;;}
           }
         }//neg runs
         //for pos runs
@@ -233,61 +237,64 @@ R__LOAD_LIBRARY(libGenVector.so)
           if(std::isdigit(pos_key[0])){
             int RunNumber = std::stoi(it_pos.key());
             auto ik_pos = it_pos.value();
-            if(ik_pos.find("data_n") != ik_pos.end() && ik_pos.find("SHMS_pi_expected")!=ik_pos.end() && ik_pos.find("time") != ik_pos.end() && ik_pos.find("start_time")!= ik_pos.end()){
-              double pi_expected = ik_pos["SHMS_pi_expected"].get<double>();
-              double pi_found = ik_pos["SHMS_pi_found_1"].get<double>();
-              double charge = ik_pos["charge"].get<double>();
-              double time = ik_pos["time"].get<double>();
-              double counts = ik_pos["data_n"].get<double>();
-              double te = pi_found/pi_expected;
-              double yield = pi_found/charge;
-              if(yield>2000){std::cout<<"yield greater than 2000 "<<RunNumber<<std::endl;}
-              else{
-                double rate = counts/(1000*time);
-                double pos_fit_value;
-                double te_corr;
-                if(RunNumber < 7000){
-                  pos_fit_value = -5.219e-5*rate+0.997;
-                  te_corr = te*(0.997/pos_fit_value);
-                }
+            if(ik_pos["target"]=="Dummy"){
+              std::cout<<" Dummy "<<std::endl;
+              if(ik_pos.find("data_n") != ik_pos.end() && ik_pos.find("SHMS_pi_expected")!=ik_pos.end() && ik_pos.find("time") != ik_pos.end() && ik_pos.find("start_time")!= ik_pos.end()){
+                double pi_expected = ik_pos["SHMS_pi_expected"].get<double>();
+                double pi_found = ik_pos["SHMS_pi_found_1"].get<double>();
+                double charge = ik_pos["charge"].get<double>();
+                double time = ik_pos["time"].get<double>();
+                double counts = ik_pos["data_n"].get<double>();
+                double te = pi_found/pi_expected;
+                double yield = pi_found/charge;
+                if(yield>2000){std::cout<<"yield greater than 2000 "<<RunNumber<<std::endl;}
                 else{
-                  pos_fit_value = -2.601e-5*rate+0.977;
-                  te_corr = te*(0.977/pos_fit_value);
+                  double rate = counts/(1000*time);
+                  double pos_fit_value;
+                  double te_corr;
+                  if(RunNumber < 7000){
+                    pos_fit_value = -5.219e-5*rate+0.997;
+                    te_corr = te*(0.997/pos_fit_value);
+                  }
+                  else{
+                    pos_fit_value = -2.601e-5*rate+0.977;
+                    te_corr = te*(0.977/pos_fit_value);
+                  }
+                  if(rate<0){std::cout<<"Alert "<<it_pos.key()<<std::endl;}
+                  double yieldrate = pi_expected/(charge*time);
+                  double yield_te = yield/te;
+                  double yield_teratecorr = yield/te_corr;
+                  G_te_all_pos_vs_rate->SetPoint(i_pos,rate,te);
+                  G_te_all_pos_vs_yield->SetPoint(i_pos,rate,yield);
+                  G_te_all_pos_yieldte->SetPoint(i_pos,rate,yield_te);
+                  G_te_all_pos_yieldteratecorr->SetPoint(i_pos,rate,yield_teratecorr);
+                  G_te_all_pos_vs_yieldrate->SetPoint(i_pos,yieldrate,te);
+                  G_te_all_pos_runs->SetPoint(i_pos,RunNumber,te);
+                  G_te_all_pos_ratecorr_vs_rate->SetPoint(i_pos,rate,te_corr);
+                  std::cout<<"check pos"<<it_pos.key()<<std::endl;
+                  int start_hour = ik_pos["start_time"]["hour"].get<int>();
+                  int start_minute = ik_pos["start_time"]["minute"].get<int>();
+                  int start_second = ik_pos["start_time"]["second"].get<int>();
+                  int start_month = ik_pos["start_time"]["month"].get<int>();
+                  int start_date = ik_pos["start_time"]["date"].get<int>();
+                  int start_year = ik_pos["start_time"]["year"].get<int>();
+                  start_year = start_year+2000;
+                  TDatime datime_pos(2018,11,8,start_hour,start_minute,start_second);
+                  //TDatime datime_pos(start_year,start_month,start_date,start_hour,start_minute,start_second);
+                  double realtime = datime_pos.Convert();
+                  G_te_all_pos_realtime->SetPoint(i_pos,realtime,te);
+                  G_te_all_pos_realtime_ratecorr->SetPoint(i_pos,realtime,te_corr);
+                  // std::cout<<"end of "<<it_pos.key()<<" pos"<<std::endl;
+                  G_te_pos_vs_momentum->SetPoint(i_pos,momentum,te);
+                  G_te_pos_vs_momentum_ratecorr->SetPoint(i_pos,momentum,te_corr);
+                  G_te_pos_index->SetPoint(i_pos,i_index,te);
+                  G_te_pos_index_ratecorr->SetPoint(i_pos,i_index,te_corr);
+                  i_index++;
+                  i_pos++;
                 }
-                if(rate<0){std::cout<<"Alert "<<it_pos.key()<<std::endl;}
-                double yieldrate = pi_expected/(charge*time);
-              double yield_te = yield/te;
-              double yield_teratecorr = yield/te_corr;
-                G_te_all_pos_vs_rate->SetPoint(i_pos,rate,te);
-                G_te_all_pos_vs_yield->SetPoint(i_pos,rate,yield);
-                G_te_all_pos_yieldte->SetPoint(i_pos,rate,yield_te);
-                G_te_all_pos_yieldteratecorr->SetPoint(i_pos,rate,yield_teratecorr);
-                G_te_all_pos_vs_yieldrate->SetPoint(i_pos,yieldrate,te);
-                G_te_all_pos_runs->SetPoint(i_pos,RunNumber,te);
-                G_te_all_pos_ratecorr_vs_rate->SetPoint(i_pos,rate,te_corr);
-                std::cout<<"check pos"<<it_pos.key()<<std::endl;
-                int start_hour = ik_pos["start_time"]["hour"].get<int>();
-                int start_minute = ik_pos["start_time"]["minute"].get<int>();
-                int start_second = ik_pos["start_time"]["second"].get<int>();
-                int start_month = ik_pos["start_time"]["month"].get<int>();
-                int start_date = ik_pos["start_time"]["date"].get<int>();
-                int start_year = ik_pos["start_time"]["year"].get<int>();
-                start_year = start_year+2000;
-                TDatime datime_pos(2018,11,8,start_hour,start_minute,start_second);
-                //TDatime datime_pos(start_year,start_month,start_date,start_hour,start_minute,start_second);
-                double realtime = datime_pos.Convert();
-                G_te_all_pos_realtime->SetPoint(i_pos,realtime,te);
-                G_te_all_pos_realtime_ratecorr->SetPoint(i_pos,realtime,te_corr);
-                // std::cout<<"end of "<<it_pos.key()<<" pos"<<std::endl;
-                G_te_pos_vs_momentum->SetPoint(i_pos,momentum,te);
-                G_te_pos_vs_momentum_ratecorr->SetPoint(i_pos,momentum,te_corr);
-                G_te_pos_index->SetPoint(i_pos,i_index,te);
-                G_te_pos_index_ratecorr->SetPoint(i_pos,i_index,te_corr);
-                i_index++;
-                i_pos++;
               }
+              else{std::cout<<"missing info for "<<it_pos.key()<<std::endl;;}
             }
-            else{std::cout<<"missing info for "<<it_pos.key()<<std::endl;;}
           }
         }//pos runs
       }//if rungroup greater than 10 

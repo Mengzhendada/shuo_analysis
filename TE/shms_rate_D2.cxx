@@ -45,7 +45,7 @@ namespace fs = std::experimental::filesystem;
 #include <vector>
 #include <string>
 
-void shms_rate(int RunGroup){
+void shms_rate_D2(int RunGroup){
   if(RunGroup == 0){
     std::cout<<"Enter RunGroup Number(-1 to exit) ";
     std::cin>>RunGroup;
@@ -69,7 +69,6 @@ void shms_rate(int RunGroup){
       ifs>>jout;
       }
       jout[(std::to_string(RunGroup)).c_str()]["shms_p"] = shmsp;
-      
     //for neg runs
       for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
         int RunNumber = *it;
@@ -149,6 +148,7 @@ void shms_rate(int RunGroup){
         jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["time"] = time_1MHz_cut;
         jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["scaler_n"] = scaler_events;
         jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
+      jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["target"] = "D2"; 
         //jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["daq"]["ps6"] = ps6;
         //jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["ps_factor"] = ps_factor;
 
@@ -226,6 +226,7 @@ void shms_rate(int RunGroup){
         jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["time"] = time_1MHz_cut;
         jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["scaler_n"] = scaler_events;
         jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
+        jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["target"] = "D2"; 
         
         //jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["daq"]["ps6"] = ps6;
         //jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["ps_factor"] = ps_factor;

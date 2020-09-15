@@ -27,10 +27,12 @@ void print_run_info(){
     x = runjs["x"].get<double>();
     Q2 = runjs["Q2"].get<double>();
     z = runjs["z"].get<double>();
-    run_group = runjs["group_num"].get<double>();
+    run_group = runjs["group_num"].get<int>();
     std::vector<int> v,v_all,v_runs;
     v = runjs["neg"]["D2"].get<std::vector<int>>();
     v_all = v;
+      l2[std::to_string(x)][std::to_string(Q2)][std::to_string(z)]["group_num"] = run_group;;
+      l3[std::to_string(x)][std::to_string(Q2)][std::to_string(z)]["group_num"] = run_group;;
     if(!v.empty()){
       for(auto ik = v.begin();ik!=v.end();++ik){
       int runnum = *ik;

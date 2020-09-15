@@ -367,8 +367,9 @@ void rftime_hgc_compare(int RunGroup =0){
 
 //compare rfcut and hgc cut
   //auto h_hgcer_pirfcut = d_mod_first_pirfcut.Histo1D({"","rfcut;hgcer NPE;counts",100,0,30},"P.hgcer.npeSum");
-  auto h_hgcer = d_mod_first.Histo1D({"","norfcut;hgcer NPE;counts"},"P.hgcer.npeSum");
+  auto h_hgcer = d_mod_first.Histo1D({"","norfcut;hgcer NPE;counts",100,0,30},"P.hgcer.npeSum");
   TCanvas *c_rf_hgc = new TCanvas();
+  c_rf_hgc->SetLogy();
   h_hgcer_pirfcut->SetLineColor(kRed);
   h_hgcer_pirfcut->DrawCopy("hist");
   h_hgcer->DrawCopy("hist same");
@@ -376,15 +377,33 @@ void rftime_hgc_compare(int RunGroup =0){
   std::string c_rf_hgc_name = "results/pid/rftime/rf_hgc_"+std::to_string(RunGroup)+".pdf";
   c_rf_hgc->SaveAs(c_rf_hgc_name.c_str());
   
+  //auto h_hgcer_shmsp_pirfcut = d_mod_first_pirfcut.Histo2D({"","pions;shmsp;hgcer",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.hgcer.npeSum");
+  //TProfile *h_hgcer_shmsp_pirfcut_prof = h_hgcer_shmsp_pirfcut->ProfileX();
+  //auto h_hgcer_shmsp = d_mod_first.Histo2D({"","norfcut;shmsp;hgcer",100,0.9*SHMS_P,1.22*SHMS_P,100,0,30},"shms_p","P.hgcer.npeSum");
+  //TProfile *h_hgcer_shmsp_prof = h_hgcer_shmsp->ProfileX();
+  //TCanvas *c_rf_hgcer_2d = new TCanvas();
+  //gStyle->SetOptTitle(0);
+  //gStyle->SetPalette(kBird);
+  //h_hgcer_shmsp_pirfcut_prof->GetYaxis()->SetTitle("pi hgcer");
+  //h_hgcer_shmsp_pirfcut_prof->SetLineColor(kRed);
+  //h_hgcer_shmsp_pirfcut_prof->Draw();
+  //h_hgcer_shmsp_prof->Draw("same");
+  //c_rf_hgcer_2d->BuildLegend(0.75,0.75,1,1);
+  //std::string c_rf_hgcer_2d_name = "results/pid/rftime/rf_hgcer_2d_"+std::to_string(RunGroup)+".pdf";
+  //c_rf_hgcer_2d->SaveAs(c_rf_hgcer_2d_name.c_str());
+  
+  
   //auto h_aero_pirfcut = d_mod_first_pirfcut.Histo1D({"","pions;shmsp;aero",100,0,30},"P.aero.npeSum");
   auto h_aero_pihgccut = d_mod_first.Filter("P.hgcer.npeSum>3").Histo1D({"","hgc pion;aero;counts",100,0,30},"P.aero.npeSum");
   auto h_aero= d_mod_first.Histo1D({"","coin cut;aero;counts",100,0,30},"P.aero.npeSum");
   TCanvas* c_compare_aero = new TCanvas();
+  c_compare_aero->SetLogy();
   h_aero->DrawCopy("hist");
   h_aero_pihgccut->SetLineColor(kBlue);
   h_aero_pihgccut->DrawCopy("hist same");
   h_aero_pirfcut->SetLineColor(kRed);
   h_aero_pirfcut->DrawCopy("hist same");
+  c_compare_aero->BuildLegend(0.75,0.75,1,1);
   std::string c_compare_aero_name = "results/pid/rftime/compare_rf_hgc_"+std::to_string(RunGroup)+"_aero.pdf";
   c_compare_aero->SaveAs(c_compare_aero_name.c_str());
   }

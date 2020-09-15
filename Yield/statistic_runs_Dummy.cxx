@@ -74,7 +74,7 @@ auto W2 = [](Pvec4D& pq) {
 
 bool shms_momentum_high = true;
 
-void statistic_runs_Jun2(int RunGroup=0){
+void statistic_runs_Dummy(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
@@ -89,9 +89,9 @@ void statistic_runs_Jun2(int RunGroup=0){
     ifs>>j_rungroup;
   }
 
-  std::vector<int> neg_D2,pos_D2;
-  neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-  pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> neg_Dummy,pos_Dummy;
+  neg_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["Dummy"].get<std::vector<int>>();
+  pos_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["Dummy"].get<std::vector<int>>();
 
   json j_cuts;
   {
@@ -111,23 +111,25 @@ void statistic_runs_Jun2(int RunGroup=0){
   double H_cal_low = j_cuts["H_cal_low"].get<double>();
   double H_cal_high = j_cuts["H_cal_high"].get<double>();
   double H_cer = j_cuts["H_cer"].get<double>();
+  int P_hgcer = j_cuts["P_hgcer"].get<double>();
   std::string eCutHMS = ("H.cal.etottracknorm > "+std::to_string(H_cal_low)+" && H.cal.etottracknorm < "+std::to_string(H_cal_high)+" && H.cer.npeSum > "+std::to_string(H_cer)).c_str();
   std::cout<<"cCutHMS"<<eCutHMS<<std::endl;
   json jout;
-  //{
-  //  std::ifstream ifs("results/yield/runs_info.json");
-  //  ifs>>jout;
-  //}
+  {
+    std::string if_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+    std::ifstream ifs(if_name.c_str());
+    ifs>>jout;
+  }
 
-  if(!neg_D2.empty() && !pos_D2.empty()){
+  if(!neg_Dummy.empty() && !pos_Dummy.empty()){
     std::vector<std::string> files_neg,files_pos;
     double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
     auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
-
-    //for neg runs
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    if(SHMS_P>3.2){aeroCutSHMS = aeroCutSHMS + " && P.hgcer.npeSum > "+(std::to_string(P_hgcer)).c_str();}
+    //for neg runs, updated version in new script
+    for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
       int RunNumber = *it;
-      std::cout<<RunNumber<<std::endl;
+      std::cout<<"neg scaler "<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
       files_neg.push_back(rootfile_name);
       ROOT::RDataFrame d_neg_scale("TSP",rootfile_name);
@@ -144,9 +146,9 @@ void statistic_runs_Jun2(int RunGroup=0){
     }
 
     //for pos runs
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
       int RunNumber = *it;
-      std::cout<<RunNumber<<std::endl;
+      std::cout<<"pos scaler "<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
       files_pos.push_back(rootfile_name);
       ROOT::RDataFrame d_pos_scale("TSP",rootfile_name);
@@ -181,8 +183,15 @@ void statistic_runs_Jun2(int RunGroup=0){
     double coin_peak_2nd_pos = h_cointime_2nd->GetBinCenter(coin_peak_2ndbin_pos);
     //if(coin_peak_2nd_pos<coin_peak_center_pos){coin_peak_center_pos = coin_peak_2nd_pos;}
     std::cout<<"coin time peak "<<coin_peak_center_pos<<std::endl;
-    double cointime_lowcut = j_cuts["cointime_low"].get<double>();
-    double cointime_highcut = j_cuts["cointime_high"].get<double>();
+    double cointime_lowcut,cointime_highcut;
+    if(RunGroup<410){
+      cointime_lowcut = j_cuts["cointime_low_fall"].get<double>();
+      cointime_highcut = j_cuts["cointime_high_fall"].get<double>();
+    }
+    else{
+      cointime_lowcut = j_cuts["cointime_low_spring"].get<double>();
+      cointime_highcut = j_cuts["cointime_high_spring"].get<double>();
+    }
     //cointime cut
     double cointime_low_pos = coin_peak_center_pos+cointime_lowcut;
     double cointime_high_pos = coin_peak_center_pos+cointime_highcut;
@@ -207,14 +216,58 @@ void statistic_runs_Jun2(int RunGroup=0){
     std::cout<<rf_pi_low<<std::endl;
     double rf_pi_high =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_high"].get<double>();
     std::cout<<rf_pi_high<<std::endl;
+    std::string bg_cut = " ";
+
+    //for bg
+    int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
+    int bg_left_high = j_cuts["random_bg_left_high"].get<int>();
+    int bg_right_low = j_cuts["random_bg_right_low"].get<int>();
+    int bg_right_high = j_cuts["random_bg_right_high"].get<int>();
+    for(int i = bg_left_low;i<bg_left_high;i++){
+      double bg_main = coin_peak_center_pos+i*4.008;
+      double bg_left = bg_main+cointime_lowcut;
+      double bg_right = bg_main+cointime_highcut;
+      bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
+    }
+    for(int i = bg_right_low;i<bg_right_high;i++){
+      double bg_main = coin_peak_center_pos+i*4.008;
+      double bg_left = bg_main+cointime_lowcut;
+      double bg_right = bg_main+cointime_highcut;
+      bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
+    }
+    bg_cut = bg_cut.substr(0,bg_cut.size()-2);
+    std::cout<<bg_cut<<std::endl;
 
     //loop over each pos runs data
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
       int RunNumber = *it;
-      std::cout<<RunNumber<<std::endl;
+      std::cout<<"pos data"<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
-      auto d_pos_first = d_pos_raw.Filter("fEvtHdr.fEvtType == 4")
+      ROOT::RDataFrame d_pos_scaler("TSP",rootfile_name);
+      std::cout<<rootfile_name<<std::endl;
+      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
+      auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
+      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,10,100},"P.BCM4B.scalerCurrent");
+      double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
+      std::cout<<"set current "<<pos_setcurrent<<std::endl;
+      //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
+      auto pos_get_current = [&](unsigned int eventNum){
+        int i = 0;
+        while(eventNum>pos_scaler_event_list->at(i)){
+          ++i;
+          if(i>pos_scaler_event_list->size()-1)
+          {
+            i=pos_scaler_event_list->size()-1;
+            break;
+          }
+        }
+        return pos_scaler_current_list->at(i);
+        //std::cout<< pos_scaler_current_list->at(i)<<std::endl;
+
+      };
+      //std::cout<<"check"<<std::endl;
+      auto d_pos_run = d_pos_raw.Filter("fEvtHdr.fEvtType == 4")
         .Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
         .Filter(goodTrackSHMS)
         .Filter(goodTrackHMS)
@@ -222,7 +275,12 @@ void statistic_runs_Jun2(int RunGroup=0){
         .Filter(eCutHMS)
         .Filter(aeroCutSHMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
-        .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"});
+        .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
+        .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
+        ;
+        auto d_pos_first = d_pos_run
+          .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"})
+        ;
       auto d_mod_first = d_pos_first
         .Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
@@ -242,6 +300,7 @@ void statistic_runs_Jun2(int RunGroup=0){
         .Define("W", "std::sqrt(W2)")
         .Define("Wp", "std::sqrt(Wp2)")
         .Define("InvMass","p_electron.Dot(p_pion)")
+
         //.Define("InvMass_pions","p_pion_HMS.Dot(p_pion)")
         //.Define("emiss",Emiss,{"p_pion","p_electron"})
         //.Define("mmiss",mmiss,{"p_pion","p_electron"})
@@ -250,21 +309,8 @@ void statistic_runs_Jun2(int RunGroup=0){
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_counts;
 
 
-
-      //for bg
-      int bg_left_low = j_cuts["random_bg_left_low"].get<double>();
-      int bg_left_high = j_cuts["random_bg_left_high"].get<double>();
-      int bg_right_low = j_cuts["random_bg_right_low"].get<double>();
-      int bg_right_high = j_cuts["random_bg_right_high"].get<double>();
-
-      auto d_pos_forbg = d_pos_raw.Filter("fEvtHdr.fEvtType == 4")
-        .Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
-        .Filter(goodTrackSHMS)
-        .Filter(goodTrackHMS)
-        .Filter(piCutSHMS)
-        .Filter(eCutHMS)
-        .Filter(aeroCutSHMS)
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+      // for bg
+      auto d_pos_forbg = d_pos_run
         .Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
         ;
@@ -272,8 +318,10 @@ void statistic_runs_Jun2(int RunGroup=0){
       auto d_pos_bg  = d_pos_forbg
         .Filter(
             [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-        .Filter(
-            [=](double bg_cointime){return ((bg_cointime > bg_left_low && bg_cointime <bg_left_high) || (bg_cointime > bg_right_low && bg_cointime < bg_right_high));},{"CTime.ePiCoinTime_ROC2"})
+        // .Filter(
+        //     [=](double bg_cointime){return ((bg_cointime > bg_left_low && bg_cointime <bg_left_high) || (bg_cointime > bg_right_low && bg_cointime < bg_right_high));},{"CTime.ePiCoinTime_ROC2"})
+        .Define("bg_cointime",[](double cointime){return cointime;},{"CTime.ePiCoinTime_ROC2"})
+        .Filter(bg_cut)
         .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
         .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
         .Define("p_q", p_q, {"p_electron"})
@@ -342,7 +390,7 @@ void statistic_runs_Jun2(int RunGroup=0){
     auto h_coin_neg = d_neg.Histo1D({"","coin_time",800,0,100},"CTime.ePiCoinTime_ROC2");
     int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
     double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
-    std::cout<<"coin time peak "<<coin_peak_center_neg<<std::endl;
+    std::cout<<"neg coin time peak "<<coin_peak_center_neg<<std::endl;
     //cointime cut
     double cointime_low_neg = coin_peak_center_neg+cointime_lowcut;
     double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
@@ -369,12 +417,30 @@ void statistic_runs_Jun2(int RunGroup=0){
       ; 
 
     //loop over each neg runs data
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
       int RunNumber = *it;
-      std::cout<<RunNumber<<std::endl;
+      std::cout<<"neg data "<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
-      auto d_neg_first = d_neg_raw.Filter("fEvtHdr.fEvtType == 4")
+      ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
+      auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM4B.scalerCurrent");
+      auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
+      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,0,100},"P.BCM4B.scalerCurrent");
+      double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
+
+      auto neg_get_current = [&](unsigned int eventNum){
+        int i = 0;
+        while(eventNum>neg_scaler_event_list->at(i)){
+          ++i;
+          if(i>neg_scaler_current_list->size()-1)
+          {
+            i=neg_scaler_current_list->size()-1;
+            break;
+          }
+        }
+        return neg_scaler_current_list->at(i);
+      };
+      auto d_neg_run = d_neg_raw.Filter("fEvtHdr.fEvtType == 4")
         .Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
         .Filter(goodTrackSHMS)
         .Filter(goodTrackHMS)
@@ -382,7 +448,12 @@ void statistic_runs_Jun2(int RunGroup=0){
         .Filter(eCutHMS)
         .Filter(aeroCutSHMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
-        .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"});
+        .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
+        .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
+        ;
+      auto d_neg_first = d_neg_run
+        .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
+        ;
       auto d_mod_first = d_neg_first.Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
         ;
@@ -422,14 +493,8 @@ void statistic_runs_Jun2(int RunGroup=0){
       int bg_right_low = j_cuts["random_bg_right_low"].get<double>();
       int bg_right_high = j_cuts["random_bg_right_high"].get<double>();
 
-      auto d_neg_forbg = d_neg_raw.Filter("fEvtHdr.fEvtType == 4")
-        .Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
-        .Filter(goodTrackSHMS)
-        .Filter(goodTrackHMS)
-        .Filter(piCutSHMS)
-        .Filter(eCutHMS)
-        .Filter(aeroCutSHMS)
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+      auto d_neg_forbg = d_neg_run
+        //.Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
         ;
@@ -437,8 +502,10 @@ void statistic_runs_Jun2(int RunGroup=0){
       auto d_neg_bg = d_neg_forbg
         .Filter(
             [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-        .Filter(
-            [=](double bg_cointime){return ((bg_cointime > bg_left_low && bg_cointime <bg_left_high) || (bg_cointime > bg_right_low && bg_cointime < bg_right_high));},{"CTime.ePiCoinTime_ROC2"})
+        //.Filter(
+        //    [=](double bg_cointime){return ((bg_cointime > bg_left_low && bg_cointime <bg_left_high) || (bg_cointime > bg_right_low && bg_cointime < bg_right_high));},{"CTime.ePiCoinTime_ROC2"})
+        .Define("bg_cointime",[](double cointime){return cointime;},{"CTime.ePiCoinTime_ROC2"})
+        .Filter(bg_cut)
         .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
         .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
         .Define("p_q", p_q, {"p_electron"})

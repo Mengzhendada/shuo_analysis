@@ -42,7 +42,7 @@ R__LOAD_LIBRARY(libGenVector.so)
 #include <vector>
 #include <string>
 
-  void shms_TE_runs(int RunGroup = 0){
+  void shms_TE_D2runs(int RunGroup = 0){
     if(RunGroup == 0){
       std::cout<<"Enter RunGroup Number(-1 to exit) ";
       std::cin>>RunGroup;
