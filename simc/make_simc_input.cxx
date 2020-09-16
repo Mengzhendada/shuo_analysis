@@ -43,8 +43,10 @@ void make_simc_input(int RunGroup = 0){
   //variables to change
   int ngen = 100000;
   double charge = 1.0;
-  double Ebeam = 10214;
-  double dEbeam = 0.00415;
+  double Ebeam;
+  //= 10214;
+  double dEbeam;
+  //= 0.00415;
 
   double e_momentum,e_theta,p_momentum,p_theta;
   if(RunNumber < 7000){
@@ -52,12 +54,16 @@ void make_simc_input(int RunGroup = 0){
     e_theta = j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_angle"].get<double>();
     p_momentum = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>())*1000;
     p_theta = j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_angle"].get<double>();
+    Ebeam = 10597.825;
+    dEbeam = 0.00415;
   }
   else{
     e_momentum = std::abs(j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>())*1000;
     e_theta = j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_angle"].get<double>();
     p_momentum = std::abs(j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>())*1000;
     p_theta = j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_angle"].get<double>();
+    Ebeam = 10212.715;
+    dEbeam = 0.00404;
   }
   //take one run to get the kinematic setting
 
@@ -89,8 +95,11 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_norad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_neg_norad<<" doing_pion = 1"<<std::endl;
   ofs_D2_neg_norad<<" which_pion = 1"<<std::endl;
+  ofs_D2_neg_norad<<" doing_delta = 0"<<std::endl;
+  ofs_D2_neg_norad<<" doing_rho = 0"<<std::endl;
   ofs_D2_neg_norad<<" doing_semi = 1"<<std::endl;
   ofs_D2_neg_norad<<" doing_decay = 1"<<std::endl;
+  ofs_D2_neg_norad<<" doing_hplus = 0"<<std::endl;
   ofs_D2_neg_norad<<" ctau = 780.4"<<std::endl;
   ofs_D2_neg_norad<<"end parm experiment\n"<<std::endl;
 
@@ -99,10 +108,10 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_norad<<" dEbeam = "<<dEbeam<<std::endl;
   ofs_D2_neg_norad<<" electron_arm =1"<<std::endl;
   ofs_D2_neg_norad<<" hadron_arm = 5"<<std::endl;
-  ofs_D2_neg_norad<<" pec%e%P"<<e_momentum<<std::endl;
-  ofs_D2_neg_norad<<" pec%e%theta"<<e_theta<<std::endl;
-  ofs_D2_neg_norad<<" pec%p%P"<<p_momentum<<std::endl;
-  ofs_D2_neg_norad<<" pec%p%theta"<<p_theta<<std::endl;
+  ofs_D2_neg_norad<<" pec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_neg_norad<<" pec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_neg_norad<<" pec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_neg_norad<<" pec%p%theta = "<<p_theta<<std::endl;
   ofs_D2_neg_norad<<"end parm kinematics_main\n"<<std::endl;
   
   ofs_D2_neg_norad<<"begin parm target"<<std::endl;
@@ -126,19 +135,19 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_norad<<"end parm debug\n"<<std::endl;
  
   ofs_D2_neg_norad<<"begin parm e_arm_accept"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%delta%min = -10.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%delta%max = 10.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_neg_norad<<" SPedge%e%delta%min = -15.0"<<std::endl;
+  ofs_D2_neg_norad<<" SPedge%e%delta%max = 15.0"<<std::endl;
+  ofs_D2_neg_norad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
+  ofs_D2_neg_norad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
   ofs_D2_neg_norad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
   ofs_D2_neg_norad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_norad<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_neg_norad<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%delta%min = -10.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%delta%max = 22.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
+  ofs_D2_neg_norad<<" SPedge%p%delta%min = -15.0"<<std::endl;
+  ofs_D2_neg_norad<<" SPedge%p%delta%max = 30.0"<<std::endl;
+  ofs_D2_neg_norad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
+  ofs_D2_neg_norad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
   ofs_D2_neg_norad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_neg_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_norad<<"end parm p_arm_accept\n"<<std::endl;
@@ -157,16 +166,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_norad<<"begin param simulate"<<std::endl;
   ofs_D2_neg_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_neg_norad<<" using_rad = 0"<<std::endl;
-  ofs_D2_neg_norad<<" using_expon = 0"<<std::endl;
-  ofs_D2_neg_norad<<" using_tail = 0"<<std::endl;
-  ofs_D2_neg_norad<<" intcor_mode = 1"<<std::endl;
-  ofs_D2_neg_norad<<" spect_mode = 0"<<std::endl;
-  ofs_D2_neg_norad<<" cuts%Em%min = 0"<<std::endl;
-  ofs_D2_neg_norad<<" cuts%Em%max = 0"<<std::endl;
-  ofs_D2_neg_norad<<" using_Eloss = 1"<<std::endl;
-  ofs_D2_neg_norad<<" correct_Eloss = 1"<<std::endl;
-  ofs_D2_neg_norad<<" correct_raster = 1"<<std::endl;
-  ofs_D2_neg_norad<<" mc_smear = 1"<<std::endl;
+//  ofs_D2_neg_norad<<" using_expon = 0"<<std::endl;
+//  ofs_D2_neg_norad<<" using_tail = 0"<<std::endl;
+//  ofs_D2_neg_norad<<" intcor_mode = 1"<<std::endl;
+//  ofs_D2_neg_norad<<" spect_mode = 0"<<std::endl;
+//  ofs_D2_neg_norad<<" cuts%Em%min = 0"<<std::endl;
+//  ofs_D2_neg_norad<<" cuts%Em%max = 0"<<std::endl;
+//  ofs_D2_neg_norad<<" using_Eloss = 1"<<std::endl;
+//  ofs_D2_neg_norad<<" correct_Eloss = 1"<<std::endl;
+//  ofs_D2_neg_norad<<" correct_raster = 1"<<std::endl;
+//  ofs_D2_neg_norad<<" mc_smear = 1"<<std::endl;
   ofs_D2_neg_norad<<"end param simulate\n"<<std::endl;
 
   ofs_D2_neg_norad.close();

@@ -1,0 +1,9 @@
+I generate simc file by make_simc_input.cxx. 
+First of all, you need to have three json files. I'm using ratio_run_group_updated.json run_list.json, run_list_updated.json. I put them in online_csv/db2. The full path on ifarm is /group/c-csv/shuo/online_csv/db2. The full path on bebop is /lcrc/project/jlab/csv/offline/online_csv/db2. BTW, run_list.json is run infos for fall runs automatically generated while experiment was runing. run_list_updated.json is run infos for spring runs. ratio_run_group_updated.json is run group infos, I group the runs with same kinematics and assigned them new group number. You should change path to this json files in make_simc_input.cxx, for json defination
+Then, Maybe you want to change output file path. for eg, search ofs_D2_neg_norad_name, that't the position where I save my output, which is simc input files. 
+After you modified the path of input json files and output files, you can run the script. root -q -b "path/to/make_simc_input.cxx+(rungroup)", here rungroup is integer number from 1 to 58. You can check which run number is in which run group number in ratio_run_group_updated.json. Most of run groups are production runs, some are elastic runs, which will not have all D2 Dummy runs.
+
+########for short
+commend line:
+root -q -b "path/to/make_simc_input.cxx+(34)"
+//you can change 34 from 1 to 58

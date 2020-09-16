@@ -5,20 +5,23 @@ begin param experiment
  EXPER%charge = 1
  doing_pion = 1
  which_pion = 1
+ doing_delta = 0
+ doing_rho = 0
  doing_semi = 1
  doing_decay = 1
+ doing_hplus = 0
  ctau = 780.4
 end parm experiment
 
 begin parm kinematics_main
- Ebeam = 10214
- dEbeam = 0.00415
+ Ebeam = 10212.7
+ dEbeam = 0.00404
  electron_arm =1
  hadron_arm = 5
- pec%e%P5714
- pec%e%theta17.65
- pec%p%P2699
- pec%p%theta19.93
+ pec%e%P = 5714
+ pec%e%theta = 17.65
+ pec%p%P = 2699
+ pec%p%theta = 19.93
 end parm kinematics_main
 
 begin parm target
@@ -42,19 +45,19 @@ begin parm debug
 end parm debug
 
 begin parm e_arm_accept
- SPedge%e%delta%min = -10.0
- SPedge%e%delta%max = 10.0
- SPedge%e%yptar%min = -90.0
- SPedge%e%yptar%max = 90.0
+ SPedge%e%delta%min = -15.0
+ SPedge%e%delta%max = 15.0
+ SPedge%e%yptar%min = -100.0
+ SPedge%e%yptar%max = 100.0
  SPedge%e%xptar%min = -100.0
  SPedge%e%xptar%max = 100.0
 end parm e_arm_accept
 
 begin parm p_arm_accept
- SPedge%p%delta%min = -10.0
- SPedge%p%delta%max = 22.0
- SPedge%p%yptar%min = -90.0
- SPedge%p%yptar%max = 90.0
+ SPedge%p%delta%min = -15.0
+ SPedge%p%delta%max = 30.0
+ SPedge%p%yptar%min = -100.0
+ SPedge%p%yptar%max = 100.0
  SPedge%p%xptar%min = -100.0
  SPedge%p%xptar%max = 100.0
 end parm p_arm_accept
