@@ -5,5 +5,5 @@ After you modified the path of input json files and output files, you can run th
 
 ########for short
 commend line:
-root -q -b "path/to/make_simc_input.cxx+(34)"
-//you can change 34 from 1 to 58
+root -q -b "path/to/make_simc_input.cxx+(340)"
+//you can change 340 from (1 to 58)*10

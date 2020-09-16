@@ -41,7 +41,8 @@ void make_simc_input(int RunGroup = 0){
     int RunNumber = neg_D2[0];
     std::cout<<"Using infos for Run "<<RunNumber<<std::endl;
   //variables to change
-  int ngen = 100000;
+  int ngen = 100000; 
+  //inclusive rad 100k, inclusive norad 50k, exclusive rad 30k
   double charge = 1.0;
   double Ebeam;
   //= 10214;
@@ -68,19 +69,14 @@ void make_simc_input(int RunGroup = 0){
   //take one run to get the kinematic setting
 
   //D2 input file
-  std::string ofs_D2_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_norad.inp";
-  std::string ofs_D2_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_norad.inp";
-  std::string ofs_D2_neg_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_rad.inp";
-  std::string ofs_D2_pos_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_rad.inp";
+  std::string ofs_D2_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.inp";
+  std::string ofs_D2_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.inp";
+  std::string ofs_D2_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.inp";
+ 
+  std::string ofs_D2_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.inp";
+  std::string ofs_D2_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.inp";
+  std::string ofs_D2_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_rad.inp";
   //H2,Dummy input file, However, I didn't write them yet
-  std::string ofs_H2_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_H2_neg_norad.inp";
-  std::string ofs_H2_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_H2_pos_norad.inp";
-  std::string ofs_H2_neg_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_H2_neg_rad.inp";
-  std::string ofs_H2_pos_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_H2_pos_rad.inp";
-  std::string ofs_Dummy_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_Dummy_neg_norad.inp";
-  std::string ofs_Dummy_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_Dummy_pos_norad.inp";
-  std::string ofs_Dummy_neg_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_Dummy_neg_rad.inp";
-  std::string ofs_Dummy_pos_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_Dummy_pos_rad.inp";
   
   //I didn't write rad yet
   std::ofstream ofs_D2_neg_rad;
