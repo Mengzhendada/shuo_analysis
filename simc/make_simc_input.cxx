@@ -69,111 +69,111 @@ void make_simc_input(int RunGroup = 0){
   //take one run to get the kinematic setting
 
   //D2 input file
-  std::string ofs_D2_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.inp";
-  std::string ofs_D2_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.inp";
-  std::string ofs_D2_neg_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.inp";
+  std::string ofs_D2_neg_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.inp";
+  std::string ofs_D2_neg_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.inp";
+  std::string ofs_D2_neg_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.inp";
  
-  std::string ofs_D2_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.inp";
-  std::string ofs_D2_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.inp";
-  std::string ofs_D2_pos_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_rad.inp";
+  std::string ofs_D2_pos_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.inp";
+  std::string ofs_D2_pos_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.inp";
+  std::string ofs_D2_pos_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_rad.inp";
   //H2,Dummy input file, However, I didn't write them yet
   
   //I didn't write rad yet
   std::ofstream ofs_D2_neg_rad;
   ofs_D2_neg_rad.open(ofs_D2_neg_rad_name.c_str());
-  std::ofstream ofs_D2_neg_norad;
-  ofs_D2_neg_norad.open(ofs_D2_neg_norad_name.c_str());
+  std::ofstream ofs_D2_neg_inc_norad;
+  ofs_D2_neg_inc_norad.open(ofs_D2_neg_inc_norad_name.c_str());
 
   //for norad
-  ofs_D2_neg_norad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
-  ofs_D2_neg_norad<<"begin param experiment"<<std::endl;
-  ofs_D2_neg_norad<<" ngen = "<<ngen<<std::endl;
-  ofs_D2_neg_norad<<" EXPER%charge = "<<charge<<std::endl;
-  ofs_D2_neg_norad<<" doing_pion = 1"<<std::endl;
-  ofs_D2_neg_norad<<" which_pion = 1"<<std::endl;
-  ofs_D2_neg_norad<<" doing_delta = 0"<<std::endl;
-  ofs_D2_neg_norad<<" doing_rho = 0"<<std::endl;
-  ofs_D2_neg_norad<<" doing_semi = 1"<<std::endl;
-  ofs_D2_neg_norad<<" doing_decay = 1"<<std::endl;
-  ofs_D2_neg_norad<<" doing_hplus = 0"<<std::endl;
-  ofs_D2_neg_norad<<" ctau = 780.4"<<std::endl;
-  ofs_D2_neg_norad<<"end parm experiment\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin param experiment"<<std::endl;
+  ofs_D2_neg_inc_norad<<" ngen = "<<ngen<<std::endl;
+  ofs_D2_neg_inc_norad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_neg_inc_norad<<" doing_pion = 1"<<std::endl;
+  ofs_D2_neg_inc_norad<<" which_pion = 1"<<std::endl;
+  ofs_D2_neg_inc_norad<<" doing_delta = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" doing_rho = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" doing_semi = 1"<<std::endl;
+  ofs_D2_neg_inc_norad<<" doing_decay = 1"<<std::endl;
+  ofs_D2_neg_inc_norad<<" doing_hplus = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" ctau = 780.4"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end parm experiment\n"<<std::endl;
 
-  ofs_D2_neg_norad<<"begin parm kinematics_main"<<std::endl;
-  ofs_D2_neg_norad<<" Ebeam = "<<Ebeam<<std::endl;
-  ofs_D2_neg_norad<<" dEbeam = "<<dEbeam<<std::endl;
-  ofs_D2_neg_norad<<" electron_arm =1"<<std::endl;
-  ofs_D2_neg_norad<<" hadron_arm = 5"<<std::endl;
-  ofs_D2_neg_norad<<" pec%e%P = "<<e_momentum<<std::endl;
-  ofs_D2_neg_norad<<" pec%e%theta = "<<e_theta<<std::endl;
-  ofs_D2_neg_norad<<" pec%p%P = "<<p_momentum<<std::endl;
-  ofs_D2_neg_norad<<" pec%p%theta = "<<p_theta<<std::endl;
-  ofs_D2_neg_norad<<"end parm kinematics_main\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin parm kinematics_main"<<std::endl;
+  ofs_D2_neg_inc_norad<<" Ebeam = "<<Ebeam<<std::endl;
+  ofs_D2_neg_inc_norad<<" dEbeam = "<<dEbeam<<std::endl;
+  ofs_D2_neg_inc_norad<<" electron_arm =1"<<std::endl;
+  ofs_D2_neg_inc_norad<<" hadron_arm = 5"<<std::endl;
+  ofs_D2_neg_inc_norad<<" pec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_neg_inc_norad<<" pec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_neg_inc_norad<<" pec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_neg_inc_norad<<" pec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_neg_inc_norad<<"end parm kinematics_main\n"<<std::endl;
   
-  ofs_D2_neg_norad<<"begin parm target"<<std::endl;
-  ofs_D2_neg_norad<<" targ%A = 2.0"<<std::endl;
-  ofs_D2_neg_norad<<" targ%Z = 1.0"<<std::endl;
-  ofs_D2_neg_norad<<" targ%mass_amu = 2.0141017"<<std::endl;
-  ofs_D2_neg_norad<<" targ%mrec_amu = 0"<<std::endl;
-  ofs_D2_neg_norad<<" targ%rho = 0.1668"<<std::endl;
-  ofs_D2_neg_norad<<" targ%thick = 1668"<<std::endl;
-  ofs_D2_neg_norad<<" targ%angle = 0"<<std::endl;
-  ofs_D2_neg_norad<<" targ%abundancy = 100"<<std::endl;
-  ofs_D2_neg_norad<<" targ%can = 1"<<std::endl;
-  ofs_D2_neg_norad<<"end parm target\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin parm target"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%A = 2.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%Z = 1.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%mass_amu = 2.0141017"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%mrec_amu = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%rho = 0.1668"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%thick = 1668"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%angle = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%abundancy = 100"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%can = 1"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end parm target\n"<<std::endl;
   
-  ofs_D2_neg_norad<<"begin parm debug"<<std::endl;
-  ofs_D2_neg_norad<<" debug(1) = 0"<<std::endl;
-  ofs_D2_neg_norad<<" debug(2) = 0"<<std::endl;
-  ofs_D2_neg_norad<<" debug(3) = 0"<<std::endl;
-  ofs_D2_neg_norad<<" debug(4) = 0"<<std::endl;
-  ofs_D2_neg_norad<<" debug(5) = 0"<<std::endl;
-  ofs_D2_neg_norad<<"end parm debug\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin parm debug"<<std::endl;
+  ofs_D2_neg_inc_norad<<" debug(1) = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" debug(2) = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" debug(3) = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" debug(4) = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" debug(5) = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end parm debug\n"<<std::endl;
  
-  ofs_D2_neg_norad<<"begin parm e_arm_accept"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%delta%min = -15.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
-  ofs_D2_neg_norad<<"end parm e_arm_accept\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin parm e_arm_accept"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%delta%min = -15.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%delta%max = 15.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end parm e_arm_accept\n"<<std::endl;
 
-  ofs_D2_neg_norad<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
-  ofs_D2_neg_norad<<"end parm p_arm_accept\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin parm p_arm_accept"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%delta%min = -15.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%delta%max = 30.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end parm p_arm_accept\n"<<std::endl;
 
-  ofs_D2_neg_norad<<"begin param beamandtargetinfo"<<std::endl;
-  ofs_D2_neg_norad<<" gen%xwid = 0.008868"<<std::endl;
-  ofs_D2_neg_norad<<" gen%ywid = 0.004235"<<std::endl;
-  ofs_D2_neg_norad<<" targ%fr_pattern = 3"<<std::endl;
-  ofs_D2_neg_norad<<" targ%fr1 = 0.1"<<std::endl;
-  ofs_D2_neg_norad<<" targ%fr2 = 0.1"<<std::endl;
-  ofs_D2_neg_norad<<" targ%xoffset = 0.0"<<std::endl;
-  ofs_D2_neg_norad<<" targ%yoffset = 0.0"<<std::endl;
-  ofs_D2_neg_norad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_neg_norad<<"end param beamandtargetinfo\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin param beamandtargetinfo"<<std::endl;
+  ofs_D2_neg_inc_norad<<" gen%xwid = 0.008868"<<std::endl;
+  ofs_D2_neg_inc_norad<<" gen%ywid = 0.004235"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%fr_pattern = 3"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%fr1 = 0.1"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%fr2 = 0.1"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%xoffset = 0.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%yoffset = 0.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" targ%zoffset = 0.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end param beamandtargetinfo\n"<<std::endl;
   
-  ofs_D2_neg_norad<<"begin param simulate"<<std::endl;
-  ofs_D2_neg_norad<<" hard_cuts = 0"<<std::endl;
-  ofs_D2_neg_norad<<" using_rad = 0"<<std::endl;
-//  ofs_D2_neg_norad<<" using_expon = 0"<<std::endl;
-//  ofs_D2_neg_norad<<" using_tail = 0"<<std::endl;
-//  ofs_D2_neg_norad<<" intcor_mode = 1"<<std::endl;
-//  ofs_D2_neg_norad<<" spect_mode = 0"<<std::endl;
-//  ofs_D2_neg_norad<<" cuts%Em%min = 0"<<std::endl;
-//  ofs_D2_neg_norad<<" cuts%Em%max = 0"<<std::endl;
-//  ofs_D2_neg_norad<<" using_Eloss = 1"<<std::endl;
-//  ofs_D2_neg_norad<<" correct_Eloss = 1"<<std::endl;
-//  ofs_D2_neg_norad<<" correct_raster = 1"<<std::endl;
-//  ofs_D2_neg_norad<<" mc_smear = 1"<<std::endl;
-  ofs_D2_neg_norad<<"end param simulate\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin param simulate"<<std::endl;
+  ofs_D2_neg_inc_norad<<" hard_cuts = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" using_rad = 0"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" using_expon = 0"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" using_tail = 0"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" intcor_mode = 1"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" spect_mode = 0"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" cuts%Em%min = 0"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" cuts%Em%max = 0"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" using_Eloss = 1"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" correct_Eloss = 1"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" correct_raster = 1"<<std::endl;
+//  ofs_D2_neg_inc_norad<<" mc_smear = 1"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end param simulate\n"<<std::endl;
 
-  ofs_D2_neg_norad.close();
+  ofs_D2_neg_inc_norad.close();
   }
 }
