@@ -71,11 +71,11 @@ void make_simc_input(int RunGroup = 0){
   //D2 input file
   std::string ofs_D2_neg_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.inp";
   std::string ofs_D2_neg_inc_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.inp";
-  std::string ofs_D2_neg_exc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.inp";
+  std::string ofs_D2_neg_exc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_norad.inp";
  
   std::string ofs_D2_pos_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.inp";
   std::string ofs_D2_pos_inc_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.inp";
-  std::string ofs_D2_pos_exc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_rad.inp";
+  std::string ofs_D2_pos_exc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_norad.inp";
   //H2,Dummy input file, However, I didn't write them yet
   
   std::ofstream ofs_D2_neg_inc_rad;
@@ -629,6 +629,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_norad<<"begin param simulate"<<std::endl;
   ofs_D2_pos_exc_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_pos_exc_norad<<" using_rad = 0"<<std::endl;
+  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_pos_exc_norad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_pos_exc_norad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_pos_exc_norad<<" intcor_mode = 1"<<std::endl;
