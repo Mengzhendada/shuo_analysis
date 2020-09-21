@@ -1,6 +1,6 @@
 ;This is a CTP file, using info from Run 7671
 
-begin param experiment
+begin parm experiment
  ngen = 100000
  EXPER%charge = 1
  doing_pion = 1
@@ -62,7 +62,7 @@ begin parm p_arm_accept
  SPedge%p%xptar%max = 100.0
 end parm p_arm_accept
 
-begin param beamandtargetinfo
+begin parm beamandtargetinfo
  gen%xwid = 0.008868
  gen%ywid = 0.004235
  targ%fr_pattern = 3
@@ -71,10 +71,10 @@ begin param beamandtargetinfo
  targ%xoffset = 0.0
  targ%yoffset = 0.0
  targ%zoffset = 0.0
-end param beamandtargetinfo
+end parm beamandtargetinfo
 
-begin param simulate
+begin parm simulate
  hard_cuts = 0
  using_rad = 0
-end param simulate
+end parm simulate
 

@@ -93,7 +93,7 @@ void make_simc_input(int RunGroup = 0){
 
   //for norad
   ofs_D2_neg_inc_norad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
-  ofs_D2_neg_inc_norad<<"begin param experiment"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin parm experiment"<<std::endl;
   ofs_D2_neg_inc_norad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_neg_inc_norad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_neg_inc_norad<<" doing_pion = 1"<<std::endl;
@@ -155,7 +155,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_inc_norad<<"end parm p_arm_accept\n"<<std::endl;
 
-  ofs_D2_neg_inc_norad<<"begin param beamandtargetinfo"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin parm beamandtargetinfo"<<std::endl;
   ofs_D2_neg_inc_norad<<" gen%xwid = 0.008868"<<std::endl;
   ofs_D2_neg_inc_norad<<" gen%ywid = 0.004235"<<std::endl;
   ofs_D2_neg_inc_norad<<" targ%fr_pattern = 3"<<std::endl;
@@ -164,11 +164,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_neg_inc_norad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_neg_inc_norad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<"end param beamandtargetinfo\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end parm beamandtargetinfo\n"<<std::endl;
   
-  ofs_D2_neg_inc_norad<<"begin param simulate"<<std::endl;
+  ofs_D2_neg_inc_norad<<"begin parm simulate"<<std::endl;
   ofs_D2_neg_inc_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_neg_inc_norad<<" using_rad = 0"<<std::endl;
+  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_neg_inc_norad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_neg_inc_norad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_neg_inc_norad<<" intcor_mode = 1"<<std::endl;
@@ -179,13 +180,13 @@ void make_simc_input(int RunGroup = 0){
 //  ofs_D2_neg_inc_norad<<" correct_Eloss = 1"<<std::endl;
 //  ofs_D2_neg_inc_norad<<" correct_raster = 1"<<std::endl;
 //  ofs_D2_neg_inc_norad<<" mc_smear = 1"<<std::endl;
-  ofs_D2_neg_inc_norad<<"end param simulate\n"<<std::endl;
+  ofs_D2_neg_inc_norad<<"end parm simulate\n"<<std::endl;
 
   ofs_D2_neg_inc_norad.close();
   
   //for rad
   ofs_D2_neg_inc_rad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
-  ofs_D2_neg_inc_rad<<"begin param experiment"<<std::endl;
+  ofs_D2_neg_inc_rad<<"begin parm experiment"<<std::endl;
   ofs_D2_neg_inc_rad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_neg_inc_rad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_neg_inc_rad<<" doing_pion = 1"<<std::endl;
@@ -247,7 +248,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_inc_rad<<"end parm p_arm_accept\n"<<std::endl;
 
-  ofs_D2_neg_inc_rad<<"begin param beamandtargetinfo"<<std::endl;
+  ofs_D2_neg_inc_rad<<"begin parm beamandtargetinfo"<<std::endl;
   ofs_D2_neg_inc_rad<<" gen%xwid = 0.008868"<<std::endl;
   ofs_D2_neg_inc_rad<<" gen%ywid = 0.004235"<<std::endl;
   ofs_D2_neg_inc_rad<<" targ%fr_pattern = 3"<<std::endl;
@@ -256,11 +257,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_neg_inc_rad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_neg_inc_rad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<"end param beamandtargetinfo\n"<<std::endl;
+  ofs_D2_neg_inc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
   
-  ofs_D2_neg_inc_rad<<"begin param simulate"<<std::endl;
+  ofs_D2_neg_inc_rad<<"begin parm simulate"<<std::endl;
   ofs_D2_neg_inc_rad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_neg_inc_rad<<" using_rad = 1"<<std::endl;
+  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_neg_inc_rad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_neg_inc_rad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_neg_inc_rad<<" intcor_mode = 1"<<std::endl;
@@ -271,13 +273,13 @@ void make_simc_input(int RunGroup = 0){
 //  ofs_D2_neg_inc_rad<<" correct_Eloss = 1"<<std::endl;
 //  ofs_D2_neg_inc_rad<<" correct_raster = 1"<<std::endl;
 //  ofs_D2_neg_inc_rad<<" mc_smear = 1"<<std::endl;
-  ofs_D2_neg_inc_rad<<"end param simulate\n"<<std::endl;
+  ofs_D2_neg_inc_rad<<"end parm simulate\n"<<std::endl;
 
   ofs_D2_neg_inc_rad.close();
   
   //for exclusive
   ofs_D2_neg_exc_norad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
-  ofs_D2_neg_exc_norad<<"begin param experiment"<<std::endl;
+  ofs_D2_neg_exc_norad<<"begin parm experiment"<<std::endl;
   ofs_D2_neg_exc_norad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_neg_exc_norad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_neg_exc_norad<<" doing_pion = 1"<<std::endl;
@@ -339,7 +341,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_exc_norad<<"end parm p_arm_accept\n"<<std::endl;
 
-  ofs_D2_neg_exc_norad<<"begin param beamandtargetinfo"<<std::endl;
+  ofs_D2_neg_exc_norad<<"begin parm beamandtargetinfo"<<std::endl;
   ofs_D2_neg_exc_norad<<" gen%xwid = 0.008868"<<std::endl;
   ofs_D2_neg_exc_norad<<" gen%ywid = 0.004235"<<std::endl;
   ofs_D2_neg_exc_norad<<" targ%fr_pattern = 3"<<std::endl;
@@ -348,11 +350,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_norad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_neg_exc_norad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_neg_exc_norad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_neg_exc_norad<<"end param beamandtargetinfo\n"<<std::endl;
+  ofs_D2_neg_exc_norad<<"end parm beamandtargetinfo\n"<<std::endl;
   
-  ofs_D2_neg_exc_norad<<"begin param simulate"<<std::endl;
+  ofs_D2_neg_exc_norad<<"begin parm simulate"<<std::endl;
   ofs_D2_neg_exc_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_neg_exc_norad<<" using_rad = 0"<<std::endl;
+  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_neg_exc_norad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_neg_exc_norad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_neg_exc_norad<<" intcor_mode = 1"<<std::endl;
@@ -363,13 +366,13 @@ void make_simc_input(int RunGroup = 0){
 //  ofs_D2_neg_exc_norad<<" correct_Eloss = 1"<<std::endl;
 //  ofs_D2_neg_exc_norad<<" correct_raster = 1"<<std::endl;
 //  ofs_D2_neg_exc_norad<<" mc_smear = 1"<<std::endl;
-  ofs_D2_neg_exc_norad<<"end param simulate\n"<<std::endl;
+  ofs_D2_neg_exc_norad<<"end parm simulate\n"<<std::endl;
 
   ofs_D2_neg_exc_norad.close();
   
   //for pi+ norad
   ofs_D2_pos_inc_norad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
-  ofs_D2_pos_inc_norad<<"begin param experiment"<<std::endl;
+  ofs_D2_pos_inc_norad<<"begin parm experiment"<<std::endl;
   ofs_D2_pos_inc_norad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_pos_inc_norad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_pos_inc_norad<<" doing_pion = 1"<<std::endl;
@@ -431,7 +434,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_pos_inc_norad<<"end parm p_arm_accept\n"<<std::endl;
 
-  ofs_D2_pos_inc_norad<<"begin param beamandtargetinfo"<<std::endl;
+  ofs_D2_pos_inc_norad<<"begin parm beamandtargetinfo"<<std::endl;
   ofs_D2_pos_inc_norad<<" gen%xwid = 0.008868"<<std::endl;
   ofs_D2_pos_inc_norad<<" gen%ywid = 0.004235"<<std::endl;
   ofs_D2_pos_inc_norad<<" targ%fr_pattern = 3"<<std::endl;
@@ -440,11 +443,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<"end param beamandtargetinfo\n"<<std::endl;
+  ofs_D2_pos_inc_norad<<"end parm beamandtargetinfo\n"<<std::endl;
   
-  ofs_D2_pos_inc_norad<<"begin param simulate"<<std::endl;
+  ofs_D2_pos_inc_norad<<"begin parm simulate"<<std::endl;
   ofs_D2_pos_inc_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_pos_inc_norad<<" using_rad = 0"<<std::endl;
+  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_pos_inc_norad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_pos_inc_norad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_pos_inc_norad<<" intcor_mode = 1"<<std::endl;
@@ -455,13 +459,13 @@ void make_simc_input(int RunGroup = 0){
 //  ofs_D2_pos_inc_norad<<" correct_Eloss = 1"<<std::endl;
 //  ofs_D2_pos_inc_norad<<" correct_raster = 1"<<std::endl;
 //  ofs_D2_pos_inc_norad<<" mc_smear = 1"<<std::endl;
-  ofs_D2_pos_inc_norad<<"end param simulate\n"<<std::endl;
+  ofs_D2_pos_inc_norad<<"end parm simulate\n"<<std::endl;
 
   ofs_D2_pos_inc_norad.close();
   
   //for rad
   ofs_D2_pos_inc_rad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
-  ofs_D2_pos_inc_rad<<"begin param experiment"<<std::endl;
+  ofs_D2_pos_inc_rad<<"begin parm experiment"<<std::endl;
   ofs_D2_pos_inc_rad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_pos_inc_rad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_pos_inc_rad<<" doing_pion = 1"<<std::endl;
@@ -523,7 +527,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_pos_inc_rad<<"end parm p_arm_accept\n"<<std::endl;
 
-  ofs_D2_pos_inc_rad<<"begin param beamandtargetinfo"<<std::endl;
+  ofs_D2_pos_inc_rad<<"begin parm beamandtargetinfo"<<std::endl;
   ofs_D2_pos_inc_rad<<" gen%xwid = 0.008868"<<std::endl;
   ofs_D2_pos_inc_rad<<" gen%ywid = 0.004235"<<std::endl;
   ofs_D2_pos_inc_rad<<" targ%fr_pattern = 3"<<std::endl;
@@ -532,11 +536,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<"end param beamandtargetinfo\n"<<std::endl;
+  ofs_D2_pos_inc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
   
-  ofs_D2_pos_inc_rad<<"begin param simulate"<<std::endl;
+  ofs_D2_pos_inc_rad<<"begin parm simulate"<<std::endl;
   ofs_D2_pos_inc_rad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_pos_inc_rad<<" using_rad = 1"<<std::endl;
+  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_pos_inc_rad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_pos_inc_rad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_pos_inc_rad<<" intcor_mode = 1"<<std::endl;
@@ -547,13 +552,13 @@ void make_simc_input(int RunGroup = 0){
 //  ofs_D2_pos_inc_rad<<" correct_Eloss = 1"<<std::endl;
 //  ofs_D2_pos_inc_rad<<" correct_raster = 1"<<std::endl;
 //  ofs_D2_pos_inc_rad<<" mc_smear = 1"<<std::endl;
-  ofs_D2_pos_inc_rad<<"end param simulate\n"<<std::endl;
+  ofs_D2_pos_inc_rad<<"end parm simulate\n"<<std::endl;
 
   ofs_D2_pos_inc_rad.close();
   
   //for exclusive
   ofs_D2_pos_exc_norad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
-  ofs_D2_pos_exc_norad<<"begin param experiment"<<std::endl;
+  ofs_D2_pos_exc_norad<<"begin parm experiment"<<std::endl;
   ofs_D2_pos_exc_norad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_pos_exc_norad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_pos_exc_norad<<" doing_pion = 1"<<std::endl;
@@ -615,7 +620,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_pos_exc_norad<<"end parm p_arm_accept\n"<<std::endl;
 
-  ofs_D2_pos_exc_norad<<"begin param beamandtargetinfo"<<std::endl;
+  ofs_D2_pos_exc_norad<<"begin parm beamandtargetinfo"<<std::endl;
   ofs_D2_pos_exc_norad<<" gen%xwid = 0.008868"<<std::endl;
   ofs_D2_pos_exc_norad<<" gen%ywid = 0.004235"<<std::endl;
   ofs_D2_pos_exc_norad<<" targ%fr_pattern = 3"<<std::endl;
@@ -624,9 +629,9 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_norad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_pos_exc_norad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_pos_exc_norad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_pos_exc_norad<<"end param beamandtargetinfo\n"<<std::endl;
+  ofs_D2_pos_exc_norad<<"end parm beamandtargetinfo\n"<<std::endl;
   
-  ofs_D2_pos_exc_norad<<"begin param simulate"<<std::endl;
+  ofs_D2_pos_exc_norad<<"begin parm simulate"<<std::endl;
   ofs_D2_pos_exc_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_pos_exc_norad<<" using_rad = 0"<<std::endl;
   ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
@@ -640,7 +645,7 @@ void make_simc_input(int RunGroup = 0){
 //  ofs_D2_pos_exc_norad<<" correct_Eloss = 1"<<std::endl;
 //  ofs_D2_pos_exc_norad<<" correct_raster = 1"<<std::endl;
 //  ofs_D2_pos_exc_norad<<" mc_smear = 1"<<std::endl;
-  ofs_D2_pos_exc_norad<<"end param simulate\n"<<std::endl;
+  ofs_D2_pos_exc_norad<<"end parm simulate\n"<<std::endl;
 
   ofs_D2_pos_exc_norad.close();
   }
