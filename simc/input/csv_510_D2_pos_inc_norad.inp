@@ -4,7 +4,7 @@ begin parm experiment
  ngen = 100000
  EXPER%charge = 1
  doing_pion = 1
- which_pion = 1
+ which_pion = 0
  doing_delta = 0
  doing_rho = 0
  doing_semi = 1
