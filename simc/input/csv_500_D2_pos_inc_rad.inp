@@ -76,5 +76,6 @@ end parm beamandtargetinfo
 begin parm simulate
  hard_cuts = 0
  using_rad = 1
+ pt_b_param = 3.8
 end parm simulate
 
