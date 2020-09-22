@@ -96,6 +96,8 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<"begin parm experiment"<<std::endl;
   ofs_D2_neg_inc_norad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_neg_inc_norad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_neg_inc_norad<<" doing_phsp = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" doing_kaon = 0"<<std::endl;
   ofs_D2_neg_inc_norad<<" doing_pion = 1"<<std::endl;
   ofs_D2_neg_inc_norad<<" which_pion = 1"<<std::endl;
   ofs_D2_neg_inc_norad<<" doing_delta = 0"<<std::endl;
@@ -111,10 +113,10 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<" dEbeam = "<<dEbeam<<std::endl;
   ofs_D2_neg_inc_norad<<" electron_arm =1"<<std::endl;
   ofs_D2_neg_inc_norad<<" hadron_arm = 5"<<std::endl;
-  ofs_D2_neg_inc_norad<<" pec%e%P = "<<e_momentum<<std::endl;
-  ofs_D2_neg_inc_norad<<" pec%e%theta = "<<e_theta<<std::endl;
-  ofs_D2_neg_inc_norad<<" pec%p%P = "<<p_momentum<<std::endl;
-  ofs_D2_neg_inc_norad<<" pec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_neg_inc_norad<<" spec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_neg_inc_norad<<" spec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_neg_inc_norad<<" spec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_neg_inc_norad<<" spec%p%theta = "<<p_theta<<std::endl;
   ofs_D2_neg_inc_norad<<"end parm kinematics_main\n"<<std::endl;
   
   ofs_D2_neg_inc_norad<<"begin parm target"<<std::endl;
@@ -189,6 +191,8 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<"begin parm experiment"<<std::endl;
   ofs_D2_neg_inc_rad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_neg_inc_rad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_neg_inc_rad<<" doing_phsp = 0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" doing_kaon = 0"<<std::endl;
   ofs_D2_neg_inc_rad<<" doing_pion = 1"<<std::endl;
   ofs_D2_neg_inc_rad<<" which_pion = 1"<<std::endl;
   ofs_D2_neg_inc_rad<<" doing_delta = 0"<<std::endl;
@@ -204,10 +208,10 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<" dEbeam = "<<dEbeam<<std::endl;
   ofs_D2_neg_inc_rad<<" electron_arm =1"<<std::endl;
   ofs_D2_neg_inc_rad<<" hadron_arm = 5"<<std::endl;
-  ofs_D2_neg_inc_rad<<" pec%e%P = "<<e_momentum<<std::endl;
-  ofs_D2_neg_inc_rad<<" pec%e%theta = "<<e_theta<<std::endl;
-  ofs_D2_neg_inc_rad<<" pec%p%P = "<<p_momentum<<std::endl;
-  ofs_D2_neg_inc_rad<<" pec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_neg_inc_rad<<" spec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_neg_inc_rad<<" spec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_neg_inc_rad<<" spec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_neg_inc_rad<<" spec%p%theta = "<<p_theta<<std::endl;
   ofs_D2_neg_inc_rad<<"end parm kinematics_main\n"<<std::endl;
   
   ofs_D2_neg_inc_rad<<"begin parm target"<<std::endl;
@@ -282,6 +286,8 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_norad<<"begin parm experiment"<<std::endl;
   ofs_D2_neg_exc_norad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_neg_exc_norad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_neg_exc_norad<<" doing_phsp = 0"<<std::endl;
+  ofs_D2_neg_exc_norad<<" doing_kaon = 0"<<std::endl;
   ofs_D2_neg_exc_norad<<" doing_pion = 1"<<std::endl;
   ofs_D2_neg_exc_norad<<" which_pion = 1"<<std::endl;
   ofs_D2_neg_exc_norad<<" doing_delta = 0"<<std::endl;
@@ -297,10 +303,10 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_norad<<" dEbeam = "<<dEbeam<<std::endl;
   ofs_D2_neg_exc_norad<<" electron_arm =1"<<std::endl;
   ofs_D2_neg_exc_norad<<" hadron_arm = 5"<<std::endl;
-  ofs_D2_neg_exc_norad<<" pec%e%P = "<<e_momentum<<std::endl;
-  ofs_D2_neg_exc_norad<<" pec%e%theta = "<<e_theta<<std::endl;
-  ofs_D2_neg_exc_norad<<" pec%p%P = "<<p_momentum<<std::endl;
-  ofs_D2_neg_exc_norad<<" pec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_neg_exc_norad<<" spec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_neg_exc_norad<<" spec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_neg_exc_norad<<" spec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_neg_exc_norad<<" spec%p%theta = "<<p_theta<<std::endl;
   ofs_D2_neg_exc_norad<<"end parm kinematics_main\n"<<std::endl;
   
   ofs_D2_neg_exc_norad<<"begin parm target"<<std::endl;
@@ -375,6 +381,8 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<"begin parm experiment"<<std::endl;
   ofs_D2_pos_inc_norad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_pos_inc_norad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_pos_inc_norad<<" doing_phsp = 0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" doing_kaon = 0"<<std::endl;
   ofs_D2_pos_inc_norad<<" doing_pion = 1"<<std::endl;
   ofs_D2_pos_inc_norad<<" which_pion = 0"<<std::endl;
   ofs_D2_pos_inc_norad<<" doing_delta = 0"<<std::endl;
@@ -390,10 +398,10 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<" dEbeam = "<<dEbeam<<std::endl;
   ofs_D2_pos_inc_norad<<" electron_arm =1"<<std::endl;
   ofs_D2_pos_inc_norad<<" hadron_arm = 5"<<std::endl;
-  ofs_D2_pos_inc_norad<<" pec%e%P = "<<e_momentum<<std::endl;
-  ofs_D2_pos_inc_norad<<" pec%e%theta = "<<e_theta<<std::endl;
-  ofs_D2_pos_inc_norad<<" pec%p%P = "<<p_momentum<<std::endl;
-  ofs_D2_pos_inc_norad<<" pec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_pos_inc_norad<<" spec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_pos_inc_norad<<" spec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_pos_inc_norad<<" spec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_pos_inc_norad<<" spec%p%theta = "<<p_theta<<std::endl;
   ofs_D2_pos_inc_norad<<"end parm kinematics_main\n"<<std::endl;
   
   ofs_D2_pos_inc_norad<<"begin parm target"<<std::endl;
@@ -468,6 +476,8 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<"begin parm experiment"<<std::endl;
   ofs_D2_pos_inc_rad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_pos_inc_rad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_pos_inc_rad<<" doing_phsp = 0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" doing_kaon = 0"<<std::endl;
   ofs_D2_pos_inc_rad<<" doing_pion = 1"<<std::endl;
   ofs_D2_pos_inc_rad<<" which_pion = 0"<<std::endl;
   ofs_D2_pos_inc_rad<<" doing_delta = 0"<<std::endl;
@@ -483,10 +493,10 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<" dEbeam = "<<dEbeam<<std::endl;
   ofs_D2_pos_inc_rad<<" electron_arm =1"<<std::endl;
   ofs_D2_pos_inc_rad<<" hadron_arm = 5"<<std::endl;
-  ofs_D2_pos_inc_rad<<" pec%e%P = "<<e_momentum<<std::endl;
-  ofs_D2_pos_inc_rad<<" pec%e%theta = "<<e_theta<<std::endl;
-  ofs_D2_pos_inc_rad<<" pec%p%P = "<<p_momentum<<std::endl;
-  ofs_D2_pos_inc_rad<<" pec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_pos_inc_rad<<" spec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_pos_inc_rad<<" spec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_pos_inc_rad<<" spec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_pos_inc_rad<<" spec%p%theta = "<<p_theta<<std::endl;
   ofs_D2_pos_inc_rad<<"end parm kinematics_main\n"<<std::endl;
   
   ofs_D2_pos_inc_rad<<"begin parm target"<<std::endl;
@@ -561,6 +571,8 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_norad<<"begin parm experiment"<<std::endl;
   ofs_D2_pos_exc_norad<<" ngen = "<<ngen<<std::endl;
   ofs_D2_pos_exc_norad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_pos_exc_norad<<" doing_phsp = 0"<<std::endl;
+  ofs_D2_pos_exc_norad<<" doing_kaon = 0"<<std::endl;
   ofs_D2_pos_exc_norad<<" doing_pion = 1"<<std::endl;
   ofs_D2_pos_exc_norad<<" which_pion = 0"<<std::endl;
   ofs_D2_pos_exc_norad<<" doing_delta = 0"<<std::endl;
@@ -576,10 +588,10 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_norad<<" dEbeam = "<<dEbeam<<std::endl;
   ofs_D2_pos_exc_norad<<" electron_arm =1"<<std::endl;
   ofs_D2_pos_exc_norad<<" hadron_arm = 5"<<std::endl;
-  ofs_D2_pos_exc_norad<<" pec%e%P = "<<e_momentum<<std::endl;
-  ofs_D2_pos_exc_norad<<" pec%e%theta = "<<e_theta<<std::endl;
-  ofs_D2_pos_exc_norad<<" pec%p%P = "<<p_momentum<<std::endl;
-  ofs_D2_pos_exc_norad<<" pec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_pos_exc_norad<<" spec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_pos_exc_norad<<" spec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_pos_exc_norad<<" spec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_pos_exc_norad<<" spec%p%theta = "<<p_theta<<std::endl;
   ofs_D2_pos_exc_norad<<"end parm kinematics_main\n"<<std::endl;
   
   ofs_D2_pos_exc_norad<<"begin parm target"<<std::endl;

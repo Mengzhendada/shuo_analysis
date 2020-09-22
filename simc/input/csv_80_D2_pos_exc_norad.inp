@@ -3,6 +3,8 @@
 begin parm experiment
  ngen = 100000
  EXPER%charge = 1
+ doing_phsp = 0
+ doing_kaon = 0
  doing_pion = 1
  which_pion = 0
  doing_delta = 0
@@ -18,10 +20,10 @@ begin parm kinematics_main
  dEbeam = 0.00415
  electron_arm =1
  hadron_arm = 5
- pec%e%P = 4508
- pec%e%theta = 16.63
- pec%p%P = 3653
- pec%p%theta = 11.61
+ spec%e%P = 4508
+ spec%e%theta = 16.63
+ spec%p%P = 3653
+ spec%p%theta = 11.61
 end parm kinematics_main
 
 begin parm target
