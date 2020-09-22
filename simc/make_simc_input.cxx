@@ -169,7 +169,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<"begin parm simulate"<<std::endl;
   ofs_D2_neg_inc_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_neg_inc_norad<<" using_rad = 0"<<std::endl;
-  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_neg_inc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_neg_inc_norad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_neg_inc_norad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_neg_inc_norad<<" intcor_mode = 1"<<std::endl;
@@ -262,7 +262,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<"begin parm simulate"<<std::endl;
   ofs_D2_neg_inc_rad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_neg_inc_rad<<" using_rad = 1"<<std::endl;
-  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_neg_inc_rad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_neg_inc_rad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_neg_inc_rad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_neg_inc_rad<<" intcor_mode = 1"<<std::endl;
@@ -355,7 +355,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_norad<<"begin parm simulate"<<std::endl;
   ofs_D2_neg_exc_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_neg_exc_norad<<" using_rad = 0"<<std::endl;
-  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_neg_exc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_neg_exc_norad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_neg_exc_norad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_neg_exc_norad<<" intcor_mode = 1"<<std::endl;
@@ -448,7 +448,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<"begin parm simulate"<<std::endl;
   ofs_D2_pos_inc_norad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_pos_inc_norad<<" using_rad = 0"<<std::endl;
-  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_pos_inc_norad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_pos_inc_norad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_pos_inc_norad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_pos_inc_norad<<" intcor_mode = 1"<<std::endl;
@@ -541,7 +541,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<"begin parm simulate"<<std::endl;
   ofs_D2_pos_inc_rad<<" hard_cuts = 0"<<std::endl;
   ofs_D2_pos_inc_rad<<" using_rad = 1"<<std::endl;
-  ofs_D2_pos_exc_norad<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_pos_inc_rad<<" pt_b_param = 3.8"<<std::endl;
 //  ofs_D2_pos_inc_rad<<" using_expon = 0"<<std::endl;
 //  ofs_D2_pos_inc_rad<<" using_tail = 0"<<std::endl;
 //  ofs_D2_pos_inc_rad<<" intcor_mode = 1"<<std::endl;
