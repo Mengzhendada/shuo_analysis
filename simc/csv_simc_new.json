@@ -1,0 +1,47 @@
+{
+    "jobs": [
+        {
+            "command": "/home/shuojia/simc_gfortran/script/run110.sh",
+            "cpuCores": 1,
+            "diskBytes": 10000000000,
+            "name": "csv_simc_job0",
+            "os": "centos7",
+            "project": "c-csv",
+            "ramBytes": 2500000000,
+            "shell": "/usr/bin/bash",
+            "stderr": "/home/shuojia/hcswif/output/csv_simc_110.err",
+            "stdout": "/home/shuojia/hcswif/output/csv_simc_110.out",
+            "timeSecs": 14400,
+            "track": "analysis"
+        },
+        {
+            "command": "/home/shuojia/simc_gfortran/script/run120.sh",
+            "cpuCores": 1,
+            "diskBytes": 10000000000,
+            "name": "csv_simc_job0",
+            "os": "centos7",
+            "project": "c-csv",
+            "ramBytes": 2500000000,
+            "shell": "/usr/bin/bash",
+            "stderr": "/home/shuojia/hcswif/output/csv_simc_120.err",
+            "stdout": "/home/shuojia/hcswif/output/csv_simc_120.out",
+            "timeSecs": 14400,
+            "track": "analysis"
+        },
+        {
+            "command": "/home/shuojia/simc_gfortran/script/run130.sh",
+            "cpuCores": 1,
+            "diskBytes": 10000000000,
+            "name": "csv_simc_job0",
+            "os": "centos7",
+            "project": "c-csv",
+            "ramBytes": 2500000000,
+            "shell": "/usr/bin/bash",
+            "stderr": "/home/shuojia/hcswif/output/csv_simc_130.err",
+            "stdout": "/home/shuojia/hcswif/output/csv_simc_130.out",
+            "timeSecs": 14400,
+            "track": "analysis"
+        }
+    ],
+    "name": "csv_simc"
+}
