@@ -6,9 +6,6 @@ module load hallac_container/1.5.5
 
 RUNGROUP=10*$1
 
-export SINGULARITY_BINDPATH="/lcrc,/scratch" 
-REPLAYDIR="/lcrc/project/jlab/csv/offline/online_csv"
-ODIR="$REPLAYDIR/results"
 
 
 echo "================================"
