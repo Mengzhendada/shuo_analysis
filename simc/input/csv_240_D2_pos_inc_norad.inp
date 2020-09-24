@@ -10,8 +10,8 @@ begin parm experiment
  doing_delta = 0
  doing_rho = 0
  doing_semi = 1
- doing_decay = 1
  doing_hplus = 0
+ doing_decay = 1
  ctau = 780.4
 end parm experiment
 
@@ -20,6 +20,7 @@ begin parm kinematics_main
  dEbeam = 0.00415
  electron_arm =1
  hadron_arm = 5
+ using_first_cer = 1
  spec%e%P = 6358
  spec%e%theta = 15.3
  spec%p%P = 2541
@@ -73,11 +74,56 @@ begin parm beamandtargetinfo
  targ%xoffset = 0.0
  targ%yoffset = 0.0
  targ%zoffset = 0.0
+ targ%Bangle = 80.0
+ targ%Bphi = 270
+ targ%pol = 1.0
 end parm beamandtargetinfo
 
+begin parm spect_offset
+ spec%e%offset%x = 0.
+ spec%e%offset%y = 0.
+ spec%e%offset%z = 0.
+ spec%e%offset%xptar = 0.
+ spec%e%offset%yptar = 0.
+ spec%p%offset%x = 0.
+ spec%p%offset%y = 0.
+ spec%p%offset%z = 0.
+ spec%p%offset%xptar = 0.
+ spec%p%offset%yptar = 0.
+end parm spect_offset
 begin parm simulate
  hard_cuts = 0
  using_rad = 0
+ using_expon = 0
+ one_tail = 0
+ intcor_mode = 1
+ spect_mode = 0
+ cuts%Em%min = 0
+ cuts%Em%max = 0
+ using_Eloss = 1
+ correct_Eloss = 1
+ correct_raster = 1
+ mc_smear = 1
+ deForest_flag = 0
+ rad_flag = 0
+ extrad_flag = 2
+ lambda(1) = 0.0
+ lambda(2) = 0.0
+ lambda(3) = 0.0
+ Nntu = 1
+ using_Coulomb = 1
+ dE_edge_test = 0
+ use_offshell_rad = 1
+ Egamma_gen_max = 0
+ using_tgt_field= 0
+ tgt_field_file = trg_field_map.dat
+ drift_to_cal = 320.0
+ do_fermi = 0
  pt_b_param = 3.8
+ sigc_flag = 1
+ sigc_nbin = 10
+ sigc_kin_min = 0.035
+ sigc_kin_max = 0.150
+ sigc_kin_ind = 0.550
 end parm simulate
 
