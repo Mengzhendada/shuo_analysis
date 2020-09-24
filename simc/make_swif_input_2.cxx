@@ -4,7 +4,7 @@
 using json = nlohmann::json;
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-int make_swif_input(){
+int make_swif_input_2(){
   json j_input;
   int cpuCores = 1;
   long int diskBytes = 10000000000;
@@ -16,12 +16,12 @@ int make_swif_input(){
   int timeSecs = 28800;
   std::string track = "analysis";
   std::string workflow_name,command,err_out,out_out;
-  std::cout<<"Default values: \n"<<"cpuCores: "<<cpuCores<<"\n diskBytes: "<<diskBytes<<"\n name: "<<name<<"\n os: "<<os<<"\n project: "<<project<<"\n ramBytes: "<<ramBytes<<"\n shell: "<<shell<<"\n timeSecs: "<<timeSecs<<"\n track: "<<track<<"\n no changes. if you want to change, go to make_swif_input.cxx script"<<std::endl;
-  workflow_name = "csv_simc";
+  std::cout<<"Default values: \n"<<"cpuCores: "<<cpuCores<<"\n diskBytes: "<<diskBytes<<"\n name: "<<name<<"\n os: "<<os<<"\n project: "<<project<<"\n ramBytes: "<<ramBytes<<"\n shell: "<<shell<<"\n timeSecs: "<<timeSecs<<"\n track: "<<track<<"\n no changes. if you want to change, go to make_swif_input_2.cxx script"<<std::endl;
+  workflow_name = "csv_simc_new";
   command = "/group/c-csv/shuo/simc_gfortran/script/";//will add executable in for loop later
   err_out = "/group/c-csv/shuo/simc_gfortran/outfiles/";//will add exact file name later in for loop
   out_out = "/group/c-csv/shuo/simc_gfortran/outfiles/";//will add same as above
-  std::cout<<"workflow name: "<<workflow_name<<"\n command: "<<command<<"\nerror_out: "<<err_out<<"\nout_out: "<<out_out<<"\nDefault path, go to make_swif)input.cxx script to change"<<std::endl;
+  std::cout<<"workflow name: "<<workflow_name<<"\n command: "<<command<<"\nerror_out: "<<err_out<<"\nout_out: "<<out_out<<"\nDefault path, go to make_swif_input_2.cxx script to change"<<std::endl;
   //std::cout<<"\n Enter workflow name: "<<std::endl;
   //std::cin>>workflow;
   //std::cout<<"\n Enter the executabel file with full path (/path/to/file.sh)"<<std::endl;

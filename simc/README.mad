@@ -1,12 +1,53 @@
+1. make all simc inputs
+=================================================
 I generate simc file by make_simc_input.cxx. 
 First of all, you need to have three json files. I'm using ratio_run_group_updated.json run_list.json, run_list_updated.json. I put them in online_csv/db2. The full path on ifarm is /group/c-csv/shuo/online_csv/db2. The full path on bebop is /lcrc/project/jlab/csv/offline/online_csv/db2. BTW, run_list.json is run infos for fall runs automatically generated while experiment was runing. run_list_updated.json is run infos for spring runs. ratio_run_group_updated.json is run group infos, I group the runs with same kinematics and assigned them new group number. You should change path to this json files in make_simc_input.cxx, for json defination
 Then, Maybe you want to change output file path. for eg, search ofs_D2_neg_norad_name, that't the position where I save my output, which is simc input files. 
-After you modified the path of input json files and output files, you can run the script. root -q -b "path/to/make_simc_input.cxx+(rungroup)", here rungroup is integer number from 1 to 58. You can check which run number is in which run group number in ratio_run_group_updated.json. Most of run groups are production runs, some are elastic runs, which will not have all D2 Dummy runs.
+After you modified the path of input json files and output files, you can run the script. root -q -b "path/to/make_simc_input.cxx+(rungroup)", here rungroup is integer number from 1 to 58. You can check which run number is in which run group number in ratio_run_group_updated.json. Most of run groups are production runs, some are elastic runs, which will not have all H2 Dummy runs.
 
 ########for short
-commend line:
+commend line for one run group:
 root -q -b "path/to/make_simc_input.cxx+(340)"
 //you can change 340 from (1 to 58)*10
+command line for all run groups: 
+./make_simc_input.sh
+Then move all files in input/ to your simc/infiles
+(((((you need to check the path
 
+
+2.make bash (run.sh) files
 =========================
-the script director should go to simc_gfortran directory
+This is done by script make_runshfile.sh. You need to give a output position in make_runshfile.cxx. 
+command line: 
+./make_runshfile.sh
+Make a script directory in your simc directory, then copy all the bash scripts into simc_gfortran script directory
+
+3.make swif input json file
+==========================
+command line: 
+root -b -q make_swif_input.cxx
+
+!!!you need to change the command(where you saved your bash files in step 2), err_out,out_out(where do you want to save your out and err, !!!!!!!!Don't save into mine directory), you can search these three string in make_swif_input.cxx.  
+This will generate csv_simc.json, which will be swif input file with workflow name "csv_simc" I defined. This json file is save in my directory, you will need to change the path, save in yout directory. 
+
+4.submit swif jobs
+==================
+go to the directory which has your csv_simc.json file
+command line: 
+./swif_simc.sh
+
+This will creat a workflow named csv_simc and submit it to jlab machine
+ 
+ Note: if you want to change workflow name, you will need to change both in step 3 and step 4
+
+5.Waiting for job to be done
+===========================
+The simc will write out files in simc/outfiles, and .bin files into simc/worksim
+
+6.Convert .bin to .root 
+=======================
+command line: 
+./convert_bin_to_root.sh
+
+Remember to change to your simc path
+

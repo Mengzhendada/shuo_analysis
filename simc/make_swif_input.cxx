@@ -54,7 +54,7 @@ int make_swif_input(){
     j_jobs.push_back(j_each); 
   }
   j_input["jobs"] = j_jobs;
-  std::ofstream ofs("shuo_analysis/simc/csv_simc_new.json");
+  std::ofstream ofs("shuo_analysis/simc/csv_simc.json");
   ofs<<j_input.dump(4)<<std::endl;
   return 0;
 }
