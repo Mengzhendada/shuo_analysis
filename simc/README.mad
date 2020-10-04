@@ -11,13 +11,14 @@ root -q -b "path/to/make_simc_input.cxx+(340)"
 //you can change 340 from (1 to 58)*10
 command line for all run groups: 
 ./make_simc_input.sh
+This command will generate simc input files for all run groups, and write it to input/ directory. 
 Then move all files in input/ to your simc/infiles
 (((((you need to check the path
 
 
 2.make bash (run.sh) files
 =========================
-This is done by script make_runshfile.sh. You need to give a output position in make_runshfile.cxx. 
+This is done by script make_runshfile.sh. You need to give a output position in make_runshfile.cxx. This script automatically generat run.sh file for all rungroups.  
 command line: 
 ./make_runshfile.sh
 Make a script directory in your simc directory, then copy all the bash scripts into simc_gfortran script directory
@@ -28,7 +29,7 @@ command line:
 root -b -q make_swif_input.cxx
 
 !!!you need to change the command(where you saved your bash files in step 2), err_out,out_out(where do you want to save your out and err, !!!!!!!!Don't save into mine directory), you can search these three string in make_swif_input.cxx.  
-This will generate csv_simc.json, which will be swif input file with workflow name "csv_simc" I defined. This json file is save in my directory, you will need to change the path, save in yout directory. 
+This will generate csv_simc.json, which will be swif input file with workflow name "csv_simc" I defined. This json file is save in my directory, you will need to change the path, save in yout directory. (at line 57)
 
 4.submit swif jobs
 ==================
@@ -36,13 +37,16 @@ go to the directory which has your csv_simc.json file
 command line: 
 ./swif_simc.sh
 
+the path in this bash script should be where you save your json file. 
+
 This will creat a workflow named csv_simc and submit it to jlab machine
+You can check your work status by swif status csv_simc(swif list)
  
  Note: if you want to change workflow name, you will need to change both in step 3 and step 4
 
 5.Waiting for job to be done
 ===========================
-The simc will write out files in simc/outfiles, and .bin files into simc/worksim
+The simc will write out files in simc_gfortran/outfiles, and .bin files into simc_gfortran/worksim
 
 6.Convert .bin to .root 
 =======================

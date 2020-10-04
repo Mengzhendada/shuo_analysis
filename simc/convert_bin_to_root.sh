@@ -1,4 +1,3 @@
-#/bin/bash
 cd /group/c-csv/shuo/simc_gfortran/util/root_tree
 for (( i = 10; i<590; i=i+10 ))
 do
