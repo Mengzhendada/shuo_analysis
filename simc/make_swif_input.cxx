@@ -13,7 +13,7 @@ int make_swif_input(){
   std::string project = "c-csv";
   long int ramBytes = 2500000000;
   std::string shell = "/usr/bin/bash";
-  int timeSecs = 14400;
+  int timeSecs = 28800;
   std::string track = "analysis";
   std::string workflow_name,command,err_out,out_out;
   std::cout<<"Default values: \n"<<"cpuCores: "<<cpuCores<<"\n diskBytes: "<<diskBytes<<"\n name: "<<name<<"\n os: "<<os<<"\n project: "<<project<<"\n ramBytes: "<<ramBytes<<"\n shell: "<<shell<<"\n timeSecs: "<<timeSecs<<"\n track: "<<track<<"\n no changes. if you want to change, go to make_swif_input.cxx script"<<std::endl;

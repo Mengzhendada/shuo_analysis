@@ -10,12 +10,18 @@ int make_runshfile(){
     of<<"#/bin/bash"<<std::endl;
     of<<"echo \"simulate RunGroup "<<10*i<<"\""<<std::endl;;
     of<<"cd /group/c-csv/shuo/simc_gfortran"<<std::endl;
-    of<<"echo csv_"<<10*i<<"_D2_neg_inc_norad | ./simc"<<std::endl;
-    of<<"echo csv_"<<10*i<<"_D2_neg_inc_rad | ./simc"<<std::endl;
-    of<<"echo csv_"<<10*i<<"_D2_neg_exc_norad | ./simc"<<std::endl;
-    of<<"echo csv_"<<10*i<<"_D2_pos_inc_norad | ./simc"<<std::endl;
-    of<<"echo csv_"<<10*i<<"_D2_pos_inc_rad | ./simc"<<std::endl;
-    of<<"echo csv_"<<10*i<<"_D2_pos_exc_norad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_D2_neg_inc_norad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_D2_neg_inc_rad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_D2_neg_exc_norad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_D2_pos_inc_norad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_D2_pos_inc_rad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_D2_pos_exc_norad | ./simc"<<std::endl;
+    of<<"echo csv_"<<10*i<<"_Dummy_neg_inc_norad | ./simc"<<std::endl;
+    of<<"echo csv_"<<10*i<<"_Dummy_neg_inc_rad | ./simc"<<std::endl;
+    of<<"echo csv_"<<10*i<<"_Dummy_neg_exc_norad | ./simc"<<std::endl;
+    of<<"echo csv_"<<10*i<<"_Dummy_pos_inc_norad | ./simc"<<std::endl;
+    of<<"echo csv_"<<10*i<<"_Dummy_pos_inc_rad | ./simc"<<std::endl;
+    of<<"echo csv_"<<10*i<<"_Dummy_pos_exc_norad | ./simc"<<std::endl;
     of.close();
   }
   return 0;
