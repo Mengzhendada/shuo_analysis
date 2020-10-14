@@ -1,6 +1,3 @@
-#include <fmt/core.h>
-#include <fmt/ostream.h>
-R__LOAD_LIBRARY(libfmt.so)
 
 #include "nlohmann/json.hpp"
 #include <cmath>
@@ -46,13 +43,11 @@ namespace fs = std::experimental::filesystem;
 #include <string>
 
 int readroot_d(){
- std::string rootfile = std::string("Cal_gain.root");
+ std::string rootfile = std::string("/home/shuojia/csv/results/simc_data/coin_replay_production_6009_6009.root");
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
- //.Define("pos_0", "pos_0" );
- //auto h = d.Histo1D({"","",100,0,100},"pos_0");
- auto g = d.Graph("momentum","arr_7_7");
+ auto h = d.Histo1D({"","",100,-1,1},"H.cal.etottracknorm");
   auto *c = new TCanvas;
- g->DrawCopy();
+ h->DrawCopy();
   return 0;
 }
