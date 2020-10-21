@@ -42,10 +42,19 @@ int plot_Q2x_zall_June(){
         h_z_pos_all->GetXaxis()->SetTitle("z");
         h_z_pos_all->GetYaxis()->SetTitle("counts");
 
+        auto runjs = it.value();
+        int RunGroup = runjs["group_num"].get<int>();
+        std::cout<<"RunGroup "<<RunGroup<<std::endl;
+        TFile *rootfile_neg_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
+        TH1D *h_z_neg_sim = new TH1D("","",100,0,1);
+        h_z_neg_sim = (TH1D*)rootfile_neg_sim->Get("z_neg");
+        TFile *rootfile_pos_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
+        TH1D *h_z_pos_sim = new TH1D("","",100,0,1);
+        h_z_pos_sim = (TH1D*)rootfile_pos_sim->Get("z_pos");
+
         double z = std::stod(it.key());
         std::cout<<"xbj "<<xbj<<" Q2 "<<Q2<<" z "<<z<<std::endl;
         std::vector<int> neg_D2_runs, pos_D2_runs;
-        auto runjs = it.value();
         if(xbj != 0 && Q2!=0 && z!=0){
           neg_D2_runs = runjs["neg"]["D2"].get<std::vector<int>>();
           pos_D2_runs = runjs["pos"]["D2"].get<std::vector<int>>();
@@ -70,11 +79,15 @@ int plot_Q2x_zall_June(){
           c_x_Q2->cd();
           h_z_neg_all->SetLineColor(coolcolor[i_color]);
           h_z_neg_all->SetFillColorAlpha(coolcolor[i_color],0.35);
+          h_z_neg_sim->SetLineColor(coolcolor[i_color]);
+          h_z_neg_sim->Draw("same");
           //h_z_neg_all->Draw("same");
           h_z_neg_all->Draw("hist same");
           //h_z_pos_all->Draw("same");
           h_z_pos_all->SetLineColor(warmcolor[i_color]);
           h_z_pos_all->SetFillColorAlpha(warmcolor[i_color],0.35);
+          h_z_pos_sim->SetLineColor(warmcolor[i_color]);
+          h_z_pos_sim->Draw("same");
           h_z_pos_all->Draw("hist same");
           TLine *z_line = new TLine(z,0,z,10000);
           z_line->SetLineColor(coolcolor[i_color]);

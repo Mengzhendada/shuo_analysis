@@ -64,6 +64,16 @@ int plot_Q2x_ratio_new(){
           std::cout<<"xbj "<<xbj<<" Q2 "<<Q2<<" z "<<z<<std::endl;
           std::vector<int> neg_D2_runs, pos_D2_runs;
           auto runjs = it.value();
+            
+          int RunGroup = runjs["group_num"].get<int>();
+          std::cout<<"RunGroup "<<RunGroup<<std::endl;
+          TFile *rootfile_neg_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
+          TH1D *h_z_neg_sim = new TH1D("","",100,0,1);
+          h_z_neg_sim = (TH1D*)rootfile_neg_sim->Get("z_neg");
+          TFile *rootfile_pos_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
+          TH1D *h_z_pos_sim = new TH1D("","",100,0,1);
+          h_z_pos_sim = (TH1D*)rootfile_pos_sim->Get("z_pos");
+          double charge_neg_all = 0,charge_pos_all=0;
           if(z!=0){
             neg_D2_runs = runjs["neg"]["D2"].get<std::vector<int>>();
             pos_D2_runs = runjs["pos"]["D2"].get<std::vector<int>>();
@@ -71,6 +81,7 @@ int plot_Q2x_ratio_new(){
               int RunNumber = *it;
               std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
+              charge_neg_all += charge;
               double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_z_neg = new TH1D("","",100,0,1);
@@ -84,6 +95,7 @@ int plot_Q2x_ratio_new(){
               int RunNumber = *it;
               std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
+              charge_pos_all+=charge;
               double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_z_pos = new TH1D("","",100,0,1);
@@ -96,10 +108,13 @@ int plot_Q2x_ratio_new(){
             //h_neg_q2x->Add(h_z_neg_all);
             //h_pos_q2x->Add(h_z_pos_all);
           }//if z not 0
-
+          //h_z_neg_sim->Scale(1/charge_neg_all);
+          //h_z_pos_sim->Scale(1/charge_pos_all);
           // c_Q2x_z_ratio->cd();
           h_z_neg_all->Rebin(2);
           h_z_pos_all->Rebin(2);
+          h_z_neg_sim->Rebin(2);
+          h_z_pos_sim->Rebin(2);
           //// h_neg_q2x->Sumw2();
           //// auto rp = new TRatioPlot(h_z_neg_all,h_z_pos_all);
           //// c_Q2x_ratio->SetTicks(0,1);
@@ -109,7 +124,8 @@ int plot_Q2x_ratio_new(){
           h_z_neg_all->Sumw2();
           h_z_pos_all->Sumw2();
           h_z_neg_all->Divide(h_z_pos_all);
-          
+          h_z_neg_sim->Divide(h_z_pos_sim);
+
           int nbins = h_z_neg_all->GetXaxis()->GetNbins();
           TGraphErrors* g_yield_ratio = new TGraphErrors();
           std::string z_string = "z setting "+(std::to_string(z)).substr(0,4);
@@ -125,6 +141,22 @@ int plot_Q2x_ratio_new(){
               g_yield_ratio->SetPoint(ii,x,y);
               g_yield_ratio->SetPointError(ii,0,error);
               ii++;
+            }
+          }
+          
+          int nbins_sim = h_z_neg_sim->GetXaxis()->GetNbins();
+          TGraphErrors* g_yield_ratio_sim = new TGraphErrors();
+          int ii_sim = 0;
+          for(int i = 0;i<nbins_sim;i++){
+            //std::cout<<i<<std::endl;
+            double x = h_z_neg_sim->GetBinCenter(i);
+            double y = h_z_neg_sim->GetBinContent(i);
+            double error = h_z_neg_sim->GetBinError(i);
+            //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+            if(y!=0){
+              g_yield_ratio_sim->SetPoint(ii_sim,x,y);
+              g_yield_ratio_sim->SetPointError(ii_sim,0,error);
+              ii_sim++;
             }
           }
           //int nbins = h_z_pos_all->GetXaxis()->GetNbins();
@@ -154,9 +186,12 @@ int plot_Q2x_ratio_new(){
           //h_z_neg_all->SetLineColor(i_color);
           g_yield_ratio->SetMarkerStyle(8);
           g_yield_ratio->SetMarkerColor(i_color);
+          g_yield_ratio_sim->SetMarkerStyle(5);
+          g_yield_ratio_sim->SetMarkerColor(i_color);
           //hs->Add(h_z_neg_all);
           //h_z_neg_all->Draw("same");
           mg->Add(g_yield_ratio,"P");
+          //mg->Add(g_yield_ratio_sim,"P");
           i_color++;
           //c_Q2x_ratio->Update();
         }//loop over z

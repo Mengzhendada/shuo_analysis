@@ -34,43 +34,6 @@ constexpr const double M_e     = 0.000511;
 using Pvec3D = ROOT::Math::XYZVector;
 using Pvec4D = ROOT::Math::PxPyPzMVector;
 
-auto p_proton = [](double px, double py, double pz){
-  return Pvec4D{px , py , pz , M_P};
-};
-auto p_pion = [](double px, double py, double pz) {
-  return Pvec4D{px , py , pz , M_pion};
-};
-auto pion_momentum = [](double px,double py,double pz){
-  TVector3 v(px,py,pz);
-  return v;
-};
-auto p_electron = [](double px, double py, double pz) {
-  return Pvec4D{px , py , pz , M_e};
-};
-auto p_q = [](Pvec4D& pe ) {
-  return Pvec4D{0.0,0.0,10.6, M_e}-pe;
-};
-auto t = [](const double Egamma, Pvec4D& jpsi) {
-  Pvec4D beam{0, 0, Egamma, 0};
-  return (beam - jpsi).M2();
-};
-auto z = [](Pvec4D& pq, Pvec4D& ph) {
-  return ph.E()/pq.E();
-};
-auto xbj = [](double Q2,Pvec4D& pq) {
-  return Q2/(2.0*0.938*pq.E());
-};
-auto Q2 = [](Pvec4D& pq) {
-  return -1.0*(pq.Dot(pq));
-};
-auto Wprime2 = [](Pvec4D& pq,Pvec4D& ph) {
-  auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq - ph;
-  return Ptot.Dot(Ptot);
-};
-auto W2 = [](Pvec4D& pq) {
-  auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq;
-  return Ptot.Dot(Ptot);
-};
 
 bool shms_momentum_high = true;
 
@@ -99,8 +62,12 @@ void statistic_runs_D2(int RunGroup=0){
     ifs>>j_cuts;
   };
 
-  std::string goodTrackSHMS = "P.gtr.dp>-10 && P.gtr.dp<22";
-  std::string goodTrackHMS = "H.gtr.dp>-10 && H.gtr.dp<10";
+  double H_dp_low = j_cuts["H_dp_low"].get<double>();
+  double H_dp_high = j_cuts["H_dp_high"].get<double>();
+  double P_dp_low = j_cuts["P_dp_low"].get<double>();
+  double P_dp_high = j_cuts["P_dp_high"].get<double>();
+  std::string goodTrackSHMS = "P.gtr.dp>"+std::to_string(P_dp_low)+" && P.gtr.dp<"+std::to_string(P_dp_low);
+  std::string goodTrackHMS = "H.gtr.dp>"+std::to_string(H_dp_low)+" && H.gtr.dp<"+std::to_string(H_dp_high);
   double SHMS_low = j_cuts["P_cal_pi_low"].get<double>();
   double SHMS_high = j_cuts["P_cal_pi_high"].get<double>();
   std::string piCutSHMS = (" P.cal.etottracknorm > "+std::to_string(SHMS_low)+" && P.cal.etottracknorm < " + std::to_string(SHMS_high)).c_str();
@@ -144,7 +111,46 @@ void statistic_runs_D2(int RunGroup=0){
       jout[(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
 
     }
-
+    double Eb;
+    if(RunGroup < 420) {Eb = 10.597;}
+    else{Eb = 10.214;}
+    auto p_proton = [](double px, double py, double pz){
+      return Pvec4D{px , py , pz , M_P};
+    };
+    auto p_pion = [](double px, double py, double pz) {
+      return Pvec4D{px , py , pz , M_pion};
+    };
+    auto pion_momentum = [](double px,double py,double pz){
+      TVector3 v(px,py,pz);
+      return v;
+    };
+    auto p_electron = [](double px, double py, double pz) {
+      return Pvec4D{px , py , pz , M_e};
+    };
+    auto p_q = [&](Pvec4D& pe ) {
+      return Pvec4D{0.0,0.0,Eb, M_e}-pe;
+    };
+    auto t = [](const double Egamma, Pvec4D& jpsi) {
+      Pvec4D beam{0, 0, Egamma, 0};
+      return (beam - jpsi).M2();
+    };
+    auto z = [](Pvec4D& pq, Pvec4D& ph) {
+      return ph.E()/pq.E();
+    };
+    auto xbj = [](double Q2,Pvec4D& pq) {
+      return Q2/(2.0*0.938*pq.E());
+    };
+    auto Q2 = [](Pvec4D& pq) {
+      return -1.0*(pq.Dot(pq));
+    };
+    auto Wprime2 = [](Pvec4D& pq,Pvec4D& ph) {
+      auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq - ph;
+      return Ptot.Dot(Ptot);
+    };
+    auto W2 = [](Pvec4D& pq) {
+      auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq;
+      return Ptot.Dot(Ptot);
+    };
     //for pos runs
     for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
       int RunNumber = *it;
@@ -223,13 +229,13 @@ void statistic_runs_D2(int RunGroup=0){
     int bg_left_high = j_cuts["random_bg_left_high"].get<int>();
     int bg_right_low = j_cuts["random_bg_right_low"].get<int>();
     int bg_right_high = j_cuts["random_bg_right_high"].get<int>();
-    for(int i = bg_left_low;i<bg_left_high;i++){
+    for(int i = bg_left_low;i<bg_left_high;i=i+2){
       double bg_main = coin_peak_center_pos+i*4.008;
       double bg_left = bg_main+cointime_lowcut;
       double bg_right = bg_main+cointime_highcut;
       bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
     }
-    for(int i = bg_right_low;i<bg_right_high;i++){
+    for(int i = bg_right_low;i<bg_right_high;i=i+2){
       double bg_main = coin_peak_center_pos+i*4.008;
       double bg_left = bg_main+cointime_lowcut;
       double bg_right = bg_main+cointime_highcut;
@@ -354,7 +360,7 @@ void statistic_runs_D2(int RunGroup=0){
       std::string c_check_name = "results/yield/check/"+std::to_string(RunNumber)+"pos.png";
       c_check->SaveAs(c_check_name.c_str());
 
-      int bg_counts = *d_pos_bg.Count()/12;
+      int bg_counts = *d_pos_bg.Count()/6;
       jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_counts;
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
@@ -429,7 +435,7 @@ void statistic_runs_D2(int RunGroup=0){
       double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
 
       auto neg_get_current = [&](unsigned int eventNum){
-        int i = 0;
+        long unsigned int i = 0;
         while(eventNum>neg_scaler_event_list->at(i)){
           ++i;
           if(i>neg_scaler_current_list->size()-1)
@@ -538,7 +544,7 @@ void statistic_runs_D2(int RunGroup=0){
       std::string c_check_name = "results/yield/check/"+std::to_string(RunNumber)+"neg.png";
       c_check->SaveAs(c_check_name.c_str());
 
-      int bg_counts = *d_neg_bg.Count()/12;
+      int bg_counts = *d_neg_bg.Count()/6;
       jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_counts;
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");

@@ -42,13 +42,18 @@ namespace fs = std::experimental::filesystem;
 #include <vector>
 #include <string>
 
-int readroot_d(){
- std::string rootfile = std::string("ROOTfiles/coin_replay_production_7595_-1.root");
+int readroot_d(int RunNumber = 0){
+  while(RunNumber >-1){
+    std::cout<<"Enter RunNumber "<<std::endl;
+    std::cin>>RunNumber;
+    std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
  auto h = d.Histo1D({"","",100,-1,1},"H.cal.etottracknorm");
+ std::cout<<h->GetMean()<<std::endl;
   auto *c = new TCanvas;
  h->DrawCopy();
  c->SaveAs("HMS_cal.pdf");
+  }
   return 0;
 }
