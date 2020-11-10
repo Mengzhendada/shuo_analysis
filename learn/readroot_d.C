@@ -43,10 +43,11 @@ namespace fs = std::experimental::filesystem;
 #include <string>
 
 int readroot_d(){
- std::string rootfile = std::string("ROOTfiles/coin_replay_production_7595_-1.root");
+ std::string rootfile = std::string("ROOTfiles/coin_replay_production_6291_6291.root");
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
- auto h = d.Histo1D({"","",100,-1,1},"H.cal.etottracknorm");
+ auto h = d.Histo1D({"","",100,40,50},"CTime.ePiCoinTime_ROC2");
+ //auto h = d.Histo1D({"","",100,-1,2},"H.cal.etottracknorm");
   auto *c = new TCanvas;
  h->DrawCopy();
  c->SaveAs("HMS_cal.pdf");
