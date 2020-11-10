@@ -77,16 +77,24 @@ int plot_Q2x_zall_ratio(){
           h_neg_q2x->Add(h_z_neg_all);
           h_pos_q2x->Add(h_z_pos_all);
         }//if not 0
-      }//loop over z
+      TCanvas *c_z = new TCanvas();
+      h_z_neg->SumW2();
+      h_z_neg->Divide(h_z_pos);
+      //tobecontinued .......................
+    }//loop over z
      
     c_Q2x_ratio->cd();
     h_neg_q2x->Sumw2();
-    auto rp = new TRatioPlot(h_neg_q2x,h_pos_q2x);
-    c_Q2x_ratio->SetTicks(0,1);
-    rp->Draw();
-    rp->GetLowerRefGraph()->SetMinimum(0);
-    rp->GetLowerRefGraph()->SetMaximum(10);
-    c_Q2x_ratio->Update();
+    h_neg_q2x->SetLineColor(kBlack);
+    h_pos_q2x->SetLineColor(kBlue);
+    h_pos_q2x->DrawCopy("hist");
+    h_neg_q2x->DrawCopy("hist same");
+    //auto rp = new TRatioPlot(h_neg_q2x,h_pos_q2x);
+    //c_Q2x_ratio->SetTicks(0,1);
+    //rp->Draw();
+    //rp->GetLowerRefGraph()->SetMinimum(0);
+    //rp->GetLowerRefGraph()->SetMaximum(1);
+    //c_Q2x_ratio->Update();
       std::string ratiopdfname = "results/yield/statistics/"+canvas_name+"_ratio.pdf";
     
     c_Q2x_ratio->SaveAs(ratiopdfname.c_str());

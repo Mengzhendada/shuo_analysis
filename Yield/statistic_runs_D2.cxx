@@ -66,7 +66,7 @@ void statistic_runs_D2(int RunGroup=0){
   double H_dp_high = j_cuts["H_dp_high"].get<double>();
   double P_dp_low = j_cuts["P_dp_low"].get<double>();
   double P_dp_high = j_cuts["P_dp_high"].get<double>();
-  std::string goodTrackSHMS = "P.gtr.dp>"+std::to_string(P_dp_low)+" && P.gtr.dp<"+std::to_string(P_dp_low);
+  std::string goodTrackSHMS = "P.gtr.dp>"+std::to_string(P_dp_low)+" && P.gtr.dp<"+std::to_string(P_dp_high);
   std::string goodTrackHMS = "H.gtr.dp>"+std::to_string(H_dp_low)+" && H.gtr.dp<"+std::to_string(H_dp_high);
   double SHMS_low = j_cuts["P_cal_pi_low"].get<double>();
   double SHMS_high = j_cuts["P_cal_pi_high"].get<double>();
@@ -311,6 +311,10 @@ void statistic_runs_D2(int RunGroup=0){
         //.Define("emiss",Emiss,{"p_pion","p_electron"})
         //.Define("mmiss",mmiss,{"p_pion","p_electron"})
         ;
+      std::cout<<"check"<<std::endl;
+      auto pos_out_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
+      d_pos_pi.Snapshot("T",pos_out_name);
+      //d_pos_pi.Snapshot("T_data",pos_out_name,{"z","Q2","W","p_pion"});
       int pion_counts = *d_pos_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_counts;
 
@@ -375,7 +379,13 @@ void statistic_runs_D2(int RunGroup=0){
       h_xbj_bg->Write();
       auto h_z_bg = d_pos_bg.Histo1D({"z_bg","z_bg",100,0,1},"z");
       h_z_bg->Write();
+      auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj");
+      h_x_z_pos->Write();
+      
+      auto h_Q2_z_pos = d_pos_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
+      h_Q2_z_pos->Write();
       rootfile_out->Close();
+    
     }
 
 
@@ -490,6 +500,8 @@ void statistic_runs_D2(int RunGroup=0){
         //.Define("emiss",Emiss,{"p_pion","p_electron"})
         //.Define("mmiss",mmiss,{"p_pion","p_electron"})
         ;
+      auto neg_out_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
+      //d_neg_pi.Snapshot("T",neg_out_name);
       int pion_counts = *d_neg_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_counts;
 
@@ -558,6 +570,13 @@ void statistic_runs_D2(int RunGroup=0){
       h_xbj_bg->Write();
       auto h_z_bg = d_neg_bg.Histo1D({"z_bg","z_bg",100,0,1},"z");
       h_z_bg->Write();
+      
+      auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj");
+      h_x_z_neg->Write();
+      
+      auto h_Q2_z_neg = d_neg_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
+      h_Q2_z_neg->Write();
+      
       rootfile_out->Close();
     }
     std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";

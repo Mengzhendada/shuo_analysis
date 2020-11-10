@@ -28,13 +28,14 @@ int plot_kin2(){
       double Q2 = std::stod(ik.key());
       std::string Q2_2 = ik.key().substr(0,4);
       std::cout<<"x_Q2_"<<x<<"_"<<Q2<<std::endl;
+      std::string x_Q2 = "x_Q2_"+x_2+"_"+Q2_2;
       if(x!= 0 && Q2!=0){
-        TH2F* h_pos_all = new TH2F("","",100,0,1,100,0,10);
+        TH2F* h_pos_all = new TH2F("",x_Q2.c_str(),100,0,1,100,0,1);
         h_pos_all->GetXaxis()->SetTitle("x");
-        h_pos_all->GetYaxis()->SetTitle("Q2");
-        TH2F* h_neg_all = new TH2F("","",100,0,1,100,0,10);
+        h_pos_all->GetYaxis()->SetTitle("z");
+        TH2F* h_neg_all = new TH2F("",x_Q2.c_str(),100,0,1,100,0,1);
         h_neg_all->GetXaxis()->SetTitle("x");
-        h_neg_all->GetYaxis()->SetTitle("Q2");
+        h_neg_all->GetYaxis()->SetTitle("z");
         auto kinjs = ik.value();
         std::vector<int> neg_D2,pos_D2;
         neg_D2 = kinjs["neg"]["D2"].get<std::vector<int>>();
@@ -45,31 +46,37 @@ int plot_kin2(){
             std::cout<<RunNumber<<std::endl;
             std::string rootfile_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
             TFile *rootfile = new TFile(rootfile_name.c_str(),"RECTEATE");
-            TH2F* h_neg = new TH2F("","",100,0,1,100,0,10);
-            if(rootfile->Get("Q2_x")){
-              h_neg = (TH2F*)rootfile->Get("Q2_x");
-              c_kin->cd();
-              h_neg->SetMarkerStyle(8);
-              h_neg->SetMarkerColorAlpha(coolcolor[i_color],0.75);
-          h_neg->GetXaxis()->SetRangeUser(0.2,0.8);
-          h_neg->GetYaxis()->SetRangeUser(2,8);
-          h_neg->Draw("p same");
-              //              h_neg_all->Add(h_neg);
+            TH2F* h_neg = new TH2F("","",100,0,1,100,0,1);
+            if(rootfile->Get("x_z")){
+              h_neg = (TH2F*)rootfile->Get("x_z");
+              std::cout<<"counts "<<h_neg->Integral()<<std::endl;
+              //c_kin->cd();
+              //h_neg->SetMarkerStyle(8);
+              //h_neg->SetMarkerColorAlpha(coolcolor[i_color],0.75);
+              //h_neg->GetXaxis()->SetRangeUser(0.2,0.8);
+              //h_neg->GetYaxis()->SetRangeUser(0.2,0.8);
+              //h_neg->Draw("p same");
+              h_neg_all->Add(h_neg);
 
             }
-            else{std::cout<<"No Q2x histo for "<<RunNumber<<std::endl;}
+            else{std::cout<<"No x_z histo for "<<RunNumber<<std::endl;}
           }//loop over neg runs
-          //c_kin->cd();
+          c_kin->cd();
           //h_neg_all->SetMarkerStyle(8);
           //h_neg_all->SetMarkerColorAlpha(coolcolor[i_color],0.75);
           //h_neg_all->GetXaxis()->SetRangeUser(0.2,0.8);
           //h_neg_all->GetYaxis()->SetRangeUser(2,8);
+          h_neg_all->SetFillColor(coolcolor[i_color]);
+          h_neg_all->GetXaxis()->SetRangeUser(0.2,0.8);
+          h_neg_all->GetYaxis()->SetRangeUser(0.2,0.8);
           //h_neg_all->Draw("p same");
+          h_neg_all->Draw("box same");
           i_color++;
         }//if normal production runs
       }//if x Q2 not 0
     }// loop over Q2
   }//loop over x
-  c_kin->SaveAs("results/yield/kin_all.png");
+  c_kin->BuildLegend(0.8,0.5,1,1);
+  c_kin->SaveAs("results/yield/kin_x_z.png");
   return 0;
 }

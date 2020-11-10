@@ -77,7 +77,7 @@ auto W2 = [](TLorentzVector pq) {
 };
 //Emiss = Ebeam+Mp - sqrt(P_pion^2 + Mpion^2) - sqrt(P_e+Me^2)
 auto Emiss = [](TLorentzVector& p_pion, TLorentzVector p_electron){
-  return Eb+M_P-sqrt(p_pion.E()*p_pion.E()+M_P2)-sqrt(p_electron.E()*p_electron.E()+M_e*M_e);
+  return Eb+M_P-sqrt(p_pion.E()*p_pion.E())-sqrt(p_electron.E()*p_electron.E());
 };
 auto mmiss = [](TLorentzVector p_pion,TLorentzVector p_electron){
   TLorentzVector missing_mass = TLorentzVector{0.0,0.0,Eb,M_e}+TLorentzVector{0.0,0.0,0.0,M_P}-p_electron-p_pion;

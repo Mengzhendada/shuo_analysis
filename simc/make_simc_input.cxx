@@ -508,7 +508,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<" doing_delta = 0"<<std::endl;
   ofs_D2_pos_inc_norad<<" doing_rho = 0"<<std::endl;
   ofs_D2_pos_inc_norad<<" doing_semi = "<<inc<<std::endl;
-  ofs_D2_pos_inc_norad<<" doing_hplus = 0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" doing_hplus = 1"<<std::endl;
   ofs_D2_pos_inc_norad<<" doing_decay = 1"<<std::endl;
   ofs_D2_pos_inc_norad<<" ctau = 780.4"<<std::endl;
   ofs_D2_pos_inc_norad<<"end parm experiment\n"<<std::endl;
@@ -642,7 +642,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<" doing_delta = 0"<<std::endl;
   ofs_D2_pos_inc_rad<<" doing_rho = 0"<<std::endl;
   ofs_D2_pos_inc_rad<<" doing_semi = "<<inc<<std::endl;
-  ofs_D2_pos_inc_rad<<" doing_hplus = 0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" doing_hplus = 1"<<std::endl;
   ofs_D2_pos_inc_rad<<" doing_decay = 1"<<std::endl;
   ofs_D2_pos_inc_rad<<" ctau = 780.4"<<std::endl;
   ofs_D2_pos_inc_rad<<"end parm experiment\n"<<std::endl;
@@ -776,7 +776,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_norad<<" doing_delta = 0"<<std::endl;
   ofs_D2_pos_exc_norad<<" doing_rho = 0"<<std::endl;
   ofs_D2_pos_exc_norad<<" doing_semi = "<<exc<<std::endl;
-  ofs_D2_pos_exc_norad<<" doing_hplus = 0"<<std::endl;
+  ofs_D2_pos_exc_norad<<" doing_hplus = 1"<<std::endl;
   ofs_D2_pos_exc_norad<<" doing_decay = 1"<<std::endl;
   ofs_D2_pos_exc_norad<<" ctau = 780.4"<<std::endl;
   ofs_D2_pos_exc_norad<<"end parm experiment\n"<<std::endl;
