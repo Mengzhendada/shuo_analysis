@@ -90,8 +90,8 @@ void compare_sim_data(int RunGroup = 0){
     if(RunGroup < 0)
       return;
   }
-  std::string pos_sim_rootfile = "sim/csv"+std::to_string(RunGroup)+"pos.root";
-  std::string neg_sim_rootfile = "sim/csv"+std::to_string(RunGroup)+"neg.root";
+  std::string pos_sim_rootfile = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.root";
+  std::string neg_sim_rootfile = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.root";
   json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -267,8 +267,8 @@ void compare_sim_data(int RunGroup = 0){
   
 
 
-  ROOT::RDataFrame d_sim_pos_raw_1("h666",pos_sim_rootfile);
-  ROOT::RDataFrame d_sim_neg_raw_1("h666",neg_sim_rootfile);
+  ROOT::RDataFrame d_sim_pos_raw_1("h10",pos_sim_rootfile);
+  ROOT::RDataFrame d_sim_neg_raw_1("h10",neg_sim_rootfile);
   auto d_sim_pos_raw = d_sim_pos_raw_1
     .Filter("hsdelta > -10 && hsdelta < 10")
     .Filter("ssdelta > -10 && ssdelta < 22")
@@ -313,8 +313,8 @@ void compare_sim_data(int RunGroup = 0){
   //for missing mass
   auto pion_mmiss_neg = d_neg_pi.Histo1D({"mmiss_neg","mmiss neg",100,0,2},"mmiss");
   auto pion_mmiss_pos = d_pos_pi.Histo1D({"mmiss_pos","mmiss pos",100,0,2},"mmiss");
-  auto pion_mmiss_sim_neg = d_sim_neg.Histo1D({"mmiss_neg_sim","mmiss neg sim", 100,0,2},"missmass");
-  auto pion_mmiss_sim_pos = d_sim_pos.Histo1D({"mmiss_pos_sim","mmiss pos sim", 100,0,2},"missmass");
+  auto pion_mmiss_sim_neg = d_sim_neg.Histo1D({"mmiss_neg_sim","mmiss neg sim", 100,0,2},"missmass","weight_neg");
+  auto pion_mmiss_sim_pos = d_sim_pos.Histo1D({"mmiss_pos_sim","mmiss pos sim", 100,0,2},"missmass","weight_pos");
   TCanvas *c_missmass = new TCanvas();
   c_missmass->Divide(1,2);
   c_missmass->cd(1);
