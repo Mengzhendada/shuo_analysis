@@ -16,6 +16,7 @@ int combine_json(){
   for(auto it = j_rungroup.begin();it!=j_rungroup.end();it++){
     json jout;
     int RunGroup = std::stoi(it.key());
+    std::cout<<"RunGroup"<<RunGroup<<std::endl;
       std::string filename = "shuo_analysis/simc/outfiles/"+std::to_string(RunGroup)+".json"; 
       std::ifstream ifs(filename.c_str());
       if(ifs.good()){

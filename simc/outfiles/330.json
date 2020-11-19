@@ -3,7 +3,7 @@
         "neg": {
             "exc": {
                 "norad": {
-                    "normfac": 31441400.0
+                    "normfac": 44594700.0
                 }
             },
             "inc": {
@@ -18,7 +18,7 @@
         "pos": {
             "exc": {
                 "norad": {
-                    "normfac": 31686900.0
+                    "normfac": 44731300.0
                 }
             },
             "inc": {

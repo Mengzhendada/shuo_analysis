@@ -10,7 +10,7 @@ begin parm experiment
  doing_delta = 0
  doing_rho = 0
  doing_semi = 1
- doing_hplus = 0
+ doing_hplus = 1
  doing_decay = 1
  ctau = 780.4
 end parm experiment
