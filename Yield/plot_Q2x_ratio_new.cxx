@@ -39,7 +39,6 @@ int plot_Q2x_ratio_new(){
       auto j_z = it.value();
       std::string canvas_name = "x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5);
       std::string q2x_name = "x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"_yieldratio";
-      TCanvas *c_Q2x_z_ratio = new TCanvas("",q2x_name.c_str(),1900,1000);
       TCanvas *c_Q2x_ratio = new TCanvas("",q2x_name.c_str(),1900,1000);
       TH1D* h_neg_q2x = new TH1D("",(q2x_name).c_str(),100,0,1);
       TH1D* h_pos_q2x = new TH1D("",(q2x_name).c_str(),100,0,1);
@@ -110,7 +109,6 @@ int plot_Q2x_ratio_new(){
           }//if z not 0
           //h_z_neg_sim->Scale(1/charge_neg_all);
           //h_z_pos_sim->Scale(1/charge_pos_all);
-          // c_Q2x_z_ratio->cd();
           h_z_neg_all->Rebin(2);
           h_z_pos_all->Rebin(2);
           h_z_neg_sim->Rebin(2);
@@ -127,60 +125,71 @@ int plot_Q2x_ratio_new(){
           h_z_neg_sim->Divide(h_z_pos_sim);
 
           int nbins = h_z_neg_all->GetXaxis()->GetNbins();
+         // TGraphErrors* g_yield_ratio = new TGraphErrors(h_z_neg_all);
+
           TGraphErrors* g_yield_ratio = new TGraphErrors();
           std::string z_string = "z setting "+(std::to_string(z)).substr(0,4);
           g_yield_ratio->SetName(z_string.c_str());
-          int ii = 0;
-          for(int i = 0;i<nbins;i++){
-            //std::cout<<i<<std::endl;
-            double x = h_z_neg_all->GetBinCenter(i);
-            double y = h_z_neg_all->GetBinContent(i);
-            double error = h_z_neg_all->GetBinError(i);
-            //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
-            if(y!=0){
-              g_yield_ratio->SetPoint(ii,x,y);
-              g_yield_ratio->SetPointError(ii,0,error);
-              ii++;
-            }
+         
+         int ii = 0;
+        for(int i = 0;i<nbins;i++){
+          //std::cout<<i<<std::endl;
+          double x = h_z_neg_all->GetBinCenter(i);
+          double y = h_z_neg_all->GetBinContent(i);
+          double error = h_z_neg_all->GetBinError(i);
+          //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+          if(y!=0){
+            g_yield_ratio->SetPoint(ii,x,y);
+            g_yield_ratio->SetPointError(ii,0,error);
+            ii++;
           }
+        }
           
           int nbins_sim = h_z_neg_sim->GetXaxis()->GetNbins();
           TGraphErrors* g_yield_ratio_sim = new TGraphErrors();
-          int ii_sim = 0;
-          for(int i = 0;i<nbins_sim;i++){
-            //std::cout<<i<<std::endl;
-            double x = h_z_neg_sim->GetBinCenter(i);
-            double y = h_z_neg_sim->GetBinContent(i);
-            double error = h_z_neg_sim->GetBinError(i);
-            //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
-            if(y!=0){
-              g_yield_ratio_sim->SetPoint(ii_sim,x,y);
-              g_yield_ratio_sim->SetPointError(ii_sim,0,error);
-              ii_sim++;
-            }
-          }
-          //int nbins = h_z_pos_all->GetXaxis()->GetNbins();
-          //TGraphErrors* g_yield_ratio = new TGraphErrors();
-          //std::string z_string = "z setting "+(std::to_string(z)).substr(0,4);
-          //g_yield_ratio->SetName(z_string.c_str());
-          //int ii = 0;
-          //for(int i = 0;i<nbins;i++){
-          //  //std::cout<<i<<std::endl;
-          //  double x = h_z_pos_all->GetBinCenter(i);
-          //  double y = h_z_pos_all->GetBinContent(i);
-          //  double error = h_z_pos_all->GetBinError(i);
-          //  //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
-          //  if(y!=0){
-          //    g_yield_ratio->SetPoint(ii,x,y);
-          //    g_yield_ratio->SetPointError(ii,0,error);
-          //    ii++;
-          //  }
-          //}
-          //h_z_neg_all->Draw();
-          // c_Q2x_z_ratio->Update();
-          //   std::string zratiopdfname = "results/yield/statistics/"+canvas_name+"_"+std::to_string(z)+"_ratio.pdf";
-          // 
-          // c_Q2x_z_ratio->SaveAs(zratiopdfname.c_str());
+          //TGraphErrors* g_yield_ratio_sim = new TGraphErrors(h_z_neg_sim);
+         int ii_sim = 0;
+         for(int i = 0;i<nbins_sim;i++){
+           //std::cout<<i<<std::endl;
+           double x = h_z_neg_sim->GetBinCenter(i);
+           double y = h_z_neg_sim->GetBinContent(i);
+           double error = h_z_neg_sim->GetBinError(i);
+           //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+           if(y!=0){
+             g_yield_ratio_sim->SetPoint(ii_sim,x,y);
+             g_yield_ratio_sim->SetPointError(ii_sim,0,error);
+             ii_sim++;
+           }
+         }
+         
+        // int nbins = h_z_pos_all->GetXaxis()->GetNbins();
+        // TGraphErrors* g_yield_ratio = new TGraphErrors();
+        // std::string z_string = "z setting "+(std::to_string(z)).substr(0,4);
+        // g_yield_ratio->SetName(z_string.c_str());
+        // int ii = 0;
+        // for(int i = 0;i<nbins;i++){
+        //   //std::cout<<i<<std::endl;
+        //   double x = h_z_pos_all->GetBinCenter(i);
+        //   double y = h_z_pos_all->GetBinContent(i);
+        //   double error = h_z_pos_all->GetBinError(i);
+        //   //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+        //   if(y!=0){
+        //     g_yield_ratio->SetPoint(ii,x,y);
+        //     g_yield_ratio->SetPointError(ii,0,error);
+        //     ii++;
+        //   }
+        // }
+          
+          
+      //TCanvas *c_Q2x_z_ratio = new TCanvas("",q2x_name.c_str(),1900,1000);
+      //    c_Q2x_z_ratio->cd();
+      //    //h_z_neg_all->Draw();
+      //    g_yield_ratio->GetXaxis()->SetRangeUser(0.1,1);
+      //    g_yield_ratio->Draw("ap"); 
+      //    c_Q2x_z_ratio->Update();
+      //       std::string zratiopdfname = "results/yield/statistics/"+canvas_name+"_"+std::to_string(z)+"_ratio.pdf";
+      //      
+      //     c_Q2x_z_ratio->SaveAs(zratiopdfname.c_str());
 
           //c_Q2x_ratio->cd();
           //h_z_neg_all->SetLineColor(i_color);
@@ -191,7 +200,7 @@ int plot_Q2x_ratio_new(){
           //hs->Add(h_z_neg_all);
           //h_z_neg_all->Draw("same");
           mg->Add(g_yield_ratio,"P");
-          //mg->Add(g_yield_ratio_sim,"P");
+          mg->Add(g_yield_ratio_sim,"P");
           i_color++;
           //c_Q2x_ratio->Update();
         }//loop over z
@@ -200,7 +209,7 @@ int plot_Q2x_ratio_new(){
       //hs->Draw();
       mg->GetXaxis()->SetTitle("z");
       mg->GetYaxis()->SetTitle("yield ratio");
-      mg->SetMinimum(0);
+      mg->SetMinimum(0.1);
       mg->SetMaximum(1.2);
       mg->Draw("A");
       //auto hermes_RD = [](double z){return ((1.0-z)*0.083583)/((1.0+z)*1.988);};

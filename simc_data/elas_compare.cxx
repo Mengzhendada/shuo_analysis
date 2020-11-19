@@ -98,6 +98,23 @@ void elas_compare(){
   G_W_Epdiff_fall->SetTitle("fall");
   TGraphErrors *G_W_Epdiff_spring = new TGraphErrors();
   G_W_Epdiff_spring->SetTitle("spring");
+  TGraphErrors *G_Wdiff_delta_fall_6009 = new TGraphErrors();
+  TGraphErrors *G_emissdiff_delta_fall_6009 = new TGraphErrors();
+  TGraphErrors *G_Wdiff_delta_fall_6010 = new TGraphErrors();
+  TGraphErrors *G_emissdiff_delta_fall_6010 = new TGraphErrors();
+  TGraphErrors *G_Wdiff_delta_fall_6012 = new TGraphErrors();
+  TGraphErrors *G_emissdiff_delta_fall_6012 = new TGraphErrors();
+  TGraphErrors *G_Wdiff_delta_spring_7822 = new TGraphErrors();
+  TGraphErrors *G_emissdiff_delta_spring_7822 = new TGraphErrors();
+  TGraphErrors *G_Wdiff_delta_spring_7823 = new TGraphErrors();
+  TGraphErrors *G_emissdiff_delta_spring_7823 = new TGraphErrors();
+  TGraphErrors *G_Wdiff_delta_spring_7826 = new TGraphErrors();
+  TGraphErrors *G_emissdiff_delta_spring_7826 = new TGraphErrors();
+  TGraphErrors *G_Wdiff_delta_spring_7827 = new TGraphErrors();
+  TGraphErrors *G_emissdiff_delta_spring_7827 = new TGraphErrors();
+  TGraphErrors *G_Wdiff_delta_spring_7830 = new TGraphErrors();
+  TGraphErrors *G_emissdiff_delta_spring_7830 = new TGraphErrors();
+  
   int i_fall = 0, i_spring = 0;
   for(auto it = j_simc.begin();it!=j_simc.end();++it){
     int RunNumber = std::stod(it.key());
@@ -188,7 +205,8 @@ void elas_compare(){
       };
       //Emiss = Ebeam+Mp - sqrt(P_pion^2 + Mpion^2) - sqrt(P_e+Me^2)
       auto Emiss = [&](PVec4D& p_pion, PVec4D p_electron){
-        return Eb+M_P-sqrt(p_pion.E()*p_pion.E()+M_P2)-sqrt(p_electron.E()*p_electron.E()+M_e*M_e);
+        return Eb+M_P-sqrt(p_pion.E()*p_pion.E())-sqrt(p_electron.E()*p_electron.E());
+        //return Eb+M_P-sqrt(p_pion.E()*p_pion.E()+M_P2)-sqrt(p_electron.E()*p_electron.E()+M_e*M_e);
       };
       auto mmiss = [&](PVec4D p_pion,PVec4D p_electron){
         PVec4D missing_mass = PVec4D{0.0,0.0,Eb,M_e}+PVec4D{0.0,0.0,0.0,M_P}-p_electron-p_pion;
@@ -200,7 +218,7 @@ void elas_compare(){
       std::cout<<"Eprime "<<Eprime<<std::endl;
       //std::cout<<sin(30*3.14/180)<<std::endl;
       auto d_data = d_data_raw
-        .Filter([](double etottracknorm){return etottracknorm > 0.8;},{"H.cal.etottracknorm"})
+        //.Filter([](double etottracknorm){return etottracknorm > 0.8;},{"H.cal.etottracknorm"})
         //.Filter([](double emiss){return emiss<0.1 && emiss>-0.1;},{"P.kin.secondary.emiss"})
         .Define("current",get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return std::abs(current-set_cur)<3;},{"current"})
@@ -223,7 +241,7 @@ void elas_compare(){
         .Define("emiss",Emiss,{"p_proton","p_electron"})
         .Define("mmiss",mmiss,{"p_proton","p_electron"})
         //.Define()   
-        .Filter("H.gtr.dp > -8 && H.gtr.dp < 8")
+        .Filter("H.gtr.dp > -10 && H.gtr.dp < 10")
         .Filter("P.gtr.dp > -10 && P.gtr.dp < 22")
         .Filter("P.gtr.th >-0.045 && P.gtr.th < 0.045")
         .Filter("H.gtr.th >-0.060 && H.gtr.th < 0.060")
@@ -284,9 +302,14 @@ void elas_compare(){
       auto W_xpfp_data = d_data.Histo2D({"","W vs xpfp data",100,-0.1,0.1,100,0.4,1.8},"P.dc.xp_fp","W");
       auto W_xfp_sim = d_sim.Histo2D({"","W vs xfp sim",100,-30,30,100,0.4,1.8},"hsxfp","W","weight_new");
       auto W_xpfp_sim = d_sim.Histo2D({"","W vs xpfp sim",100,-0.1,0.1,100,0.4,1.8},"hsxpfp","W","weight_new");
-      //auto Emiss_data = d_data.Histo1D({"","Emiss data",100,-0.04,0.2},"P.kin.secondary.emiss");
-      auto Emiss_data = d_data.Histo1D({"","Emiss data",100,-0.2,0.4},"emiss");
-      auto Emiss_sim = d_sim.Histo1D({"","Emiss sim",100,-0.2,0.4},"Em","weight_new");
+      auto Emiss_data = d_data.Histo1D({"","Emiss data",100,-0.2,0.2},"P.kin.secondary.emiss");
+      auto Emiss_data_cal = d_data.Histo1D({"","Emiss data",100,-0.2,0.2},"emiss");
+      auto Emiss_sim = d_sim.Histo1D({"","Emiss sim",100,-0.2,0.2},"Em","weight_new");
+      Emiss_sim->Fit("gaus","0","",-0.2,0.2);
+      TF1 *Emiss_sim_fit = Emiss_sim->GetFunction("gaus");
+      double Emiss_sim_mean = Emiss_sim_fit->GetParameter(1);
+      std::cout<<"Emiss sim mean "<<Emiss_sim_mean<<std::endl;
+      auto delta_data = d_data.Histo1D({"","delta data",100,-10,10},"P.gtr.dp");
 
       double sim_counts = Q2_sim->Integral();
       double data_counts = Q2_data->Integral();
@@ -294,6 +317,93 @@ void elas_compare(){
       double sim_counts_1 = *d_sim.Count();
       std::cout<<sim_counts<<" "<<sim_counts_1<<std::endl;
       std::cout<<data_counts<<" "<<data_counts_1<<std::endl;;
+      
+      std::vector<double> Wdiff,emissdiff;
+      auto d_data_1 = d_data.Filter("P.gtr.dp>-10 && P.gtr.dp<-3");
+      std::cout<<"RunNumber "<<RunNumber<<" delta 1 counts "<<*d_data_1.Count()<<std::endl;
+      auto d_data_2 = d_data.Filter("P.gtr.dp>-3 && P.gtr.dp<-1");
+      auto d_data_3 = d_data.Filter("P.gtr.dp>-1 && P.gtr.dp<1");
+      auto d_data_4 = d_data.Filter("P.gtr.dp>1 && P.gtr.dp<3");
+      auto d_data_5 = d_data.Filter("P.gtr.dp>3 && P.gtr.dp<10");
+      std::cout<<"RunNumber "<<RunNumber<<" delta 5 counts "<<*d_data_5.Count()<<std::endl;
+      if(*d_data_1.Count()>5 && *d_data_5.Count()>5){
+      auto W_1 = d_data_1.Histo1D({"","1",100,0.4,1.2},"W");
+      W_1->Fit("gaus","0","",0.4,1.2);
+      TF1 *W_1_fit = W_1->GetFunction("gaus");
+      double W_1_mean = W_1_fit->GetParameter(1);
+      Wdiff.push_back(W_1_mean);
+      auto W_2 = d_data_2.Histo1D({"","2",100,0.4,1.2},"W");
+      W_2->Fit("gaus","0","",0.4,1.2);
+      TF1 *W_2_fit = W_2->GetFunction("gaus");
+      double W_2_mean = W_2_fit->GetParameter(1);
+      Wdiff.push_back(W_2_mean);
+      auto W_3 = d_data_3.Histo1D({"","3",100,0.4,1.2},"W");
+      W_3->Fit("gaus","0","",0.4,1.2);
+      TF1 *W_3_fit = W_3->GetFunction("gaus");
+      double W_3_mean = W_3_fit->GetParameter(1);
+      Wdiff.push_back(W_3_mean);
+      auto W_4 = d_data_4.Histo1D({"","4",100,0.4,1.2},"W");
+      W_4->Fit("gaus","0","",0.4,1.2);
+      TF1 *W_4_fit = W_4->GetFunction("gaus");
+      double W_4_mean = W_4_fit->GetParameter(1);
+      Wdiff.push_back(W_4_mean);
+      auto W_5 = d_data_5.Histo1D({"","5",100,0.4,1.2},"W");
+      W_5->Fit("gaus","0","",0.4,1.2);
+      TF1 *W_5_fit = W_5->GetFunction("gaus");
+      double W_5_mean = W_5_fit->GetParameter(1);
+      Wdiff.push_back(W_5_mean);
+      auto emiss_1 = d_data_1.Histo1D({"","1",10,-0.2,0.2},"emiss");
+      emiss_1->Fit("gaus","0","",-0.2,0.2);
+      TF1 *emiss_1_fit = emiss_1->GetFunction("gaus");
+      double emiss_1_mean = emiss_1_fit->GetParameter(1);
+      emissdiff.push_back(emiss_1_mean);
+      auto emiss_2 = d_data_2.Histo1D({"","2",100,-0.2,0.2},"emiss");
+      emiss_2->Fit("gaus","0","",-0.2,0.2);
+      TF1 *emiss_2_fit = emiss_2->GetFunction("gaus");
+      double emiss_2_mean = emiss_2_fit->GetParameter(1);
+      emissdiff.push_back(emiss_2_mean);
+      auto emiss_3 = d_data_3.Histo1D({"","3",100,-0.2,0.2},"emiss");
+      emiss_3->Fit("gaus","0","",-0.2,0.2);
+      TF1 *emiss_3_fit = emiss_3->GetFunction("gaus");
+      double emiss_3_mean = emiss_3_fit->GetParameter(1);
+      emissdiff.push_back(emiss_3_mean);
+      auto emiss_4 = d_data_4.Histo1D({"","4",100,-0.2,0.2},"emiss");
+      emiss_4->Fit("gaus","0","",-0.2,0.2);
+      TF1 *emiss_4_fit = emiss_4->GetFunction("gaus");
+      double emiss_4_mean = emiss_4_fit->GetParameter(1);
+      emissdiff.push_back(emiss_4_mean);
+      auto emiss_5 = d_data_5.Histo1D({"","5",10,-0.2,0.2},"emiss");
+      emiss_5->Fit("gaus","0","",-0.2,0.2);
+      TF1 *emiss_5_fit = emiss_5->GetFunction("gaus");
+      double emiss_5_mean = emiss_5_fit->GetParameter(1);
+      emissdiff.push_back(emiss_5_mean);
+      TCanvas* c_W_delta = new TCanvas();
+      W_3->DrawCopy("hist");
+      W_1->SetLineColor(2);
+      W_1->DrawCopy("hist same");
+      W_2->SetLineColor(3);
+      W_2->DrawCopy("hist same");
+      W_4->SetLineColor(4);
+      W_4->DrawCopy("hist same");
+      W_5->SetLineColor(5);
+      W_5->DrawCopy("hist same");
+      std::string c_W_delta_name = "results/simc_data/W_delta_"+std::to_string(RunNumber)+".pdf";
+      c_W_delta->BuildLegend();
+      c_W_delta->SaveAs(c_W_delta_name.c_str());
+      TCanvas* c_emiss_delta = new TCanvas();
+      emiss_3->DrawCopy("hist");
+      emiss_1->SetLineColor(2);
+      emiss_1->DrawCopy("hist same");
+      emiss_2->SetLineColor(3);
+      emiss_2->DrawCopy("hist same");
+      emiss_4->SetLineColor(4);
+      emiss_4->DrawCopy("hist same");
+      emiss_5->SetLineColor(5);
+      emiss_5->DrawCopy("hist same");
+      std::string c_emiss_delta_name = "results/simc_data/emiss_delta_"+std::to_string(RunNumber)+".pdf";
+      c_emiss_delta->BuildLegend();
+      c_emiss_delta->SaveAs(c_emiss_delta_name.c_str());
+      }
       if(RunNumber < 7000){
         std::cout<<"RunNumber for graphs"<<RunNumber<<std::endl;
         //double yield_sim = sim_counts/tot_charge;
@@ -313,6 +423,31 @@ void elas_compare(){
         G_W_momentum_fall->SetPoint(i_fall,hms_momentum,W_mean_diff);
         G_W_angle_fall->SetPoint(i_fall,hms_angle*180/M_PI,W_mean_diff);
         G_W_Epdiff_fall->SetPoint(i_fall,Eprimediff_mean,W_mean_diff);
+          int i_fall_delta = 0;
+        for(int i = 0;i<Wdiff.size();i++){
+          double W_diff = Wdiff[i]-W_sim_mean;
+          double emiss_diff = emissdiff[i]-Emiss_sim_mean;
+
+          if(std::abs(W_diff) < 1 && std::abs(emiss_diff)<1){
+            if(RunNumber == 6009){
+              G_Wdiff_delta_fall_6009->SetPoint(i_fall_delta,i+1,W_diff);
+              G_emissdiff_delta_fall_6009->SetPoint(i_fall_delta,i+1,emiss_diff);
+            
+            }
+            else{
+              if(RunNumber == 6010){
+                G_Wdiff_delta_fall_6010->SetPoint(i_fall_delta,i+1,W_diff);
+                G_emissdiff_delta_fall_6010->SetPoint(i_fall_delta,i+1,emiss_diff);
+              }
+              else{
+                G_Wdiff_delta_fall_6012->SetPoint(i_fall_delta,i+1,W_diff);
+                G_emissdiff_delta_fall_6012->SetPoint(i_fall_delta,i+1,emiss_diff);
+              }
+            }
+
+            i_fall_delta++;
+          }
+        }
         i_fall++;
       }
       else{
@@ -333,6 +468,33 @@ void elas_compare(){
         G_W_momentum_spring->SetPoint(i_spring,hms_momentum,W_mean_diff);
         G_W_angle_spring->SetPoint(i_spring,hms_angle*180/M_PI,W_mean_diff);
         G_W_Epdiff_spring->SetPoint(i_spring,Eprimediff_mean,W_mean_diff);
+          int i_spring_delta = 0;
+        for(int i = 0;i<Wdiff.size();i++){
+          double W_diff = Wdiff[i]-W_sim_mean;
+          double emiss_diff = emissdiff[i]-Emiss_sim_mean;
+          if(std::abs(W_diff)<1 && std::abs(emiss_diff)<1){
+            if(RunNumber == 7822 || RunNumber == 7823){
+              G_Wdiff_delta_spring_7822->SetPoint(i_spring_delta,i,W_diff);
+              G_emissdiff_delta_spring_7822->SetPoint(i_spring_delta,i,emiss_diff);
+              G_Wdiff_delta_spring_7823->SetPoint(i_spring_delta,i,W_diff);
+              G_emissdiff_delta_spring_7823->SetPoint(i_spring_delta,i,emiss_diff);
+            
+            }
+            else{
+              if(RunNumber == 7826 || RunNumber == 7827){
+                G_Wdiff_delta_spring_7826->SetPoint(i_spring_delta,i,W_diff);
+                G_emissdiff_delta_spring_7826->SetPoint(i_spring_delta,i,emiss_diff);
+                G_Wdiff_delta_spring_7827->SetPoint(i_spring_delta,i,W_diff);
+                G_emissdiff_delta_spring_7827->SetPoint(i_spring_delta,i,emiss_diff);
+              }
+              else{
+                G_Wdiff_delta_spring_7830->SetPoint(i_spring_delta,i,W_diff);
+                G_emissdiff_delta_spring_7830->SetPoint(i_spring_delta,i,emiss_diff);
+              }
+            }
+            i_spring_delta++;
+          }
+        }
         i_spring++;
 
       }
@@ -405,13 +567,21 @@ void elas_compare(){
       c_W_xpfp_sim->SaveAs(c_W_xpfp_sim_name.c_str());
       
       TCanvas* c_Emiss = new TCanvas();
-      Emiss_data->GetXaxis()->SetTitle("Emiss");
-      Emiss_data->DrawCopy("hist");
+      //Emiss_data->GetXaxis()->SetTitle("Emiss");
+      //Emiss_data->DrawCopy("hist");
+      Emiss_data_cal->GetXaxis()->SetTitle("Emiss");
+      Emiss_data_cal->SetLineColor(kBlue);
+      Emiss_data_cal->DrawCopy("hist");
       Emiss_sim->SetLineColor(kRed);
       Emiss_sim->DrawCopy("hist same");
       std::string c_Emiss_name = "results/simc_data/Emiss_"+std::to_string(RunNumber)+".pdf";
       c_Emiss->SaveAs(c_Emiss_name.c_str());
 
+      TCanvas* c_delta = new TCanvas();
+      delta_data->DrawCopy("hist");
+      std::string c_delta_name = "results/simc_data/Delta_"+std::to_string(RunNumber)+".pdf";
+      c_delta->SaveAs(c_delta_name.c_str());
+      
   }
   TCanvas* c_fall = new TCanvas();
   auto mg_fall = new TMultiGraph(); 
@@ -511,4 +681,77 @@ void elas_compare(){
   mg_W_Epdiff->GetYaxis()->SetTitle("W difference");
   mg_W_Epdiff->Draw("ap");
   c_W_Epdiff->SaveAs("results/simc_data/W_Epdiff.pdf");
+
+  TCanvas* c_Wdiff_delta_fall = new TCanvas();
+  auto mg_Wdiff_delta_fall = new TMultiGraph();
+  G_Wdiff_delta_fall_6009->SetMarkerStyle(8);
+  G_Wdiff_delta_fall_6009->SetMarkerColor(4);
+  G_Wdiff_delta_fall_6010->SetMarkerStyle(8);
+  G_Wdiff_delta_fall_6010->SetMarkerColor(2);
+  G_Wdiff_delta_fall_6012->SetMarkerStyle(8);
+  G_Wdiff_delta_fall_6012->SetMarkerColor(3);
+  mg_Wdiff_delta_fall->Add(G_Wdiff_delta_fall_6009);
+  mg_Wdiff_delta_fall->Add(G_Wdiff_delta_fall_6010);
+  mg_Wdiff_delta_fall->Add(G_Wdiff_delta_fall_6012);
+  mg_Wdiff_delta_fall->GetXaxis()->SetTitle("delta");
+  mg_Wdiff_delta_fall->GetYaxis()->SetTitle("W diff");
+  mg_Wdiff_delta_fall->Draw("ap");
+  c_Wdiff_delta_fall->SaveAs("results/simc_data/Wdiff_delta_fall.pdf");
+  TCanvas* c_emissdiff_delta_fall = new TCanvas();
+  auto mg_emissdiff_delta_fall = new TMultiGraph();
+  G_emissdiff_delta_fall_6009->SetMarkerStyle(8);
+  G_emissdiff_delta_fall_6009->SetMarkerColor(4);
+  G_emissdiff_delta_fall_6010->SetMarkerStyle(8);
+  G_emissdiff_delta_fall_6010->SetMarkerColor(2);
+  G_emissdiff_delta_fall_6012->SetMarkerStyle(8);
+  G_emissdiff_delta_fall_6012->SetMarkerColor(3);
+  mg_emissdiff_delta_fall->Add(G_emissdiff_delta_fall_6009);
+  mg_emissdiff_delta_fall->Add(G_emissdiff_delta_fall_6010);
+  mg_emissdiff_delta_fall->Add(G_emissdiff_delta_fall_6012);
+  mg_emissdiff_delta_fall->GetXaxis()->SetTitle("delta");
+  mg_emissdiff_delta_fall->GetYaxis()->SetTitle("emiss diff");
+  mg_emissdiff_delta_fall->Draw("ap");
+  c_emissdiff_delta_fall->SaveAs("results/simc_data/emissdiff_delta_fall.pdf");
+  TCanvas* c_Wdiff_delta_spring = new TCanvas();
+  auto mg_Wdiff_delta_spring = new TMultiGraph();
+  G_Wdiff_delta_spring_7822->SetMarkerStyle(8);
+  G_Wdiff_delta_spring_7822->SetMarkerColor(4);
+  G_Wdiff_delta_spring_7823->SetMarkerStyle(8);
+  G_Wdiff_delta_spring_7823->SetMarkerColor(4);
+  G_Wdiff_delta_spring_7826->SetMarkerStyle(8);
+  G_Wdiff_delta_spring_7826->SetMarkerColor(2);
+  G_Wdiff_delta_spring_7827->SetMarkerStyle(8);
+  G_Wdiff_delta_spring_7827->SetMarkerColor(2);
+  G_Wdiff_delta_spring_7830->SetMarkerStyle(8);
+  G_Wdiff_delta_spring_7830->SetMarkerColor(3);
+  mg_Wdiff_delta_spring->Add(G_Wdiff_delta_spring_7822);
+  mg_Wdiff_delta_spring->Add(G_Wdiff_delta_spring_7823);
+  mg_Wdiff_delta_spring->Add(G_Wdiff_delta_spring_7826);
+  mg_Wdiff_delta_spring->Add(G_Wdiff_delta_spring_7827);
+  mg_Wdiff_delta_spring->Add(G_Wdiff_delta_spring_7830);
+  mg_Wdiff_delta_spring->GetXaxis()->SetTitle("delta");
+  mg_Wdiff_delta_spring->GetYaxis()->SetTitle("W diff");
+  mg_Wdiff_delta_spring->Draw("ap");
+  c_Wdiff_delta_spring->SaveAs("results/simc_data/Wdiff_delta_spring.pdf");
+  TCanvas* c_emissdiff_delta_spring = new TCanvas();
+  auto mg_emissdiff_delta_spring = new TMultiGraph();
+  G_emissdiff_delta_spring_7822->SetMarkerStyle(8);
+  G_emissdiff_delta_spring_7822->SetMarkerColor(4);
+  G_emissdiff_delta_spring_7823->SetMarkerStyle(8);
+  G_emissdiff_delta_spring_7823->SetMarkerColor(4);
+  G_emissdiff_delta_spring_7826->SetMarkerStyle(8);
+  G_emissdiff_delta_spring_7826->SetMarkerColor(2);
+  G_emissdiff_delta_spring_7827->SetMarkerStyle(8);
+  G_emissdiff_delta_spring_7827->SetMarkerColor(2);
+  G_emissdiff_delta_spring_7830->SetMarkerStyle(8);
+  G_emissdiff_delta_spring_7830->SetMarkerColor(3);
+  mg_emissdiff_delta_spring->Add(G_emissdiff_delta_spring_7822);
+  mg_emissdiff_delta_spring->Add(G_emissdiff_delta_spring_7823);
+  mg_emissdiff_delta_spring->Add(G_emissdiff_delta_spring_7826);
+  mg_emissdiff_delta_spring->Add(G_emissdiff_delta_spring_7827);
+  mg_emissdiff_delta_spring->Add(G_emissdiff_delta_spring_7830);
+  mg_emissdiff_delta_spring->GetXaxis()->SetTitle("delta");
+  mg_emissdiff_delta_spring->GetYaxis()->SetTitle("emiss diff");
+  mg_emissdiff_delta_spring->Draw("ap");
+  c_emissdiff_delta_spring->SaveAs("results/simc_data/emissdiff_delta_spring.pdf");
 }

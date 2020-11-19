@@ -42,6 +42,12 @@ namespace fs = std::experimental::filesystem;
 #include <vector>
 #include <string>
 
+//int readroot_d(){
+// std::string rootfile = std::string("ROOTfiles/coin_replay_production_6291_6291.root");
+// ROOT::RDataFrame d0("T",rootfile);
+// auto d = d0;
+// auto h = d.Histo1D({"","",100,40,50},"CTime.ePiCoinTime_ROC2");
+// //auto h = d.Histo1D({"","",100,-1,2},"H.cal.etottracknorm");
 int readroot_d(int RunNumber = 0){
   while(RunNumber >-1){
     std::cout<<"Enter RunNumber "<<std::endl;
@@ -49,8 +55,10 @@ int readroot_d(int RunNumber = 0){
     std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
- auto h = d.Histo1D({"","",100,-1,1},"H.cal.etottracknorm");
- std::cout<<h->GetMean()<<std::endl;
+ auto h = d.Histo1D({"","",100,0,100},"CTime.ePiCoinTime_ROC2");
+ //auto h = d.Histo1D({"","",100,-1,1},"H.cal.etottracknorm");
+ std::cout<<h->GetBinCenter(h->GetMaximumBin())<<std::endl;
+ //std::cout<<h->GetMean()<<std::endl;
   auto *c = new TCanvas;
  h->DrawCopy();
  c->SaveAs("HMS_cal.pdf");
