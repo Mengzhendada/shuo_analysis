@@ -129,18 +129,10 @@ void make_input_json(){
 
       }//go through pos runs
       j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["charge"] = std::accumulate(charge_neg.begin(),charge_neg.end(),0.0);
-      j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["shmsTE"] = 1;
-      j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["hmsTE"] = 1;
-      j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["coinlive"] = 1;
       j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["normfac"] = 1;
-      j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["factor"] = 1;
 
       j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["charge"] = std::accumulate(charge_pos.begin(),charge_pos.end(),0.0);
-      j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["shmsTE"] = 1;
-      j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["hmsTE"] = 1;
-      j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["coinlive"] = 1;
       j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["normfac"] = 1;
-      j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["factor"] = 1;
     }//if production runs
   }//go through all run groups
   std::ofstream outfile;

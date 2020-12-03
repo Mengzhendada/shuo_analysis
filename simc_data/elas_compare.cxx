@@ -582,6 +582,33 @@ void elas_compare(){
       std::string c_delta_name = "results/simc_data/Delta_"+std::to_string(RunNumber)+".pdf";
       c_delta->SaveAs(c_delta_name.c_str());
       
+      auto Pm_data = d_data.Histo1D({"","",100,-1,5},"P.kin.secondary.pmiss");
+      TCanvas* c_pm = new TCanvas();
+      Pm_data->DrawCopy("hist");
+      std::string c_pm_name = "results/simc_data/pm_"+std::to_string(RunNumber)+".pdf";
+      c_pm->SaveAs(c_pm_name.c_str());
+      
+      auto Em_Pm_data = d_data.Histo2D({"","Em_Pm;Em;Pm",100,0,4,100,0,4},"emiss","P.kin.secondary.pmiss");
+      auto Em_Pm_sim = d_sim.Histo2D({"","Em_Pm;Em;Pm",100,0,4,100,0,4},"Em","Pm");
+      TCanvas* c_radia = new TCanvas();
+      c_radia->Divide(2,1);
+      c_radia->cd(1);
+      TVirtualPad* Pad_data = c_radia->cd(1);
+      Pad_data->SetLogz();
+      Em_Pm_data->SetBit(TH1::kNoStats);
+      Em_Pm_data->DrawCopy("LEGO");
+      c_radia->cd(2);
+      TVirtualPad* Pad_sim = c_radia->cd(2);
+      Pad_sim->SetLogz();
+      Em_Pm_sim->SetBit(TH1::kNoStats);
+      Em_Pm_sim->DrawCopy("LEGO");
+      std::string c_radia_name = "results/simc_data/EM_PM_"+std::to_string(RunNumber)+".pdf";
+      c_radia->SaveAs(c_radia_name.c_str());
+      std::string empm_rootfile_name = "results/simc_data/Em_Pm_"+std::to_string(RunNumber)+".root";
+      TFile *EmPm_root = new TFile(empm_rootfile_name.c_str(),"RECREATE");
+      Em_Pm_data->Write();
+      Em_Pm_sim->Write();
+      EmPm_root->Close();
   }
   TCanvas* c_fall = new TCanvas();
   auto mg_fall = new TMultiGraph(); 

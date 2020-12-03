@@ -321,6 +321,13 @@ void skim_check(int RunGroup=0){
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
         ;
+      
+      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,10,100},"current");
+      TCanvas* c_pos_current = new TCanvas("","coin time",2200,1450);
+      h_current_before_pos->DrawCopy("hist");
+      std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.png";
+      c_pos_current->SaveAs(c_pos_current_name.c_str());
+
       auto d_pos_first = d_pos_run
         .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"})
         ;
@@ -349,9 +356,12 @@ void skim_check(int RunGroup=0){
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
         //.Snapshot("T",skim_name.c_str());
+        .Define("pmiss","P.kin.secondary.pmiss")
         ;
-      ROOT::RDF::RSnapshotOptions opts = {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
-      d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass"});
+      ROOT::RDF::RSnapshotOptions opts;
+      //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
+      opts.fMode = "UPDATE";
+      d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","pmiss"});
       //d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass"},"RECREATE");
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_pos_pi.Count();
@@ -521,7 +531,7 @@ void skim_check(int RunGroup=0){
       ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
       auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM4B.scalerCurrent");
       auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
-      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,0,100},"P.BCM4B.scalerCurrent");
+      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,5,100},"P.BCM4B.scalerCurrent");
       double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
 
       auto neg_get_current = [&](unsigned int eventNum){
@@ -542,7 +552,6 @@ void skim_check(int RunGroup=0){
       auto h_hms_cer_before_neg = d_neg_raw.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
       auto h_shms_cal_before_neg = d_neg_raw.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
       auto h_shms_aero_before_neg = d_neg_raw.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
-
       auto d_neg_run = d_neg_raw.Filter("fEvtHdr.fEvtType == 4")
         .Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
         .Filter(goodTrackSHMS)
@@ -556,6 +565,12 @@ void skim_check(int RunGroup=0){
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
         ;
+      auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,10,100},"current");
+      TCanvas* c_neg_current = new TCanvas("","coin time",2200,1450);
+      h_current_before_neg->DrawCopy("hist");
+      std::string c_neg_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_neg.png";
+      c_neg_current->SaveAs(c_neg_current_name.c_str());
+     
       auto d_neg_first = d_neg_run
         .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
         ;
@@ -588,11 +603,14 @@ void skim_check(int RunGroup=0){
         //.Define("InvMass_pions","p_pion_HMS.Dot(p_pion)")
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
+        .Define("pmiss","P.kin.secondary.pmiss")
         ;
       std::string skim_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
       //d_neg_pi.Snapshot("T",skim_name.c_str());
-      ROOT::RDF::RSnapshotOptions opts = {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
-      d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass"});
+      ROOT::RDF::RSnapshotOptions opts;
+      //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
+      opts.fMode = "UPDATE";
+      d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","pmiss"});
       int pion_counts = *d_neg_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_counts;
       auto h_hms_dp_after_neg = d_neg_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
