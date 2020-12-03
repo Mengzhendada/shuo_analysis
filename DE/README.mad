@@ -1,0 +1,12 @@
+This is for detector efficiency. Nov.30,2020
+   The pid directory is for hms detector efficiency which was done long time ago. After that, We have rftime cut,cointime. So in this directory, I want to know both hms and shms detector efficiency/rejection ratio after new cuts. 
+#########steps in pid directory
+   1. In old directory, I have HMS_PID_Rungroup_calcut/cercut.cxx. Run this for each rungroup, I will get numbers for pion_should, pion_did(for several different cut), electron_should, electron_did(for several different cut) saved in results/pid/HMS_cal/cer/cuts_$RunNumber.json. The different cuts is in db2/PID_test.json. 
+   2. After I get all the numbers, I used the plotting script HMS_cuts_compare.cxx to calculate efficiencies and plots them verses different cal/cer cut. 
+###########what I can learn from old directory
+   1. I only need to update the HMS_PID_Rungroup_calcut/cercut.cxx. 
+      1.I will save for different runnumber. 
+      2.apply new cuts(in db2/all_cuts.json), get updated pion_should etc. numbers, save it in json
+     #I will still use same db2/PID_test.json
+     #This version of script is called HMS_DE_calcut/cercut.cxx
+   2. I can use the old plotting script, I only need to change rungroup to runnumbers     #This version of plotting script is HMS_cuts_compare_RunNumber.cxx
