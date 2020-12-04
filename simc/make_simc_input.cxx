@@ -514,7 +514,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_rho<<" doing_delta = 0"<<std::endl;
   ofs_D2_neg_rho<<" doing_rho = 1"<<std::endl;
   ofs_D2_neg_rho<<" doing_semi = "<<exc<<std::endl;
-  ofs_D2_neg_rho<<" doing_hplus = 1"<<std::endl;
+  ofs_D2_neg_rho<<" doing_hplus = 0"<<std::endl;
   ofs_D2_neg_rho<<" doing_decay = 1"<<std::endl;
   ofs_D2_neg_rho<<" ctau = 780.4"<<std::endl;
   ofs_D2_neg_rho<<"end parm experiment\n"<<std::endl;
@@ -631,6 +631,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_rho<<" sigc_kin_min = 0.035"<<std::endl;
   ofs_D2_neg_rho<<" sigc_kin_max = 0.150"<<std::endl;
   ofs_D2_neg_rho<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_neg_rho<<" random_seed = 1236221"<<std::endl;
   
   ofs_D2_neg_rho<<"end parm simulate\n"<<std::endl;
 
@@ -1167,6 +1168,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_rho<<" sigc_kin_min = 0.035"<<std::endl;
   ofs_D2_pos_rho<<" sigc_kin_max = 0.150"<<std::endl;
   ofs_D2_pos_rho<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_pos_rho<<" random_seed = 1236221"<<std::endl;
   
   ofs_D2_pos_rho<<"end parm simulate\n"<<std::endl;
 

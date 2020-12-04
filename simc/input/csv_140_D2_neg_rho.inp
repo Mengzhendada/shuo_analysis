@@ -10,7 +10,7 @@ begin parm experiment
  doing_delta = 0
  doing_rho = 1
  doing_semi = 0
- doing_hplus = 1
+ doing_hplus = 0
  doing_decay = 1
  ctau = 780.4
 end parm experiment
@@ -125,5 +125,6 @@ begin parm simulate
  sigc_kin_min = 0.035
  sigc_kin_max = 0.150
  sigc_kin_ind = 0.550
+ random_seed = 1236221
 end parm simulate
 
