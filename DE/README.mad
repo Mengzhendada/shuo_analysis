@@ -8,5 +8,10 @@ This is for detector efficiency. Nov.30,2020
       1.I will save for different runnumber. 
       2.apply new cuts(in db2/all_cuts.json), get updated pion_should etc. numbers, save it in json
      #I will still use same db2/PID_test.json
-     #This version of script is called HMS_DE_calcut/cercut.cxx
-   2. I can use the old plotting script, I only need to change rungroup to runnumbers     #This version of plotting script is HMS_cuts_compare_RunNumber.cxx
+     #This version of script is called HMS_DE.cxx
+   2. I can use the old plotting script, I only need to change rungroup to runnumbers     #This version of plotting script is HMS_cuts_compare.cxx
+     #This script will only plot DE and ratio for same run, different cuts
+
+   3. select cal cut and cer cut that I wan to use, then plot the efficiency vs different runnumber. Or versus different run momentum,RunGroup
+     #HMS_DE_compare.cxx
+     This script not only draw different graphs verses different x axis variable, it alse prints de infos into runs_info.json

@@ -13,8 +13,11 @@ void try_json(){
   int i = 3;
   //j[std::to_string(i)] = v1[1];
   j[std::to_string(i)]["i"] = v1[1];
-  j[std::to_string(i)][std::to_string(i)] = v1[1];
+  j[std::to_string(i)][std::to_string(i)] = v1[2];
+  j["i"][std::to_string(i)]["i"] = i;
   j[std::to_string(i)]["this"]["that"]["what"] = v1;
-  std::ofstream out("results/test.json");
+  j["this"]["that"] = "i";
+  
+  std::ofstream out("test.json");
   out<<j.dump(4)<<std::endl;
 }
