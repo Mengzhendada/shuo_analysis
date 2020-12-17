@@ -3,7 +3,7 @@ using json = nlohmann::json;
 #include <iostream>
 
 void make_latex(){
-  std::ofstream ofs("simc_compare.tex");
+  std::ofstream ofs("HMS_DE.tex");
   json j_dbase;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -16,7 +16,7 @@ void make_latex(){
     double x = j_dbase[RunGroup_str.c_str()]["x"].get<double>();
     double Q2 = j_dbase[RunGroup_str.c_str()]["Q2"].get<double>();
     double z = j_dbase[RunGroup_str.c_str()]["z"].get<double>();
-    
+    double hms_p = j_dbase[RunGroup_str.c_str()]["hms_p"].get<double>();
     std::vector<int> neg_D2,pos_D2;
     neg_D2 = j_dbase[RunGroup_str.c_str()]["neg"]["D2"].get<std::vector<int>>();
     pos_D2 = j_dbase[RunGroup_str.c_str()]["pos"]["D2"].get<std::vector<int>>();
@@ -24,43 +24,26 @@ void make_latex(){
       for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
         int RunNumber = *it;
 
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<","<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/simc/emiss_"<<RunGroup_str<<".pdf}"<<std::endl;
+      ofs<<"\\begin{frame}{"<<RunGroup_str<<", hms momentum "<<hms_p<<"}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/HMS_cal_"<<RunNumber<<".pdf}"<<std::endl;
       ofs<<"\\\\ x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
       ofs<<"\\end{frame}"<<std::endl;
       
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<",missmass}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/simc/missmass_"<<RunGroup_str<<".pdf}"<<std::endl;
+      ofs<<"\\begin{frame}{"<<RunGroup_str<<", hms momentum "<<hms_p<<"}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/cal_DE_"<<RunNumber<<".pdf}"<<std::endl;
       ofs<<"\\\\x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
       ofs<<"\\end{frame}"<<std::endl;
       
+      ofs<<"\\begin{frame}{"<<RunGroup_str<<", hms momentum "<<hms_p<<"}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/HMS_cer_"<<RunNumber<<".pdf}"<<std::endl;
+      ofs<<"\\\\ x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
+      ofs<<"\\end{frame}"<<std::endl;
+      
+      ofs<<"\\begin{frame}{"<<RunGroup_str<<", hms momentum "<<hms_p<<"}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/cer_DE_"<<RunNumber<<".pdf}"<<std::endl;
+      ofs<<"\\\\x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
+      ofs<<"\\end{frame}"<<std::endl;
       }      
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<",xbj}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/simc/xbj_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\\\x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<",Q2}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/simc/Q2_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\\\x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-      
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<",z}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/simc/z_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\\\x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-      
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<",W}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/simc/W_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\\\x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-      
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<",Wp}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/simc/Wp_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\\\x = "<<x<<",Q2 = "<<Q2<<",z = "<<z<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-      //ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<",Wp}"<<std::endl;
-      //ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/simc/Wp_"<<RunGroup_str<<".pdf}"<<std::endl;
-      //ofs<<"\\end{frame}"<<std::endl;
     
     }
     else{  
