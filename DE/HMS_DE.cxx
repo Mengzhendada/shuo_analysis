@@ -262,9 +262,9 @@ void HMS_DE(int RunGroup=0){
       auto h_hms_dp_before_pos = d_pos_raw.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_before_pos = d_pos_raw.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_before_pos = d_pos_raw.Histo1D({"","HMS cal",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_before_pos = d_pos_raw.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_before_pos = d_pos_raw.Histo1D({"","HMS cer",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_before_pos = d_pos_raw.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_before_pos = d_pos_raw.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_before_pos = d_pos_raw.Histo1D({"","SHMS aero",200,0,50},"P.aero.npeSum");
       auto d_pos_run = d_pos_raw.Filter("fEvtHdr.fEvtType == 4")
         //.Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
         .Filter(goodTrackSHMS)
@@ -352,16 +352,16 @@ void HMS_DE(int RunGroup=0){
       auto h_hms_dp_after_pos = d_pos_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_after_pos = d_pos_pi.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_after_pos = d_pos_pi.Histo1D({"","HMS cal",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_after_pos = d_pos_pi.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_after_pos = d_pos_pi.Histo1D({"","HMS cer",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_after_pos = d_pos_pi.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_after_pos = d_pos_pi.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_after_pos = d_pos_pi.Histo1D({"","SHMS aero",200,0,50},"P.aero.npeSum");
       
       auto h_hms_dp_bg_pos = d_pos_bg.Histo1D({"","HMS dp bg",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_bg_pos = d_pos_bg.Histo1D({"","SHMS dp bg",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_bg_pos = d_pos_bg.Histo1D({"","HMS cal bg",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_bg_pos = d_pos_bg.Histo1D({"","HMS cer bg",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_bg_pos = d_pos_bg.Histo1D({"","HMS cer bg",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_bg_pos = d_pos_bg.Histo1D({"","SHMS cal bg",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_bg_pos = d_pos_bg.Histo1D({"","SHMS aero bg",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_bg_pos = d_pos_bg.Histo1D({"","SHMS aero bg",200,0,50},"P.aero.npeSum");
     
       
       //for cal cuts
@@ -391,10 +391,10 @@ void HMS_DE(int RunGroup=0){
 
       //statistics for DE efficiency
       json jout;
-      auto h_cal_pos_nocercut = d_pos_pi.Histo1D({"","pos,cal,nocercut",100,0.001,2},"H.cal.etottracknorm");
-      auto h_cer_pos_nocalcut = d_pos_pi.Histo1D({"","pos,cer,nocalcut",100,0,20},"H.cer.npeSum");
-      auto h_cal_pos_nocercut_bg = d_pos_bg.Histo1D({"","pos,cal,nocercut",100,0.001,2},"H.cal.etottracknorm");
-      auto h_cer_pos_nocalcut_bg = d_pos_bg.Histo1D({"","pos,cer,nocalcut",100,0,20},"H.cer.npeSum");
+      auto h_cal_pos_nocercut = d_pos_pi.Histo1D({"","pos,cal,nocercut;calorimeter;counts",100,0.001,2},"H.cal.etottracknorm");
+      auto h_cer_pos_nocalcut = d_pos_pi.Histo1D({"","pos,cer,nocalcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
+      auto h_cal_pos_nocercut_bg = d_pos_bg.Histo1D({"","pos,cal,nocercut;calorimeter;counts",100,0.001,2},"H.cal.etottracknorm");
+      auto h_cer_pos_nocalcut_bg = d_pos_bg.Histo1D({"","pos,cer,nocalcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
       h_cal_pos_nocercut->Add(h_cal_pos_nocercut_bg.GetPtr(),-1.0/6); 
       h_cer_pos_nocalcut->Add(h_cer_pos_nocalcut_bg.GetPtr(),-1.0/6); 
       auto h_cal_pos_e = d_pos_eall.Histo1D({"","pos,cal,e_cercut",100,0.001,2},"H.cal.etottracknorm");
@@ -418,13 +418,13 @@ void HMS_DE(int RunGroup=0){
       std::vector<double> n_pos_e_cal,n_pos_pi_cal;
       for(int i = 0;i< n_cuts;++i){
         TAxis *axis_pos_e_cal = h_cal_pos_e->GetXaxis();
-        int bmin_pos_e_cal = axis_pos_e_cal->FindBin(cal_cut_low[i]);
+        int bmin_pos_e_cal = axis_pos_e_cal->FindBin(cal_cut_low[i])+1;
         int bmax_pos_e_cal = axis_pos_e_cal->GetLast();
         double n_pos_e_cercut_cal = (double)h_cal_pos_e->Integral(bmin_pos_e_cal,bmax_pos_e_cal);
         n_pos_e_cal.push_back(n_pos_e_cercut_cal);
          
         TAxis *axis_pos_pi_cal = h_cal_pos_pi->GetXaxis();
-        int bmin_pos_pi_cal = axis_pos_pi_cal->FindBin(cal_cut_low[i]);
+        int bmin_pos_pi_cal = axis_pos_pi_cal->FindBin(cal_cut_low[i])+1;
         int bmax_pos_pi_cal = axis_pos_pi_cal->GetLast();
         double n_pos_pi_cercut_cal = (double)h_cal_pos_pi->Integral(bmin_pos_pi_cal,bmax_pos_pi_cal);
         n_pos_pi_cal.push_back(n_pos_pi_cercut_cal);
@@ -479,8 +479,8 @@ void HMS_DE(int RunGroup=0){
       auto d_pos_eall_calcut_bg  = d_pos_bg
         .Filter(pos_cer_e_calcut)
         ;
-      auto h_cer_pos_e = d_pos_eall_calcut.Histo1D({"","pos,cer,e_calcut",100,0,20},"H.cer.npeSum");
-      auto h_cer_pos_e_bg = d_pos_eall_calcut_bg.Histo1D({"","pos,cer,e_calcut",100,0,20},"H.cer.npeSum");
+      auto h_cer_pos_e = d_pos_eall_calcut.Histo1D({"","pos,cer,e_calcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
+      auto h_cer_pos_e_bg = d_pos_eall_calcut_bg.Histo1D({"","pos,cer,e_calcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
       h_cer_pos_e->Add(h_cer_pos_e_bg.GetPtr(),-1.0/6);
       auto d_pos_piall_calcut = d_pos_pi
         .Filter(pos_cer_pi_calcut)
@@ -488,8 +488,8 @@ void HMS_DE(int RunGroup=0){
       auto d_pos_piall_calcut_bg = d_pos_bg
         .Filter(pos_cer_pi_calcut)
         ;
-      auto h_cer_pos_pi = d_pos_piall_calcut.Histo1D({"","pos,cer,pi_calcut",100,0,20},"H.cer.npeSum");
-      auto h_cer_pos_pi_bg = d_pos_piall_calcut_bg.Histo1D({"","pos,cer,pi_calcut",100,0,20},"H.cer.npeSum");
+      auto h_cer_pos_pi = d_pos_piall_calcut.Histo1D({"","pos,cer,pi_calcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
+      auto h_cer_pos_pi_bg = d_pos_piall_calcut_bg.Histo1D({"","pos,cer,pi_calcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
       h_cer_pos_pi->Add(h_cer_pos_pi_bg.GetPtr(),-1.0/6);
       
 
@@ -504,13 +504,13 @@ void HMS_DE(int RunGroup=0){
       std::vector<double> n_pos_e_cer,n_pos_pi_cer;
       for(int i = 0;i< cer_cuts.size();++i){
         TAxis *axis_pos_e_cer = h_cer_pos_e->GetXaxis();
-        int bmin_pos_e_cer = axis_pos_e_cer->FindBin(cer_cuts[i]);
+        int bmin_pos_e_cer = axis_pos_e_cer->FindBin(cer_cuts[i])+1;
         int bmax_pos_e_cer = axis_pos_e_cer->GetLast();
         double n_pos_e_calcut_cer = (double)h_cer_pos_e->Integral(bmin_pos_e_cer,bmax_pos_e_cer);
         n_pos_e_cer.push_back(n_pos_e_calcut_cer);
 
         TAxis *axis_pos_pi_cer = h_cer_pos_pi->GetXaxis();
-        int bmin_pos_pi_cer = axis_pos_pi_cer->FindBin(cer_cuts[i]);
+        int bmin_pos_pi_cer = axis_pos_pi_cer->FindBin(cer_cuts[i])+1;
         int bmax_pos_pi_cer = axis_pos_pi_cer->GetLast();
         double n_pos_pi_calcut_cer = (double)h_cer_pos_pi->Integral(bmin_pos_pi_cer,bmax_pos_pi_cer);
         n_pos_pi_cer.push_back(n_pos_pi_calcut_cer);
@@ -721,9 +721,9 @@ void HMS_DE(int RunGroup=0){
       auto h_hms_dp_before_neg = d_neg_raw.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_before_neg = d_neg_raw.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_before_neg = d_neg_raw.Histo1D({"","HMS cal",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_before_neg = d_neg_raw.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_before_neg = d_neg_raw.Histo1D({"","HMS cer",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_before_neg = d_neg_raw.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_before_neg = d_neg_raw.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_before_neg = d_neg_raw.Histo1D({"","SHMS aero",200,0,50},"P.aero.npeSum");
       auto d_neg_run = d_neg_raw.Filter("fEvtHdr.fEvtType == 4")
         //.Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
         .Filter(goodTrackSHMS)
@@ -811,16 +811,16 @@ void HMS_DE(int RunGroup=0){
       auto h_hms_dp_after_neg = d_neg_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_after_neg = d_neg_pi.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_after_neg = d_neg_pi.Histo1D({"","HMS cal",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_after_neg = d_neg_pi.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_after_neg = d_neg_pi.Histo1D({"","HMS cer",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_after_neg = d_neg_pi.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_after_neg = d_neg_pi.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_after_neg = d_neg_pi.Histo1D({"","SHMS aero",200,0,50},"P.aero.npeSum");
 
       auto h_hms_dp_bg_neg = d_neg_bg.Histo1D({"","HMS dp bg",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_bg_neg = d_neg_bg.Histo1D({"","SHMS dp bg",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_bg_neg = d_neg_bg.Histo1D({"","HMS cal bg",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_bg_neg = d_neg_bg.Histo1D({"","HMS cer bg",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_bg_neg = d_neg_bg.Histo1D({"","HMS cer bg",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_bg_neg = d_neg_bg.Histo1D({"","SHMS cal bg",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_bg_neg = d_neg_bg.Histo1D({"","SHMS aero bg",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_bg_neg = d_neg_bg.Histo1D({"","SHMS aero bg",200,0,50},"P.aero.npeSum");
 
       //for cal cuts
       int neg_cal_e_cercut_n = j_DE["HMS"]["cer_e"].get<int>();
@@ -849,10 +849,10 @@ void HMS_DE(int RunGroup=0){
 
       //statistics for DE efficiency
       json jout;
-      auto h_cal_neg_nocercut = d_neg_pi.Histo1D({"","neg,cal,nocercut",100,0.001,2},"H.cal.etottracknorm");
-      auto h_cer_neg_nocalcut = d_neg_pi.Histo1D({"","neg,cer,nocalcut",100,0,20},"H.cer.npeSum");
-      auto h_cal_neg_nocercut_bg = d_neg_bg.Histo1D({"","neg,cal,nocercut",100,0.001,2},"H.cal.etottracknorm");
-      auto h_cer_neg_nocalcut_bg = d_neg_bg.Histo1D({"","neg,cer,nocalcut",100,0,20},"H.cer.npeSum");
+      auto h_cal_neg_nocercut = d_neg_pi.Histo1D({"","neg,cal,nocercut;calorimeter;counts",100,0.001,2},"H.cal.etottracknorm");
+      auto h_cer_neg_nocalcut = d_neg_pi.Histo1D({"","neg,cer,nocalcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
+      auto h_cal_neg_nocercut_bg = d_neg_bg.Histo1D({"","neg,cal,nocercut;calorimeter;counts",100,0.001,2},"H.cal.etottracknorm");
+      auto h_cer_neg_nocalcut_bg = d_neg_bg.Histo1D({"","neg,cer,nocalcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
       h_cal_neg_nocercut->Add(h_cal_neg_nocercut_bg.GetPtr(),-1/6); 
       h_cer_neg_nocalcut->Add(h_cer_neg_nocalcut_bg.GetPtr(),-1/6); 
       auto h_cal_neg_e = d_neg_eall.Histo1D({"","neg,cal,e_cercut",100,0.001,2},"H.cal.etottracknorm");
@@ -876,13 +876,13 @@ void HMS_DE(int RunGroup=0){
       std::vector<double> n_neg_e_cal,n_neg_pi_cal;
       for(int i = 0;i< n_cuts;++i){
         TAxis *axis_neg_e_cal = h_cal_neg_e->GetXaxis();
-        int bmin_neg_e_cal = axis_neg_e_cal->FindBin(cal_cut_low[i]);
+        int bmin_neg_e_cal = axis_neg_e_cal->FindBin(cal_cut_low[i])+1;
         int bmax_neg_e_cal = axis_neg_e_cal->GetLast();
         double n_neg_e_cercut_cal = (double)h_cal_neg_e->Integral(bmin_neg_e_cal,bmax_neg_e_cal);
         n_neg_e_cal.push_back(n_neg_e_cercut_cal);
          
         TAxis *axis_neg_pi_cal = h_cal_neg_pi->GetXaxis();
-        int bmin_neg_pi_cal = axis_neg_pi_cal->FindBin(cal_cut_low[i]);
+        int bmin_neg_pi_cal = axis_neg_pi_cal->FindBin(cal_cut_low[i])+1;
         int bmax_neg_pi_cal = axis_neg_pi_cal->GetLast();
         double n_neg_pi_cercut_cal = (double)h_cal_neg_pi->Integral(bmin_neg_pi_cal,bmax_neg_pi_cal);
         n_neg_pi_cal.push_back(n_neg_pi_cercut_cal);
@@ -937,8 +937,8 @@ void HMS_DE(int RunGroup=0){
       auto d_neg_eall_calcut_bg  = d_neg_bg
         .Filter(neg_cer_e_calcut)
         ;
-      auto h_cer_neg_e = d_neg_eall_calcut.Histo1D({"","neg,cer,e_calcut",100,0,20},"H.cer.npeSum");
-      auto h_cer_neg_e_bg = d_neg_eall_calcut_bg.Histo1D({"","neg,cer,e_calcut",100,0,20},"H.cer.npeSum");
+      auto h_cer_neg_e = d_neg_eall_calcut.Histo1D({"","neg,cer,e_calcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
+      auto h_cer_neg_e_bg = d_neg_eall_calcut_bg.Histo1D({"","neg,cer,e_calcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
       h_cer_neg_e->Add(h_cer_neg_e_bg.GetPtr(),-1.0/6);
       auto d_neg_piall_calcut = d_neg_pi
         .Filter(neg_cer_pi_calcut)
@@ -946,8 +946,8 @@ void HMS_DE(int RunGroup=0){
       auto d_neg_piall_calcut_bg = d_neg_bg
         .Filter(neg_cer_pi_calcut)
         ;
-      auto h_cer_neg_pi = d_neg_piall_calcut.Histo1D({"","neg,cer,pi_calcut",100,0,20},"H.cer.npeSum");
-      auto h_cer_neg_pi_bg = d_neg_piall_calcut_bg.Histo1D({"","neg,cer,pi_calcut",100,0,20},"H.cer.npeSum");
+      auto h_cer_neg_pi = d_neg_piall_calcut.Histo1D({"","neg,cer,pi_calcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
+      auto h_cer_neg_pi_bg = d_neg_piall_calcut_bg.Histo1D({"","neg,cer,pi_calcut;NpeSum;counts",200,0,50},"H.cer.npeSum");
       h_cer_neg_pi->Add(h_cer_neg_pi_bg.GetPtr(),-1.0/6);
       
 
@@ -962,13 +962,13 @@ void HMS_DE(int RunGroup=0){
       std::vector<double> n_neg_e_cer,n_neg_pi_cer;
       for(int i = 0;i< cer_cuts.size();++i){
         TAxis *axis_neg_e_cer = h_cer_neg_e->GetXaxis();
-        int bmin_neg_e_cer = axis_neg_e_cer->FindBin(cer_cuts[i]);
+        int bmin_neg_e_cer = axis_neg_e_cer->FindBin(cer_cuts[i])+1;
         int bmax_neg_e_cer = axis_neg_e_cer->GetLast();
         double n_neg_e_calcut_cer = (double)h_cer_neg_e->Integral(bmin_neg_e_cer,bmax_neg_e_cer);
         n_neg_e_cer.push_back(n_neg_e_calcut_cer);
 
         TAxis *axis_neg_pi_cer = h_cer_neg_pi->GetXaxis();
-        int bmin_neg_pi_cer = axis_neg_pi_cer->FindBin(cer_cuts[i]);
+        int bmin_neg_pi_cer = axis_neg_pi_cer->FindBin(cer_cuts[i])+1;
         int bmax_neg_pi_cer = axis_neg_pi_cer->GetLast();
         double n_neg_pi_calcut_cer = (double)h_cer_neg_pi->Integral(bmin_neg_pi_cer,bmax_neg_pi_cer);
         n_neg_pi_cer.push_back(n_neg_pi_calcut_cer);

@@ -212,9 +212,9 @@ void SHMS_DE(int RunGroup=0){
       auto h_hms_dp_before_pos = d_pos_raw.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_before_pos = d_pos_raw.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_before_pos = d_pos_raw.Histo1D({"","HMS cal",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_before_pos = d_pos_raw.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_before_pos = d_pos_raw.Histo1D({"","HMS cer",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_before_pos = d_pos_raw.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_before_pos = d_pos_raw.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_before_pos = d_pos_raw.Histo1D({"","SHMS aero",200,0,50},"P.aero.npeSum");
       auto d_pos_run = d_pos_raw.Filter("fEvtHdr.fEvtType == 4")
         //.Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
         .Filter(goodTrackSHMS)
@@ -305,16 +305,16 @@ void SHMS_DE(int RunGroup=0){
       auto h_hms_dp_after_pos = d_mod_first.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_after_pos = d_mod_first.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_after_pos = d_mod_first.Histo1D({"","HMS cal",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_after_pos = d_mod_first.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_after_pos = d_mod_first.Histo1D({"","HMS cer",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_after_pos = d_mod_first.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_after_pos = d_mod_first.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_after_pos = d_mod_first.Histo1D({"","SHMS aero",200,0,50},"P.aero.npeSum");
 
       auto h_hms_dp_bg_pos = d_pos_bg_norfcut.Histo1D({"","HMS dp bg",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_bg_pos = d_pos_bg_norfcut.Histo1D({"","SHMS dp bg",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_bg_pos = d_pos_bg_norfcut.Histo1D({"","HMS cal bg",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_bg_pos = d_pos_bg_norfcut.Histo1D({"","HMS cer bg",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_bg_pos = d_pos_bg_norfcut.Histo1D({"","HMS cer bg",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_bg_pos = d_pos_bg_norfcut.Histo1D({"","SHMS cal bg",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_bg_pos = d_pos_bg_norfcut.Histo1D({"","SHMS aero bg",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_bg_pos = d_pos_bg_norfcut.Histo1D({"","SHMS aero bg",200,0,50},"P.aero.npeSum");
 
 
       //for cal cuts
@@ -343,24 +343,24 @@ void SHMS_DE(int RunGroup=0){
 
       //statistics for DE efficiency
       json jout;
-      auto h_cal_pos_norfcut = d_mod_first.Histo1D({"","pos,cal,norfcut",100,0.001,2},"P.cal.etottracknorm");
-      auto h_rf_pos_nocalcut = d_mod_first.Histo1D({"","pos,cal,norfcut",100,0,4},"diff_time_mod");
-      auto h_cal_pos_norfcut_bg = d_pos_bg_norfcut.Histo1D({"","pos,cal,norfcut",100,0.001,2},"P.cal.etottracknorm");
-      auto h_rf_pos_nocalcut_bg = d_pos_bg_norfcut.Histo1D({"","pos,cal,norfcut",100,0,4},"diff_time_mod");
+      auto h_cal_pos_norfcut = d_mod_first.Histo1D({"","pos,cal,norfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
+      auto h_rf_pos_nocalcut = d_mod_first.Histo1D({"","pos,cal,norfcut;rftime;counts",100,0,4},"diff_time_mod");
+      auto h_cal_pos_norfcut_bg = d_pos_bg_norfcut.Histo1D({"","pos,cal,norfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
+      auto h_rf_pos_nocalcut_bg = d_pos_bg_norfcut.Histo1D({"","pos,cal,norfcut;rftime,counts",100,0,4},"diff_time_mod");
       h_cal_pos_norfcut->Add(h_cal_pos_norfcut_bg.GetPtr(),-1.0/6); 
       h_rf_pos_nocalcut->Add(h_rf_pos_nocalcut_bg.GetPtr(),-1.0/6); 
-      auto h_cal_pos_pi = d_pos_piall.Histo1D({"","pos,cal,e_rfcut",100,0.001,2},"P.cal.etottracknorm");
-      auto h_cal_pos_pi_bg = d_pos_piall_bg.Histo1D({"","pos,cal,e_rfcut",100,0.001,2},"P.cal.etottracknorm");
+      auto h_cal_pos_pi = d_pos_piall.Histo1D({"","pos,cal,e_rfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
+      auto h_cal_pos_pi_bg = d_pos_piall_bg.Histo1D({"","pos,cal,e_rfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
       h_cal_pos_pi->Add(h_cal_pos_pi_bg.GetPtr(),-1.0/6);
 
-      auto h_aero_pos_norfcut = d_first_foraero.Histo1D({"","pos,aero,norfcut",100,0,15},"P.aero.npeSum");
-      auto h_rf_pos_noaerocut = d_first_foraero.Histo1D({"","pos,rf,norfcut",100,0,4},"diff_time_mod");
-      auto h_aero_pos_norfcut_bg = d_first_foraero_bg.Histo1D({"","pos,aero,norfcut",100,0,15},"P.aero.npeSum");
-      auto h_rf_pos_noaerocut_bg = d_first_foraero_bg.Histo1D({"","pos,rf,norfcut",100,0,4},"diff_time_mod");
+      auto h_aero_pos_norfcut = d_first_foraero.Histo1D({"","pos,aero,norfcut;aeroNpeSum;counts",200,0,50},"P.aero.npeSum");
+      auto h_rf_pos_noaerocut = d_first_foraero.Histo1D({"","pos,rf,norfcut;rftime;counts",100,0,4},"diff_time_mod");
+      auto h_aero_pos_norfcut_bg = d_first_foraero_bg.Histo1D({"","pos,aero,norfcut;aeroNpeSum;counts",200,0,50},"P.aero.npeSum");
+      auto h_rf_pos_noaerocut_bg = d_first_foraero_bg.Histo1D({"","pos,rf,norfcut;rftime;counts",100,0,4},"diff_time_mod");
       h_aero_pos_norfcut->Add(h_aero_pos_norfcut_bg.GetPtr(),-1.0/6); 
       h_rf_pos_noaerocut->Add(h_rf_pos_noaerocut_bg.GetPtr(),-1.0/6); 
-      auto h_aero_pos_pi = d_first_piall.Histo1D({"","pos,aero,pi_rfcut",100,0,15},"P.aero.npeSum");
-      auto h_aero_pos_pi_bg = d_first_piall_bg.Histo1D({"","pos,aero,pi_rfcut",100,0,15},"P.aero.npeSum");
+      auto h_aero_pos_pi = d_first_piall.Histo1D({"","pos,aero,pi_rfcut",200,0,50},"P.aero.npeSum");
+      auto h_aero_pos_pi_bg = d_first_piall_bg.Histo1D({"","pos,aero,pi_rfcut",200,0,50},"P.aero.npeSum");
       h_aero_pos_pi->Add(h_aero_pos_pi_bg.GetPtr(),-1.0/6);
 
       int n_pos_pi_rfcut = h_cal_pos_pi->GetEntries();
@@ -374,14 +374,14 @@ void SHMS_DE(int RunGroup=0){
       std::vector<double> n_pos_pi_cal,n_pos_pi_aero;
       for(int i = 0;i< n_cuts;++i){
         TAxis *axis_pos_pi_cal = h_cal_pos_pi->GetXaxis();
-        int bmin_pos_pi_cal = axis_pos_pi_cal->FindBin(SHMS_low);
-        int bmax_pos_pi_cal = axis_pos_pi_cal->FindBin(cal_cut_low[i]);
+        int bmin_pos_pi_cal = axis_pos_pi_cal->FindBin(SHMS_low)+1;
+        int bmax_pos_pi_cal = axis_pos_pi_cal->FindBin(cal_cut_low[i])-1;
         double n_pos_pi_rfcut_cal = (double)h_cal_pos_pi->Integral(bmin_pos_pi_cal,bmax_pos_pi_cal);
         n_pos_pi_cal.push_back(n_pos_pi_rfcut_cal);
       }
       for(int i = 0;i<aero_cuts.size();++i){
         TAxis *axis_pos_pi_aero = h_aero_pos_pi->GetXaxis();
-        int bmin_pos_pi_aero = axis_pos_pi_aero->FindBin(aero_cuts[i]);
+        int bmin_pos_pi_aero = axis_pos_pi_aero->FindBin(aero_cuts[i])+1;
         int bmax_pos_pi_aero = axis_pos_pi_aero->GetLast();
         double n_pos_pi_rfcut_aero = (double)h_aero_pos_pi->Integral(bmin_pos_pi_aero,bmax_pos_pi_aero);
         n_pos_pi_aero.push_back(n_pos_pi_rfcut_aero);
@@ -615,9 +615,9 @@ void SHMS_DE(int RunGroup=0){
       auto h_hms_dp_before_neg = d_neg_raw.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_before_neg = d_neg_raw.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_before_neg = d_neg_raw.Histo1D({"","HMS cal",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_before_neg = d_neg_raw.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_before_neg = d_neg_raw.Histo1D({"","HMS cer",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_before_neg = d_neg_raw.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_before_neg = d_neg_raw.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_before_neg = d_neg_raw.Histo1D({"","SHMS aero",200,0,50},"P.aero.npeSum");
       auto d_neg_run = d_neg_raw.Filter("fEvtHdr.fEvtType == 4")
         //.Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
         .Filter(goodTrackSHMS)
@@ -709,16 +709,16 @@ void SHMS_DE(int RunGroup=0){
       auto h_hms_dp_after_neg = d_mod_first.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_after_neg = d_mod_first.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_after_neg = d_mod_first.Histo1D({"","HMS cal",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_after_neg = d_mod_first.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_after_neg = d_mod_first.Histo1D({"","HMS cer",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_after_neg = d_mod_first.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_after_neg = d_mod_first.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_after_neg = d_mod_first.Histo1D({"","SHMS aero",200,0,50},"P.aero.npeSum");
 
       auto h_hms_dp_bg_neg = d_neg_bg_norfcut.Histo1D({"","HMS dp bg",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_bg_neg = d_neg_bg_norfcut.Histo1D({"","SHMS dp bg",100,-25,25},"P.gtr.dp"); 
       auto h_hms_cal_bg_neg = d_neg_bg_norfcut.Histo1D({"","HMS cal bg",100,0.001,2},"H.cal.etottracknorm"); 
-      auto h_hms_cer_bg_neg = d_neg_bg_norfcut.Histo1D({"","HMS cer bg",100,0,20},"H.cer.npeSum"); 
+      auto h_hms_cer_bg_neg = d_neg_bg_norfcut.Histo1D({"","HMS cer bg",200,0,50},"H.cer.npeSum"); 
       auto h_shms_cal_bg_neg = d_neg_bg_norfcut.Histo1D({"","SHMS cal bg",100,0.001,2.5},"P.cal.etottracknorm");
-      auto h_shms_aero_bg_neg = d_neg_bg_norfcut.Histo1D({"","SHMS aero bg",100,0,15},"P.aero.npeSum");
+      auto h_shms_aero_bg_neg = d_neg_bg_norfcut.Histo1D({"","SHMS aero bg",200,0,50},"P.aero.npeSum");
 
 
       //for cal cuts
@@ -748,24 +748,24 @@ void SHMS_DE(int RunGroup=0){
 
       //statistics for DE efficiency
       json jout;
-      auto h_cal_neg_norfcut = d_mod_first.Histo1D({"","neg,cal,norfcut",100,0.001,2},"P.cal.etottracknorm");
-      auto h_rf_neg_nocalcut = d_mod_first.Histo1D({"","neg,rftime,norfcut",100,0,4},"diff_time_mod");
-      auto h_cal_neg_norfcut_bg = d_neg_bg_norfcut.Histo1D({"","neg,cal,norfcut",100,0.001,2},"P.cal.etottracknorm");
-      auto h_rf_neg_nocalcut_bg = d_neg_bg_norfcut.Histo1D({"","neg,cal,norfcut",100,0,4},"diff_time_mod");
+      auto h_cal_neg_norfcut = d_mod_first.Histo1D({"","neg,cal,norfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
+      auto h_rf_neg_nocalcut = d_mod_first.Histo1D({"","neg,rftime,norfcut;rftime;counts",100,0,4},"diff_time_mod");
+      auto h_cal_neg_norfcut_bg = d_neg_bg_norfcut.Histo1D({"","neg,cal,norfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
+      auto h_rf_neg_nocalcut_bg = d_neg_bg_norfcut.Histo1D({"","neg,cal,norfcut;rftime;counts",100,0,4},"diff_time_mod");
       h_cal_neg_norfcut->Add(h_cal_neg_norfcut_bg.GetPtr(),-1.0/6); 
       h_rf_neg_nocalcut->Add(h_rf_neg_nocalcut_bg.GetPtr(),-1.0/6); 
-      auto h_cal_neg_pi = d_neg_piall.Histo1D({"","neg,cal,pi_rfcut",100,0.001,2},"P.cal.etottracknorm");
-      auto h_cal_neg_pi_bg = d_neg_piall_bg.Histo1D({"","neg,cal,pi_rfcut",100,0.001,2},"P.cal.etottracknorm");
+      auto h_cal_neg_pi = d_neg_piall.Histo1D({"","neg,cal,pi_rfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
+      auto h_cal_neg_pi_bg = d_neg_piall_bg.Histo1D({"","neg,cal,pi_rfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
       h_cal_neg_pi->Add(h_cal_neg_pi_bg.GetPtr(),-1.0/6);
 
-      auto h_aero_neg_norfcut = d_first_foraero.Histo1D({"","neg,aero,norfcut",100,0,20},"P.aero.npeSum");
-      auto h_rf_neg_noaerocut = d_first_foraero.Histo1D({"","neg,rf,norfcut",100,0,4},"diff_time_mod");
-      auto h_aero_neg_norfcut_bg = d_first_foraero_bg.Histo1D({"","neg,aero,norfcut",100,0,20},"P.aero.npeSum");
-      auto h_rf_neg_noaerocut_bg = d_first_foraero_bg.Histo1D({"","neg,rf,norfcut",100,0,4},"diff_time_mod");
+      auto h_aero_neg_norfcut = d_first_foraero.Histo1D({"","neg,aero,norfcut;aeroNpeSum;counts",200,0,50},"P.aero.npeSum");
+      auto h_rf_neg_noaerocut = d_first_foraero.Histo1D({"","neg,rf,norfcut;rftime;counts",100,0,4},"diff_time_mod");
+      auto h_aero_neg_norfcut_bg = d_first_foraero_bg.Histo1D({"","neg,aero,norfcut;aeroNpeSum;counts",200,0,50},"P.aero.npeSum");
+      auto h_rf_neg_noaerocut_bg = d_first_foraero_bg.Histo1D({"","neg,rf,norfcut;rftime;counts",100,0,4},"diff_time_mod");
       h_aero_neg_norfcut->Add(h_aero_neg_norfcut_bg.GetPtr(),-1.0/6); 
       h_rf_neg_noaerocut->Add(h_rf_neg_noaerocut_bg.GetPtr(),-1.0/6); 
-      auto h_aero_neg_pi = d_first_piall.Histo1D({"","neg,aero,pi_rfcut",100,0,20},"P.aero.npeSum");
-      auto h_aero_neg_pi_bg = d_first_piall_bg.Histo1D({"","neg,aero,pi_rfcut",100,0,20},"P.aero.npeSum");
+      auto h_aero_neg_pi = d_first_piall.Histo1D({"","neg,aero,pi_rfcut",200,0,50},"P.aero.npeSum");
+      auto h_aero_neg_pi_bg = d_first_piall_bg.Histo1D({"","neg,aero,pi_rfcut",200,0,50},"P.aero.npeSum");
       h_aero_neg_pi->Add(h_aero_neg_pi_bg.GetPtr(),-1.0/6);
 
       int n_neg_pi_rfcut = h_cal_neg_pi->GetEntries();
@@ -779,14 +779,14 @@ void SHMS_DE(int RunGroup=0){
       std::vector<double> n_neg_pi_cal,n_neg_pi_aero;
       for(int i = 0;i< n_cuts;++i){
         TAxis *axis_neg_pi_cal = h_cal_neg_pi->GetXaxis();
-        int bmin_neg_pi_cal = axis_neg_pi_cal->FindBin(SHMS_low);
-        int bmax_neg_pi_cal = axis_neg_pi_cal->FindBin(cal_cut_low[i]);
+        int bmin_neg_pi_cal = axis_neg_pi_cal->FindBin(SHMS_low)+1;
+        int bmax_neg_pi_cal = axis_neg_pi_cal->FindBin(cal_cut_low[i])-1;
         double n_neg_pi_rfcut_cal = (double)h_cal_neg_pi->Integral(bmin_neg_pi_cal,bmax_neg_pi_cal);
         n_neg_pi_cal.push_back(n_neg_pi_rfcut_cal);
       }
       for(int i = 0;i<aero_cuts.size();++i){
         TAxis *axis_neg_pi_aero = h_aero_neg_pi->GetXaxis();
-        int bmin_neg_pi_aero = axis_neg_pi_aero->FindBin(aero_cuts[i]);
+        int bmin_neg_pi_aero = axis_neg_pi_aero->FindBin(aero_cuts[i])+1;
         int bmax_neg_pi_aero = axis_neg_pi_aero->GetLast();
         double n_neg_pi_rfcut_aero = (double)h_aero_neg_pi->Integral(bmin_neg_pi_aero,bmax_neg_pi_aero);
         n_neg_pi_aero.push_back(n_neg_pi_rfcut_aero);
