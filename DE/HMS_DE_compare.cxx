@@ -122,8 +122,8 @@ void HMS_DE_compare(){
           g_DE_cer_RunNumber_pos->SetPointError(i_de_pos,0,cer_DE_error);
           j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cal_DE"] = cal_DE;
           j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cer_DE"] = cer_DE;
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cal_DE_error"] = cal_DE_error;
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cer_DE_error"] = cer_DE_error;
+          //j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cal_DE_error"] = cal_DE_error;
+          //j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cer_DE_error"] = cer_DE_error;
           i_de_pos++;
         }
       }//for pos runs

@@ -37,7 +37,7 @@ using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 bool shms_momentum_high = true;
 
-void statistic_runs_D2(int RunGroup=0){
+void statistic_runs_D2_old(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";

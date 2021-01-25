@@ -61,6 +61,11 @@ void HMS_DE(int RunGroup=0){
     std::ifstream ifs("db2/all_cut.json");
     ifs>>j_cuts;
   };
+  json j_runsinfo;
+  {
+    std::ifstream ifs("db2/runs_info.json");
+    ifs>>j_runsinfo;
+  }
   json j_DE;
   {
     std::ifstream ifs("db2/PID_test.json");
@@ -211,23 +216,11 @@ void HMS_DE(int RunGroup=0){
       .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"});
     auto h_coin_pos = d_pos.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
     auto h_coin_poscut_rungroup = d_pos_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
-
+    
     //rftime cut
-    auto h_time_diff_pos = d_pos_first.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
-    auto h_time_diff_poscheck = d_pos_first.Histo1D({"h_rf_time","type4;rf_time",200,-100,100},"fptime_minus_rf");
-    int time_diff_pos_bin_max = h_time_diff_pos->GetMaximumBin();
-    double time_diff_pos_max = h_time_diff_pos->GetBinCenter(time_diff_pos_bin_max);
-    //offset
-    double offset_pos = 401.8-time_diff_pos_max;
-    std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
-    json j_rfcut;
-    {
-      std::ifstream ifs("db2/rftime_cut.json");
-      ifs>>j_rfcut;
-    }
-    double rf_pi_low = j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_low"].get<double>();
+    double rf_pi_low = j_cuts["rf_pi_low"].get<double>();
     std::cout<<rf_pi_low<<std::endl;
-    double rf_pi_high =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_high"].get<double>();
+    double rf_pi_high =j_cuts["rf_pi_high"].get<double>();
     std::cout<<rf_pi_high<<std::endl;
 
     //loop over each pos runs data
@@ -288,6 +281,7 @@ void HMS_DE(int RunGroup=0){
       auto d_pos_first = d_pos_run
         .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"})
         ;
+      double offset_pos = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
       auto d_mod_first = d_pos_first
         .Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
@@ -686,13 +680,11 @@ void HMS_DE(int RunGroup=0){
     ;
     auto h_coin_negcut_rungroup = d_neg_coin.Histo1D({"","coin_time",800,0,100},"CTime.ePiCoinTime_ROC2");
 
-    //rftime cut for neg
-    auto h_time_diff_neg = d_neg_coin.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
-    auto h_time_diff_negcheck = d_neg_coin.Histo1D({"h_rf_time","type4;rf_time",200,-100,100},"fptime_minus_rf");
-    int time_diff_neg_bin_max = h_time_diff_neg->GetMaximumBin();
-    double time_diff_neg_max = h_time_diff_neg->GetBinCenter(time_diff_neg_bin_max);
-    double offset_neg = 401.8-time_diff_neg_max;
-    std::cout<<"offset for neg runs "<<offset_neg<<std::endl;
+    //rftime cut
+    double rf_pi_low = j_cuts["rf_pi_low"].get<double>();
+    std::cout<<rf_pi_low<<std::endl;
+    double rf_pi_high =j_cuts["rf_pi_high"].get<double>();
+    std::cout<<rf_pi_high<<std::endl;
 
     //loop over each neg runs data
     for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
@@ -746,19 +738,11 @@ void HMS_DE(int RunGroup=0){
       auto d_neg_first = d_neg_run
         .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
         ;
+      double offset_neg = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
       auto d_mod_first = d_neg_first.Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
         ;
       auto h_diff_mod_neg = d_mod_first.Histo1D({"mod","mod neg",100,0,4.008},"diff_time_mod");
-      json j_rfcut;
-      {
-        std::ifstream ifs("db2/rftime_cut.json");
-        ifs>>j_rfcut;
-      }
-      double rf_pi_low = j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_low"].get<double>();
-      std::cout<<rf_pi_low<<std::endl;
-      double rf_pi_high =j_rfcut[(std::to_string(RunGroup)).c_str()]["rf_pi_high"].get<double>();
-      std::cout<<rf_pi_high<<std::endl;
       auto d_neg_pi = d_mod_first.Filter(
           [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
         //.Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})

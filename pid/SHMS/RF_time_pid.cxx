@@ -504,24 +504,24 @@ void RF_time_pid(int RunGroup = 0){
       std::string c_2d_2_pos_name ="results/pid/rftime/hgc_vs_shmsp_pos_"+std::to_string(RunGroup)+"_2.pdf";
   c_2d_2_pos->SaveAs(c_2d_2_pos_name.c_str());
  
-  // length: 18.1, te:60.3751, m_proton 0.938
+  // length: 20.1, te:60.3751, m_proton 0.938
   //TF1 *f_proton = new TF1("t_proton","t_proton->t_proton_mod(x)",0.9*SHMS_P,1.22*SHMS_P);
   //auto time_flight(double *x,double *p)
   double offset_pre = 0.83;
   auto t_proton = [offset_pre](double *x,double *p){
     return std::fmod((p[0]*std::sqrt(x[0]*x[0]+p[1]*p[1])*1e9/(299792458*x[0]))-(p[0]*std::sqrt(x[0]*x[0]+p[2]*p[2])/(299792458*x[0]))+offset_pre,4.008);};
   TF1 *f_proton = new TF1("t_proton",t_proton,0.9*SHMS_P,1.22*SHMS_P,3);
-  f_proton->SetParameters(18.1,0.938,0.00051);
+  f_proton->SetParameters(20.1,0.938,0.00051);
   f_proton->SetParNames("track_length","m_proton","m_e");
   auto t_pi = [offset_pre](double *x,double *p){
     return std::fmod((p[0]*std::sqrt(x[0]*x[0]+p[1]*p[1])*1e9/(299792458*x[0]))-(p[0]*std::sqrt(x[0]*x[0]+p[2]*p[2])/(299792458*x[0]))+offset_pre,4.008);};
   TF1 *f_pi = new TF1("t_pi",t_pi,0.9*SHMS_P,1.22*SHMS_P,3);
-  f_pi->SetParameters(18.1,0.139,0.00051);
+  f_pi->SetParameters(20.1,0.139,0.00051);
   f_pi->SetParNames("track_length","m_proton","m_e");
   auto t_K = [offset_pre](double *x,double *p){
     return std::fmod((p[0]*std::sqrt(x[0]*x[0]+p[1]*p[1])*1e9/(299792458*x[0]))-(p[0]*std::sqrt(x[0]*x[0]+p[2]*p[2])/(299792458*x[0]))+offset_pre,4.008);};
   TF1 *f_K = new TF1("t_K",t_K,0.9*SHMS_P,1.22*SHMS_P,3);
-  f_K->SetParameters(18.1,0.493,0.00051);
+  f_K->SetParameters(20.1,0.493,0.00051);
   f_K->SetParNames("track_length","m_K","m_e");
 
   auto h_rf_shmsp_pos = d_mod_first.Histo2D({"","first coin peak;shms_p;diff_time_mod",100,0.9*SHMS_P,1.22*SHMS_P,100,-1,5},"shms_p","diff_time_mod");

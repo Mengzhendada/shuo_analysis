@@ -24,17 +24,17 @@ double period = 4.008;
 
 double time_flight::t_e(double p){
   double m = 0.00051;
-  return (18.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
+  return (20.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
 };
 double time_flight::t_pi(double p){
   double m = 0.139;
-  return (18.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
+  return (20.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
 };
 double time_flight::t_K(double p){
   double m = 0.493;
-  return (18.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
+  return (20.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
 };
 double time_flight::t_proton(double p){
   double m = 0.938;
-  return (18.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
+  return (20.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
 };

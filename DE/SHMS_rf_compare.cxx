@@ -35,21 +35,21 @@ void SHMS_rf_compare(){
 
   json j_rungroup_info;
   TGraphErrors *pos_rf_momentum = new TGraphErrors();
-  pos_rf_momentum->SetTitle("pos,rfcut efficiency;momentum;eff");
+  pos_rf_momentum->SetTitle("Pos. polarity;SHMS Momentum (GeV/c);Pion purity");
   TGraphErrors *neg_rf_momentum = new TGraphErrors();
-  neg_rf_momentum->SetTitle("neg,rfcut efficiency;momentum;eff");
+  neg_rf_momentum->SetTitle("Neg. polarity;SHMS Momentum (GeV/c);Pion purity");
   TGraphErrors *pos_rf_rungroup = new TGraphErrors();
-  pos_rf_rungroup->SetTitle("pos,rfcut efficiency;rungroup;eff");
+  pos_rf_rungroup->SetTitle("Pos. polarity;Rungroup;Pion purity");
   TGraphErrors *neg_rf_rungroup = new TGraphErrors();
-  neg_rf_rungroup->SetTitle("neg,rfcut efficiency;rungroup;eff");
+  neg_rf_rungroup->SetTitle("Neg. polarity;Rungroup;Pion purity");
   TGraphErrors *pos_rfsigma_momentum = new TGraphErrors();
-  pos_rfsigma_momentum->SetTitle("pos,2ndrfcut efficiency;momentum;eff");
+  pos_rfsigma_momentum->SetTitle("Pos. polarity,2ndrfcut;SHMS Momentum (GeV/c);Pion purity");
   TGraphErrors *neg_rfsigma_momentum = new TGraphErrors();
-  neg_rfsigma_momentum->SetTitle("neg,2ndrfcut efficiency;momentum;eff");
+  neg_rfsigma_momentum->SetTitle("Neg. polarity,2ndrfcut;SHMS Momentum (GeV/c);Pion purity");
   TGraphErrors *pos_rfsigma_rungroup = new TGraphErrors();
-  pos_rfsigma_rungroup->SetTitle("pos,2ndrfcut efficiency;rungroup;eff");
+  pos_rfsigma_rungroup->SetTitle("Pos. polarity,2ndrfcut;Rungroup;Pion purity");
   TGraphErrors *neg_rfsigma_rungroup = new TGraphErrors();
-  neg_rfsigma_rungroup->SetTitle("neg,2ndrfcut efficiency;rungroup;eff");
+  neg_rfsigma_rungroup->SetTitle("Neg. polarity,2ndrfcut;Rungroup;Pion purity");
   int i_g = 0;
   for(int i = 10;i<580;i=i+10){
     int RunGroup = i;
@@ -112,34 +112,41 @@ void SHMS_rf_compare(){
     }
   }
   TCanvas *c_rf_momentum = new TCanvas();
-  
+  gStyle->SetOptTitle(0);  
   pos_rf_momentum->SetMarkerStyle(4);
   pos_rf_momentum->SetMarkerColor(kRed);
   pos_rf_momentum->Draw("AP");
   neg_rf_momentum->SetMarkerStyle(4);
   neg_rf_momentum->Draw("P same");
+  c_rf_momentum->BuildLegend(0.8,0.8,0.95,0.95);
   c_rf_momentum->SaveAs("results/pid/SHMS_rf_momentum.pdf");
   TCanvas *c_rf_rungroup = new TCanvas();
+  gStyle->SetOptTitle(0);  
   pos_rf_rungroup->SetMarkerStyle(4);
   pos_rf_rungroup->SetMarkerColor(kRed);
   pos_rf_rungroup->Draw("AP");
   neg_rf_rungroup->SetMarkerStyle(4);
   neg_rf_rungroup->Draw("P same");
+  c_rf_rungroup->BuildLegend(0.8,0.8,0.95,0.95);
   c_rf_rungroup->SaveAs("results/pid/SHMS_rf_rungroup.pdf");
   
   TCanvas *c_rf_momentum_2nd = new TCanvas();
+  gStyle->SetOptTitle(0);  
   
   pos_rfsigma_momentum->SetMarkerStyle(4);
   pos_rfsigma_momentum->SetMarkerColor(kRed);
   pos_rfsigma_momentum->Draw("AP");
   neg_rfsigma_momentum->SetMarkerStyle(4);
   neg_rfsigma_momentum->Draw("P same");
+  c_rf_momentum_2nd->BuildLegend(0.8,0.8,0.95,0.95);
   c_rf_momentum_2nd->SaveAs("results/pid/SHMS_rf_momentum_2nd.pdf");
   TCanvas *c_rf_rungroup_2nd = new TCanvas();
+  gStyle->SetOptTitle(0);  
   pos_rfsigma_rungroup->SetMarkerStyle(4);
   pos_rfsigma_rungroup->SetMarkerColor(kRed);
   pos_rfsigma_rungroup->Draw("AP");
   neg_rfsigma_rungroup->SetMarkerStyle(4);
   neg_rfsigma_rungroup->Draw("P same");
+  c_rf_rungroup_2nd->BuildLegend(0.8,0.8,0.95,0.95);
   c_rf_rungroup_2nd->SaveAs("results/pid/SHMS_rf_rungroup_2nd.pdf");
 }

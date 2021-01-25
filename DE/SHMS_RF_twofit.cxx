@@ -31,21 +31,22 @@ using namespace std;
 #include "TLatex.h"
 double GeV = 1.78266192e-27;
 double c = 299792458;
+double shms_length = 20.1;
 double t_e(double p){
   double m = 0.00051;
-  return (18.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
+  return (shms_length*std::sqrt(p*p+m*m)*1e9)/(c*p);
 }
 double t_pi(double p){
   double m = 0.139;
-  return (18.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
+  return (shms_length*std::sqrt(p*p+m*m)*1e9)/(c*p);
 }
 double t_K(double p){
   double m = 0.493;
-  return (18.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
+  return (shms_length*std::sqrt(p*p+m*m)*1e9)/(c*p);
 }
 double t_proton(double p){
   double m = 0.938;
-  return (18.1*std::sqrt(p*p+m*m)*1e9)/(c*p);
+  return (shms_length*std::sqrt(p*p+m*m)*1e9)/(c*p);
 }
 
 void SHMS_RF_twofit(int RunGroup = 0){
@@ -111,6 +112,12 @@ void SHMS_RF_twofit(int RunGroup = 0){
   std::string Normal_SHMS = "P.gtr.th > "+std::to_string(P_xptar_low)+" && P.gtr.th < "+std::to_string(P_xptar_high)+" && P.gtr.ph > "+std::to_string(P_yptar_low)+" && P.gtr.ph < "+std::to_string(P_yptar_high); 
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
+  
+  json j_runsinfo;
+  {
+    std::ifstream ifs("db2/runs_info.json");
+    ifs>>j_runsinfo;
+  }
 
   double rf_pi_low = j_cuts["rf_pi_low"].get<double>();
   std::cout<<rf_pi_low<<std::endl;
@@ -137,38 +144,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
       files_pos.push_back(rootfile_name);
     }
-    ROOT::RDataFrame d_pos_raw("T",files_pos);
-    auto d_pos = d_pos_raw
-      //.Filter("fEvtHdr.fEvtType == 4")
-      //.Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
-      .Filter(goodTrackSHMS)
-      .Filter(goodTrackHMS)
-      .Filter(piCutSHMS)
-      .Filter(eCutHMS)
-      .Filter(aeroCutSHMS)
-      .Filter(Normal_SHMS)
-      .Filter(Normal_HMS)
-      .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
-      ;
 
-
-    //coin time cut for pos runs
-    auto h_cointime_pos = d_pos.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
-    int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
-    double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
-    auto d_pos_2ndpeak = d_pos.Filter([=](double cointime){return cointime<coin_peak_center_pos-2.004;},{"CTime.ePiCoinTime_ROC2"});
-    auto h_cointime_2nd = d_pos_2ndpeak.Histo1D({"","coin_time",800,40,55},"CTime.ePiCoinTime_ROC2");
-    int coin_peak_2ndbin_pos = h_cointime_2nd->GetMaximumBin();
-    double coin_peak_2nd_pos = h_cointime_2nd->GetBinCenter(coin_peak_2ndbin_pos);
-    //if(coin_peak_2nd_pos<coin_peak_center_pos){coin_peak_center_pos = coin_peak_2nd_pos;}
-    std::cout<<"pos coin time peak "<<coin_peak_center_pos<<std::endl;
-    //cointime cut
-    double cointime_low_pos = coin_peak_center_pos+cointime_lowcut;
-    double cointime_high_pos = coin_peak_center_pos+cointime_highcut;
-    auto d_pos_first = d_pos
-      .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"});
-    auto h_coin_pos = d_pos.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
-    auto h_coin_poscut_rungroup = d_pos_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
 
     TH1D* h_rf_pos_Kall = new TH1D("",";rftime;counts",100,0,4);
     TH1D* h_rf_neg_Kall = new TH1D("",";rftime;counts",100,0,4);
@@ -224,16 +200,24 @@ void SHMS_RF_twofit(int RunGroup = 0){
       std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.png";
       c_pos_current->SaveAs(c_pos_current_name.c_str());
 
+      //coin time cut for pos runs
+      auto h_cointime_pos = d_pos_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
+      int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
+      double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
+      std::cout<<"pos coin time peak "<<coin_peak_center_pos<<std::endl;
+      //cointime cut
+      double cointime_low_pos = coin_peak_center_pos+cointime_lowcut;
+      double cointime_high_pos = coin_peak_center_pos+cointime_highcut;
+      
       auto d_pos_first = d_pos_run
         .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"})
         ;
+      auto h_coin_pos = d_pos_run.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+      auto h_coin_poscut_rungroup = d_pos_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+
       //rftime cut
-      auto h_time_diff_pos = d_pos_first.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
-      auto h_time_diff_poscheck = d_pos_first.Histo1D({"h_rf_time","type4;rf_time",200,-100,100},"fptime_minus_rf");
-      int time_diff_pos_bin_max = h_time_diff_pos->GetMaximumBin();
-      double time_diff_pos_max = h_time_diff_pos->GetBinCenter(time_diff_pos_bin_max);
       //offset
-      double offset_pos = 401.8-time_diff_pos_max;
+      double offset_pos = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
       std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
       auto d_mod_first = d_pos_first
         .Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
@@ -316,14 +300,30 @@ void SHMS_RF_twofit(int RunGroup = 0){
     f2_pos->SetLineColor(kOrange);
     TF1 *all_pos = new TF1("all fit","gaus(0)+gaus(3)",0.5,1+2*time_diff);
     all_pos->SetLineColor(1);
+    f1_pos->SetParameter(1,1);
     f1_pos->FixParameter(1,1);
+    f2_pos->SetParameter(1,1+time_diff);
     f2_pos->FixParameter(1,1+time_diff);
-    h_rf_pos_Kall->Fit(f1_pos,"R");
-    h_rf_pos_Kall->Fit(f2_pos,"R+");
+    h_rf_pos_Kall->Fit(f1_pos,"0R");
+    h_rf_pos_Kall->Fit(f2_pos,"0R+");
     f1_pos->GetParameters(&par_pos[0]);
     f2_pos->GetParameters(&par_pos[3]);
     all_pos->SetParameters(par_pos);
+    all_pos->FixParameter(1,1);
+    all_pos->FixParameter(4,1+time_diff);
     h_rf_pos_Kall->Fit(all_pos,"R+");
+    all_pos->GetParameters(&par_pos[0]);
+    //TF1* pi_pos_Kall = new TF1("pi","gaus",0,4);
+    //TF1* K_pos_Kall = new TF1("K","gaus",0,4);
+    TF1* pi_pos_Kall = new TF1("pi","gaus",0.5,1.5);
+    //TF1* K_pos_Kall = new TF1("K","gaus",1+0.5*time_diff,1+2*time_diff);
+    TF1* K_pos_Kall = new TF1("K","gaus",1,1+2*time_diff);
+    pi_pos_Kall->SetParameters(par_pos[0],par_pos[1],par_pos[2]);
+    K_pos_Kall->SetParameters(par_pos[3],par_pos[4],par_pos[5]);
+    pi_pos_Kall->SetLineColor(kRed);
+    K_pos_Kall->SetLineColor(kOrange);
+    pi_pos_Kall->Draw("same");
+    K_pos_Kall->Draw("same");
     TPaveText* pt_pos = new TPaveText(0.75,0.5,1,0.95,"brNDC");
     pt_pos->AddText(("RunGroup pos K "+std::to_string(RunGroup)).c_str());
     pt_pos->AddText(("shms p "+std::to_string(shms_p)).c_str());
@@ -361,25 +361,39 @@ void SHMS_RF_twofit(int RunGroup = 0){
     f2_pos_K->SetLineColor(kOrange);
     TF1 *all_pos_pi = new TF1("all fit","gaus(0)+gaus(3)",0.5,1+2*time_diff);
     all_pos_pi->SetLineColor(1);
+    f1_pos_pi->SetParameter(1,1);
     f1_pos_pi->FixParameter(1,1);
-    f2_pos_K->FixParameter(1,par_pos[3]);
-    f2_pos_K->FixParameter(2,par_pos[4]);
-    f2_pos_K->FixParameter(3,par_pos[5]);
-    h_rf_pos_piall->Fit(f1_pos_pi,"R");
-    h_rf_pos_piall->Fit(f2_pos_K,"R+");
+    f2_pos_K->SetParameter(1,1+time_diff);
+    f2_pos_K->FixParameter(1,1+time_diff);
+    h_rf_pos_piall->Fit(f1_pos_pi,"0R");
+    h_rf_pos_piall->Fit(f2_pos_K,"0R+");
     f1_pos_pi->GetParameters(&par_pos_pi[0]);
     f2_pos_K->GetParameters(&par_pos_pi[3]);
     all_pos_pi->SetParameters(par_pos_pi);
+    all_pos_pi->FixParameter(1,1);
+    all_pos_pi->FixParameter(4,1+time_diff);
     h_rf_pos_piall->Fit(all_pos_pi,"R+");
+    all_pos_pi->GetParameters(&par_pos_pi[0]);
+    TF1* pi_pos_piall = new TF1("pi","gaus",0.5,1.5);
+    TF1* K_pos_piall = new TF1("K","gaus",1,1+2*time_diff);
+    //TF1* K_pos_piall = new TF1("K","gaus",1+0.5*time_diff,1+2*time_diff);
+    //TF1* pi_pos_piall = new TF1("pi","gaus",0,4);
+    //TF1* K_pos_piall = new TF1("K","gaus",0,4);
+    pi_pos_piall->SetParameters(par_pos_pi[0],par_pos_pi[1],par_pos_pi[2]);
+    K_pos_piall->SetParameters(par_pos_pi[3],par_pos_pi[4],par_pos_pi[5]);
+    pi_pos_piall->SetLineColor(kRed);
+    K_pos_piall->SetLineColor(kOrange);
+    pi_pos_piall->Draw("same");
+    K_pos_piall->Draw("same");
     TLine *l_rf_low_pos = new TLine(rf_pi_low,0,rf_pi_low,1000);
     TLine *l_rf_high_pos = new TLine(rf_pi_high,0,rf_pi_high,1000);
     l_rf_low_pos->Draw("same");
     l_rf_high_pos->Draw("same");
-    double width = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
-    std::cout<<"Bin width "<<width<<std::endl;
-    double pos_pi_N = all_pos_pi->Integral(rf_pi_low,rf_pi_high,width);
-    //double pos_pi_N = f1_pos_pi->Integral(rf_pi_low,rf_pi_high,width);
-    double pos_K_N = f2_pos_K->Integral(rf_pi_low,rf_pi_high,width);
+    double width_pos = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
+    std::cout<<"Bin width "<<width_pos<<std::endl;
+    double pos_pi_N = all_pos_pi->Integral(rf_pi_low,rf_pi_high,width_pos);
+    //double pos_pi_N = f1_pos_pi->Integral(rf_pi_low,rf_pi_high,width_pos);
+    double pos_K_N = K_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
     std::cout<<"Pi number in fitting "<<pos_pi_N<<"K number in fitting "<<pos_K_N<<std::endl;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["rf_cut_eff"] = 1-pos_K_N/pos_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi"] = pos_pi_N;
@@ -411,16 +425,16 @@ void SHMS_RF_twofit(int RunGroup = 0){
     gStyle->SetOptTitle(0);
     gStyle->SetPalette(kBird);
     h_rf_pos_piall->DrawCopy("hist");
-    f1_pos_pi->GetParameters(&par_pos_pi[0]);
-    f2_pos_K->GetParameters(&par_pos_pi[3]);
+    pi_pos_piall->GetParameters(&par_pos_pi[0]);
+    K_pos_piall->GetParameters(&par_pos_pi[3]);
     double sigma_pi_pos = par_pos_pi[2];
     TLine *l_rf_lowsigma_pos = new TLine(1-3*sigma_pi_pos,0,1-3*sigma_pi_pos,1000);
     TLine *l_rf_highsigma_pos = new TLine(1+3*sigma_pi_pos,0,1+3*sigma_pi_pos,1000);
     l_rf_lowsigma_pos->Draw("same");
     l_rf_highsigma_pos->Draw("same");
-    double pos_pi_N_sigma = all_pos_pi->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width);
-    //double pos_pi_N_sigma = f1_pos_pi->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width);
-    double pos_K_N_sigma = f2_pos_K->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width);
+    double pos_pi_N_sigma = all_pos_pi->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width_pos);
+    //double pos_pi_N_sigma = pi_pos_piall->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width_pos);
+    double pos_K_N_sigma = K_pos_piall->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width_pos);
     std::cout<<"Pi number in fitting "<<pos_pi_N_sigma<<"K number in fitting "<<pos_K_N_sigma<<std::endl;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["rf_cut_eff_sigma"] = 1-pos_K_N_sigma/pos_pi_N_sigma;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi_sigma"] = pos_pi_N_sigma;
@@ -443,44 +457,13 @@ void SHMS_RF_twofit(int RunGroup = 0){
     std::string c_pi_pos_2nd_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_pi_2nd.pdf";
     c_pi_pos_2nd->SaveAs(c_pi_pos_2nd_name.c_str());
     
-    //for neg runs, updated version in new script
+    //for neg runs
     for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
       int RunNumber = *it;
       std::cout<<"neg "<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
       files_neg.push_back(rootfile_name);
     }
-
-    //for neg runs
-    ROOT::RDataFrame d_neg_raw("T",files_neg);
-    auto d_neg = d_neg_raw
-      .Filter("fEvtHdr.fEvtType == 4")
-      //  .Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
-      .Filter(goodTrackSHMS)
-      .Filter(goodTrackHMS)
-      .Filter(piCutSHMS)
-      .Filter(eCutHMS)
-      .Filter(aeroCutSHMS)
-      .Filter(Normal_SHMS)
-      .Filter(Normal_HMS)
-      .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
-      ;
-    //coin time cut for neg
-    auto h_cointime_neg = d_neg.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
-    auto h_coin_neg = d_neg.Histo1D({"","coin_time",800,0,100},"CTime.ePiCoinTime_ROC2");
-    int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
-    double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
-    std::cout<<"neg coin time peak "<<coin_peak_center_neg<<std::endl;
-    //cointime cut
-    double cointime_low_neg = coin_peak_center_neg+cointime_lowcut;
-    double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
-    // auto neg_peak = [=](double coin_time){return std::abs(coin_time-coin_peak_center_neg)<2;};
-    auto d_neg_coin = d_neg
-      .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"});
-    //.Filter(neg_peak,{"CTime.ePiCoinTime_ROC2"})
-    ;
-    auto h_coin_negcut_rungroup = d_neg_coin.Histo1D({"","coin_time",800,0,100},"CTime.ePiCoinTime_ROC2");
-
 
     //loop over each neg runs data
     for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
@@ -530,26 +513,31 @@ void SHMS_RF_twofit(int RunGroup = 0){
       std::string c_neg_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_neg.png";
       c_neg_current->SaveAs(c_neg_current_name.c_str());
 
+      //coin time cut for neg runs
+      auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
+      int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
+      double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
+      std::cout<<"neg coin time peak "<<coin_peak_center_neg<<std::endl;
+      //cointime cut
+      double cointime_low_neg = coin_peak_center_neg+cointime_lowcut;
+      double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
+      
       auto d_neg_first = d_neg_run
         .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
         ;
-      //rftime cut for neg
-      auto h_time_diff_neg = d_neg_coin.Histo1D({"h_rf_time","type4;rf_time",200,0,4.008},"fptime_minus_rf");
-      auto h_time_diff_negcheck = d_neg_coin.Histo1D({"h_rf_time","type4;rf_time",200,-100,100},"fptime_minus_rf");
-      int time_diff_neg_bin_max = h_time_diff_neg->GetMaximumBin();
-      double time_diff_neg_max = h_time_diff_neg->GetBinCenter(time_diff_neg_bin_max);
-      double offset_neg = 401.8-time_diff_neg_max;
+      auto h_coin_neg = d_neg_run.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+      auto h_coin_negcut_rungroup = d_neg_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+
+      //rftime cut
+      //offset
+      double offset_neg = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
       std::cout<<"offset for neg runs "<<offset_neg<<std::endl;
       auto d_mod_first = d_neg_first
         .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
-        //.Filter(aeroCutSHMS)
+        //    .Filter(aeroCutSHMS)
         ;
 
-      auto h_diff_mod_neg = d_mod_first.Histo1D({"mod","mod neg",100,0,4.008},"diff_time_mod");
-
-
-      //for coin pion no rf cut, d_neg_first
       std::string bg_cut = " ";  
       //for bg
       int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
@@ -570,13 +558,13 @@ void SHMS_RF_twofit(int RunGroup = 0){
       }
       bg_cut = bg_cut.substr(0,bg_cut.size()-2);
       std::cout<<bg_cut<<std::endl;
-      //for bg no rf cut, to use for shms PID efficiency  
+
       auto d_neg_bg_norfcut = d_neg_run
         .Define("bg_cointime",[](double cointime){return cointime;},{"CTime.ePiCoinTime_ROC2"})
         .Filter(bg_cut)
         .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
-        //.Filter(aeroCutSHMS)
+        //  .Filter(aeroCutSHMS)
         ;
 
 
@@ -610,27 +598,45 @@ void SHMS_RF_twofit(int RunGroup = 0){
       h_rf_neg_K->Add(h_rf_neg_K_bg.GetPtr(),-1.0/6); 
       h_rf_neg_Kall->Add(h_rf_neg_K.GetPtr(),1);
     }
-
+    
     double par_neg[6];
     TCanvas *c_rftime_neg = new TCanvas();
-    //c_rftime_neg->SetGrid();
     gStyle->SetOptTitle(0);
     gStyle->SetPalette(kBird);
+    //c_rftime_neg->SetGrid();
     h_rf_neg_Kall->DrawCopy("hist");
     TF1 *f1_neg = new TF1("pi fit","gaus",0.5,1.5);
     TF1 *f2_neg = new TF1("K fit","gaus",1+0.5*time_diff,1+2*time_diff);
     f1_neg->SetLineColor(kRed);
     f2_neg->SetLineColor(kOrange);
-    TF1 *all_neg = new TF1("all fit","gaus(0)+gaus(3)",0,1+2*time_diff);
+    TF1 *all_neg = new TF1("all fit","gaus(0)+gaus(3)",0.5,1+2*time_diff);
     all_neg->SetLineColor(1);
+    //f1_neg->FixParameter(1,1);
+    //f2_neg->FixParameter(1,1+time_diff);
+    f1_neg->SetParameter(1,1);
     f1_neg->FixParameter(1,1);
+    f2_neg->SetParameter(1,1+time_diff);
     f2_neg->FixParameter(1,1+time_diff);
-    h_rf_neg_Kall->Fit(f1_neg,"R");
-    h_rf_neg_Kall->Fit(f2_neg,"R+");
+    h_rf_neg_Kall->Fit(f1_neg,"0R");
+    h_rf_neg_Kall->Fit(f2_neg,"0R+");
     f1_neg->GetParameters(&par_neg[0]);
     f2_neg->GetParameters(&par_neg[3]);
     all_neg->SetParameters(par_neg);
+    all_neg->FixParameter(1,1);
+    all_neg->FixParameter(4,1+time_diff);
     h_rf_neg_Kall->Fit(all_neg,"R+");
+    all_neg->GetParameters(&par_neg[0]);
+    TF1* pi_neg_Kall = new TF1("pi","gaus",0.5,1.5);
+    //TF1* K_neg_Kall = new TF1("K","gaus",1+0.5*time_diff,1+2*time_diff);
+    TF1* K_neg_Kall = new TF1("K","gaus",1,1+2*time_diff);
+    //TF1* pi_neg_Kall = new TF1("pi","gaus",0,4);
+    //TF1* K_neg_Kall = new TF1("K","gaus",0,4);
+    pi_neg_Kall->SetParameters(par_neg[0],par_neg[1],par_neg[2]);
+    K_neg_Kall->SetParameters(par_neg[3],par_neg[4],par_neg[5]);
+    pi_neg_Kall->SetLineColor(kRed);
+    K_neg_Kall->SetLineColor(kOrange);
+    pi_neg_Kall->Draw("same");
+    K_neg_Kall->Draw("same");
     TPaveText* pt_neg = new TPaveText(0.75,0.5,1,0.95,"brNDC");
     pt_neg->AddText(("RunGroup neg K "+std::to_string(RunGroup)).c_str());
     pt_neg->AddText(("shms p "+std::to_string(shms_p)).c_str());
@@ -643,14 +649,18 @@ void SHMS_RF_twofit(int RunGroup = 0){
     pt_neg->AddText(("p3 = "+std::to_string(par_neg[5])).c_str());
     pt_neg->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
     pt_neg->Draw();
-    std::string f1_neg_string = std::to_string(par_neg[0])+"*exp("+"\\frac{(x-"+std::to_string(par_neg[1])+")^2}{2*"+std::to_string(par_neg[2])+"^2})";
-    std::string f2_neg_string = std::to_string(par_neg[3])+"*exp("+"\\frac{(x-"+std::to_string(par_neg[4])+")^2}{2*"+std::to_string(par_neg[5])+"^2})";
+    //std::string f1_neg_string = std::to_string(par_neg[0])+"e("+"#frac{(x-"+std::to_string(par_neg[1])+")^2}{2("+std::to_string(par_neg[2])+")^2})";
+    //std::string f1_neg_string = "K_{S}... K^{*0}... #frac{2s}{#pi#alpha^{2}} #frac{d#sigma}{dcos#theta} (e^{+}e^{-} #rightarrow f#bar{f} ) = #left| #frac{1}{1 - #Delta#alpha} #right|^{2} (1+cos^{2}#theta)";
+    //std::string f2_neg_string = std::to_string(par_neg[3])+"e("+"#frac{(x-"+std::to_string(par_neg[4])+")^2}{2*"+std::to_string(par_neg[5])+"^2})";
+    //std::cout<<f1_neg_string<<std::endl;
     //TLatex *K_neg_tex;
     //K_neg_tex->DrawLatex(0.75,0.6,f1_neg_string.c_str());
     //K_neg_tex->DrawLatex(0.75,0.5,f2_neg_string.c_str());
     c_rftime_neg->Update();
     std::string c_rftime_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+".pdf";
     c_rftime_neg->SaveAs(c_rftime_neg_name.c_str());
+
+
 
     double par_neg_pi[6];
     TCanvas *c_pi_neg = new TCanvas();
@@ -664,16 +674,31 @@ void SHMS_RF_twofit(int RunGroup = 0){
     f2_neg_K->SetLineColor(kOrange);
     TF1 *all_neg_pi = new TF1("all fit","gaus(0)+gaus(3)",0.5,1+2*time_diff);
     all_neg_pi->SetLineColor(1);
+    f1_neg_pi->SetParameter(1,1);
+    f2_neg_K->SetParameter(1,1+time_diff);
     f1_neg_pi->FixParameter(1,1);
-    f2_neg_K->FixParameter(1,par_neg[3]);
-    f2_neg_K->FixParameter(2,par_neg[4]);
-    f2_neg_K->FixParameter(3,par_neg[5]);
-    h_rf_neg_piall->Fit(f1_neg_pi,"R");
-    h_rf_neg_piall->Fit(f2_neg_K,"R+");
+    f2_neg_K->FixParameter(1,1+time_diff);
+    //f2_neg_K->FixParameter(3,par_neg[5]);
+    h_rf_neg_piall->Fit(f1_neg_pi,"0R");
+    h_rf_neg_piall->Fit(f2_neg_K,"0R+");
     f1_neg_pi->GetParameters(&par_neg_pi[0]);
     f2_neg_K->GetParameters(&par_neg_pi[3]);
     all_neg_pi->SetParameters(par_neg_pi);
+    all_neg_pi->FixParameter(1,1);
+    all_neg_pi->FixParameter(4,1+time_diff);
     h_rf_neg_piall->Fit(all_neg_pi,"R+");
+    all_neg_pi->GetParameters(&par_neg_pi[0]);
+    //TF1* pi_neg_piall = new TF1("pi","gaus",0.5,1.5);
+    //TF1* K_neg_piall = new TF1("K","gaus",1+0.5*time_diff,1+2*time_diff);
+    TF1* K_neg_piall = new TF1("K","gaus",1,1+2*time_diff);
+    TF1* pi_neg_piall = new TF1("pi","gaus",0.5,1.5);
+    //TF1* K_neg_piall = new TF1("K","gaus",0,4);
+    pi_neg_piall->SetParameters(par_neg_pi[0],par_neg_pi[1],par_neg_pi[2]);
+    K_neg_piall->SetParameters(par_neg_pi[3],par_neg_pi[4],par_neg_pi[5]);
+    pi_neg_piall->SetLineColor(kRed);
+    K_neg_piall->SetLineColor(kOrange);
+    pi_neg_piall->Draw("same");
+    K_neg_piall->Draw("same");
     TLine *l_rf_low_neg = new TLine(rf_pi_low,0,rf_pi_low,1000);
     TLine *l_rf_high_neg = new TLine(rf_pi_high,0,rf_pi_high,1000);
     l_rf_low_neg->Draw("same");
@@ -682,7 +707,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
     std::cout<<"Bin width "<<width_neg<<std::endl;
     double neg_pi_N = all_neg_pi->Integral(rf_pi_low,rf_pi_high,width_neg);
     //double neg_pi_N = f1_neg_pi->Integral(rf_pi_low,rf_pi_high,width_neg);
-    double neg_K_N = f2_neg_K->Integral(rf_pi_low,rf_pi_high,width_neg);
+    double neg_K_N = K_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
     std::cout<<"Pi number in fitting "<<neg_pi_N<<"K number in fitting "<<neg_K_N<<std::endl;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["rf_cut_eff"] = 1-neg_K_N/neg_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi"] = neg_pi_N;
@@ -708,21 +733,22 @@ void SHMS_RF_twofit(int RunGroup = 0){
     std::string c_pi_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_pi.pdf";
     c_pi_neg->SaveAs(c_pi_neg_name.c_str());
 
+
     TCanvas *c_pi_neg_2nd = new TCanvas();
     //c_pi_neg_2nd->SetGrid();
     gStyle->SetOptTitle(0);
     gStyle->SetPalette(kBird);
     h_rf_neg_piall->DrawCopy("hist");
-    f1_neg_pi->GetParameters(&par_neg_pi[0]);
-    f2_neg_K->GetParameters(&par_neg_pi[3]);
+    pi_neg_piall->GetParameters(&par_neg_pi[0]);
+    K_neg_piall->GetParameters(&par_neg_pi[3]);
     double sigma_pi_neg = par_neg_pi[2];
     TLine *l_rf_lowsigma_neg = new TLine(1-3*sigma_pi_neg,0,1-3*sigma_pi_neg,1000);
     TLine *l_rf_highsigma_neg = new TLine(1+3*sigma_pi_neg,0,1+3*sigma_pi_neg,1000);
     l_rf_lowsigma_neg->Draw("same");
     l_rf_highsigma_neg->Draw("same");
-    double neg_pi_N_sigma = all_neg_pi->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width);
-    //double neg_pi_N_sigma = f1_neg_pi->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width);
-    double neg_K_N_sigma = f2_neg_K->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width);
+    double neg_pi_N_sigma = all_neg_pi->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
+    //double neg_pi_N_sigma = pi_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
+    double neg_K_N_sigma = K_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
     std::cout<<"Pi number in fitting "<<neg_pi_N_sigma<<"K number in fitting "<<neg_K_N_sigma<<std::endl;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["rf_cut_eff_sigma"] = 1-neg_K_N_sigma/neg_pi_N_sigma;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi_sigma"] = neg_pi_N_sigma;
@@ -739,12 +765,11 @@ void SHMS_RF_twofit(int RunGroup = 0){
     pt_neg_pi_2nd->AddText(("p3 = "+std::to_string(par_neg_pi[5])).c_str());
     pt_neg_pi_2nd->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
     pt_neg_pi_2nd->Draw();
-   // pi_neg_tex->DrawLatex(0.75,0.6,f1_neg_string.c_str());
-   // pi_neg_tex->DrawLatex(0.75,0.5,f2_neg_string.c_str());
+    //pi_neg_tex->DrawLatex(0.75,0.6,f1_neg_string.c_str());
+    //pi_neg_tex->DrawLatex(0.75,0.5,f2_neg_string.c_str());
     c_pi_neg_2nd->Update();
     std::string c_pi_neg_2nd_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_pi_2nd.pdf";
     c_pi_neg_2nd->SaveAs(c_pi_neg_2nd_name.c_str());
-    //end of neg
 
   }//if normal production runs
     std::string of_name = "results/pid/rftime/rf_eff_"+std::to_string(RunGroup)+".json";

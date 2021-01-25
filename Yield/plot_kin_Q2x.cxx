@@ -19,7 +19,8 @@ int plot_kin_Q2x(){
   }
   //int coolcolor[14] = {46,47,40,48,30,49,31,41,32,33,43,44,45};
   int coolcolor[14] = {1,2,3,4,6,7,8,9,30,42,35,28,38,46};
-  TCanvas* c_kin = new TCanvas("","",1900,1000);
+  TCanvas* c_kin_pos = new TCanvas("","CSV",1900,1000);
+  TCanvas* c_kin_neg = new TCanvas("","CSV",1900,1000);
   int i_color = 0;
   for(auto it = j_Q2x.begin();it!=j_Q2x.end();it++){
     double x = std::stod(it.key());
@@ -44,7 +45,7 @@ int plot_kin_Q2x(){
         if(!neg_D2.empty() && !pos_D2.empty()){
           for(auto i_neg = neg_D2.begin();i_neg!=neg_D2.end();i_neg++){
             int RunNumber = *i_neg;
-            std::cout<<RunNumber<<std::endl;
+            std::cout<<"neg"<<RunNumber<<std::endl;
             std::string rootfile_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
             TFile *rootfile = new TFile(rootfile_name.c_str(),"RECTEATE");
             TH2F* h_neg = new TH2F("","",100,0,1,100,0,1);
@@ -62,7 +63,7 @@ int plot_kin_Q2x(){
             }
             else{std::cout<<"No x_Q2 histo for "<<RunNumber<<std::endl;}
           }//loop over neg runs
-          c_kin->cd();
+          c_kin_neg->cd();
           //h_neg_all->SetMarkerStyle(8);
           //h_neg_all->SetMarkerColorAlpha(coolcolor[i_color],0.75);
           //h_neg_all->GetXaxis()->SetRangeUser(0.2,0.8);
@@ -73,12 +74,15 @@ int plot_kin_Q2x(){
           //TGraph *g_neg_all = new TGraph(h_neg_all);
           //g_neg_all->Draw("p same");
           h_neg_all->Draw("box same");
+          
+ 
           i_color++;
         }//if normal production runs
       }//if x Q2 not 0
     }// loop over Q2
   }//loop over x
-  c_kin->BuildLegend(0.8,0.5,1,1);
-  c_kin->SaveAs("results/yield/kin_x_Q2.png");
+  gStyle->SetOptTitle(0);
+  c_kin_neg->BuildLegend(0.75,0.5,1,1);
+  c_kin_neg->SaveAs("results/yield/kin_x_Q2_neg.png");
   return 0;
 }
