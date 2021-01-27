@@ -24,7 +24,10 @@ using namespace std;
 #include "ROOT/RVec.hxx"
 #include "TVector3.h"
 #include "ROOT/RSnapshotOptions.hxx"
-
+#include "TGraphErrors.h"
+#include "TPaveText.h"
+#include "TCanvas.h"
+#include "TStyle.h"
 constexpr const double M_P     = 0.938272;
 constexpr const double M_P2    = M_P * M_P;
 constexpr const double M_pion  = 0.139;
@@ -153,7 +156,7 @@ void SHMS_hgcer(int RunGroup=0){
       std::cout<<rootfile_name<<std::endl;
       auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
       auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
-      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,10,100},"P.BCM4B.scalerCurrent");
+      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM4B.scalerCurrent");
       double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
       std::cout<<"set current "<<pos_setcurrent<<std::endl;
       //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
@@ -213,7 +216,7 @@ void SHMS_hgcer(int RunGroup=0){
       double rf_pi_high =j_cuts["rf_pi_high"].get<double>();
       std::cout<<rf_pi_high<<std::endl;
 
-      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,10,100},"current");
+      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
       TCanvas* c_pos_current = new TCanvas("","coin time",2200,1450);
       h_current_before_pos->DrawCopy("hist");
       std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.pdf";
@@ -282,7 +285,7 @@ void SHMS_hgcer(int RunGroup=0){
         ;
       auto h_coin_pos_bg = d_pos_bg.Histo1D({"","pos bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
-      std::vector<double> HGC_cuts = j_DE["SHMS"]["HGC_cuts"].get<std::vector<double>>();
+      std::vector<int> HGC_cuts = j_DE["SHMS"]["HGC_cuts"].get<std::vector<int>>();
       for(auto it = HGC_cuts.begin();it!=HGC_cuts.end();++it){
         double hgc_cut = *it;
         std::cout<<"HGC is "<<hgc_cut<<std::endl;
@@ -312,7 +315,7 @@ void SHMS_hgcer(int RunGroup=0){
         pt_hgc_eff->AddText(("hgc cut "+std::to_string(hgc_cut)).c_str());
         gStyle->SetOptTitle(0);
         g_hgcer_eff->Draw("ap");
-        std::string c_hgc_eff_name = "results/pid/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut)+".pdf";
+        std::string c_hgc_eff_name = "results/pid/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+".pdf";
         c_hgc_eff->SaveAs(c_hgc_eff_name.c_str());
       }//loop over each hgc cuts
     }//for each pos runs

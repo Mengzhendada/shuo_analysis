@@ -162,7 +162,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
       std::cout<<rootfile_name<<std::endl;
       auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
       auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
-      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,10,100},"P.BCM4B.scalerCurrent");
+      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM4B.scalerCurrent");
       double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
       std::cout<<"set current "<<pos_setcurrent<<std::endl;
       //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
@@ -194,7 +194,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
         .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
         ;
 
-      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,10,100},"current");
+      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
       TCanvas* c_pos_current = new TCanvas("","coin time",2200,1450);
       h_current_before_pos->DrawCopy("hist");
       std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.png";
@@ -398,6 +398,11 @@ void SHMS_RF_twofit(int RunGroup = 0){
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["rf_cut_eff"] = 1-pos_K_N/pos_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi"] = pos_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["K"] = pos_K_N;
+    double pos_pi_N_pifit = f1_pos_pi->Integral(rf_pi_low,rf_pi_high,width_pos);
+    double pos_pi_all_pifit = f1_pos_pi->Integral(0,4,width_pos);
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff"] = pos_pi_N_pifit/pos_pi_all_pifit;
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_N"] = pos_pi_N_pifit ;
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_all"] = pos_pi_all_pifit;
     TPaveText* pt_pos_pi = new TPaveText(0.75,0.5,1,0.95,"brNDC");
     pt_pos_pi->AddText(("RunGroup pos pi "+std::to_string(RunGroup)).c_str());
     pt_pos_pi->AddText(("shms p "+std::to_string(shms_p)).c_str());
@@ -475,7 +480,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
       std::cout<<rootfile_name<<std::endl;
       auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM4B.scalerCurrent");
       auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
-      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,10,100},"P.BCM4B.scalerCurrent");
+      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM4B.scalerCurrent");
       double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
       std::cout<<"set current "<<neg_setcurrent<<std::endl;
       //std::cout<<"event size "<<neg_scaler_event_list->size()<<" current size "<<neg_scaler_current_list->size()<<std::endl;
@@ -507,7 +512,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
         .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
         ;
 
-      auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,10,100},"current");
+      auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,3,100},"current");
       TCanvas* c_neg_current = new TCanvas("","coin time",2200,1450);
       h_current_before_neg->DrawCopy("hist");
       std::string c_neg_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_neg.png";
@@ -712,6 +717,11 @@ void SHMS_RF_twofit(int RunGroup = 0){
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["rf_cut_eff"] = 1-neg_K_N/neg_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi"] = neg_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["K"] = neg_K_N;
+    double neg_pi_N_pifit = f1_neg_pi->Integral(rf_pi_low,rf_pi_high,width_neg);
+    double neg_pi_all_pifit = f1_neg_pi->Integral(0,4,width_neg);
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff"] = neg_pi_N_pifit/neg_pi_all_pifit;
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_N"] = neg_pi_N_pifit ;
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_all"] = neg_pi_all_pifit;
     TPaveText* pt_neg_pi = new TPaveText(0.75,0.5,1,0.95,"brNDC");
     pt_neg_pi->AddText(("RunGroup neg pi "+std::to_string(RunGroup)).c_str());
     pt_neg_pi->AddText(("shms p "+std::to_string(shms_p)).c_str());

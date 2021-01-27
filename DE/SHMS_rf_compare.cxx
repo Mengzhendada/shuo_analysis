@@ -50,6 +50,14 @@ void SHMS_rf_compare(){
   pos_rfsigma_rungroup->SetTitle("Pos. polarity,2ndrfcut;Rungroup;Pion purity");
   TGraphErrors *neg_rfsigma_rungroup = new TGraphErrors();
   neg_rfsigma_rungroup->SetTitle("Neg. polarity,2ndrfcut;Rungroup;Pion purity");
+  TGraphErrors *pos_rf_pieff_momentum = new TGraphErrors();
+  pos_rf_pieff_momentum->SetTitle("Pos. polarity;momentum;Pion efficiency");
+  TGraphErrors *neg_rf_pieff_momentum = new TGraphErrors();
+  neg_rf_pieff_momentum->SetTitle("neg. polarity;momentum;Pion efficiency");
+  TGraphErrors *pos_rf_pieff_RunGroup = new TGraphErrors();
+  pos_rf_pieff_RunGroup->SetTitle("Pos. polarity;RunGroup;Pion efficiency");
+  TGraphErrors *neg_rf_pieff_RunGroup = new TGraphErrors();
+  neg_rf_pieff_RunGroup->SetTitle("neg. polarity;RunGroup;Pion efficiency");
   int i_g = 0;
   for(int i = 10;i<580;i=i+10){
     int RunGroup = i;
@@ -73,6 +81,11 @@ void SHMS_rf_compare(){
         double neg_pi_2nd = j_each[(std::to_string(RunGroup)).c_str()]["neg"]["pi_sigma"].get<double>();
         double neg_K_2nd = j_each[(std::to_string(RunGroup)).c_str()]["neg"]["K_sigma"].get<double>();
 
+        double pos_pi_eff_pi = j_each[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_N"].get<double>();
+        double pos_pi_eff_all = j_each[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_all"].get<double>();
+        double neg_pi_eff_pi = j_each[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_N"].get<double>();
+        double neg_pi_eff_all = j_each[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_all"].get<double>();
+        
         if(pos_pi>100&neg_pi>100){
           double eff_pos = 1-pos_K/pos_pi;
           double eff_pos_error = 1/pos_pi*sqrt(pos_K*(1-eff_pos));
@@ -86,6 +99,11 @@ void SHMS_rf_compare(){
           double eff_neg_2nd = 1-neg_K_2nd/neg_pi_2nd;
           double eff_neg_2nd_error = 1/neg_pi_2nd*sqrt(neg_K_2nd*(1-eff_neg_2nd));
 
+          double pi_eff_pos = pos_pi_eff_pi/pos_pi_eff_all;
+          double pi_eff_pos_error = 1/pos_pi_eff_all*sqrt(pos_pi_eff_pi*(1-pi_eff_pos));
+          double pi_eff_neg = neg_pi_eff_pi/neg_pi_eff_all;
+          double pi_eff_neg_error = 1/neg_pi_eff_all*sqrt(neg_pi_eff_pi*(1-pi_eff_neg));
+          
           pos_rf_momentum->SetPoint(i_g,shms_p,eff_pos);
           pos_rf_momentum->SetPointError(i_g,0,eff_pos_error);
           neg_rf_momentum->SetPoint(i_g,shms_p,eff_neg);
@@ -103,6 +121,16 @@ void SHMS_rf_compare(){
           pos_rfsigma_rungroup->SetPointError(i_g,0,eff_pos_2nd_error);
           neg_rfsigma_rungroup->SetPoint(i_g,RunGroup,eff_neg_2nd);
           neg_rfsigma_rungroup->SetPointError(i_g,0,eff_neg_2nd_error);
+
+          pos_rf_pieff_momentum->SetPoint(i_g,shms_p,pi_eff_pos);
+          pos_rf_pieff_momentum->SetPointError(i_g,0,pi_eff_pos_error);
+          neg_rf_pieff_momentum->SetPoint(i_g,shms_p,pi_eff_neg);
+          neg_rf_pieff_momentum->SetPointError(i_g,0,pi_eff_neg_error);
+          pos_rf_pieff_RunGroup->SetPoint(i_g,RunGroup,pi_eff_pos);
+          pos_rf_pieff_RunGroup->SetPointError(i_g,0,pi_eff_pos_error);
+          neg_rf_pieff_RunGroup->SetPoint(i_g,RunGroup,pi_eff_neg);
+          neg_rf_pieff_RunGroup->SetPointError(i_g,0,pi_eff_neg_error);
+
           i_g++;
         }
         else{
@@ -149,4 +177,24 @@ void SHMS_rf_compare(){
   neg_rfsigma_rungroup->Draw("P same");
   c_rf_rungroup_2nd->BuildLegend(0.8,0.8,0.95,0.95);
   c_rf_rungroup_2nd->SaveAs("results/pid/SHMS_rf_rungroup_2nd.pdf");
+
+  TCanvas *c_rf_pieff_momentum = new TCanvas();
+  gStyle->SetOptTitle(0);
+  pos_rf_pieff_momentum->SetMarkerStyle(4);
+  pos_rf_pieff_momentum->SetMarkerColor(kRed);
+  pos_rf_pieff_momentum->Draw("AP");
+  neg_rf_pieff_momentum->SetMarkerStyle(4);
+  neg_rf_pieff_momentum->Draw("P same");
+  c_rf_pieff_momentum->BuildLegend(0.8,0.8,0.95,0.95);
+  c_rf_pieff_momentum->SaveAs("results/pid/SHMS_rf_momentum_pieff.pdf");
+  TCanvas *c_rf_pieff_RunGroup = new TCanvas();
+  gStyle->SetOptTitle(0);
+  pos_rf_pieff_RunGroup->SetMarkerStyle(4);
+  pos_rf_pieff_RunGroup->SetMarkerColor(kRed);
+  pos_rf_pieff_RunGroup->Draw("AP");
+  neg_rf_pieff_RunGroup->SetMarkerStyle(4);
+  neg_rf_pieff_RunGroup->Draw("P same");
+  c_rf_pieff_RunGroup->BuildLegend(0.8,0.8,0.95,0.95);
+  c_rf_pieff_RunGroup->SaveAs("results/pid/SHMS_rf_RunGroup_pieff.pdf");
+
 }

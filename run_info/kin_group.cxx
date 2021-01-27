@@ -6,30 +6,48 @@ using json = nlohmann::json;
 #include <iostream>
 #include <fstream>
 
-struct run_kin {
-  double Q2; 
-  double x;
-  run_kin(double q2,double bjx):Q2(q2),x(bjx){}
-  bool operator ==(const run_kin& kinobj)const
-  {
-    return kinobj.Q2==this->Q2 && kinobj.x==this->x;
-  }
-  bool operator <(const run_kin& kinobj)const
-  {
-    return (this->Q2<kinobj.Q2)||(this->Q2==kinobj.Q2 && this->x<kinobj.x);
-  }
-}
 
 void kin_group(){
-   json j;
-   {
-     std::ifstream json_input_file("db2/ratio_run_group_updated.json");
-     json_input_file>>j;
-   }
-   run_kin runkin(0,0);
-   std::map<run_kin,vector<int>> mymap;
-   for(json::iterator it = j.begin(); it!=j.end();++it){
-   auto runjs = it.value();
-   runkin.Q2 = runjs[""]
-   }
+  json j;
+  {
+    std::ifstream json_input_file("db2/ratio_run_group_updated.json");
+    json_input_file>>j;
+  }
+  json j_xq2;
+  for(json::iterator it = j.begin(); it!=j.end();++it){
+    auto runjs = it.value();
+    double x = runjs["x"].get<double>();
+    double Q2 = runjs["Q2"].get<double>();
+    std::vector<int> pos_D2 = runjs["pos"]["D2"].get<std::vector<int>>();
+    std::vector<int> neg_D2 = runjs["neg"]["D2"].get<std::vector<int>>();
+    std::vector<int> pos_H2 = runjs["pos"]["H2"].get<std::vector<int>>();
+    std::vector<int> neg_H2 = runjs["neg"]["H2"].get<std::vector<int>>();
+    std::vector<int> pos_Dummy = runjs["pos"]["Dummy"].get<std::vector<int>>();
+    std::vector<int> neg_Dummy = runjs["neg"]["Dummy"].get<std::vector<int>>();
+    for(auto it = pos_D2.begin();it!=pos_D2.end();it++){
+      j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["D2"].push_back(*it);
+    }
+    for(auto it = neg_D2.begin();it!=neg_D2.end();it++){
+      j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["neg"]["D2"].push_back(*it);
+    }
+    for(auto it = pos_H2.begin();it!=pos_H2.end();it++){
+      j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["H2"].push_back(*it);
+    }
+    for(auto it = neg_H2.begin();it!=neg_H2.end();it++){
+      j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["neg"]["H2"].push_back(*it);
+    }
+    for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();it++){
+      j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["Dummy"].push_back(*it);
+    }
+    for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();it++){
+      j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["neg"]["Dummy"].push_back(*it);
+    }
+    //pos_D2_all = j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["D2"].get<std::vector<int>>;
+    //pos_D2_all.push_back(pos_D2);
+    //j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["D2"] = pos_D2_all;
+
+  }
+  std::string ofs_name = "kin_group_xq2.json";
+  std::ofstream ofs(ofs_name.c_str());
+  ofs<<j_xq2.dump(4)<<std::endl;
 }

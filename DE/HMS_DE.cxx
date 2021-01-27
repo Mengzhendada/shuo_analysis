@@ -233,7 +233,7 @@ void HMS_DE(int RunGroup=0){
       std::cout<<rootfile_name<<std::endl;
       auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
       auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
-      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,10,100},"P.BCM4B.scalerCurrent");
+      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM4B.scalerCurrent");
       double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
       std::cout<<"set current "<<pos_setcurrent<<std::endl;
       //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
@@ -272,7 +272,7 @@ void HMS_DE(int RunGroup=0){
         .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
         ;
       
-      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,10,100},"current");
+      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
       TCanvas* c_pos_current = new TCanvas("","coin time",2200,1450);
       h_current_before_pos->DrawCopy("hist");
       std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.png";
@@ -695,7 +695,7 @@ void HMS_DE(int RunGroup=0){
       ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
       auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM4B.scalerCurrent");
       auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
-      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,5,100},"P.BCM4B.scalerCurrent");
+      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM4B.scalerCurrent");
       double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
 
       auto neg_get_current = [&](unsigned int eventNum){
@@ -729,7 +729,7 @@ void HMS_DE(int RunGroup=0){
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
         ;
-      auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,10,100},"current");
+      auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,3,100},"current");
       TCanvas* c_neg_current = new TCanvas("","coin time",2200,1450);
       h_current_before_neg->DrawCopy("hist");
       std::string c_neg_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_neg.png";
