@@ -21,6 +21,9 @@ int plot_kin_Q2x_pos(){
   //int coolcolor[14] = {46,47,40,48,30,49,31,41,32,33,43,44,45};
   int coolcolor[14] = {1,2,3,4,6,7,8,9,30,42,35,28,38,46};
   TCanvas* c_kin_pos = new TCanvas("","CSV",1900,1000);
+  TLegend* legend = new TLegend(0.15,0.5,0.35,0.95);
+  legend->SetHeader("CSV kinematic settings","C");
+  legend->AddEntry((TObject*)0,"  x,   Q2","");
   int i_color = 0;
   for(auto it = j_Q2x.begin();it!=j_Q2x.end();it++){
     double x = std::stod(it.key());
@@ -73,15 +76,15 @@ int plot_kin_Q2x_pos(){
           //g_pos_all->Draw("p same");
           h_pos_all->Draw("box same");
           
- 
+          legend->AddEntry(h_pos_all,x_Q2.c_str(),"f"); 
           i_color++;
         }//if normal production runs
       }//if x Q2 not 0
     }// loop over Q2
   }//loop over x
   gStyle->SetOptTitle(0);
-  
-  c_kin_pos->BuildLegend(0.15,0.5,0.35,0.95);
+  legend->Draw();  
+//  c_kin_pos->BuildLegend(0.15,0.5,0.35,0.95);
   c_kin_pos->SaveAs("results/yield/kin_x_Q2_pos.png");
   return 0;
 }

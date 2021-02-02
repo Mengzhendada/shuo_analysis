@@ -83,9 +83,11 @@ void SHMS_rf_compare(){
 
         double pos_pi_eff_pi = j_each[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_N"].get<double>();
         double pos_pi_eff_all = j_each[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_all"].get<double>();
+        double pos_pi_eff_sigma = j_each[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_sigma"].get<double>();
         double neg_pi_eff_pi = j_each[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_N"].get<double>();
         double neg_pi_eff_all = j_each[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_all"].get<double>();
-        
+        double neg_pi_eff_sigma = j_each[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_sigma"].get<double>();
+         
         if(pos_pi>100&neg_pi>100){
           double eff_pos = 1-pos_K/pos_pi;
           double eff_pos_error = 1/pos_pi*sqrt(pos_K*(1-eff_pos));
@@ -100,8 +102,10 @@ void SHMS_rf_compare(){
           double eff_neg_2nd_error = 1/neg_pi_2nd*sqrt(neg_K_2nd*(1-eff_neg_2nd));
 
           double pi_eff_pos = pos_pi_eff_pi/pos_pi_eff_all;
+          //double pi_eff_pos_error = pos_pi_eff_sigma/sqrt(pos_pi_eff_all);
           double pi_eff_pos_error = 1/pos_pi_eff_all*sqrt(pos_pi_eff_pi*(1-pi_eff_pos));
           double pi_eff_neg = neg_pi_eff_pi/neg_pi_eff_all;
+          //double pi_eff_neg_error = neg_pi_eff_sigma/sqrt(neg_pi_eff_all);
           double pi_eff_neg_error = 1/neg_pi_eff_all*sqrt(neg_pi_eff_pi*(1-pi_eff_neg));
           
           pos_rf_momentum->SetPoint(i_g,shms_p,eff_pos);

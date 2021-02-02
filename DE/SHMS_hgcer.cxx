@@ -313,10 +313,23 @@ void SHMS_hgcer(int RunGroup=0){
         pt_hgc_eff->AddText(("RunNumber "+std::to_string(RunNumber)).c_str());
         pt_hgc_eff->AddText(("shms p "+std::to_string(SHMS_P)).c_str());
         pt_hgc_eff->AddText(("hgc cut "+std::to_string(hgc_cut)).c_str());
+        pt_hgc_eff->Draw();
         gStyle->SetOptTitle(0);
         g_hgcer_eff->Draw("ap");
+        
         std::string c_hgc_eff_name = "results/pid/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+".pdf";
         c_hgc_eff->SaveAs(c_hgc_eff_name.c_str());
+        
+        auto h_hgcer_pi_should_2d = d_pos_pi.Histo2D({"",";yCer;xCer",80,-40,40,80,-40,40},"P.hgcer.yAtCer","P.hgcer.xAtCer");
+        auto h_hgcer_pi_did_2d = d_pos_pi_did.Histo2D({"",";yCer;xCer",80,-40,40,80,-40,40},"P.hgcer.yAtCer","P.hgcer.xAtCer");
+        h_hgcer_pi_did_2d->Divide(h_hgcer_pi_should_2d.GetPtr());
+        TCanvas* c_hgc_eff_2d = new TCanvas();
+        h_hgcer_pi_did_2d->SetBit(TH2::kNoStats);
+        h_hgcer_pi_did_2d->DrawCopy("colz");
+        gStyle->SetOptTitle(0);
+        std::string c_hgc_eff_2d_name = "results/pid/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+"_2d.pdf";
+        c_hgc_eff_2d->SaveAs(c_hgc_eff_2d_name.c_str());
+
       }//loop over each hgc cuts
     }//for each pos runs
 
