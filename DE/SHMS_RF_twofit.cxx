@@ -79,6 +79,8 @@ void SHMS_RF_twofit(int RunGroup = 0){
     ifs>>j_DE;
   }
 
+  std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_cuts"].get<std::vector<double>>();
+
   double H_dp_low = j_cuts["H_dp_low"].get<double>();
   double H_dp_high = j_cuts["H_dp_high"].get<double>();
   double P_dp_low = j_cuts["P_dp_low"].get<double>();
@@ -186,7 +188,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
         .Filter(goodTrackHMS)
         .Filter(piCutSHMS)
         .Filter(eCutHMS)
-        .Filter(aeroCutSHMS)
+        //.Filter(aeroCutSHMS)
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
@@ -256,6 +258,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
 
 
       auto d_pos_piall  = d_mod_first
+        .Filter(aeroCutSHMS)
         ;
       auto d_pos_Kall = d_mod_first
         //.Filter("P.aero.npeSum<10")
@@ -263,6 +266,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
         //.Filter(piCutSHMS)
         ;
       auto d_pos_piall_bg = d_pos_bg_norfcut
+        .Filter(aeroCutSHMS)
         ;
       auto d_pos_Kall_bg = d_pos_bg_norfcut
         //.Filter("P.aero.npeSum<10")
@@ -284,6 +288,8 @@ void SHMS_RF_twofit(int RunGroup = 0){
       auto h_rf_pos_K_bg = d_pos_Kall_bg.Histo1D({"","pos,cal,norfcut",100,0,4},"diff_time_mod");
       h_rf_pos_K->Add(h_rf_pos_K_bg.GetPtr(),-1.0/6); 
       h_rf_pos_Kall->Add(h_rf_pos_K.GetPtr(),1);
+
+
     }
     double time_diff = t_K(shms_p) - t_pi(shms_p);
     double time_diff_proton = t_proton(shms_p) - t_pi(shms_p);
@@ -424,6 +430,20 @@ void SHMS_RF_twofit(int RunGroup = 0){
     c_pi_pos->Update();
     std::string c_pi_pos_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_pi.pdf";
     c_pi_pos->SaveAs(c_pi_pos_name.c_str());
+
+    std::vector<double> n_pos_pi_rf,n_pos_K_rf;
+    for(int i = 0;i<rf_cuts.size();++i){
+      double rf_cut_percent = rf_cuts[i];
+      double rf_pi_low = 0.5;
+      double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+      double pos_pi_N = all_pos_pi->Integral(rf_pi_low,rf_pi_high,width_pos);
+      n_pos_pi_rf.push_back(pos_pi_N);
+      double pos_K_N = K_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
+      n_pos_K_rf.push_back(pos_K_N); 
+    }
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["rf_cuts"] = rf_cuts ;
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_Ns"] = n_pos_pi_rf ;
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["Ks"] = n_pos_K_rf;
 
 
     TCanvas *c_pi_pos_2nd = new TCanvas();
@@ -575,6 +595,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
 
 
       auto d_neg_piall  = d_mod_first
+        .Filter(aeroCutSHMS)
         ;
       auto d_neg_Kall = d_mod_first
         //.Filter("P.aero.npeSum<10")
@@ -582,6 +603,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
         //.Filter(piCutSHMS)
         ;
       auto d_neg_piall_bg = d_neg_bg_norfcut
+        .Filter(aeroCutSHMS)
         ;
       auto d_neg_Kall_bg = d_neg_bg_norfcut
         //.Filter("P.aero.npeSum<10")
@@ -604,7 +626,9 @@ void SHMS_RF_twofit(int RunGroup = 0){
       h_rf_neg_K->Add(h_rf_neg_K_bg.GetPtr(),-1.0/6); 
       h_rf_neg_Kall->Add(h_rf_neg_K.GetPtr(),1);
     }
+
     
+
     double par_neg[6];
     TCanvas *c_rftime_neg = new TCanvas();
     gStyle->SetOptTitle(0);
@@ -745,6 +769,19 @@ void SHMS_RF_twofit(int RunGroup = 0){
     std::string c_pi_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_pi.pdf";
     c_pi_neg->SaveAs(c_pi_neg_name.c_str());
 
+    std::vector<double> n_neg_pi_rf,n_neg_K_rf;
+    for(int i = 0;i<rf_cuts.size();++i){
+      double rf_cut_percent = rf_cuts[i];
+      double rf_pi_low = 0.5;
+      double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+      double neg_pi_N = all_neg_pi->Integral(rf_pi_low,rf_pi_high,width_neg);
+      n_neg_pi_rf.push_back(neg_pi_N);
+      double neg_K_N = K_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
+      n_neg_K_rf.push_back(neg_K_N); 
+    }
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["rf_cuts"] = rf_cuts ;
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_Ns"] = n_neg_pi_rf ;
+    j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["Ks"] = n_neg_K_rf;
 
     TCanvas *c_pi_neg_2nd = new TCanvas();
     //c_pi_neg_2nd->SetGrid();

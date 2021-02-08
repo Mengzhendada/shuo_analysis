@@ -144,7 +144,7 @@ void HMS_cuts_compare(int RunGroup = 0){
       c_cal->SaveAs(cal_name.c_str());
 
 
-      //cer neg runs 
+      //cer pos runs 
       TGraph *g_cer_e = new TGraph();
       g_cer_e->SetTitle("cerenkov;cerenkov cut;efficiency");
       g_cer_e->SetMarkerStyle(8);

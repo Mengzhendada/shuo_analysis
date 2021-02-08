@@ -67,7 +67,8 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   std::vector<int> neg_D2,pos_D2;
   neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
   pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
-  double shms_p = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
+  double shms_p_central = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
+  double shms_p;
   json j_cuts;
   {
     std::ifstream ifs("db2/all_cut.json");
@@ -144,6 +145,9 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       TH1D* h_rf_pos_piall = new TH1D("",";rftime;counts",100,0,4);
       TH1D* h_rf_neg_piall = new TH1D("",";rftime;counts",100,0,4);
 
+      TH1D* h_delta_pos_all = new TH1D("","",100,-10,20);
+      TH1D* h_delta_neg_all = new TH1D("","",100,-10,20);
+
       //loop over each pos runs data
     std::vector<std::string> delta_cut= {"P.gtr.dp < -5","P.gtr.dp>-5 && P.gtr.dp<0","P.gtr.dp>0 && P.gtr.dp < 5","P.gtr.dp>5 && P.gtr.dp<10","P.gtr.dp>10 && P.gtr.dp < 15","P.gtr.dp>15"};
     int i_dpcut_pos = 0;
@@ -183,7 +187,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           .Filter(goodTrackHMS)
           .Filter(piCutSHMS)
           .Filter(eCutHMS)
-          .Filter(aeroCutSHMS)
+          //.Filter(aeroCutSHMS)
           .Filter(Normal_SHMS)
           .Filter(Normal_HMS)
           .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
@@ -222,11 +226,6 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           //    .Filter(aeroCutSHMS)
           ;
         
-        //get mean SHMS momentum 
-        auto h_delta = d_mod_first.Histo1D({"","",100,-10,20},"P.gtr.dp");
-        double delta_mean = h_delta->GetMean();
-        shms_p = shms_p*(1+delta_mean/100);
-
         std::string bg_cut = " ";  
         //for bg
         int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
@@ -257,6 +256,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           ;
         auto d_pos_piall  = d_mod_first
           .Filter(dp_cut.c_str())
+          .Filter(aeroCutSHMS)
           ;
         auto d_pos_Kall = d_mod_first
           //.Filter("P.aero.npeSum<10")
@@ -266,6 +266,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           ;
         auto d_pos_piall_bg = d_pos_bg_norfcut
           .Filter(dp_cut.c_str())
+          .Filter(aeroCutSHMS)
           ;
         auto d_pos_Kall_bg = d_pos_bg_norfcut
           //.Filter("P.aero.npeSum<10")
@@ -274,6 +275,8 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           //.Filter(piCutSHMS)
           ;
 
+        
+        
         //not really necessary to check this histogram. 
         auto h_coin_pos_piall = d_pos_piall.Histo1D({"","pos eall",800,0,100},"CTime.ePiCoinTime_ROC2");
         auto h_coin_pos_piall_bg = d_pos_piall_bg.Histo1D({"","pos eall",800,0,100},"CTime.ePiCoinTime_ROC2");
@@ -288,8 +291,18 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
         auto h_rf_pos_K_bg = d_pos_Kall_bg.Histo1D({"","pos,cal,norfcut",100,0,4},"diff_time_mod");
         h_rf_pos_K->Add(h_rf_pos_K_bg.GetPtr(),-1.0/6); 
         h_rf_pos_Kall->Add(h_rf_pos_K.GetPtr(),1);
+        
+        //get mean SHMS momentum 
+        auto h_delta = d_pos_piall.Histo1D({"","",100,-10,20},"P.gtr.dp");
+        auto h_delta_bg = d_pos_piall_bg.Histo1D({"","",100,-10,20},"P.gtr.dp");
+        h_delta->Add(h_delta_bg.GetPtr(),-1.0/6);
+        h_delta_pos_all->Add(h_delta.GetPtr(),1.0);
+
       }
 
+      double delta_mean = h_delta_pos_all->GetMean();
+      std::cout<<"delta mean"<<delta_mean<<std::endl;
+      shms_p = shms_p_central*(1+delta_mean/100);
       double time_diff = t_K(shms_p) - t_pi(shms_p);
       double time_diff_proton = t_proton(shms_p) - t_pi(shms_p);
       std::cout<<"time for kaon "<<time_diff<<std::endl;
@@ -507,7 +520,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           .Filter(goodTrackHMS)
           .Filter(piCutSHMS)
           .Filter(eCutHMS)
-          .Filter(aeroCutSHMS)
+          //.Filter(aeroCutSHMS)
           .Filter(Normal_SHMS)
           .Filter(Normal_HMS)
           .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
@@ -546,10 +559,6 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           //    .Filter(aeroCutSHMS)
           ;
 
-        //get mean SHMS momentum 
-        auto h_delta = d_mod_first.Histo1D({"","",100,-10,20},"P.gtr.dp");
-        double delta_mean = h_delta->GetMean();
-        shms_p = shms_p*(1+delta_mean/100);
         
         std::string bg_cut = " ";  
         //for bg
@@ -582,19 +591,21 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
 
         auto d_neg_piall  = d_mod_first
           .Filter(dp_cut.c_str())
+          .Filter(aeroCutSHMS)
           ;
         auto d_neg_Kall = d_mod_first
           //.Filter("P.aero.npeSum<10")
-          .Filter("P.hgcer.npeSum<2")
+          .Filter("P.hgcer.npeSum<3")
           .Filter(dp_cut.c_str())
           //.Filter(piCutSHMS)
           ;
         auto d_neg_piall_bg = d_neg_bg_norfcut
           .Filter(dp_cut.c_str())
+          .Filter(aeroCutSHMS)
           ;
         auto d_neg_Kall_bg = d_neg_bg_norfcut
           //.Filter("P.aero.npeSum<10")
-          .Filter("P.hgcer.npeSum<2")
+          .Filter("P.hgcer.npeSum<3")
           .Filter(dp_cut.c_str())
           //.Filter(piCutSHMS)
           ;
@@ -613,8 +624,16 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
         auto h_rf_neg_K_bg = d_neg_Kall_bg.Histo1D({"","neg,cal,norfcut",100,0,4},"diff_time_mod");
         h_rf_neg_K->Add(h_rf_neg_K_bg.GetPtr(),-1.0/6); 
         h_rf_neg_Kall->Add(h_rf_neg_K.GetPtr(),1);
+        
+        //get mean SHMS momentum 
+        auto h_delta = d_neg_piall.Histo1D({"","",100,-10,20},"P.gtr.dp");
+        auto h_delta_bg = d_neg_piall_bg.Histo1D({"","",100,-10,20},"P.gtr.dp");
+        h_delta->Add(h_delta_bg.GetPtr(),-1.0/6);
+        h_delta_neg_all->Add(h_delta.GetPtr(),1.0);
       }
 
+      double delta_mean = h_delta_neg_all->GetMean();
+      shms_p = shms_p_central*(1+delta_mean/100);
       double time_diff = t_K(shms_p) - t_pi(shms_p);
       double time_diff_proton = t_proton(shms_p) - t_pi(shms_p);
       std::cout<<"time for kaon "<<time_diff<<std::endl;

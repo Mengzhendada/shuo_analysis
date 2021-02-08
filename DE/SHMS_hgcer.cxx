@@ -325,6 +325,9 @@ void SHMS_hgcer(int RunGroup=0){
         h_hgcer_pi_did_2d->Divide(h_hgcer_pi_should_2d.GetPtr());
         TCanvas* c_hgc_eff_2d = new TCanvas();
         h_hgcer_pi_did_2d->SetBit(TH2::kNoStats);
+        //h_hgcer_pi_did_2d->GetXaixs()->SetTitle("yCer");
+        //h_hgcer_pi_did_2d->GetYaixs()->SetTitle("xCer");
+        //gPad()->Modified();
         h_hgcer_pi_did_2d->DrawCopy("colz");
         gStyle->SetOptTitle(0);
         std::string c_hgc_eff_2d_name = "results/pid/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+"_2d.pdf";
