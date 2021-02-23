@@ -28,6 +28,7 @@ using namespace std;
 #include "TPaveText.h"
 #include "TCanvas.h"
 #include "TStyle.h"
+#include "TEfficiency.h"
 constexpr const double M_P     = 0.938272;
 constexpr const double M_P2    = M_P * M_P;
 constexpr const double M_pion  = 0.139;
@@ -216,11 +217,6 @@ void SHMS_hgcer(int RunGroup=0){
       double rf_pi_high =j_cuts["rf_pi_high"].get<double>();
       std::cout<<rf_pi_high<<std::endl;
 
-      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
-      TCanvas* c_pos_current = new TCanvas("","coin time",2200,1450);
-      h_current_before_pos->DrawCopy("hist");
-      std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.pdf";
-      c_pos_current->SaveAs(c_pos_current_name.c_str());
 
       auto d_pos_first = d_pos_run
         .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"})
@@ -290,22 +286,23 @@ void SHMS_hgcer(int RunGroup=0){
         double hgc_cut = *it;
         std::cout<<"HGC is "<<hgc_cut<<std::endl;
         std::string hgc_eff_str = "HGC cut "+std::to_string(hgc_cut);
-        auto h_hgcer_pi_should = d_pos_pi.Histo1D({"","should",100,-10,22},"P.gtr.dp");
-        auto h_hgcer_bg_should = d_pos_bg.Histo1D({"","should",100,-10,22},"P.gtr.dp");
+        auto h_hgcer_pi_should = d_pos_pi.Histo1D({"hgcer_dp","should",100,-10,22},"P.gtr.dp");
+        auto h_hgcer_bg_should = d_pos_bg.Histo1D({"hgcer_dp","should",100,-10,22},"P.gtr.dp");
         h_hgcer_pi_should->Sumw2();
         h_hgcer_pi_should->Add(h_hgcer_bg_should.GetPtr(),-1.0/6);
 
         auto d_pos_pi_did = d_pos_pi.Filter([=](double hgcer_npe){return hgcer_npe>hgc_cut;},{"P.hgcer.npeSum"});
         auto d_pos_bg_did = d_pos_bg.Filter([=](double hgcer_npe){return hgcer_npe>hgc_cut;},{"P.hgcer.npeSum"});
-        auto h_hgcer_pi_did = d_pos_pi_did.Histo1D({"","did",100,-10,22},"P.gtr.dp");
-        auto h_hgcer_bg_did = d_pos_bg_did.Histo1D({"","did",100,-10,22},"P.gtr.dp");
+        auto h_hgcer_pi_did = d_pos_pi_did.Histo1D({"hgcer_dp","did",100,-10,22},"P.gtr.dp");
+        auto h_hgcer_bg_did = d_pos_bg_did.Histo1D({"hgcer_dp","did",100,-10,22},"P.gtr.dp");
         h_hgcer_pi_did->Sumw2();
         h_hgcer_pi_did->Add(h_hgcer_bg_did.GetPtr(),-1.0/6);
         //TH2F* h_hgcer_eff = new TH2F("","hgcer eff",100,-10,22,100,0,1);
         h_hgcer_pi_did->Sumw2();
-        h_hgcer_pi_did->Divide(h_hgcer_pi_should.GetPtr());
+        TEfficiency *eff_hgcer_dp = new TEfficiency(*h_hgcer_pi_did,*h_hgcer_pi_should);
+        //h_hgcer_pi_did->Divide(h_hgcer_pi_should.GetPtr());
         //TProfile *prof_hgcer_eff = h_hgcer_pi_did->ProfileX("h1",1,-1,"d");
-        TGraphErrors* g_hgcer_eff = new TGraphErrors(h_hgcer_pi_did.GetPtr());
+        //TGraphErrors* g_hgcer_eff = new TGraphErrors(eff_hgcer_dp);
         
         TCanvas* c_hgc_eff = new TCanvas();
         //h_hgcer_pi_did->DrawCopy();
@@ -315,11 +312,42 @@ void SHMS_hgcer(int RunGroup=0){
         pt_hgc_eff->AddText(("hgc cut "+std::to_string(hgc_cut)).c_str());
         pt_hgc_eff->Draw();
         gStyle->SetOptTitle(0);
-        g_hgcer_eff->Draw("ap");
-        
-        std::string c_hgc_eff_name = "results/pid/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+".pdf";
+        //g_hgcer_eff->Draw("ap");
+        eff_hgcer_dp->Draw("AP");
+        std::string c_hgc_eff_name = "results/pid/hgcer/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+".pdf";
         c_hgc_eff->SaveAs(c_hgc_eff_name.c_str());
+ 
+        std::string histo_name = std::to_string(RunNumber)+"_"+std::to_string(SHMS_P);
+        auto h_hgcer_xcer_pishould = d_pos_pi.Histo1D({"hgcer_xcer",histo_name.c_str(),100,-40,40},"P.hgcer.xAtCer");
+        auto h_hgcer_xcer_bgshould = d_pos_bg.Histo1D({"hgcer_xcer",histo_name.c_str(),100,-40,40},"P.hgcer.xAtCer");
+        h_hgcer_xcer_pishould->Sumw2();
+        h_hgcer_xcer_pishould->Add(h_hgcer_xcer_bgshould.GetPtr(),-1.0/6);
+        auto h_hgcer_xcer_pidid = d_pos_pi_did.Histo1D({"hgcer_xcer",histo_name.c_str(),100,-40,40},"P.hgcer.xAtCer");
+        auto h_hgcer_xcer_bgdid = d_pos_bg_did.Histo1D({"hgcer_xcer",histo_name.c_str(),100,-40,40},"P.hgcer.xAtCer");
+        h_hgcer_xcer_pidid->Sumw2();
+        h_hgcer_xcer_pidid->Add(h_hgcer_xcer_bgdid.GetPtr(),-1.0/6);
+        h_hgcer_xcer_pidid->Sumw2();
+        TEfficiency *eff_hgcer_xcer= new TEfficiency(*h_hgcer_xcer_pidid,*h_hgcer_xcer_pishould);
         
+        auto h_hgcer_shmsp_pishould = d_pos_pi.Histo1D({"hgcer_shmsp",histo_name.c_str(),200,1,6},"shms_p");
+        auto h_hgcer_shmsp_bgshould = d_pos_bg.Histo1D({"hgcer_shmsp",histo_name.c_str(),200,1,6},"shms_p");
+        h_hgcer_shmsp_pishould->Sumw2();
+        h_hgcer_shmsp_pishould->Add(h_hgcer_shmsp_bgshould.GetPtr(),-1.0/6);
+        auto h_hgcer_shmsp_pidid = d_pos_pi_did.Histo1D({"hgcer_shmsp",histo_name.c_str(),200,1,6},"shms_p");
+        auto h_hgcer_shmsp_bgdid = d_pos_bg_did.Histo1D({"hgcer_shmsp",histo_name.c_str(),200,1,6},"shms_p");
+        h_hgcer_shmsp_pidid->Sumw2();
+        h_hgcer_shmsp_pidid->Add(h_hgcer_shmsp_bgdid.GetPtr(),-1.0/6);
+        h_hgcer_shmsp_pidid->Sumw2();
+        TEfficiency *eff_hgcer_shmsp= new TEfficiency(*h_hgcer_shmsp_pidid,*h_hgcer_shmsp_pishould);
+
+        std::string rootfile_out_name = "results/pid/hgcer/hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+".root"; 
+        TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
+       // h_hgcer_pi_did->Write();
+        eff_hgcer_dp->Write();
+        eff_hgcer_shmsp->Write();
+        eff_hgcer_xcer->Write();
+        rootfile_out->Close();
+
         auto h_hgcer_pi_should_2d = d_pos_pi.Histo2D({"",";yCer;xCer",80,-40,40,80,-40,40},"P.hgcer.yAtCer","P.hgcer.xAtCer");
         auto h_hgcer_pi_did_2d = d_pos_pi_did.Histo2D({"",";yCer;xCer",80,-40,40,80,-40,40},"P.hgcer.yAtCer","P.hgcer.xAtCer");
         h_hgcer_pi_did_2d->Divide(h_hgcer_pi_should_2d.GetPtr());
@@ -330,11 +358,13 @@ void SHMS_hgcer(int RunGroup=0){
         //gPad()->Modified();
         h_hgcer_pi_did_2d->DrawCopy("colz");
         gStyle->SetOptTitle(0);
-        std::string c_hgc_eff_2d_name = "results/pid/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+"_2d.pdf";
+        std::string c_hgc_eff_2d_name = "results/pid/hgcer/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+"_2d.pdf";
         c_hgc_eff_2d->SaveAs(c_hgc_eff_2d_name.c_str());
 
       }//loop over each hgc cuts
     }//for each pos runs
+
+    //need to copy pos part to do neg part. 
 
 
   }//if normal rungroup

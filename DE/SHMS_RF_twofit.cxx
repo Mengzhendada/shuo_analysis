@@ -196,11 +196,6 @@ void SHMS_RF_twofit(int RunGroup = 0){
         .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
         ;
 
-      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
-      TCanvas* c_pos_current = new TCanvas("","coin time",2200,1450);
-      h_current_before_pos->DrawCopy("hist");
-      std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_current->SaveAs(c_pos_current_name.c_str());
 
       //coin time cut for pos runs
       auto h_cointime_pos = d_pos_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
@@ -333,11 +328,11 @@ void SHMS_RF_twofit(int RunGroup = 0){
     TPaveText* pt_pos = new TPaveText(0.75,0.5,1,0.95,"brNDC");
     pt_pos->AddText(("RunGroup pos pi "+std::to_string(RunGroup)).c_str());
     pt_pos->AddText(("shms p "+std::to_string(shms_p)).c_str());
-    //pt_pos->AddText(("Pi: p0 = "+std::to_string(par_pos[0])).c_str());
+    pt_pos->AddText(("A_{#pi} = "+std::to_string(par_pos[0])).c_str());
     pt_pos->AddText(("#mu_{#pi} = "+std::to_string(par_pos[1])).c_str());
     pt_pos->AddText(("#sigma_{#pi} = "+std::to_string(par_pos[2])).c_str());
     pt_pos->AddText(("Kaon time "+std::to_string(1+time_diff)).c_str());
-    //pt_pos->AddText(("K: p0 = "+std::to_string(par_pos[3])).c_str());
+    pt_pos->AddText(("A_{K} = "+std::to_string(par_pos[3])).c_str());
     pt_pos->AddText(("#mu_{K} = "+std::to_string(par_pos[4])).c_str());
     pt_pos->AddText(("#sigma_{K} = "+std::to_string(par_pos[5])).c_str());
     pt_pos->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
@@ -371,6 +366,8 @@ void SHMS_RF_twofit(int RunGroup = 0){
     f1_pos_pi->FixParameter(1,1);
     f2_pos_K->SetParameter(1,1+time_diff);
     f2_pos_K->FixParameter(1,1+time_diff);
+    f2_pos_K->SetParameter(2,par_pos[5]);
+    f2_pos_K->FixParameter(2,par_pos[5]);
     h_rf_pos_piall->Fit(f1_pos_pi,"0R");
     h_rf_pos_piall->Fit(f2_pos_K,"0R+");
     f1_pos_pi->GetParameters(&par_pos_pi[0]);
@@ -378,10 +375,14 @@ void SHMS_RF_twofit(int RunGroup = 0){
     all_pos_pi->SetParameters(par_pos_pi);
     all_pos_pi->FixParameter(1,1);
     all_pos_pi->FixParameter(4,1+time_diff);
+    all_pos_pi->FixParameter(5,par_pos[5]);
     h_rf_pos_piall->Fit(all_pos_pi,"R+");
     all_pos_pi->GetParameters(&par_pos_pi[0]);
-    TF1* pi_pos_piall = new TF1("pi","gaus",0.5,1.5);
-    TF1* K_pos_piall = new TF1("K","gaus",1,1+2*time_diff);
+    //TF1* pi_pos_piall = new TF1("pi","gaus",0.5,1.5);
+    //TF1* K_pos_piall = new TF1("K","gaus",1,1+2*time_diff);
+    TF1* pi_pos_piall = new TF1("pi","gaus",0,4);
+    TF1* K_pos_piall = new TF1("K","gaus",0,4);
+    
     //TF1* K_pos_piall = new TF1("K","gaus",1+0.5*time_diff,1+2*time_diff);
     //TF1* pi_pos_piall = new TF1("pi","gaus",0,4);
     //TF1* K_pos_piall = new TF1("K","gaus",0,4);
@@ -397,15 +398,15 @@ void SHMS_RF_twofit(int RunGroup = 0){
     l_rf_high_pos->Draw("same");
     double width_pos = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
     std::cout<<"Bin width "<<width_pos<<std::endl;
-    double pos_pi_N = all_pos_pi->Integral(rf_pi_low,rf_pi_high,width_pos);
-    //double pos_pi_N = f1_pos_pi->Integral(rf_pi_low,rf_pi_high,width_pos);
+    double pos_pi_N = pi_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
+    //double pos_pi_N = pi_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
     double pos_K_N = K_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
     std::cout<<"Pi number in fitting "<<pos_pi_N<<"K number in fitting "<<pos_K_N<<std::endl;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["rf_cut_eff"] = 1-pos_K_N/pos_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi"] = pos_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["K"] = pos_K_N;
-    double pos_pi_N_pifit = f1_pos_pi->Integral(rf_pi_low,rf_pi_high,width_pos);
-    double pos_pi_all_pifit = f1_pos_pi->Integral(0,4,width_pos);
+    double pos_pi_N_pifit = pi_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
+    double pos_pi_all_pifit = pi_pos_piall->Integral(0.2,2.2,width_pos);
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff"] = pos_pi_N_pifit/pos_pi_all_pifit;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_N"] = pos_pi_N_pifit ;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["pos"]["pi_eff_all"] = pos_pi_all_pifit;
@@ -413,20 +414,16 @@ void SHMS_RF_twofit(int RunGroup = 0){
     TPaveText* pt_pos_pi = new TPaveText(0.75,0.5,1,0.95,"brNDC");
     pt_pos_pi->AddText(("RunGroup pos pi "+std::to_string(RunGroup)).c_str());
     pt_pos_pi->AddText(("shms p "+std::to_string(shms_p)).c_str());
-    //pt_pos_pi->AddText(("Pi: p0 = "+std::to_string(par_pos_pi[0])).c_str());
+    pt_pos_pi->AddText(("A_{#pi} = "+std::to_string(par_pos_pi[0])).c_str());
     pt_pos_pi->AddText(("#mu_{#pi} = "+std::to_string(par_pos_pi[1])).c_str());
     pt_pos_pi->AddText(("#sigma_{#pi} = "+std::to_string(par_pos_pi[2])).c_str());
     pt_pos_pi->AddText(("Kaon time "+std::to_string(1+time_diff)).c_str());
-    //pt_pos_pi->AddText(("K: p0 = "+std::to_string(par_pos_pi[3])).c_str());
+    pt_pos_pi->AddText(("A_{K} = "+std::to_string(par_pos_pi[3])).c_str());
     pt_pos_pi->AddText(("#mu_{K} = "+std::to_string(par_pos_pi[4])).c_str());
     pt_pos_pi->AddText(("#sigma_{K} = "+std::to_string(par_pos_pi[5])).c_str());
     pt_pos_pi->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
     pt_pos_pi->Draw();
-    std::string f1_pos_pi_string = std::to_string(par_pos_pi[0])+"*exp("+"\\frac{(x-"+std::to_string(par_pos_pi[1])+")^2}{2*"+std::to_string(par_pos_pi[2])+"^2})";
-    std::string f2_pos_K_string = std::to_string(par_pos_pi[3])+"*exp("+"\\frac{(x-"+std::to_string(par_pos_pi[4])+")^2}{2*"+std::to_string(par_pos_pi[5])+"^2})";
     //TLatex *pi_pos_tex;
-    //pi_pos_tex->DrawLatex(0.75,0.6,f1_pos_string.c_str());
-    //pi_pos_tex->DrawLatex(0.75,0.5,f2_pos_string.c_str());
     c_pi_pos->Update();
     std::string c_pi_pos_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_pi.pdf";
     c_pi_pos->SaveAs(c_pi_pos_name.c_str());
@@ -436,7 +433,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
       double rf_cut_percent = rf_cuts[i];
       double rf_pi_low = 0.5;
       double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
-      double pos_pi_N = all_pos_pi->Integral(rf_pi_low,rf_pi_high,width_pos);
+      double pos_pi_N = pi_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
       n_pos_pi_rf.push_back(pos_pi_N);
       double pos_K_N = K_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
       n_pos_K_rf.push_back(pos_K_N); 
@@ -458,7 +455,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
     TLine *l_rf_highsigma_pos = new TLine(1+3*sigma_pi_pos,0,1+3*sigma_pi_pos,1000);
     l_rf_lowsigma_pos->Draw("same");
     l_rf_highsigma_pos->Draw("same");
-    double pos_pi_N_sigma = all_pos_pi->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width_pos);
+    double pos_pi_N_sigma = pi_pos_piall->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width_pos);
     //double pos_pi_N_sigma = pi_pos_piall->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width_pos);
     double pos_K_N_sigma = K_pos_piall->Integral(1-3*sigma_pi_pos,1+3*sigma_pi_pos,width_pos);
     std::cout<<"Pi number in fitting "<<pos_pi_N_sigma<<"K number in fitting "<<pos_K_N_sigma<<std::endl;
@@ -477,8 +474,6 @@ void SHMS_RF_twofit(int RunGroup = 0){
     pt_pos_pi_2nd->AddText(("p3 = "+std::to_string(par_pos_pi[5])).c_str());
     pt_pos_pi_2nd->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
     pt_pos_pi_2nd->Draw();
-    //pi_pos_tex->DrawLatex(0.75,0.6,f1_pos_string.c_str());
-    //pi_pos_tex->DrawLatex(0.75,0.5,f2_pos_string.c_str());
     c_pi_pos_2nd->Update();
     std::string c_pi_pos_2nd_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_pi_2nd.pdf";
     c_pi_pos_2nd->SaveAs(c_pi_pos_2nd_name.c_str());
@@ -533,11 +528,6 @@ void SHMS_RF_twofit(int RunGroup = 0){
         .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
         ;
 
-      auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,3,100},"current");
-      TCanvas* c_neg_current = new TCanvas("","coin time",2200,1450);
-      h_current_before_neg->DrawCopy("hist");
-      std::string c_neg_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_current->SaveAs(c_neg_current_name.c_str());
 
       //coin time cut for neg runs
       auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
@@ -670,22 +660,15 @@ void SHMS_RF_twofit(int RunGroup = 0){
     TPaveText* pt_neg = new TPaveText(0.75,0.5,1,0.95,"brNDC");
     pt_neg->AddText(("RunGroup neg pi "+std::to_string(RunGroup)).c_str());
     pt_neg->AddText(("shms p "+std::to_string(shms_p)).c_str());
-    //pt_neg->AddText(("Pi: p0 = "+std::to_string(par_neg[0])).c_str());
+    pt_neg->AddText(("A_{#pi} = "+std::to_string(par_neg[0])).c_str());
     pt_neg->AddText(("#mu_{#pi} = "+std::to_string(par_neg[1])).c_str());
     pt_neg->AddText(("#sigma_{#pi} = "+std::to_string(par_neg[2])).c_str());
     pt_neg->AddText(("Kaon time "+std::to_string(1+time_diff)).c_str());
-    //pt_neg->AddText(("K: p0 = "+std::to_string(par_neg[3])).c_str());
+    pt_neg->AddText(("A_{K} = "+std::to_string(par_neg[3])).c_str());
     pt_neg->AddText(("#mu_{K} = "+std::to_string(par_neg[4])).c_str());
     pt_neg->AddText(("#sigma_{K} = "+std::to_string(par_neg[5])).c_str());
     pt_neg->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
     pt_neg->Draw();
-    //std::string f1_neg_string = std::to_string(par_neg[0])+"e("+"#frac{(x-"+std::to_string(par_neg[1])+")^2}{2("+std::to_string(par_neg[2])+")^2})";
-    //std::string f1_neg_string = "K_{S}... K^{*0}... #frac{2s}{#pi#alpha^{2}} #frac{d#sigma}{dcos#theta} (e^{+}e^{-} #rightarrow f#bar{f} ) = #left| #frac{1}{1 - #Delta#alpha} #right|^{2} (1+cos^{2}#theta)";
-    //std::string f2_neg_string = std::to_string(par_neg[3])+"e("+"#frac{(x-"+std::to_string(par_neg[4])+")^2}{2*"+std::to_string(par_neg[5])+"^2})";
-    //std::cout<<f1_neg_string<<std::endl;
-    //TLatex *K_neg_tex;
-    //K_neg_tex->DrawLatex(0.75,0.6,f1_neg_string.c_str());
-    //K_neg_tex->DrawLatex(0.75,0.5,f2_neg_string.c_str());
     c_rftime_neg->Update();
     std::string c_rftime_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+".pdf";
     c_rftime_neg->SaveAs(c_rftime_neg_name.c_str());
@@ -708,6 +691,8 @@ void SHMS_RF_twofit(int RunGroup = 0){
     f2_neg_K->SetParameter(1,1+time_diff);
     f1_neg_pi->FixParameter(1,1);
     f2_neg_K->FixParameter(1,1+time_diff);
+    f2_neg_K->SetParameter(2,par_neg[5]);
+    f2_neg_K->FixParameter(2,par_neg[5]);
     //f2_neg_K->FixParameter(3,par_neg[5]);
     h_rf_neg_piall->Fit(f1_neg_pi,"0R");
     h_rf_neg_piall->Fit(f2_neg_K,"0R+");
@@ -716,6 +701,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
     all_neg_pi->SetParameters(par_neg_pi);
     all_neg_pi->FixParameter(1,1);
     all_neg_pi->FixParameter(4,1+time_diff);
+    all_neg_pi->FixParameter(5,par_neg[5]);
     h_rf_neg_piall->Fit(all_neg_pi,"R+");
     all_neg_pi->GetParameters(&par_neg_pi[0]);
     //TF1* pi_neg_piall = new TF1("pi","gaus",0.5,1.5);
@@ -735,15 +721,14 @@ void SHMS_RF_twofit(int RunGroup = 0){
     l_rf_high_neg->Draw("same");
     double width_neg = h_rf_neg_piall->GetXaxis()->GetBinWidth(1);
     std::cout<<"Bin width "<<width_neg<<std::endl;
-    double neg_pi_N = all_neg_pi->Integral(rf_pi_low,rf_pi_high,width_neg);
-    //double neg_pi_N = f1_neg_pi->Integral(rf_pi_low,rf_pi_high,width_neg);
+    double neg_pi_N = pi_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
     double neg_K_N = K_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
     std::cout<<"Pi number in fitting "<<neg_pi_N<<"K number in fitting "<<neg_K_N<<std::endl;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["rf_cut_eff"] = 1-neg_K_N/neg_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi"] = neg_pi_N;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["K"] = neg_K_N;
-    double neg_pi_N_pifit = f1_neg_pi->Integral(rf_pi_low,rf_pi_high,width_neg);
-    double neg_pi_all_pifit = f1_neg_pi->Integral(0,4,width_neg);
+    double neg_pi_N_pifit = pi_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
+    double neg_pi_all_pifit = pi_neg_piall->Integral(0,4,width_neg);
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff"] = neg_pi_N_pifit/neg_pi_all_pifit;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_N"] = neg_pi_N_pifit ;
     j_rungroup_info[(std::to_string(RunGroup)).c_str()]["neg"]["pi_eff_all"] = neg_pi_all_pifit;
@@ -751,20 +736,15 @@ void SHMS_RF_twofit(int RunGroup = 0){
     TPaveText* pt_neg_pi = new TPaveText(0.75,0.5,1,0.95,"brNDC");
     pt_neg_pi->AddText(("RunGroup neg pi "+std::to_string(RunGroup)).c_str());
     pt_neg_pi->AddText(("shms p "+std::to_string(shms_p)).c_str());
-    //pt_neg_pi->AddText(("Pi: p0 = "+std::to_string(par_neg_pi[0])).c_str());
+    pt_neg_pi->AddText(("A_{#pi} = "+std::to_string(par_neg_pi[0])).c_str());
     pt_neg_pi->AddText(("#mu_{#pi} = "+std::to_string(par_neg_pi[1])).c_str());
     pt_neg_pi->AddText(("#sigma_{#pi} = "+std::to_string(par_neg_pi[2])).c_str());
     pt_neg_pi->AddText(("Kaon time "+std::to_string(1+time_diff)).c_str());
-    //pt_neg_pi->AddText(("K: p0 = "+std::to_string(par_neg_pi[3])).c_str());
+    pt_neg_pi->AddText(("A_{K} = "+std::to_string(par_neg_pi[3])).c_str());
     pt_neg_pi->AddText(("#mu_{K} = "+std::to_string(par_neg_pi[4])).c_str());
     pt_neg_pi->AddText(("#sigma_{K} = "+std::to_string(par_neg_pi[5])).c_str());
     pt_neg_pi->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
     pt_neg_pi->Draw();
-    std::string f1_neg_pi_string = std::to_string(par_neg_pi[0])+"*exp("+"\\frac{(x-"+std::to_string(par_neg_pi[1])+")^2}{2*"+std::to_string(par_neg_pi[2])+"^2})";
-    std::string f2_neg_K_string = std::to_string(par_neg_pi[3])+"*exp("+"\\frac{(x-"+std::to_string(par_neg_pi[4])+")^2}{2*"+std::to_string(par_neg_pi[5])+"^2})";
-    //TLatex *pi_neg_tex;
-    //pi_neg_tex->DrawLatex(0.75,0.6,f1_neg_string.c_str());
-    //pi_neg_tex->DrawLatex(0.75,0.5,f2_neg_string.c_str());
     c_pi_neg->Update();
     std::string c_pi_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_pi.pdf";
     c_pi_neg->SaveAs(c_pi_neg_name.c_str());
@@ -774,7 +754,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
       double rf_cut_percent = rf_cuts[i];
       double rf_pi_low = 0.5;
       double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
-      double neg_pi_N = all_neg_pi->Integral(rf_pi_low,rf_pi_high,width_neg);
+      double neg_pi_N = pi_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
       n_neg_pi_rf.push_back(neg_pi_N);
       double neg_K_N = K_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
       n_neg_K_rf.push_back(neg_K_N); 
@@ -795,7 +775,7 @@ void SHMS_RF_twofit(int RunGroup = 0){
     TLine *l_rf_highsigma_neg = new TLine(1+3*sigma_pi_neg,0,1+3*sigma_pi_neg,1000);
     l_rf_lowsigma_neg->Draw("same");
     l_rf_highsigma_neg->Draw("same");
-    double neg_pi_N_sigma = all_neg_pi->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
+    double neg_pi_N_sigma = pi_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
     //double neg_pi_N_sigma = pi_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
     double neg_K_N_sigma = K_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
     std::cout<<"Pi number in fitting "<<neg_pi_N_sigma<<"K number in fitting "<<neg_K_N_sigma<<std::endl;
@@ -814,8 +794,6 @@ void SHMS_RF_twofit(int RunGroup = 0){
     pt_neg_pi_2nd->AddText(("p3 = "+std::to_string(par_neg_pi[5])).c_str());
     pt_neg_pi_2nd->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
     pt_neg_pi_2nd->Draw();
-    //pi_neg_tex->DrawLatex(0.75,0.6,f1_neg_string.c_str());
-    //pi_neg_tex->DrawLatex(0.75,0.5,f2_neg_string.c_str());
     c_pi_neg_2nd->Update();
     std::string c_pi_neg_2nd_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_pi_2nd.pdf";
     c_pi_neg_2nd->SaveAs(c_pi_neg_2nd_name.c_str());

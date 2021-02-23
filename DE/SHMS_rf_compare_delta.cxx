@@ -72,21 +72,21 @@ void SHMS_rf_compare_delta(){
         std::cout<<shms_p<<std::endl;
         if(j_each.find(std::to_string(RunGroup))!=j_each.end()){
           //j_rungroup_info[(std::to_string(RunGroup)).c_str()] = j_each[(std::to_string(RunGroup)).c_str()];
-          double pos_pi = j_each[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(i_dp)).c_str()]["pi"].get<double>();
-          double pos_K = j_each[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(i_dp)).c_str()]["K"].get<double>();
-          double neg_pi = j_each[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(i_dp)).c_str()]["pi"].get<double>();
-          double neg_K = j_each[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(i_dp)).c_str()]["K"].get<double>();
+          double pos_pi = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi"].get<double>();
+          double pos_K = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["K"].get<double>();
+          double neg_pi = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["pi"].get<double>();
+          double neg_K = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["K"].get<double>();
           std::cout<<"check"<<std::endl;
-          double pos_pi_2nd = j_each[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(i_dp)).c_str()]["pi_sigma"].get<double>();
-          double pos_K_2nd = j_each[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(i_dp)).c_str()]["K_sigma"].get<double>();
-          double neg_pi_2nd = j_each[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(i_dp)).c_str()]["pi_sigma"].get<double>();
-          double neg_K_2nd = j_each[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(i_dp)).c_str()]["K_sigma"].get<double>();
+          double pos_pi_2nd = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi_sigma"].get<double>();
+          double pos_K_2nd = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["K_sigma"].get<double>();
+          double neg_pi_2nd = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["pi_sigma"].get<double>();
+          double neg_K_2nd = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["K_sigma"].get<double>();
           std::cout<<"check"<<std::endl;
 
-          double pos_pi_eff_pi = j_each[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(i_dp)).c_str()]["pi_eff_N"].get<double>();
-          double pos_pi_eff_all = j_each[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(i_dp)).c_str()]["pi_eff_all"].get<double>();
-          double neg_pi_eff_pi = j_each[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(i_dp)).c_str()]["pi_eff_N"].get<double>();
-          double neg_pi_eff_all = j_each[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(i_dp)).c_str()]["pi_eff_all"].get<double>();
+          double pos_pi_eff_pi = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi_eff_N"].get<double>();
+          double pos_pi_eff_all = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi_eff_all"].get<double>();
+          double neg_pi_eff_pi = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["pi_eff_N"].get<double>();
+          double neg_pi_eff_all = j_each[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["pi_eff_all"].get<double>();
           std::cout<<"check"<<std::endl;
 
           std::cout<<"end of data reading "<<std::endl;
