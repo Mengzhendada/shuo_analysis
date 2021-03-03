@@ -70,46 +70,44 @@ void SHMS_rf_cuts_compare(int RunGroup = 0){
       g_rf_pi->SetTitle("Pos. pi efficiency;Percentage;Pion efficiency");
       g_rf_pi->SetMarkerStyle(8);
       g_rf_pi->SetMarkerSize(0.75);
-      g_rf_pi->SetMarkerColor(1);
+      g_rf_pi->SetMarkerColor(2);
       g_rf_pi->SetLineColor(1);
-      g_rf_pi->SetFillColor(3);
+      g_rf_pi->SetFillColor(2);
 
       TGraphErrors *g_rf_K = new TGraphErrors();
       g_rf_K->SetTitle("Pos. pi purity;Percentage;pion purity");
-      g_rf_K->SetMarkerStyle(8);
+      g_rf_K->SetMarkerStyle(5);
       g_rf_K->SetMarkerSize(0.75);
       g_rf_K->SetMarkerColor(2);
       g_rf_K->SetLineColor(2);
-      g_rf_K->SetFillColor(3);
+      g_rf_K->SetFillColor(2);
 
       TGraphErrors *g_rf_pi_neg = new TGraphErrors();
       g_rf_pi_neg->SetTitle("Neg. pi efficiency;Percentage;pion efficiency");
-      g_rf_pi_neg->SetMarkerStyle(5);
+      g_rf_pi_neg->SetMarkerStyle(8);
       g_rf_pi_neg->SetMarkerSize(0.75);
       g_rf_pi_neg->SetMarkerColor(1);
       g_rf_pi_neg->SetLineColor(1);
-      g_rf_pi_neg->SetFillColor(3);
+      g_rf_pi_neg->SetFillColor(1);
 
       TGraphErrors *g_rf_K_neg = new TGraphErrors();
       g_rf_K_neg->SetTitle("Neg.pi purity;Percentage;pion purity");
       g_rf_K_neg->SetMarkerStyle(5);
       g_rf_K_neg->SetMarkerSize(0.75);
-      g_rf_K_neg->SetMarkerColor(2);
+      g_rf_K_neg->SetMarkerColor(1);
       g_rf_K_neg->SetLineColor(2);
-      g_rf_K_neg->SetFillColor(3);
+      g_rf_K_neg->SetFillColor(1);
       
       std::cout<<"check"<<std::endl;
       std::vector<double> rf_pion,rf_K;
-      double rf_pion_all,rf_K_all;
+      double rf_pion_all;
       rf_pion_all = it.value()["pos"]["pi_eff_all"].get<double>();
-      rf_K_all = it.value()["pos"]["pi"].get<double>();
       rf_pion = it.value()["pos"]["pi_eff_Ns"].get<std::vector<double>>();
       rf_K = it.value()["pos"]["Ks"].get<std::vector<double>>();
       int n_rf_cuts = (int)rf_cuts.size();
       std::vector<double> rf_pion_neg,rf_K_neg;
-      double rf_pion_all_neg,rf_K_all_neg;
+      double rf_pion_all_neg;
       rf_pion_all_neg = it.value()["neg"]["pi_eff_all"].get<double>();
-      rf_K_all_neg = it.value()["neg"]["pi"].get<double>();
       rf_pion_neg = it.value()["neg"]["pi_eff_Ns"].get<std::vector<double>>();
       rf_K_neg = it.value()["neg"]["Ks"].get<std::vector<double>>();
       for(int i = 0;i<n_rf_cuts;++i){
@@ -119,7 +117,7 @@ void SHMS_rf_cuts_compare(int RunGroup = 0){
         g_rf_pi->SetPoint(i,rf_cuts[i],pi_eff);
         g_rf_pi->SetPointError(i,0,pi_eff_error);
         double K_con = 1-rf_K[i]/(rf_pion[i]+rf_K[i]);
-        double K_eff_error = 1/(rf_K[i]+rf_pion[i])*sqrt(rf_K[i]*(1-K_con));
+        double K_eff_error = 1/(rf_K[i]+rf_pion[i])*sqrt(rf_K[i]*(K_con));
         g_rf_K->SetPoint(i,rf_cuts[i],K_con);
         g_rf_K->SetPointError(i,0,K_eff_error);
 
@@ -128,7 +126,7 @@ void SHMS_rf_cuts_compare(int RunGroup = 0){
         g_rf_pi_neg->SetPoint(i,rf_cuts[i],pi_eff_neg);
         g_rf_pi_neg->SetPointError(i,0,pi_eff_neg_error);
         double K_con_neg = 1-rf_K_neg[i]/(rf_pion_neg[i]+rf_K_neg[i]);
-        double K_con_neg_error = 1/(rf_pion_neg[i]+rf_K_neg[i])*sqrt(rf_K_neg[i]*(1-K_con_neg));
+        double K_con_neg_error = 1/(rf_pion_neg[i]+rf_K_neg[i])*sqrt(rf_K_neg[i]*(K_con_neg));
         g_rf_K_neg->SetPoint(i,rf_cuts[i],K_con_neg);
         g_rf_K_neg->SetPointError(i,0,K_con_neg_error);
         
@@ -145,10 +143,10 @@ void SHMS_rf_cuts_compare(int RunGroup = 0){
 
       p1_rf->Draw();
       p1_rf->cd();
-      g_rf_pi->Draw("ALP");
+      g_rf_pi->Draw("A2LP");
       g_rf_pi->GetHistogram()->GetXaxis()->SetTitleOffset(1.25);
       g_rf_pi->GetHistogram()->GetYaxis()->SetTitleOffset(1.25);
-      g_rf_pi_neg->Draw("LP");
+      g_rf_pi_neg->Draw("2LP");
       gPad->Update();
 
       Style_t tfont_rf = g_rf_pi->GetHistogram()->GetYaxis()->GetTitleFont();
@@ -165,8 +163,8 @@ void SHMS_rf_cuts_compare(int RunGroup = 0){
       p2_rf->Range(xmin_rf - 0.1*dx_rf, ymin_rf - 0.1*dy_rf, xmax_rf + 0.1*dx_rf,ymax_rf + 0.1*dy_rf);
       p2_rf->Draw();
       p2_rf->cd();
-      g_rf_K->Draw("LP");
-      g_rf_K_neg->Draw("LP");
+      g_rf_K->Draw("2LP");
+      g_rf_K_neg->Draw("2LP");
       gPad->Update();
 
       TGaxis *axis_rf = new TGaxis(xmax_rf, ymin_rf, xmax_rf, ymax_rf, ymin_rf, ymax_rf, 510, "+L");
@@ -198,7 +196,7 @@ void SHMS_rf_cuts_compare(int RunGroup = 0){
       leg_rf->Draw();
       gPad->Update();
 
-      std::string rf_name = "results/pid/SHMS_rf_"+std::to_string(RunGroup)+"_"+it.key()+"_pos.pdf";
+      std::string rf_name = "results/pid/SHMS_rf_"+std::to_string(RunGroup)+"_"+it.key()+".pdf";
       c_rf->SaveAs(rf_name.c_str());
 
       }
