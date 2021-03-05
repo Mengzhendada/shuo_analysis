@@ -272,11 +272,6 @@ void HMS_DE(int RunGroup=0){
         .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
         ;
       
-      auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
-      TCanvas* c_pos_current = new TCanvas("","coin time",2200,1450);
-      h_current_before_pos->DrawCopy("hist");
-      std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_current->SaveAs(c_pos_current_name.c_str());
 
       auto d_pos_first = d_pos_run
         .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"})
@@ -550,91 +545,6 @@ void HMS_DE(int RunGroup=0){
       std::string c_DE_cer_name = "results/pid/cer_DE_"+std::to_string(RunNumber)+".pdf";
       c_DE_cer->SaveAs(c_DE_cer_name.c_str());
 
-      //some check plots
-      TCanvas* c_pos_cointime = new TCanvas("","coin time",2200,1450);
-      c_pos_cointime->Divide(2,1);
-      c_pos_cointime->cd(1);
-      h_coin_poscut_rungroup->DrawCopy("hist");
-      //h_coin_pos->DrawCopy("hist");
-      //h_coin_poscut->SetLineColor(kRed);
-      c_pos_cointime->cd(2);
-      h_coin_poscut->DrawCopy("hist");
-      h_coin_pos_eall->SetLineColor(kRed);
-      h_coin_pos_eall->DrawCopy("hist same");
-      h_coin_pos_eall_bg->SetLineColor(kBlue);
-      h_coin_pos_eall_bg->DrawCopy("hist same");
-      std::string c_pos_cointime_name = "results/pid/check/cointime_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_cointime->SaveAs(c_pos_cointime_name.c_str());
-      TCanvas* c_pos_hms_dp = new TCanvas("","HMS",2200,1450);
-      //h_hms_dp_before_pos->DrawCopy("hist");
-      h_hms_dp_after_pos->SetLineColor(kRed);
-      h_hms_dp_after_pos->DrawCopy("hist");
-      h_hms_dp_bg_pos->SetLineColor(kBlue);
-      h_hms_dp_bg_pos->Scale(1.0/6);
-      h_hms_dp_bg_pos->DrawCopy("hist same");
-      std::string c_pos_hms_dp_name = "results/pid/check/hms_dp_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_hms_dp->SaveAs(c_pos_hms_dp_name.c_str());      
-      TCanvas* c_pos_shms_dp = new TCanvas("","shms",2200,1450);
-      //h_shms_dp_before_pos->DrawCopy("hist");
-      h_shms_dp_after_pos->SetLineColor(kRed);
-      h_shms_dp_after_pos->DrawCopy("hist");
-      h_shms_dp_bg_pos->SetLineColor(kBlue);
-      h_shms_dp_bg_pos->Scale(1.0/6);
-      h_shms_dp_bg_pos->DrawCopy("hist same");
-      std::string c_pos_shms_dp_name = "results/pid/check/shms_dp_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_shms_dp->SaveAs(c_pos_shms_dp_name.c_str());      
-      TCanvas* c_pos_hms_cal = new TCanvas("","HMS",2200,1450);
-      c_pos_hms_cal->SetLogy();
-      //h_hms_cal_before_pos->DrawCopy("hist");
-      h_hms_cal_after_pos->SetLineColor(kRed);
-      h_hms_cal_after_pos->DrawCopy("hist");
-      h_hms_cal_bg_pos->SetLineColor(kBlue);
-      h_hms_cal_bg_pos->Scale(1.0/6);
-      h_hms_cal_bg_pos->DrawCopy("hist same");
-      std::string c_pos_hms_cal_name = "results/pid/check/hms_cal_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_hms_cal->SaveAs(c_pos_hms_cal_name.c_str());      
-      TCanvas* c_pos_hms_cer = new TCanvas("","HMS",2200,1450);
-      c_pos_hms_cer->SetLogy();
-      //h_hms_cer_before_pos->DrawCopy("hist");
-      h_hms_cer_after_pos->SetLineColor(kRed);
-      h_hms_cer_after_pos->DrawCopy("hist");
-      h_hms_cer_bg_pos->SetLineColor(kBlue);
-      h_hms_cer_bg_pos->Scale(1.0/6);
-      h_hms_cer_bg_pos->DrawCopy("hist same");
-      std::string c_pos_hms_cer_name = "results/pid/check/hms_cer_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_hms_cer->SaveAs(c_pos_hms_cer_name.c_str());      
-      TCanvas* c_pos_shms_cal = new TCanvas("","shms",2200,1450);
-      c_pos_shms_cal->SetLogy();
-      //h_shms_cal_before_pos->DrawCopy("hist");
-      h_shms_cal_after_pos->SetLineColor(kRed);
-      h_shms_cal_after_pos->DrawCopy("hist");
-      h_shms_cal_bg_pos->SetLineColor(kBlue);
-      h_shms_cal_bg_pos->Scale(1.0/6);
-      h_shms_cal_bg_pos->DrawCopy("hist same");
-      std::string c_pos_shms_cal_name = "results/pid/check/shms_cal_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_shms_cal->SaveAs(c_pos_shms_cal_name.c_str());      
-      TCanvas* c_pos_shms_aero = new TCanvas("","shms",2200,1450);
-      c_pos_shms_aero->SetLogy();
-      //h_shms_aero_before_pos->DrawCopy("hist");
-      h_shms_aero_after_pos->SetLineColor(kRed);
-      h_shms_aero_after_pos->DrawCopy("hist");
-      h_shms_aero_bg_pos->SetLineColor(kBlue);
-      h_shms_aero_bg_pos->Scale(1.0/6);
-      h_shms_aero_bg_pos->DrawCopy("hist same");
-      std::string c_pos_shms_aero_name = "results/pid/check/shms_aero_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_shms_aero->SaveAs(c_pos_shms_aero_name.c_str());      
-
-      TCanvas* c_pos_time_diff = new TCanvas("","time_diff",2200,1450);
-      c_pos_time_diff->Divide(2,2);
-      c_pos_time_diff->cd(1);
-      h_time_diff_poscheck->DrawCopy("hist");
-      c_pos_time_diff->cd(2);
-      h_time_diff_pos->DrawCopy("hist");
-      c_pos_time_diff->cd(3);
-      h_diff_mod_pos->DrawCopy("hist");
-      std::string c_pos_time_diff_name = "results/pid/check/time_diff_"+std::to_string(RunNumber)+"_pos.png";
-      c_pos_time_diff->SaveAs(c_pos_time_diff_name.c_str());
-//========finish check plots
 
 
 
@@ -729,11 +639,6 @@ void HMS_DE(int RunGroup=0){
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
         ;
-      auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,3,100},"current");
-      TCanvas* c_neg_current = new TCanvas("","coin time",2200,1450);
-      h_current_before_neg->DrawCopy("hist");
-      std::string c_neg_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_current->SaveAs(c_neg_current_name.c_str());
 
       auto d_neg_first = d_neg_run
         .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
@@ -998,91 +903,6 @@ void HMS_DE(int RunGroup=0){
       std::string c_DE_cer_name = "results/pid/cer_DE_"+std::to_string(RunNumber)+".pdf";
       c_DE_cer->SaveAs(c_DE_cer_name.c_str());
 
-      //some check plots
-      TCanvas* c_neg_cointime = new TCanvas("","coin time",2200,1450);
-      c_neg_cointime->Divide(2,1);
-      c_neg_cointime->cd(1);
-      h_coin_negcut_rungroup->DrawCopy("hist");
-      //h_coin_neg->DrawCopy("hist");
-      //h_coin_negcut->SetLineColor(kRed);
-      c_neg_cointime->cd(2);
-      h_coin_negcut->DrawCopy("hist");
-      h_coin_neg_eall->SetLineColor(kRed);
-      h_coin_neg_eall->DrawCopy("hist same");
-      h_coin_neg_eall_bg->SetLineColor(kBlue);
-      h_coin_neg_eall_bg->DrawCopy("hist same");
-      std::string c_neg_cointime_name = "results/pid/check/cointime_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_cointime->SaveAs(c_neg_cointime_name.c_str());
-      TCanvas* c_neg_hms_dp = new TCanvas("","HMS",2200,1450);
-      //h_hms_dp_before_neg->DrawCopy("hist");
-      h_hms_dp_after_neg->SetLineColor(kRed);
-      h_hms_dp_after_neg->DrawCopy("hist");
-      h_hms_dp_bg_neg->SetLineColor(kBlue);
-      h_hms_dp_bg_neg->Scale(1.0/6);
-      h_hms_dp_bg_neg->DrawCopy("hist same");
-      std::string c_neg_hms_dp_name = "results/pid/check/hms_dp_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_hms_dp->SaveAs(c_neg_hms_dp_name.c_str());      
-      TCanvas* c_neg_shms_dp = new TCanvas("","shms",2200,1450);
-      //h_shms_dp_before_neg->DrawCopy("hist");
-      h_shms_dp_after_neg->SetLineColor(kRed);
-      h_shms_dp_after_neg->DrawCopy("hist");
-      h_shms_dp_bg_neg->SetLineColor(kBlue);
-      h_shms_dp_bg_neg->Scale(1.0/6);
-      h_shms_dp_bg_neg->DrawCopy("hist same");
-      std::string c_neg_shms_dp_name = "results/pid/check/shms_dp_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_shms_dp->SaveAs(c_neg_shms_dp_name.c_str());      
-      TCanvas* c_neg_hms_cal = new TCanvas("","HMS",2200,1450);
-      c_neg_hms_cal->SetLogy();
-      //h_hms_cal_before_neg->DrawCopy("hist");
-      h_hms_cal_after_neg->SetLineColor(kRed);
-      h_hms_cal_after_neg->DrawCopy("hist");
-      h_hms_cal_bg_neg->SetLineColor(kBlue);
-      h_hms_cal_bg_neg->Scale(1.0/6);
-      h_hms_cal_bg_neg->DrawCopy("hist same");
-      std::string c_neg_hms_cal_name = "results/pid/check/hms_cal_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_hms_cal->SaveAs(c_neg_hms_cal_name.c_str());      
-      TCanvas* c_neg_hms_cer = new TCanvas("","HMS",2200,1450);
-      c_neg_hms_cer->SetLogy();
-      //h_hms_cer_before_neg->DrawCopy("hist");
-      h_hms_cer_after_neg->SetLineColor(kRed);
-      h_hms_cer_after_neg->DrawCopy("hist");
-      h_hms_cer_bg_neg->SetLineColor(kBlue);
-      h_hms_cer_bg_neg->Scale(1.0/6);
-      h_hms_cer_bg_neg->DrawCopy("hist same");
-      std::string c_neg_hms_cer_name = "results/pid/check/hms_cer_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_hms_cer->SaveAs(c_neg_hms_cer_name.c_str());      
-      TCanvas* c_neg_shms_cal = new TCanvas("","shms",2200,1450);
-      c_neg_shms_cal->SetLogy();
-      //h_shms_cal_before_neg->DrawCopy("hist");
-      h_shms_cal_after_neg->SetLineColor(kRed);
-      h_shms_cal_after_neg->DrawCopy("hist");
-      h_shms_cal_bg_neg->SetLineColor(kBlue);
-      h_shms_cal_bg_neg->Scale(1.0/6);
-      h_shms_cal_bg_neg->DrawCopy("hist same");
-      std::string c_neg_shms_cal_name = "results/pid/check/shms_cal_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_shms_cal->SaveAs(c_neg_shms_cal_name.c_str());      
-      TCanvas* c_neg_shms_aero = new TCanvas("","shms",2200,1450);
-      c_neg_shms_aero->SetLogy();
-      //h_shms_aero_before_neg->DrawCopy("hist");
-      h_shms_aero_after_neg->SetLineColor(kRed);
-      h_shms_aero_after_neg->DrawCopy("hist");
-      h_shms_aero_bg_neg->SetLineColor(kBlue);
-      h_shms_aero_bg_neg->Scale(1.0/6);
-      h_shms_aero_bg_neg->DrawCopy("hist same");
-      std::string c_neg_shms_aero_name = "results/pid/check/shms_aero_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_shms_aero->SaveAs(c_neg_shms_aero_name.c_str());      
-
-      TCanvas* c_neg_time_diff = new TCanvas("","time_diff",2200,1450);
-      c_neg_time_diff->Divide(2,2);
-      c_neg_time_diff->cd(1);
-      h_time_diff_negcheck->DrawCopy("hist");
-      c_neg_time_diff->cd(2);
-      h_time_diff_neg->DrawCopy("hist");
-      c_neg_time_diff->cd(3);
-      h_diff_mod_neg->DrawCopy("hist");
-      std::string c_neg_time_diff_name = "results/pid/check/time_diff_"+std::to_string(RunNumber)+"_neg.png";
-      c_neg_time_diff->SaveAs(c_neg_time_diff_name.c_str());
-//========finish check plots
        }
     }
 }
