@@ -3,7 +3,7 @@ using json = nlohmann::json;
 #include <iostream>
 
 void make_latex(){
-  std::ofstream ofs("all_rftime.tex");
+  std::ofstream ofs("yield_ratio.tex");
   json j_dbase;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
