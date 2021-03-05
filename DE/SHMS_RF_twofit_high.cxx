@@ -659,6 +659,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   all_neg->SetParameters(par_neg);
   all_neg->FixParameter(1,1);
   all_neg->FixParameter(4,1+time_diff);
+  all_neg->FixParameter(5,par_pos[5]);
   h_rf_neg_Kall->Fit(all_neg,"R+");
   all_neg->GetParameters(&par_neg[0]);
   //TF1* pi_neg_Kall = new TF1("pi","gaus",0,4);

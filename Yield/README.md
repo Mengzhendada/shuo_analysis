@@ -9,3 +9,12 @@
 
 2021Jan update
   plot_kin_Q2x.cxx should be the correct one to use to plot all pions kin settings in one plot. It is written after plot_kin.cxx. It uses db2/kin_group_xq2.json, I already forgot which script is used to generate this, however it is generated from ratio_run_group_
+
+  2021 March
+  plot_Q2x_ratio_raw.cxx
+  changed plot_Q2x_ratio_new.cxx to plot_Q2x_ratio_raw.cxx. This script has updates on coin time cut and rftime cut. It plots counts yield and ratio in results/yield/statistics
+
+  plot_Q2x_ratio_corr.cxx
+  copied plot_Q2x_ratio_raw.cxx, need to add efficiencies correction
+
+  statistics_runs_D2.cxx : updated weight, which applies pi eff and pi purity on 1d histogram. Need to continue for 2d histogram

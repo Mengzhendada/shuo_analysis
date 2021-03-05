@@ -107,7 +107,7 @@ void SHMS_rf_DE_choose(){
           }//loop over neg
         }//if less than 3
         else{
-          if(shms_p < 3.9){
+          if(shms_p < 9){
             double pi_eff_all_pos = j_rfeff_delta[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi_eff_all"].get<double>();
             std::cout<<"check"<<std::endl;
             std::vector<double> pi_eff_Ns_pos = j_rfeff_delta[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi_eff_Ns"].get<std::vector<double>>();
