@@ -269,7 +269,7 @@ int plot_Q2x_ratio_raw(){
          
           g_yield_ratio->Draw("AP"); 
           c_Q2x_z_ratio->BuildLegend(0.1,0.1,0.5,0.2,q2xz_str.c_str());
-          std::string zratiopdfname = "results/yield/statistics/"+canvas_name+"_"+std::to_string(z).substr(0,4)+"_ratio.pdf";
+          std::string zratiopdfname = "results/yield/statistics/"+q2xz_str+"_ratio.pdf";
             
            c_Q2x_z_ratio->SaveAs(zratiopdfname.c_str());
         }//loop over z
