@@ -20,7 +20,6 @@ begin parm kinematics_main
  dEbeam = 0.00415
  electron_arm =1
  hadron_arm = 5
- using_first_cer = 1
  spec%e%P = 6358
  spec%e%theta = 15.3
  spec%p%P = 2966
@@ -30,7 +29,7 @@ end parm kinematics_main
 begin parm target
  targ%A = 2.0
  targ%Z = 1.0
- targ%mass_amu = 2.0141017
+ targ%mass_amu = 2.01355
  targ%mrec_amu = 0
  targ%rho = 0.1668
  targ%thick = 1668
@@ -94,7 +93,6 @@ end parm spect_offset
 begin parm simulate
  hard_cuts = 0
  using_rad = 0
- using_expon = 0
  one_tail = 0
  intcor_mode = 1
  spect_mode = 0

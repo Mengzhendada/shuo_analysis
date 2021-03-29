@@ -1,6 +1,9 @@
 {
     "150": {
         "neg": {
+            "delta": {
+                "normfac": 69267200.0
+            },
             "exc": {
                 "norad": {
                     "normfac": 57147000.0
@@ -8,17 +11,20 @@
             },
             "inc": {
                 "norad": {
-                    "normfac": 143192000000.0
+                    "normfac": 143231000000.0
                 },
                 "rad": {
                     "normfac": 135999000000.0
                 }
             },
             "rho": {
-                "normfac": 975230000.0
+                "normfac": 975761000.0
             }
         },
         "pos": {
+            "delta": {
+                "normfac": 69267200.0
+            },
             "exc": {
                 "norad": {
                     "normfac": 57259200.0
@@ -33,7 +39,7 @@
                 }
             },
             "rho": {
-                "normfac": 975230000.0
+                "normfac": 975761000.0
             }
         }
     }

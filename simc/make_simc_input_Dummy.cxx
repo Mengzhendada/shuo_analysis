@@ -41,7 +41,7 @@ void make_simc_input_Dummy(int RunGroup = 0){
     int RunNumber = neg_Dummy[0];
     std::cout<<"Using infos for Run "<<RunNumber<<std::endl;
   //variables to change
-  int ngen = 100000; 
+  int ngen = 10000; 
   //inclusive rad 100k, inclusive norad 50k, exclusive rad 30k
   double charge = 1.0;
   double Ebeam;
