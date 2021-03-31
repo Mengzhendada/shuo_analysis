@@ -12,7 +12,7 @@
     }
     json j_yield;
     {
-      std::ifstream ifs("results/yield/runs_info.json");
+      std::ifstream ifs("db2/runs_info.json");
       ifs>>j_yield;
     }
     for(auto it = j_te.begin();it!=j_te.end();it++){
@@ -45,7 +45,7 @@
         }//if is digit 
       }//pos runs
     }//file rungroups
-    std::ofstream outfile("results/yield/runs_info_te.json");
+    std::ofstream outfile("results/yield/runs_info.json");
     outfile<<j_yield.dump(4)<<std::endl;
     return 0;
   }//all

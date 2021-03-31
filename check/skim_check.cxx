@@ -161,6 +161,9 @@ void skim_check(int RunGroup=0){
       auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq - ph;
       return Ptot.Dot(Ptot);
     };
+    auto Mx2 = [](Pvec4D& pq,Pvec4D& ph, double pmiss){
+      return (M_P + pq.E()-ph.E())*(M_P + pq.E()-ph.E())-abs(pmiss)*abs(pmiss);
+    }
     auto W2 = [](Pvec4D& pq) {
       auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq;
       return Ptot.Dot(Ptot);
@@ -341,12 +344,13 @@ void skim_check(int RunGroup=0){
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
         //.Snapshot("T",skim_name.c_str());
-        //.Define("pmiss","P.kin.secondary.pmiss")
+        .Define("pmiss","P.kin.secondary.pmiss")
+        .Define("Mx2",Mx2,{"p_q","p_pion","P.kin.secondary.pmiss"})
         ;
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
       opts.fMode = "UPDATE";
-      d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
+      d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","Mx2","pmiss","weight"});
       //d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       //d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass"},"RECREATE");
       std::cout<<"check"<<std::endl;
@@ -406,10 +410,11 @@ void skim_check(int RunGroup=0){
         .Define("InvMass","p_electron.Dot(p_pion)")
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
-        //.Define("pmiss","P.kin.secondary.pmiss")
+        .Define("Mx2",Mx2,{"p_q","p_pion","P.kin.secondary.pmiss"})
+        .Define("pmiss","P.kin.secondary.pmiss")
         ;
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str());
-      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"},opts);
+      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","pmiss","Mx2","weight"},opts);
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_pos_bg = d_pos_bg.Histo1D({"","pos bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
@@ -650,12 +655,13 @@ void skim_check(int RunGroup=0){
         //.Define("InvMass_pions","p_pion_HMS.Dot(p_pion)")
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
-        //.Define("pmiss","P.kin.secondary.pmiss")
+        .Define("pmiss","P.kin.secondary.pmiss")
+        .Define("Mx2",Mx2,{"p_q","p_pion","P.kin.secondary.pmiss"})
         ;
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
       opts.fMode = "UPDATE";
-      d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
+      d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","Mx2","pmiss","weight"});
       //d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       //d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass"},"RECREATE");
       std::cout<<"check"<<std::endl;
@@ -715,10 +721,11 @@ void skim_check(int RunGroup=0){
         .Define("InvMass","p_electron.Dot(p_pion)")
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
-        //.Define("pmiss","P.kin.secondary.pmiss")
+        .Define("Mx2",Mx2,{"p_q","p_pion","P.kin.secondary.pmiss"})
+        .Define("pmiss","P.kin.secondary.pmiss")
         ;
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str());
-      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"},opts);
+      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","Mx2","pmiss","weight"},opts);
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_neg_bg = d_neg_bg.Histo1D({"","neg bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 

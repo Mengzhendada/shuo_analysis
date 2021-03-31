@@ -15,3 +15,31 @@ This is for detector efficiency. Nov.30,2020
    3. select cal cut and cer cut that I wan to use, then plot the efficiency vs different runnumber. Or versus different run momentum,RunGroup
      #HMS_DE_compare.cxx
      This script not only draw different graphs verses different x axis variable, it alse prints de infos into runs_info.json
+
+2021 Feb. 
+SHMS_hgcer.cxx: This plots hgcer eff vs delta, and 2d plots xatcer yatcer
+
+     2021 March update
+mainly for rftime cut
+1.SHMS_RF_twofit.cxx: this one plot the rftiming 4.008, it move pion peak at 1 and calculate kaon peak depending on the momentum. Then it did two gaussian fit on the rftiming plot, pion gassian and kaon gaussian. It has Kaon cut (HGC less than 2) to cut pions and pop kaons,from this fit I can get kaon sigma. Then plot rftiming without HGC cut, fit kaon with same sigma. Since there are more kplus than kminus, I'm using same sigma for kminus as kplus. It will estimate pi eff, pions included in the rftiming cut for pi gaussian. and the kaon contanmination, kaon fitting integral inside the rftime cut over pi fit integral inside the rftime cut. This script will print rftiming plots with two fitting on it. This one saves number infos in results/pid/rftime/rf_eff_Rungroup.json 
+
+2.SHMS_RF_twofit_high.cxx: This is updated 1 script. This one separated different delta region, so for each delta region, the particle momentum covers less range so it won't spread that much in rftiming plot. This one also save the number infos in results/pid/rftime/rf_eff_Rungroup_compare.json, it saves piNs,K_Ns,pi_all,rf_rights,rf_lefts, for different rftiming cuts
+
+3.SHMS_rf_cuts_compare_all.cxx: This one compares the infos from 1. script, it uses the jsons from 1. script, and plots the pieff and pi purity vs. rfcut right
+
+4.SHMS_rf_cuts_compare.cxx: This is updated 3. which compares the infos from 2. script. it plots six for six different delta region
+
+  3.1. SHMS_rf_compare.cxx: This script compares pi purity for one rftime cut vs different momentum(for each rungroup)
+  3.2. SHMS_rf_compare_delta.cxx: This script compares pi purity for one rftime cut vs different momentum(six delta regions plots for each rungroup)
+
+5.SHMS_rf_DE_choose.cxx: This one finds infos printed by 2. script. It tries to find which rftime right cut to use. It uses the one which has 99 percent pi eff. This one will print the choosen rf right position and corresponse left position and pieff pi purity in shuo_analysis/dbase/rf_eff.json
+
+######important outfile: rf_eff.json
+
+6.SHMS_rf_DE.cxx: This one will use infos from 5. rf_eff.json, assign the pieff and pipurity back to root tree and plot it vs delta
+
+7. rf_offset.cxx: This one finds rftime offset for each runnumber. This function was in skim_root.cxx, but I think it's better to separate. it prints the offset infos in results/yield/run_info/RunGroup.json. Need to use shuo_analysis/Yield/combine_json.cxx to combine all jsons into runs_info.json
+
+#######important outfile: runs_info.json
+#
+After this, should go to shuo_analysis/check/skim_root.cxx, this one uses pieff and pi purity infos to skim the rootfile
