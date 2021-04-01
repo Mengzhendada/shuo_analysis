@@ -58,7 +58,8 @@ void Total_live_time(int RunGroup = 0){
     for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
-      std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+      //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+      std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
       ROOT::RDataFrame d_pos_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
@@ -132,7 +133,8 @@ void Total_live_time(int RunGroup = 0){
     for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
-      std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+      //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+      std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
       ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
