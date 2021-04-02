@@ -119,6 +119,7 @@ int plot_Q2x_ratio_corr(){
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_neg_all += charge;
               double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
+              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               //double TE = 1;
               std::cout<<"neg TE check "<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
@@ -133,8 +134,8 @@ int plot_Q2x_ratio_corr(){
               h_z_neg_bg = (TH1D*)root_file_neg->Get("z_bg");
               //h_z_neg_all->Add(h_z_neg_bg,-1/(charge*TE));
               //h_z_neg_all->Add(h_z_neg,1/(charge*TE));
-              h_z_neg_bg_all->Add(h_z_neg_bg,1/(6*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_z_neg_all->Add(h_z_neg,1/(TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              h_z_neg_bg_all->Add(h_z_neg_bg,1/(6*TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              h_z_neg_all->Add(h_z_neg,1/(TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
             }//loop over neg runs
             for(auto it = pos_D2_runs.begin();it!=pos_D2_runs.end();++it){
               int RunNumber = *it;
@@ -142,6 +143,7 @@ int plot_Q2x_ratio_corr(){
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_all+=charge;
               double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
+              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               std::cout<<"pos TE check"<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
               double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
@@ -155,8 +157,8 @@ int plot_Q2x_ratio_corr(){
               h_z_pos_bg = (TH1D*)root_file_pos->Get("z_bg");
               //h_z_pos_all->Add(h_z_pos_bg,-1/(charge*TE));
               //h_z_pos_all->Add(h_z_pos,1/(charge*TE));
-              h_z_pos_bg_all->Add(h_z_pos_bg,1/(6*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_z_pos_all->Add(h_z_pos,1/(TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              h_z_pos_bg_all->Add(h_z_pos_bg,1/(6*TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              h_z_pos_all->Add(h_z_pos,1/(TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
             }//loop over pos runs
           }//if z not 0
           

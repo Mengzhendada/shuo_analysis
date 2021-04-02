@@ -95,6 +95,11 @@ void skim_check(int RunGroup=0){
   std::string Normal_SHMS = "P.gtr.th > "+std::to_string(P_xptar_low)+" && P.gtr.th < "+std::to_string(P_xptar_high)+" && P.gtr.ph > "+std::to_string(P_yptar_low)+" && P.gtr.ph < "+std::to_string(P_yptar_high); 
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
+  double W2_cut_num = j_cuts["W2"].get<double>();
+  std::string W2_cut = "W2 > "+std::to_string(W2_cut_num);
+  double Mx2_cut_num = j_cuts["Mx2"].get<double>();
+  std::string Mx2_cut = "Mx2>"+std::to_string(Mx2_cut_num);
+  //auto Mx2_cut = [=](double Mx2){return Mx2>Mx2_cut_num;};
   //json jout;
   //{
   //  std::string if_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
@@ -161,9 +166,9 @@ void skim_check(int RunGroup=0){
       auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq - ph;
       return Ptot.Dot(Ptot);
     };
-    auto Mx2 = [](Pvec4D& pq,Pvec4D& ph, double pmiss){
-      return (M_P + pq.E()-ph.E())*(M_P + pq.E()-ph.E())-abs(pmiss)*abs(pmiss);
-    }
+    auto Mx2 = [](double nu,Pvec4D& ph, double pmiss){
+      return (M_P + nu -ph.E())*(M_P + nu -ph.E())-abs(pmiss)*abs(pmiss);
+    };
     auto W2 = [](Pvec4D& pq) {
       auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq;
       return Ptot.Dot(Ptot);
@@ -318,13 +323,6 @@ void skim_check(int RunGroup=0){
       
       auto d_mod_first = d_pos_first
         .Define("diff_time_mod",[offset_pos](double difftime){return std::fmod(difftime+offset_pos,4.008);},{"fptime_minus_rf"})
-        ;
-      auto h_diff_mod_pos = d_mod_first.Histo1D({"mod","mod pos",100,0,4.008},"diff_time_mod");
-      std::string skim_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
-      auto d_pos_pi = d_mod_first
-      //  .Filter(
-      //      [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         .Define("Pi_eff",Get_pi_eff,{"P.gtr.dp"})
         .Define("Pi_purity",Get_pi_purity,{"P.gtr.dp"})
         .Define("weight","Pi_purity/Pi_eff")
@@ -345,7 +343,16 @@ void skim_check(int RunGroup=0){
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
         //.Snapshot("T",skim_name.c_str());
         .Define("pmiss","P.kin.secondary.pmiss")
-        .Define("Mx2",Mx2,{"p_q","p_pion","P.kin.secondary.pmiss"})
+        .Define("Mx2",Mx2,{"H.kin.primary.nu","p_pion","P.kin.secondary.pmiss"})
+        ;
+      auto h_diff_mod_pos = d_mod_first.Histo1D({"mod","mod pos",100,0,4.008},"diff_time_mod");
+      std::string skim_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
+      auto d_pos_pi = d_mod_first
+      //  .Filter(
+      //      [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
+        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        .Filter(Mx2_cut)
+        .Filter(W2_cut)
         ;
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
@@ -388,10 +395,6 @@ void skim_check(int RunGroup=0){
       auto d_pos_forbg = d_pos_run
         .Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
-        ;
-      auto h_difftime_forbg = d_pos_forbg.Histo1D({"","diff for bg",100,0,4.008},"diff_time_mod");
-      auto d_pos_bg  = d_pos_forbg
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         .Define("Pi_eff",Get_pi_eff,{"P.gtr.dp"})
         .Define("Pi_purity",Get_pi_purity,{"P.gtr.dp"})
         .Define("weight","Pi_purity/Pi_eff")
@@ -410,8 +413,14 @@ void skim_check(int RunGroup=0){
         .Define("InvMass","p_electron.Dot(p_pion)")
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
-        .Define("Mx2",Mx2,{"p_q","p_pion","P.kin.secondary.pmiss"})
+        .Define("Mx2",Mx2,{"H.kin.primary.nu","p_pion","P.kin.secondary.pmiss"})
         .Define("pmiss","P.kin.secondary.pmiss")
+        ;
+      auto h_difftime_forbg = d_pos_forbg.Histo1D({"","diff for bg",100,0,4.008},"diff_time_mod");
+      auto d_pos_bg  = d_pos_forbg
+        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        .Filter(Mx2_cut)
+        .Filter(W2_cut)
         ;
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str());
       d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","pmiss","Mx2","weight"},opts);
@@ -495,6 +504,14 @@ void skim_check(int RunGroup=0){
       std::string c_pos_time_diff_name = "results/yield/check/time_diff_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_time_diff->SaveAs(c_pos_time_diff_name.c_str());
 
+      TCanvas* c_pos_mx2 = new TCanvas();
+      auto h_Mx2_pos_before = d_mod_first.Histo1D({"","",100,0,5},"Mx2"); 
+      auto h_Mx2_pos_after = d_pos_pi.Histo1D({"","",100,0,5},"Mx2"); 
+      h_Mx2_pos_after->SetLineColor(kRed);
+      h_Mx2_pos_before->DrawCopy("hist");
+      h_Mx2_pos_after->DrawCopy("hist same");
+      std::string c_pos_mx2_name = "results/yield/check/mx2_"+std::to_string(RunNumber)+"_pos.pdf";
+      c_pos_mx2->SaveAs(c_pos_mx2_name.c_str());
 
 
       int bg_counts = *d_pos_bg.Count()/6;
@@ -630,13 +647,6 @@ void skim_check(int RunGroup=0){
         //.Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
         //.Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
         .Define("diff_time_mod",[offset_neg](double difftime){return std::fmod(difftime+offset_neg,4.008);},{"fptime_minus_rf"})
-        ;
-      auto h_diff_mod_neg = d_mod_first.Histo1D({"mod","mod neg",100,0,4.008},"diff_time_mod");
-      std::string skim_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
-      auto d_neg_pi = d_mod_first
-        //.Filter(
-        //    [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         .Define("Pi_eff",Get_pi_eff,{"P.gtr.dp"})
         .Define("Pi_purity",Get_pi_purity,{"P.gtr.dp"})
         .Define("weight","Pi_purity/Pi_eff")
@@ -656,7 +666,16 @@ void skim_check(int RunGroup=0){
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
         .Define("pmiss","P.kin.secondary.pmiss")
-        .Define("Mx2",Mx2,{"p_q","p_pion","P.kin.secondary.pmiss"})
+        .Define("Mx2",Mx2,{"H.kin.primary.nu","p_pion","P.kin.secondary.pmiss"})
+        ;
+      auto h_diff_mod_neg = d_mod_first.Histo1D({"mod","mod neg",100,0,4.008},"diff_time_mod");
+      std::string skim_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
+      auto d_neg_pi = d_mod_first
+        //.Filter(
+        //    [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
+        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        .Filter(Mx2_cut)
+        .Filter(W2_cut)
         ;
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
@@ -699,10 +718,6 @@ void skim_check(int RunGroup=0){
       auto d_neg_forbg = d_neg_run
         .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
         .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
-        ;
-      auto h_difftime_forbg = d_neg_forbg.Histo1D({"","diff for bg",100,0,4.008},"diff_time_mod");
-      auto d_neg_bg  = d_neg_forbg
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         .Define("Pi_eff",Get_pi_eff,{"P.gtr.dp"})
         .Define("Pi_purity",Get_pi_purity,{"P.gtr.dp"})
         .Define("weight","Pi_purity/Pi_eff")
@@ -721,8 +736,14 @@ void skim_check(int RunGroup=0){
         .Define("InvMass","p_electron.Dot(p_pion)")
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
-        .Define("Mx2",Mx2,{"p_q","p_pion","P.kin.secondary.pmiss"})
+        .Define("Mx2",Mx2,{"H.kin.primary.nu","p_pion","P.kin.secondary.pmiss"})
         .Define("pmiss","P.kin.secondary.pmiss")
+        ;
+      auto h_difftime_forbg = d_neg_forbg.Histo1D({"","diff for bg",100,0,4.008},"diff_time_mod");
+      auto d_neg_bg  = d_neg_forbg
+        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        .Filter(Mx2_cut)
+        .Filter(W2_cut)
         ;
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str());
       d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","Mx2","pmiss","weight"},opts);
@@ -806,7 +827,14 @@ void skim_check(int RunGroup=0){
       std::string c_neg_time_diff_name = "results/yield/check/time_diff_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_time_diff->SaveAs(c_neg_time_diff_name.c_str());
 
-
+      TCanvas* c_neg_mx2 = new TCanvas();
+      auto h_Mx2_neg_before = d_mod_first.Histo1D({"","",100,0,5},"Mx2"); 
+      auto h_Mx2_neg_after = d_neg_pi.Histo1D({"","",100,0,5},"Mx2"); 
+      h_Mx2_neg_after->SetLineColor(kRed);
+      h_Mx2_neg_before->DrawCopy("hist");
+      h_Mx2_neg_after->DrawCopy("hist same");
+      std::string c_neg_mx2_name = "results/yield/check/mx2_"+std::to_string(RunNumber)+"_neg.pdf";
+      c_neg_mx2->SaveAs(c_neg_mx2_name.c_str());
 
       int bg_counts = *d_neg_bg.Count()/6;
       std::cout<<"bg counts "<<bg_counts<<std::endl;

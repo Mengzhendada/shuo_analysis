@@ -27,7 +27,7 @@ using namespace std;
 //double Eb = 10.6;
 using Pvec3D = ROOT::Math::XYZVector;
 using Pvec4D = ROOT::Math::PxPyPzMVector;
-
+constexpr const double M_P = 0.938272;
 void statistic_runs_D2_sim(int RunGroup = 0){
 
   if(RunGroup ==0){
@@ -39,7 +39,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     auto z = [](float pq, float ph) {
       return ph/pq;
     };
-
+    auto Mx2 = [](float nu,float z,float pmiss){
+      return (M_P+nu - z*nu)*(M_P+nu - z*nu) -abs(pmiss)*abs(pmiss);
+    };
   json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -89,6 +91,11 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   std::string Normal_yptar_SHMS_sim = "ssyptar>"+std::to_string(P_yptar_low)+"&& ssyptar < "+std::to_string(P_yptar_high);
   std::string Normal_yptar_HMS_sim = "hsyptar>"+std::to_string(H_yptar_low)+"&& hsyptar < "+std::to_string(H_yptar_high);
 
+  auto W2 = [](float W){return W*W;};
+  double W2_cut_num = j_cuts["W2"].get<double>();
+  std::string W2_cut = "W2 > "+std::to_string(W2_cut_num);
+  double Mx2_cut_num = j_cuts["Mx2"].get<double>();
+  std::string Mx2_cut = "Mx2>"+std::to_string(Mx2_cut_num);
 
   std::string D2_neg_inc_norad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.root";
   std::string D2_neg_inc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.root";
@@ -106,6 +113,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   //For inc norad
   ROOT::RDataFrame d_D2_neg_inc_norad_raw("h10",D2_neg_inc_norad_rootfile_name.c_str()); 
   ROOT::RDataFrame d_D2_pos_inc_norad_raw("h10",D2_pos_inc_norad_rootfile_name.c_str()); 
+  double nentries_D2_neg_inc_norad = *d_D2_neg_inc_norad_raw.Count();
+  double nentries_D2_pos_inc_norad = *d_D2_pos_inc_norad_raw.Count();
+  double normfac_D2_neg_inc_norad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["neg"]["inc"]["norad"]["normfac"].get<double>();
+  double normfac_D2_pos_inc_norad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["pos"]["inc"]["norad"]["normfac"].get<double>();
   auto d_D2_neg_inc_norad_1 = d_D2_neg_inc_norad_raw
     .Filter(Good_Track_SHMS_sim)
     .Filter(Good_Track_HMS_sim)
@@ -113,11 +124,11 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
-  double nentries_D2_neg_inc_norad = *d_D2_neg_inc_norad_raw.Count();
-
-  double normfac_D2_neg_inc_norad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["neg"]["inc"]["norad"]["normfac"].get<double>();
-  double normfac_D2_pos_inc_norad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["pos"]["inc"]["norad"]["normfac"].get<double>();
   double wfac_D2_neg_inc_norad = (normfac_D2_neg_inc_norad/nentries_D2_neg_inc_norad);
   //auto weight_calculate = [&](float weight){return wfac_D2_neg_inc_norad*weight;}
   //neg inc norad
@@ -129,12 +140,16 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
-  double nentries_D2_pos_inc_norad = *d_D2_pos_inc_norad_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_inc_norad<<std::endl;
   double wfac_D2_pos_inc_norad = (normfac_D2_pos_inc_norad/nentries_D2_pos_inc_norad);
   //pos inc norad
-  auto d_D2_pos_inc_norad = d_D2_pos_inc_norad_1.Define("weight_new",[wfac_D2_pos_inc_norad](float weight){return wfac_D2_pos_inc_norad*weight;},{"Weight"});
+  auto d_D2_pos_inc_norad = d_D2_pos_inc_norad_1.Define("weight_new",[wfac_D2_pos_inc_norad](float weight){return wfac_D2_pos_inc_norad*weight;},{"Weight"})
+    ;
 
   std::cout<<"normfac check "<<std::endl;
   
@@ -149,6 +164,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
     .Define("z",z,{"nu","phad"})
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
   double nentries_D2_neg_exc_rad = *d_D2_neg_exc_rad_raw.Count();
 
@@ -167,6 +186,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
     .Define("z",z,{"nu","phad"})
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
   double nentries_D2_pos_exc_rad = *d_D2_pos_exc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_exc_rad<<std::endl;
@@ -184,6 +207,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
   double nentries_D2_neg_inc_rad = *d_D2_neg_inc_rad_raw.Count();
 
@@ -201,6 +228,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
   double nentries_D2_pos_inc_rad = *d_D2_pos_inc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_inc_rad<<std::endl;
@@ -217,6 +248,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
   double nentries_D2_neg_rho = *d_D2_neg_rho_raw.Count();
 
@@ -234,6 +269,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
   double nentries_D2_pos_rho = *d_D2_pos_rho_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_rho<<std::endl;
@@ -250,6 +289,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
     .Define("z",z,{"nu","phad"})
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
   double nentries_D2_neg_delta = *d_D2_neg_delta_raw.Count();
 
@@ -268,6 +311,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
     .Define("z",z,{"nu","phad"})
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
     ;
   double nentries_D2_pos_delta = *d_D2_pos_delta_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_delta<<std::endl;

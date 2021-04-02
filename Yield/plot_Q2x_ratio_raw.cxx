@@ -187,6 +187,7 @@ int plot_Q2x_ratio_raw(){
           h_z_pos_yield->GetYaxis()->SetTitle("yield");
           h_z_pos_yield->GetYaxis()->SetTitleSize(0.53);
           h_z_pos_yield->GetXaxis()->SetRangeUser(0.3,1);
+          h_z_pos_yield->SetMarkerStyle(4);
           h_z_pos_yield->DrawCopy();
           //h_z_pos_bg_yield->SetLineColor(kOrange);
           //h_z_pos_bg_yield->GetXaxis()->SetRangeUser(0.3,1);
@@ -207,7 +208,8 @@ int plot_Q2x_ratio_raw(){
           h_z_neg_yield->GetYaxis()->SetTitle("yield");
           h_z_neg_yield->GetYaxis()->SetTitleSize(0.53);
           h_z_neg_yield->GetXaxis()->SetRangeUser(0.3,1);
-          h_z_neg_yield->DrawCopy("hist");
+          h_z_neg_yield->SetMarkerStyle(4);
+          h_z_neg_yield->DrawCopy();
           //h_z_neg_bg_yield->SetLineColor(kOrange);
           //h_z_neg_bg_yield->GetXaxis()->SetRangeUser(0.3,1);
           //h_z_neg_bg_yield->DrawCopy("hist same");

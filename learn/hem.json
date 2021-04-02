@@ -1,0 +1,127 @@
+{
+  "100":{
+     "Q2": ,
+     "x": ,
+     "z": ,
+     "shms_p": ,
+     "hms_P": ,
+     "shms_theta": ,
+     "neg":{
+       "D2": {
+         "add_rootfile": 6091,
+         "runs":[
+           6091,
+           6093,
+           6094,
+           6095,
+           6096
+         ]
+       },
+       "Dummy":{
+         "add_rootfile": 6097
+          "runs":[
+            97,
+            98
+          ]
+       }
+       "H2":{}
+     },
+     "pos":{
+       "D2":{},
+       "Dummy":{},
+       "H2":
+     }
+  },
+  "120":{},
+  "130":{}
+}
+
+
+{
+  "100":{
+    "neg":{
+      "D2":{
+         "6091":{
+           "1_current_cut_charge": 12,
+           "charge_unit": mC,
+           "HMScalEff": 0.99,
+             "TE": 0.97,
+         }
+         "6093":{},
+      }
+    }
+  }
+
+}
+
+
+void Hemscript(int Rungroup = 0){
+  if (RUngroup == 0) 
+  //ask which rungroup do you want to analysis
+  {  
+    std::cout<<"Enter Rungroup that you want to analysis";
+    std::cin>>Rungroup;
+  }
+    
+  json j_rungroup;
+  {
+    std::ifstream ifs("Path/to/Hem's json filename");
+    ifs>>j_rungroup;
+  }
+  std::vector<int> several rungroup = {100,110,120,130,140,150,........450};
+
+
+  TMultiGraph* mg_all;
+  
+  for(loop several rungroup){
+    TGraphError* g_neg_D2;
+    int neg_D2 = j_rungroup[(std::to_stVring(Rungroup)).c_str()]["neg"]["D2"]["addrootfile"].get<int>();
+  std::string neg_D2_rootfile_name = "Path/to/added_"+std::to_string(neg_D2)+".rootfile"
+  TFile* neg_D2_rootfile = TFile("T",neg_D2_rootfile_name);
+  //whatever next
+  //TBranch Set Branch address ......
+    TGraphError* pos_D2;
+  int pos_D2 = j_rungroup[(std::to_stVring(Rungroup)).c_str()]["pos"]["D2"]["addrootfile"].get<int>();
+  std::string pos_D2_rootfile_name = "Path/to/added_"+std::to_string(pos_D2)+".rootfile"
+    TGraphError* pos_Dummy;
+  int pos_Dummy = j_rungroup[(std::to_stVring(Rungroup)).c_str()]["pos"]["Dummy"]["addrootfile"].get<int>();
+  std::string pos_Dummy_rootfile_name = "Path/to/added_"+std::to_string(pos_Dummy)+".rootfile"
+    neg_D2->setmarkerstyle/color/size
+    mg_all->Add(neg_D2,"P");
+    mg_all->Add(pos_D2,"P");
+    mg_all->Add(pos_Dummy,"P");
+  
+  }
+  TCanvas c
+    mg_all->Draw("AP");
+    //  std::vector<int> rungroup = j_rungroup[]
+}
+
+void Hem_copyshuojson(){
+  json j_shuo;
+  {
+    std::ifstream ifs{"Path/to/shuojison"};
+    ifs>>j_shuo;
+  }
+  json j_Hem;
+
+  //loop over shuo's json
+  for(auto it = j_shuo.begin();it!=j_shuo.end();++it){
+     std::cout<<it.key()<<std::endl;
+     int Rungroup = std::stoi(it.key());
+     auto runjs = it.value();
+     double Q2 = runjs["Q2"].get<double>();
+     std::cout<<Q2<<std::endl;
+     std::vector<int> neg_D2 = runjs["neg"]["D2"].get<std::vector<int>>();
+     std::cout<<" first run in neg D2 "<<neg_D2[0]<<std::endl;
+     j_Hem[(std::to_string(Rungroup))]["Q2"] = Q2;
+     j_Hem[(std::to_string(Rungroup))]["neg"]["D2"] = neg_D2 ;
+     j_Hem[(std::to_string(Rungroup))]["neg"]["D2_added_rootfile"] = neg_D2[0] ;
+//x,z,pos d2,posdummy,h2.....
+  
+  }
+  //save Hem's json
+  std::ofstream ofs("Hemjson.json");
+  ofs<<j_Hem.dump(4)<<std::endl;
+
+}
