@@ -81,8 +81,11 @@ void shms_TE(int RunGroup = 0){
   ROOT::RDataFrame d_neg_raw("T",files_neg);
   ROOT::RDataFrame d_pos_raw("T",files_pos);
 
-  auto h_cointime_raw_pos = d_pos_raw.Histo1D({"","cointime pos",100,20,40},"CTime.CoinTime_RAW_ROC2");
-  auto h_cointime_raw_neg = d_neg_raw.Histo1D({"","cointime neg",100,20,40},"CTime.CoinTime_RAW_ROC2");
+  d_neg_raw.Define("cointime_raw",[](double pTRIG1,double pTRIG4,double pstarttime,double hstarttime){return (pTRIG1+pstarttime)-(pTRIG4+hstarttime);},{"T.coin.pTRIG1_ROC2_tdcTime","T.coin.pTRIG4_ROC2_tdcTime","P.hod.starttime","H.hod.starttime"});
+  d_pos_raw.Define("cointime_raw",[](double pTRIG1,double pTRIG4,double pstarttime,double hstarttime){return (pTRIG1+pstarttime)-(pTRIG4+hstarttime);},{"T.coin.pTRIG1_ROC2_tdcTime","T.coin.pTRIG4_ROC2_tdcTime","P.hod.starttime","H.hod.starttime"});
+
+  auto h_cointime_raw_pos = d_pos_raw.Histo1D({"","cointime pos",100,20,40},"cointime_raw");
+  auto h_cointime_raw_neg = d_neg_raw.Histo1D({"","cointime neg",100,20,40},"cointime_raw");
   auto h_cal_raw_pos = d_pos_raw.Histo1D({"","etot pos",100,0.01,2},"P.cal.etotnorm");
   auto h_cal_raw_neg = d_neg_raw.Histo1D({"","etot neg",100,0.01,2},"P.cal.etotnorm");
   auto h_hodo_goodscin_pos = d_pos_raw.Histo1D({"","goodscin pos",2,0,2},"P.hod.goodscinhit");
@@ -136,12 +139,12 @@ void shms_TE(int RunGroup = 0){
   c_dc->SaveAs(c_dc_name.c_str());
   
   double cointime_low,cointime_high;
-  cointime_low = 28;
-  cointime_high = 32;
+  cointime_low = 30;
+  cointime_high = 50;
   auto d_pos_calcut = d_pos_raw.Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
     .Filter([](double aero){return aero>2;},{"P.aero.npeSum"})
     ;
-  auto h_cointime_pi_pos = d_pos_calcut.Histo1D({"","cointime pos",100,20,40},"CTime.CoinTime_RAW_ROC2");
+  auto h_cointime_pi_pos = d_pos_calcut.Histo1D({"","cointime pos",100,20,50},"cointime_raw");
   auto h_goodscin_pi_pos = d_pos_calcut.Histo1D({"","good scin pos",2,0,2},"P.hod.goodscinhit");
   TCanvas* c_coin_pi = new TCanvas();
   c_coin_pi->Divide(1,2);
@@ -154,7 +157,7 @@ void shms_TE(int RunGroup = 0){
 
   auto d_pos_pi_hod = d_pos_raw
     .Filter("P.hod.goodscinhit==1")
-    .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"CTime.CoinTime_RAW_ROC2"})
+    .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
     .Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
     .Filter("P.aero.npeSum > 2")
     .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"P.hod.betanotrack"})
@@ -188,7 +191,7 @@ void shms_TE(int RunGroup = 0){
 
   auto d_neg_pi_hod = d_neg_raw
     .Filter("P.hod.goodscinhit==1")
-    .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"CTime.CoinTime_RAW_ROC2"})
+    .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
     .Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
     .Filter("P.aero.npeSum > 2")
     .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"P.hod.betanotrack"})
@@ -229,13 +232,13 @@ void shms_TE(int RunGroup = 0){
   double  neg_pi_found_3 = *d_neg_pi_dc_3.Count();
   double neg_all = *d_neg_raw.Count();
   double pos_all = *d_pos_raw.Count();
-  j_out[(std::to_string(RunGroup)).c_str()]["neg"]["counts"] = neg_all;
-  j_out[(std::to_string(RunGroup)).c_str()]["pos"]["counts"] = pos_all;
   json j_out;
-  
+  { 
     std::ifstream ifs("results/TE/trackingeff_info.json");
     ifs>>j_out;
-  
+  }
+  j_out[(std::to_string(RunGroup)).c_str()]["neg"]["counts"] = neg_all;
+  j_out[(std::to_string(RunGroup)).c_str()]["pos"]["counts"] = pos_all;
   j_out[(std::to_string(RunGroup)).c_str()]["pos"]["SHMS_pi_expected"] = pos_pi_expected;
   j_out[(std::to_string(RunGroup)).c_str()]["pos"]["SHMS_pi_found_1"] = pos_pi_found;
   j_out[(std::to_string(RunGroup)).c_str()]["pos"]["SHMS_pi_found_2"] = pos_pi_found_2;

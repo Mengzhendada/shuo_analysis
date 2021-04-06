@@ -71,7 +71,8 @@ R__LOAD_LIBRARY(libGenVector.so)
         std::cout<<RunNumber<<std::endl;
         std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
         ROOT::RDataFrame d_neg_raw("T",rootfile_name);
-        //auto h_cointime_raw_neg = d_neg_raw.Histo1D({"","cointime neg",100,20,40},"CTime.CoinTime_RAW_ROC2");
+  d_neg_raw.Define("cointime_raw",[](double pTRIG1,double pTRIG4,double pstarttime,double hstarttime){return (pTRIG1+pstarttime)-(pTRIG4+hstarttime);},{"T.coin.pTRIG1_ROC2_tdcTime","T.coin.pTRIG4_ROC2_tdcTime","P.hod.starttime","H.hod.starttime"});
+        //auto h_cointime_raw_neg = d_neg_raw.Histo1D({"","cointime neg",100,20,40},"cointime_raw");
         //auto h_cal_raw_neg = d_neg_raw.Histo1D({"","etot neg",100,0.01,2},"P.cal.etotnorm");
         //auto h_hodo_goodscin_neg = d_neg_raw.Histo1D({"","goodscin neg",2,0,2},"P.hod.goodscinhit");
         //auto h_hod_betanotrack_neg = d_neg_raw.Histo1D({"","betanotrk neg",100,0,1.2},"P.hod.betanotrack");
@@ -93,8 +94,8 @@ R__LOAD_LIBRARY(libGenVector.so)
         
         auto d_neg_pi_hod = d_neg_raw
           .Filter("P.hod.goodscinhit==1")
-        //  .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"CTime.CoinTime_RAW_ROC2"})
-          .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"CTime.CoinTime_RAW_ROC2"})
+        //  .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
+          .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
           .Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
           .Filter("P.aero.npeSum > 2")
           .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"P.hod.betanotrack"})
@@ -121,7 +122,8 @@ R__LOAD_LIBRARY(libGenVector.so)
         std::cout<<RunNumber<<std::endl;
         std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
         ROOT::RDataFrame d_pos_raw("T",rootfile_name);
-        //auto h_cointime_raw_pos = d_pos_raw.Histo1D({"","cointime pos",100,20,40},"CTime.CoinTime_RAW_ROC2");
+  d_pos_raw.Define("cointime_raw",[](double pTRIG1,double pTRIG4,double pstarttime,double hstarttime){return (pTRIG1+pstarttime)-(pTRIG4+hstarttime);},{"T.coin.pTRIG1_ROC2_tdcTime","T.coin.pTRIG4_ROC2_tdcTime","P.hod.starttime","H.hod.starttime"});
+        //auto h_cointime_raw_pos = d_pos_raw.Histo1D({"","cointime pos",100,20,40},"cointime_raw");
         //auto h_cal_raw_pos = d_pos_raw.Histo1D({"","etot pos",100,0.01,2},"P.cal.etotnorm");
         //auto h_hodo_goodscin_pos = d_pos_raw.Histo1D({"","goodscin pos",2,0,2},"P.hod.goodscinhit");
         //auto h_hod_betanotrack_pos = d_pos_raw.Histo1D({"","betanotrk pos",100,0,1.2},"P.hod.betanotrack");
@@ -144,7 +146,7 @@ R__LOAD_LIBRARY(libGenVector.so)
         }
         auto d_pos_pi_hod = d_pos_raw
           .Filter("P.hod.goodscinhit==1")
-          .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"CTime.CoinTime_RAW_ROC2"})
+          .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
           .Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
           .Filter("P.aero.npeSum > 2")
           .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"P.hod.betanotrack"})
