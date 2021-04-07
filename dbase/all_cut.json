@@ -8,7 +8,7 @@
     "H_xptar_high": 0.06,
     "H_yptar_low": -0.022,
     "H_yptar_high": 0.022,
-    "P_aero": 4,
+    "P_aero": 2,
     "P_hgcer": 0.5,
     "P_cal_pi_high": 0.85,
     "P_cal_pi_low": 0.05,
@@ -27,5 +27,7 @@
     "random_bg_left_low": -7,
     "random_bg_left_high": -1,
     "random_bg_right_low": 3,
-    "random_bg_right_high": 9
+    "random_bg_right_high": 9,
+    "Mx2": 1.6, 
+    "W2": 4
 }
