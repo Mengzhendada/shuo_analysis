@@ -17,7 +17,7 @@ using json = nlohmann::json;
 #include <vector>
 #include <map>
 
-int plot_Q2x_ratio_raw(){
+int plot_Q2x_ratio_corr(){
   json j_Q2x;
   {
     std::ifstream runs("db2/kin_group_xQ2z.json");
@@ -25,7 +25,7 @@ int plot_Q2x_ratio_raw(){
   }
   json j_info;
   {
-    std::ifstream ifs("results/yield/runs_info.json");
+    std::ifstream ifs("db2/runs_info.json");
     ifs>>j_info;
   }
   int coolcolor[11] = {4,3,7,39,38,37,36,35,34,33,32};
@@ -79,6 +79,7 @@ int plot_Q2x_ratio_raw(){
             
           int RunGroup = runjs["group_num"].get<int>();
           std::cout<<"RunGroup "<<RunGroup<<std::endl;
+          
           TFile *rootfile_neg_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
           TH1D *h_z_neg_sim = new TH1D("","neg sim sum",100,0,1);
           TH1D *h_z_neg_sim_incrad = new TH1D("","neg sim inc rad",100,0,1);
@@ -107,16 +108,16 @@ int plot_Q2x_ratio_raw(){
           h_z_pos_sim->Add(h_z_pos_sim_excrad,1);
           h_z_pos_sim->Add(h_z_pos_sim_rho,1);
           h_z_pos_sim->Add(h_z_pos_sim_delta,1);
+          
           double charge_neg_all = 0,charge_pos_all=0;
           if(z!=0){
             neg_D2_runs = runjs["neg"]["D2"].get<std::vector<int>>();
             pos_D2_runs = runjs["pos"]["D2"].get<std::vector<int>>();
             for(auto it = neg_D2_runs.begin();it!=neg_D2_runs.end();++it){
               int RunNumber = *it;
-              //std::cout<<RunNumber<<std::endl;
+              std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_neg_all += charge;
-              //double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
               double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
               double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               //double TE = 1;
@@ -138,19 +139,17 @@ int plot_Q2x_ratio_raw(){
             }//loop over neg runs
             for(auto it = pos_D2_runs.begin();it!=pos_D2_runs.end();++it){
               int RunNumber = *it;
-              //std::cout<<RunNumber<<std::endl;
+              std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_all+=charge;
-              //double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
               double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
               double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              //double TE = 1;
-              std::cout<<"neg TE check "<<std::endl;
+              std::cout<<"pos TE check"<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
               double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              std::cout<<"neg DE check "<<std::endl;
+              std::cout<<"pos DE check"<<std::endl;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_z_pos = new TH1D("","",100,0,1);
               h_z_pos = (TH1D*)root_file_pos->Get("z");
@@ -162,8 +161,6 @@ int plot_Q2x_ratio_raw(){
               h_z_pos_all->Add(h_z_pos,1/(TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
             }//loop over pos runs
           }//if z not 0
-          //h_z_neg_sim->Scale(1/charge_neg_all);
-          //h_z_pos_sim->Scale(1/charge_pos_all);
           
           TCanvas *c_counts_pos = new TCanvas();
           h_z_pos_all->GetYaxis()->SetTitle("counts");
@@ -190,15 +187,16 @@ int plot_Q2x_ratio_raw(){
 
           h_z_neg_bg_all->Scale(1/charge_neg_all);
           h_z_pos_bg_all->Scale(1/charge_pos_all);
-          
+        
           //bg subtracted
           h_z_neg_all->Add(h_z_neg_bg_all,-1.0);
           h_z_pos_all->Add(h_z_pos_bg_all,-1.0);
-          
+
           auto h_z_neg_yield = h_z_neg_all;
           auto h_z_neg_bg_yield = h_z_neg_bg_all;
           auto h_z_pos_yield = h_z_pos_all;
           auto h_z_pos_bg_yield = h_z_pos_bg_all;
+
           TCanvas *c_yield_pos = new TCanvas();
           h_z_pos_yield->GetYaxis()->SetTitle("yield");
           h_z_pos_yield->GetYaxis()->SetTitleSize(0.53);
@@ -217,9 +215,12 @@ int plot_Q2x_ratio_raw(){
           h_z_pos_sim_rho->DrawCopy("hist same");
           h_z_pos_sim_delta->SetLineColor(6);
           h_z_pos_sim_delta->DrawCopy("hist same");
+          c_yield_pos->BuildLegend(0.75,0.75,1,1);
           std::string c_yield_pos_name = "results/yield/statistics_corr/yield_"+q2xz_str+"_pos.png";
           c_yield_pos->SaveAs(c_yield_pos_name.c_str());
           
+          //h_z_neg_all->Rebin(2);
+          //h_z_pos_all->Rebin(2);
           TCanvas *c_yield_neg = new TCanvas();
           h_z_neg_yield->GetYaxis()->SetTitle("yield");
           h_z_neg_yield->GetYaxis()->SetTitleSize(0.53);
@@ -238,6 +239,7 @@ int plot_Q2x_ratio_raw(){
           h_z_neg_sim_rho->DrawCopy("hist same");
           h_z_neg_sim_delta->SetLineColor(6);
           h_z_neg_sim_delta->DrawCopy("hist same");
+          c_yield_neg->BuildLegend(0.75,0.75,1,1);
           std::string c_yield_neg_name = "results/yield/statistics_corr/yield_"+q2xz_str+"_neg.png";
           c_yield_neg->SaveAs(c_yield_neg_name.c_str());
 
@@ -281,7 +283,7 @@ int plot_Q2x_ratio_raw(){
           
           int nbins_sim = h_z_neg_sim->GetXaxis()->GetNbins();
           TGraphErrors* g_yield_ratio_sim = new TGraphErrors();
-          std::string z_string_sim = "z sim "+(std::to_string(z)).substr(0,4);
+          std::string z_string_sim = "z simc "+(std::to_string(z)).substr(0,4);
           g_yield_ratio_sim->SetName(z_string_sim.c_str());
           //TGraphErrors* g_yield_ratio_sim = new TGraphErrors(h_z_neg_sim);
          int ii_sim = 0;
@@ -329,7 +331,7 @@ int plot_Q2x_ratio_raw(){
           //hs->Add(h_z_neg_all);
           //h_z_neg_all->Draw("same");
           mg->Add(g_yield_ratio,"P");
-          //mg->Add(g_yield_ratio_sim,"P");
+          mg->Add(g_yield_ratio_sim,"P");
           i_color++;
           //c_Q2x_ratio->Update();
       
@@ -363,8 +365,8 @@ int plot_Q2x_ratio_raw(){
       mg->GetYaxis()->SetLabelSize(0.05);
       mg->SetMinimum(0.1);
       mg->SetMaximum(1.2);
-      mg->GetXaxis()->SetLimits(0.3,1);
       mg->Draw("A");
+      mg->GetXaxis()->SetLimits(0.3,1);
       //auto hermes_RD = [](double z){return ((1.0-z)*0.083583)/((1.0+z)*1.988);};
       //TF1 *fit = new TF1("HERMES","(1.0-x)**0.083583/(1.0+x)**1.9838",0,1);
       //fit->Draw("same");
