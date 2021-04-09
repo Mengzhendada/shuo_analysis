@@ -18,11 +18,11 @@ void make_latex(){
        auto j_z = i_Q2.value();
 
       if(xbj!=0 && Q2!=0){
-        std::string q2x_str = "{x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"}";
+        std::string q2x_str = "{x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4)+"}";
       std::vector<std::string> counts_z_name;
       for(json::iterator i_z = j_z.begin();i_z!=j_z.end();++i_z){
         double z = std::stod(i_z.key());
-        std::string q2xz_str = "{x_Q2_z_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"_"+std::to_string(z).substr(0,4)+"}";
+        std::string q2xz_str = "{x_Q2_z_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4)+"_"+std::to_string(100*z).substr(0,2)+"}";
         counts_z_name.push_back(q2xz_str);
       }
       
