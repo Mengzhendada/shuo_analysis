@@ -38,7 +38,9 @@ int plot_Q2x_ratio_corr(){
       double Q2 = std::stod(it.key());
       auto j_z = it.value();
       std::string canvas_name = "x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5);
+      std::string canvas_filename = "x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4);
       std::string q2x_name = "x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"_yieldratio";
+      std::string q2x_filename = "x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4)+"_yieldratio";
       TCanvas *c_Q2x_ratio = new TCanvas("",q2x_name.c_str(),1900,1000);
       TH1D* h_neg_q2x = new TH1D("",(q2x_name).c_str(),100,0,1);
       TH1D* h_pos_q2x = new TH1D("",(q2x_name).c_str(),100,0,1);
@@ -49,6 +51,7 @@ int plot_Q2x_ratio_corr(){
         for(json::iterator it = j_z.begin();it!=j_z.end();++it){
           double z = std::stod(it.key());
           std::string q2xz_str = "x_Q2_z_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"_"+std::to_string(z).substr(0,4);
+          std::string q2xz_str_filename = "x_Q2_z_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4)+"_"+std::to_string(100*z).substr(0,2);
           TH1D* h_z_neg_all = new TH1D("","neg;z;",100,0,1);
           //THStack *h_z_neg_all = new THStack("","");  
           h_z_neg_all->GetXaxis()->SetTitle("z");
@@ -120,6 +123,7 @@ int plot_Q2x_ratio_corr(){
               charge_neg_all += charge;
               double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
               double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
+              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
               //double TE = 1;
               std::cout<<"neg TE check "<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
@@ -134,8 +138,8 @@ int plot_Q2x_ratio_corr(){
               h_z_neg_bg = (TH1D*)root_file_neg->Get("z_bg");
               //h_z_neg_all->Add(h_z_neg_bg,-1/(charge*TE));
               //h_z_neg_all->Add(h_z_neg,1/(charge*TE));
-              h_z_neg_bg_all->Add(h_z_neg_bg,1/(6*TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_z_neg_all->Add(h_z_neg,1/(TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              h_z_neg_bg_all->Add(h_z_neg_bg,1/(6*TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              h_z_neg_all->Add(h_z_neg,1/(TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
             }//loop over neg runs
             for(auto it = pos_D2_runs.begin();it!=pos_D2_runs.end();++it){
               int RunNumber = *it;
@@ -143,6 +147,7 @@ int plot_Q2x_ratio_corr(){
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_all+=charge;
               double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
+              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
               double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               std::cout<<"pos TE check"<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
@@ -157,8 +162,8 @@ int plot_Q2x_ratio_corr(){
               h_z_pos_bg = (TH1D*)root_file_pos->Get("z_bg");
               //h_z_pos_all->Add(h_z_pos_bg,-1/(charge*TE));
               //h_z_pos_all->Add(h_z_pos,1/(charge*TE));
-              h_z_pos_bg_all->Add(h_z_pos_bg,1/(6*TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_z_pos_all->Add(h_z_pos,1/(TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              h_z_pos_bg_all->Add(h_z_pos_bg,1/(6*TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              h_z_pos_all->Add(h_z_pos,1/(TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
             }//loop over pos runs
           }//if z not 0
           
@@ -169,7 +174,7 @@ int plot_Q2x_ratio_corr(){
           h_z_pos_bg_all->SetLineColor(kOrange);
           h_z_pos_bg_all->GetXaxis()->SetRangeUser(0.3,1);
           h_z_pos_bg_all->DrawCopy("hist same");
-          std::string c_counts_pos_name = "results/yield/statistics_corr/counts_"+q2xz_str+"_pos.png";
+          std::string c_counts_pos_name = "results/yield/statistics_corr/counts_"+q2xz_str_filename+"_pos.png";
           c_counts_pos->SaveAs(c_counts_pos_name.c_str());
           
           TCanvas *c_counts_neg = new TCanvas();
@@ -178,7 +183,7 @@ int plot_Q2x_ratio_corr(){
           h_z_neg_all->DrawCopy("hist");
           h_z_neg_bg_all->SetLineColor(kOrange);
           h_z_neg_bg_all->DrawCopy("hist same");
-          std::string c_counts_neg_name = "results/yield/statistics_corr/counts_"+q2xz_str+"_neg.png";
+          std::string c_counts_neg_name = "results/yield/statistics_corr/counts_"+q2xz_str_filename+"_neg.png";
           c_counts_neg->SaveAs(c_counts_neg_name.c_str());
 
 
@@ -216,7 +221,7 @@ int plot_Q2x_ratio_corr(){
           h_z_pos_sim_delta->SetLineColor(6);
           h_z_pos_sim_delta->DrawCopy("hist same");
           c_yield_pos->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_pos_name = "results/yield/statistics_corr/yield_"+q2xz_str+"_pos.png";
+          std::string c_yield_pos_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_pos.png";
           c_yield_pos->SaveAs(c_yield_pos_name.c_str());
           
           //h_z_neg_all->Rebin(2);
@@ -240,7 +245,7 @@ int plot_Q2x_ratio_corr(){
           h_z_neg_sim_delta->SetLineColor(6);
           h_z_neg_sim_delta->DrawCopy("hist same");
           c_yield_neg->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_neg_name = "results/yield/statistics_corr/yield_"+q2xz_str+"_neg.png";
+          std::string c_yield_neg_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_neg.png";
           c_yield_neg->SaveAs(c_yield_neg_name.c_str());
 
           h_z_neg_all->Rebin(2);
@@ -348,7 +353,7 @@ int plot_Q2x_ratio_corr(){
           g_yield_ratio->Draw("AP"); 
           g_yield_ratio_sim->Draw("P");
           c_Q2x_z_ratio->BuildLegend(0.1,0.1,0.5,0.2,q2xz_str.c_str());
-          std::string zratiopdfname = "results/yield/statistics_corr/"+q2xz_str+"_ratio.pdf";
+          std::string zratiopdfname = "results/yield/statistics_corr/"+q2xz_str_filename+"_ratio.pdf";
             
            c_Q2x_z_ratio->SaveAs(zratiopdfname.c_str());
         }//loop over z
@@ -370,7 +375,7 @@ int plot_Q2x_ratio_corr(){
       //auto hermes_RD = [](double z){return ((1.0-z)*0.083583)/((1.0+z)*1.988);};
       //TF1 *fit = new TF1("HERMES","(1.0-x)**0.083583/(1.0+x)**1.9838",0,1);
       //fit->Draw("same");
-      std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_name+"_ratio.pdf";
+      std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_ratio.pdf";
       c_Q2x_ratio->BuildLegend(0.7,0.7,0.9,0.9);
       c_Q2x_ratio->SaveAs(ratiopdfname.c_str());
     }//loop over Q2

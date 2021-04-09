@@ -25,10 +25,14 @@
         std::cout<<neg_key<<std::endl;
           int RunNumber = std::stoi(it_neg.key());
           auto ik_neg = it_neg.value();
-          int pi_found = ik_neg["SHMS_pi_found_1"].get<double>(); 
-          int pi_expected = ik_neg["SHMS_pi_expected"].get<double>(); 
+          int pi_found = ik_neg["SHMS_pi_found_1"].get<int>(); 
+          int pi_expected = ik_neg["SHMS_pi_expected"].get<int>(); 
           double te = (double)pi_found/pi_expected;
           j_yield[(std::to_string(RunNumber)).c_str()]["TE"] = te;
+          int e_found = ik_neg["HMS_e_found_1"].get<int>();
+          int e_expected = ik_neg["HMS_e_expected"].get<int>();
+          double te_HMS = (double)e_found/e_expected;
+          j_yield[(std::to_string(RunNumber)).c_str()]["TEHMS"] = te_HMS;
         }//if is digit 
       }//neg runs
       //pos runs
@@ -38,10 +42,14 @@
         std::cout<<pos_key<<std::endl;
           int RunNumber = std::stoi(it_pos.key());
           auto ik_pos = it_pos.value();
-          int pi_found = ik_pos["SHMS_pi_found_1"].get<double>(); 
-          int pi_expected = ik_pos["SHMS_pi_expected"].get<double>(); 
+          int pi_found = ik_pos["SHMS_pi_found_1"].get<int>(); 
+          int pi_expected = ik_pos["SHMS_pi_expected"].get<int>(); 
           double te = (double)pi_found/pi_expected;
           j_yield[(std::to_string(RunNumber)).c_str()]["TE"] = te;
+          int e_found = ik_pos["HMS_e_found_1"].get<int>();
+          int e_expected = ik_pos["HMS_e_expected"].get<int>();
+          double te_HMS = (double)e_found/e_expected;
+          j_yield[(std::to_string(RunNumber)).c_str()]["TEHMS"] = te_HMS;
         }//if is digit 
       }//pos runs
     }//file rungroups
