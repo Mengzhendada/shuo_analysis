@@ -4,241 +4,120 @@ using json = nlohmann::json;
 
 void make_latex(){
   std::ofstream ofs("yield_ratio.tex");
-  json j_dbase;
+  json j_Q2x;
   {
-    std::ifstream ifs("db2/ratio_run_group_updated.json");
-    ifs>>j_dbase;
+    std::ifstream ifs("db2/kin_group_xQ2z.json");
+    ifs>>j_Q2x;
   }
-  for(int i = 0;i<58;i++){
-    std::string RunGroup_str = std::to_string(10*(i+1));
-    std::cout<<RunGroup_str<<std::endl;
-    double momentum = j_dbase[RunGroup_str.c_str()]["shms_p"].get<double>();
-    std::vector<int> neg_D2,pos_D2;
-    neg_D2 = j_dbase[RunGroup_str.c_str()]["neg"]["D2"].get<std::vector<int>>();
-    pos_D2 = j_dbase[RunGroup_str.c_str()]["pos"]["D2"].get<std::vector<int>>();
-    if(!neg_D2.empty() && !pos_D2.empty()){
-      int RunNumber = pos_D2[0];
-      std::string RunNumber_str = std::to_string(RunNumber);
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", SHMS momentum "<<momentum<<"}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<".pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-      
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", SHMS momentum "<<momentum<<"}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-    
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", SHMS momentum "<<momentum<<"}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/SHMS_rf_"+RunGroup_str<<".pdf}";
-      ofs<<"\\\\percentage: (Kpeak - Pipeak)*percentage + 1"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
+  for(json::iterator it = j_Q2x.begin();it!=j_Q2x.end();++it){
+     double xbj = std::stod(it.key());
+     auto j_Q2z = it.value();
 
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", SHMS momentum"<<momentum<<"}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"HGC cut 0 \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/hgcer/SHMS_hgcer_eff_"<<RunNumber_str<<"_0.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"HGC cut 1 \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/hgcer/SHMS_hgcer_eff_"<<RunNumber_str<<"_1.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"HGC cut 2 \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/hgcer/SHMS_hgcer_eff_"<<RunNumber_str<<"_2.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"HGC cut 3 \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/hgcer/SHMS_hgcer_eff_"<<RunNumber_str<<"_3.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-            
-      ofs<<"\\end{frame}"<<std::endl;
+     for(json::iterator i_Q2 = j_Q2z.begin();i_Q2!=j_Q2z.end();++i_Q2){
+       double Q2 = std::stod(i_Q2.key());
+       auto j_z = i_Q2.value();
 
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", SHMS momentum "<<momentum<<"}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.7\\textwidth]{results/pid/hgcer/SHMS_hgcer_eff_"<<RunNumber_str<<"_2_2d.pdf}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
+      if(xbj!=0 && Q2!=0){
+        std::string q2x_str = "{x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"}";
+      std::vector<std::string> counts_z_name;
+      for(json::iterator i_z = j_z.begin();i_z!=j_z.end();++i_z){
+        double z = std::stod(i_z.key());
+        std::string q2xz_str = "{x_Q2_z_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"_"+std::to_string(z).substr(0,4)+"}";
+        counts_z_name.push_back(q2xz_str);
+      }
       
+        ofs<<"\\begin{frame}{corrected yield}"<<std::endl;
+      ofs<<"\\begin{columns}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[0]<<"_pos.png}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[0]<<"_neg.png}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[1]<<"_pos.png}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[1]<<"_neg.png}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\end{columns}"<<std::endl;
+      if(counts_z_name.size()>2){
+      ofs<<"\\begin{columns}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[2]<<"_pos.png}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[2]<<"_neg.png}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      if(counts_z_name.size()>3){
+      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[3]<<"_pos.png}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[3]<<"_neg.png}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\end{columns}"<<std::endl;
+      }
+      }
+      ofs<<"\\end{frame}"<<std::endl;
+        
+      ofs<<"\\begin{frame}{raw yield ratio}"<<std::endl;
+      ofs<<"\\begin{columns}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics/"<<counts_z_name[0]<<"_ratio.pdf}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics/"<<counts_z_name[1]<<"_ratio.pdf}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\end{columns}"<<std::endl;
+      if(counts_z_name.size()>2){
+      ofs<<"\\begin{columns}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics/"<<counts_z_name[2]<<"_ratio.pdf}"<<std::endl;
 
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", SHMS momentum "<<momentum<<"}"<<std::endl;
-      ofs<<"HGC less than 2, no aero cut\\\\"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"first delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_0.pdf}"<<std::endl;
       ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"second delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_1.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_2.pdf}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      if(counts_z_name.size()>3){
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics/"<<counts_z_name[3]<<"_ratio.pdf}"<<std::endl;
+      }
       ofs<<"\\end{column}"<<std::endl;
       ofs<<"\\end{columns}"<<std::endl;
-      
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"forth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_3.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"fifth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_4.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"sixth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_5.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
+      }
       ofs<<"\\end{frame}"<<std::endl;
       
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<",SHMS momentum "<<momentum<<"}"<<std::endl;
+      ofs<<"\\begin{frame}{TE,pi eff, pi purity corrected yield ratio}"<<std::endl;
       ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"first delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_0_pi.pdf}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[0]<<"_ratio.pdf}"<<std::endl;
       ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"second delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_1_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"third delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_2_pi.pdf}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[1]<<"_ratio.pdf}"<<std::endl;
       ofs<<"\\end{column}"<<std::endl;
       ofs<<"\\end{columns}"<<std::endl;
+      if(counts_z_name.size()>2){
       ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"forth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_3_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"fifth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_4_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"sixth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_pos_"<<RunGroup_str<<"_5_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-      
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<", SHMS momentum "<<momentum<<"}"<<std::endl;
-      ofs<<"HGC less than 2, no aero cut\\\\"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"first delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_0.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"second delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_1.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_2.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"forth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_3.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"fifth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_4.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.33\\textwidth}"<<std::endl;
-      ofs<<"sixth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_5.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-      
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<",SHMS momentum "<<momentum<<"}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"first delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_0_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"second delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_1_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"third delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_2_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"forth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_3_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"fifth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_4_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"sixth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/rftime/rftime_neg_"<<RunGroup_str<<"_5_pi.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
-    
-      ofs<<"\\begin{frame}{"<<RunGroup_str<<",SHMS momentum "<<momentum<<"}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"first delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/SHMS_rf_"<<RunGroup_str<<"_0.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"second delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/SHMS_rf_"<<RunGroup_str<<"_1.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"third delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/SHMS_rf_"<<RunGroup_str<<"_2.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"forth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/SHMS_rf_"<<RunGroup_str<<"_3.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"fifth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/SHMS_rf_"<<RunGroup_str<<"_4.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.3\\textwidth}"<<std::endl;
-      ofs<<"sixth delta cut \\\\"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pid/SHMS_rf_"<<RunGroup_str<<"_5.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      ofs<<"\\end{frame}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[2]<<"_ratio.pdf}"<<std::endl;
 
-    }
-    else{  
-    ofs<<"\\begin{frame}{"<<RunGroup_str<<", "<<momentum<<"}"<<std::endl;
-    ofs<<"singles runs"<<std::endl;
-    ofs<<"\\end{frame}"<<std::endl;
-    }
-  }
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      if(counts_z_name.size()>3){
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[3]<<"_ratio.pdf}"<<std::endl;
+      }
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\end{columns}"<<std::endl;
+      }
+      ofs<<"\\end{frame}"<<std::endl;
+      
+      ofs<<"\\begin{frame}{raw yield ratio}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics/"<<q2x_str<<"_ratio.pdf}"<<std::endl;
+      ofs<<"\\end{frame}"<<std::endl;
+      ofs<<"\\begin{frame}{TE,pi eff, pi purity corrected yield ratio}"<<std::endl;
+      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<q2x_str<<"_ratio.pdf}"<<std::endl;
+      ofs<<"\\end{frame}"<<std::endl;
+      
+      }//if xbj,Q2 not 0
+      }//loop over Q2
+
+  }//loop over xbj
 }
