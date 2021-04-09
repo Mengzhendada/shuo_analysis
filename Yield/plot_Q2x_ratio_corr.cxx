@@ -109,7 +109,7 @@ int plot_Q2x_ratio_corr(){
           h_z_pos_sim_delta = (TH1D*)rootfile_pos_sim->Get("z_pos_delta");
           h_z_pos_sim->Add(h_z_pos_sim_incrad,1);
           h_z_pos_sim->Add(h_z_pos_sim_excrad,1);
-          h_z_pos_sim->Add(h_z_pos_sim_rho,1);
+          //h_z_pos_sim->Add(h_z_pos_sim_rho,1);
           h_z_pos_sim->Add(h_z_pos_sim_delta,1);
           
           double charge_neg_all = 0,charge_pos_all=0;
