@@ -66,7 +66,7 @@ int compare_each_run(){
           h_z_neg_sim_delta = (TH1D*)rootfile_neg_sim->Get("z_neg_delta");
           h_z_neg_sim->Add(h_z_neg_sim_incrad,1);
           h_z_neg_sim->Add(h_z_neg_sim_excrad,1);
-          h_z_neg_sim->Add(h_z_neg_sim_rho,1);
+          //h_z_neg_sim->Add(h_z_neg_sim_rho,1);
           h_z_neg_sim->Add(h_z_neg_sim_delta,1);
           TFile *rootfile_pos_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
           TH1D *h_z_pos_sim = new TH1D("","pos sim sum",100,0,1);
@@ -80,7 +80,7 @@ int compare_each_run(){
           h_z_pos_sim_delta = (TH1D*)rootfile_pos_sim->Get("z_pos_delta");
           h_z_pos_sim->Add(h_z_pos_sim_incrad,1);
           h_z_pos_sim->Add(h_z_pos_sim_excrad,1);
-          h_z_pos_sim->Add(h_z_pos_sim_rho,1);
+          //h_z_pos_sim->Add(h_z_pos_sim_rho,1);
           h_z_pos_sim->Add(h_z_pos_sim_delta,1);
           
           double charge_neg_all = 0,charge_pos_all=0;
