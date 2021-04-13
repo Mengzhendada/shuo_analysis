@@ -95,7 +95,7 @@ int plot_Q2x_ratio_corr(){
           h_z_neg_sim_delta = (TH1D*)rootfile_neg_sim->Get("z_neg_delta");
           h_z_neg_sim->Add(h_z_neg_sim_incrad,1);
           h_z_neg_sim->Add(h_z_neg_sim_excrad,1);
-          h_z_neg_sim->Add(h_z_neg_sim_rho,1);
+          //h_z_neg_sim->Add(h_z_neg_sim_rho,1);
           h_z_neg_sim->Add(h_z_neg_sim_delta,1);
           TFile *rootfile_pos_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
           TH1D *h_z_pos_sim = new TH1D("","pos sim sum",100,0,1);
@@ -300,7 +300,7 @@ int plot_Q2x_ratio_corr(){
            //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
            if(y!=0){
              g_yield_ratio_sim->SetPoint(ii_sim,x,y);
-             g_yield_ratio_sim->SetPointError(ii_sim,0,error);
+             //g_yield_ratio_sim->SetPointError(ii_sim,0,error);
              ii_sim++;
            }
          }
@@ -336,7 +336,7 @@ int plot_Q2x_ratio_corr(){
           //hs->Add(h_z_neg_all);
           //h_z_neg_all->Draw("same");
           mg->Add(g_yield_ratio,"P");
-          mg->Add(g_yield_ratio_sim,"P");
+          mg->Add(g_yield_ratio_sim,"L");
           i_color++;
           //c_Q2x_ratio->Update();
       
