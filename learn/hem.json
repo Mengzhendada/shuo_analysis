@@ -113,12 +113,13 @@ void Hem_copyshuojson(){
      double Q2 = runjs["Q2"].get<double>();
      std::cout<<Q2<<std::endl;
      std::vector<int> neg_D2 = runjs["neg"]["D2"].get<std::vector<int>>();
+     if(!neg_D2.empty()){
      std::cout<<" first run in neg D2 "<<neg_D2[0]<<std::endl;
      j_Hem[(std::to_string(Rungroup))]["Q2"] = Q2;
      j_Hem[(std::to_string(Rungroup))]["neg"]["D2"] = neg_D2 ;
      j_Hem[(std::to_string(Rungroup))]["neg"]["D2_added_rootfile"] = neg_D2[0] ;
 //x,z,pos d2,posdummy,h2.....
-  
+     }
   }
   //save Hem's json
   std::ofstream ofs("Hemjson.json");
