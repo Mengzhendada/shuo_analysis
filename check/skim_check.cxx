@@ -255,7 +255,7 @@ void skim_check(int RunGroup=0){
       c_pos_current->SaveAs(c_pos_current_name.c_str());
 
       //coin time cut for pos runs
-      auto h_cointime_pos = d_pos_run.Histo1D({"","coin_time",800,40,46},"CTime.ePiCoinTime_ROC2");
+      auto h_cointime_pos = d_pos_run.Histo1D({"","coin_time",800,40,55},"CTime.ePiCoinTime_ROC2");
       int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
       double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
       double cointime_lowcut,cointime_highcut;
