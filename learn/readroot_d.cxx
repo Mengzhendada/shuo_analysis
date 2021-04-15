@@ -13,40 +13,20 @@
 #include "TLatex.h"
 #include "TStyle.h"
 #include "TSystem.h"
-R__LOAD_LIBRARY(libMathMore.so)
-R__LOAD_LIBRARY(libGenVector.so)
-
-#ifdef __cpp_lib_filesystem
-#include <filesystem>
-namespace fs = std::filesystem;
-#else
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
-#endif
-
-
-#include "TObject.h"
-
-#include "ROOT/RDataFrame.hxx"
-#include "ROOT/RVec.hxx"
-#include "TCanvas.h"
-#include "TH1.h"
-#include "TMath.h"
-#include "TF1.h"
-#include "TLine.h"
-#include "TGraphErrors.h"
-#include "TMultiGraph.h"
 
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
 
-int readroot_d(){
- std::string rootfile = std::string("ROOTfiles/6145.root");
+int readroot_d(int RunNumber = 0){
+  std::cout<<"Enter RunNumber"<<std::endl;
+  std::cin>>RunNumber;
+ std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
- auto h = d.Histo1D({"","",100,0,2},"pmiss");
+ auto h = d.Histo1D({"","",100,0,100},"CTime.ePiCoinTime_ROC2");
+ auto h_raw = d.Histo1D({"","",100,0,100},"CTime.CoinTime_RAW_ROC2");
 // //auto h = d.Histo1D({"","",100,-1,2},"H.cal.etottracknorm");
 //int readroot_d(int RunNumber = 0){
 //  while(RunNumber >-1){
@@ -60,8 +40,13 @@ int readroot_d(){
 // std::cout<<h->GetBinCenter(h->GetMaximumBin())<<std::endl;
  //std::cout<<h->GetMean()<<std::endl;
   auto *c = new TCanvas;
+  c->Divide(2,1);
+  c->cd(1);
  h->DrawCopy();
- c->SaveAs("HMS_cal.pdf");
+ c->cd(2);
+ h_raw->DrawCopy();
+ std::string c_name = "results/yield/check/learn_readroot_"+std::to_string(RunNumber)+".pdf";
+ c->SaveAs(c_name.c_str());
   //}
   return 0;
 }
