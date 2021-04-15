@@ -18,3 +18,7 @@
   copied plot_Q2x_ratio_raw.cxx, need to add efficiencies correction
 
   statistics_runs_D2.cxx : updated weight, which applies pi eff and pi purity on 1d histogram. Need to continue for 2d histogram
+
+2021 April
+  for pos runs in slurm/redo.txt, their coin time peak is at wrong position, don't know why
+  deleted 6081, it's a short 8 mins run 

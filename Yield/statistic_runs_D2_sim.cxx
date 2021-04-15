@@ -42,7 +42,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     auto Mx2 = [](float nu,float z,float pmiss){
       return (M_P+nu - z*nu)*(M_P+nu - z*nu) -abs(pmiss)*abs(pmiss);
     };
-  json j_rungroup;
+    auto xbj = [=](float Q2,float pq){
+      return Q2/(2.0*M_P*pq);
+    };
+    json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
@@ -163,6 +166,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("xbj",xbj,{"Q2","nu"})
     .Define("z",z,{"nu","phad"})
     .Define("Mx2",Mx2,{"nu","z","Pm"})
     .Filter(Mx2_cut)
@@ -185,6 +189,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("xbj",xbj,{"Q2","nu"})
     .Define("z",z,{"nu","phad"})
     .Define("Mx2",Mx2,{"nu","z","Pm"})
     .Filter(Mx2_cut)
@@ -288,6 +293,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("xbj",xbj,{"Q2","nu"})
     .Define("z",z,{"nu","phad"})
     .Define("Mx2",Mx2,{"nu","z","Pm"})
     .Filter(Mx2_cut)
@@ -310,6 +316,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Normal_xptar_HMS_sim)
     .Filter(Normal_yptar_SHMS_sim)
     .Filter(Normal_yptar_HMS_sim)
+    .Define("xbj",xbj,{"Q2","nu"})
     .Define("z",z,{"nu","phad"})
     .Define("Mx2",Mx2,{"nu","z","Pm"})
     .Filter(Mx2_cut)
@@ -381,8 +388,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   std::cout<<"inc norad check"<<std::endl;  
   auto h_Q2_D2_neg_exc_rad = d_D2_neg_exc_rad.Histo1D({"Q2_neg_exc_rad","Q2_neg_exc_rad",100,0,10},"Q2","weight_new");
   auto h_Q2_D2_pos_exc_rad = d_D2_pos_exc_rad.Histo1D({"Q2_pos_exc_rad","Q2_pos_exc_rad",100,0,10},"Q2","weight_new");
-  //auto h_xbj_D2_neg_exc_rad = d_D2_neg_exc_rad.Histo1D({"xbj_neg_exc_rad","xbj_neg_exc_rad",100,0,1},"xbj","weight_new");
-  //auto h_xbj_D2_pos_exc_rad = d_D2_pos_exc_rad.Histo1D({"xbj_pos_exc_rad","xbj_pos_exc_rad",100,0,1},"xbj","weight_new");
+  auto h_xbj_D2_neg_exc_rad = d_D2_neg_exc_rad.Histo1D({"xbj_neg_exc_rad","xbj_neg_exc_rad",100,0,1},"xbj","weight_new");
+  auto h_xbj_D2_pos_exc_rad = d_D2_pos_exc_rad.Histo1D({"xbj_pos_exc_rad","xbj_pos_exc_rad",100,0,1},"xbj","weight_new");
   auto h_z_D2_neg_exc_rad = d_D2_neg_exc_rad.Histo1D({"z_neg_exc_rad","z_neg_exc_rad",100,0,1},"z","weight_new");
   auto h_z_D2_pos_exc_rad = d_D2_pos_exc_rad.Histo1D({"z_pos_exc_rad","z_pos_exc_rad",100,0,1},"z","weight_new");
   std::cout<<"exc norad check"<<std::endl;  
@@ -404,8 +411,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   
   auto h_Q2_D2_neg_delta = d_D2_neg_delta.Histo1D({"Q2_neg_delta","Q2_neg_delta",100,0,10},"Q2","weight_new");
   auto h_Q2_D2_pos_delta = d_D2_pos_delta.Histo1D({"Q2_pos_delta","Q2_pos_delta",100,0,10},"Q2","weight_new");
-  //auto h_xbj_D2_neg_delta = d_D2_neg_delta.Histo1D({"xbj_neg_delta","xbj_neg_delta",100,0,1},"xbj","weight_new");
-  //auto h_xbj_D2_pos_delta = d_D2_pos_delta.Histo1D({"xbj_pos_delta","xbj_pos_delta",100,0,1},"xbj","weight_new");
+  auto h_xbj_D2_neg_delta = d_D2_neg_delta.Histo1D({"xbj_neg_delta","xbj_neg_delta",100,0,1},"xbj","weight_new");
+  auto h_xbj_D2_pos_delta = d_D2_pos_delta.Histo1D({"xbj_pos_delta","xbj_pos_delta",100,0,1},"xbj","weight_new");
   auto h_z_D2_neg_delta = d_D2_neg_delta.Histo1D({"z_neg_delta","z_neg_delta",100,0,1},"z","weight_new");
   auto h_z_D2_pos_delta = d_D2_pos_delta.Histo1D({"z_pos_delta","z_pos_delta",100,0,1},"z","weight_new");
   std::cout<<"delta check"<<std::endl;  
@@ -420,8 +427,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   h_z_D2_pos_inc_norad->Write();
   h_Q2_D2_neg_exc_rad->Write();
   h_Q2_D2_pos_exc_rad->Write();
-  //h_xbj_D2_neg_exc_rad->Write();
-  //h_xbj_D2_pos_exc_rad->Write();
+  h_xbj_D2_neg_exc_rad->Write();
+  h_xbj_D2_pos_exc_rad->Write();
   h_z_D2_neg_exc_rad->Write();
   h_z_D2_pos_exc_rad->Write();
   h_Q2_D2_neg_inc_rad->Write();
@@ -438,8 +445,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   h_z_D2_pos_rho->Write();
   h_Q2_D2_neg_delta->Write();
   h_Q2_D2_pos_delta->Write();
-  //h_xbj_D2_neg_delta->Write();
-  //h_xbj_D2_pos_delta->Write();
+  h_xbj_D2_neg_delta->Write();
+  h_xbj_D2_pos_delta->Write();
   h_z_D2_neg_delta->Write();
   h_z_D2_pos_delta->Write();
 
