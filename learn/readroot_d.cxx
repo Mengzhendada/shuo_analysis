@@ -22,11 +22,13 @@
 int readroot_d(int RunNumber = 0){
   std::cout<<"Enter RunNumber"<<std::endl;
   std::cin>>RunNumber;
- std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+ std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
+ //std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
  auto h = d.Histo1D({"","",100,0,100},"CTime.ePiCoinTime_ROC2");
-// //auto h = d.Histo1D({"","",100,-1,2},"H.cal.etottracknorm");
+ std::cout<<h->GetBinCenter(h->GetMaximumBin())<<std::endl;
+ // //auto h = d.Histo1D({"","",100,-1,2},"H.cal.etottracknorm");
 //int readroot_d(int RunNumber = 0){
 //  while(RunNumber >-1){
 //    std::cout<<"Enter RunNumber "<<std::endl;

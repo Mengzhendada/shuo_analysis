@@ -1,4 +1,4 @@
-;This is a CTP file, using info from Run 6111
+;This is a CTP file, using info from Run 6112
 
 begin parm experiment
  ngen = 10000
