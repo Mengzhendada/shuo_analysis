@@ -57,7 +57,6 @@ void make_latex_xbj(){
       if(counts_x_name.size()>1){
       ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_q2zcorr/"<<counts_x_name[1]<<"_ratio.pdf}"<<std::endl;
       }
-      ofs<<"\\end{columns}"<<std::endl;
       
       ofs<<"\\end{frame}"<<std::endl;
       
