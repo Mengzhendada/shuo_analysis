@@ -29,6 +29,8 @@ int readroot_d(int RunNumber = 0){
  auto h = d.Histo1D({"","",100,0,100},"CTime.ePiCoinTime_ROC2");
  std::cout<<h->GetBinCenter(h->GetMaximumBin())<<std::endl;
  // //auto h = d.Histo1D({"","",100,-1,2},"H.cal.etottracknorm");
+ auto h_raw = d.Histo1D({"","",100,0,100},"CTime.CoinTime_RAW_ROC2");
+// //auto h = d.Histo1D({"","",100,-1,2},"H.cal.etottracknorm");
 //int readroot_d(int RunNumber = 0){
 //  while(RunNumber >-1){
 //    std::cout<<"Enter RunNumber "<<std::endl;
@@ -41,8 +43,13 @@ int readroot_d(int RunNumber = 0){
 // std::cout<<h->GetBinCenter(h->GetMaximumBin())<<std::endl;
  //std::cout<<h->GetMean()<<std::endl;
   auto *c = new TCanvas;
+  c->Divide(2,1);
+  c->cd(1);
  h->DrawCopy();
- c->SaveAs("results/yield/check/learn_readroot_d.pdf");
+ c->cd(2);
+ h_raw->DrawCopy();
+ std::string c_name = "results/yield/check/learn_readroot_"+std::to_string(RunNumber)+".pdf";
+ c->SaveAs(c_name.c_str());
   //}
   return 0;
 }

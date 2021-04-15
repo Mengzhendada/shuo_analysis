@@ -259,6 +259,7 @@ void skim_check(int RunGroup=0){
       auto h_cointime_pos = d_pos_run.Histo1D({"","coin_time",800,40,55},"CTime.ePiCoinTime_ROC2");
       int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
       double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
+      std::cout<<"coin center"<<coin_peak_center_pos<<std::endl;
       double cointime_lowcut,cointime_highcut;
       if(RunGroup<410){
         cointime_lowcut = j_cuts["cointime_low_fall"].get<double>();
@@ -574,6 +575,7 @@ void skim_check(int RunGroup=0){
     auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
     int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
     double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
+      std::cout<<"coin center"<<coin_peak_center_neg<<std::endl;
     double cointime_lowcut,cointime_highcut;
     if(RunGroup<410){
       cointime_lowcut = j_cuts["cointime_low_fall"].get<double>();
