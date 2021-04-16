@@ -48,7 +48,7 @@ void Total_live_time(int RunGroup = 0){
 
   json j_out;
   {
-    std::ifstream ifs("results/yield/runs_info.json");
+    std::ifstream ifs("results/yield/TLT.json");
     ifs>>j_out;
   }
 
@@ -115,6 +115,9 @@ void Total_live_time(int RunGroup = 0){
       double nominal_LT = edtm_acc/edtm_all;
       j_out[(std::to_string(RunNumber)).c_str()]["TLT"] = nominal_LT;
       std::cout<<nominal_LT<<" = "<<edtm_acc<<"/"<<edtm_all<<std::endl;
+      double LT_err = nominal_LT*sqrt(1./edtm_all+1./edtm_acc);
+      std::cout<<LT_err<<std::endl;
+      j_out[(std::to_string(RunNumber)).c_str()]["TLT_error"] = LT_err;
       
       //TCanvas *c_tdc = new TCanvas();
       //h_EDTM_acc->DrawCopy("hist");
@@ -190,7 +193,10 @@ void Total_live_time(int RunGroup = 0){
       double nominal_LT = edtm_acc/edtm_all;
       j_out[(std::to_string(RunNumber)).c_str()]["TLT"] = nominal_LT;
       std::cout<<nominal_LT<<" = "<<edtm_acc<<"/"<<edtm_all<<std::endl;
-      
+      double LT_err = nominal_LT*sqrt(1./edtm_all+1./edtm_acc);
+      std::cout<<LT_err<<std::endl;
+      j_out[(std::to_string(RunNumber)).c_str()]["TLT_error"] = LT_err;
+
       //TCanvas *c_tdc = new TCanvas();
       //h_EDTM_acc->DrawCopy("hist");
       //c_tdc->SaveAs("results/LT/TLT_tdctime.pdf");
@@ -206,6 +212,6 @@ void Total_live_time(int RunGroup = 0){
       //c_check->SaveAs("results/LT/TLT_type.pdf");
     }//loop over each neg runs
   }//if normal production rungoup
-  std::ofstream ofs("results/yield/runs_info.json");
+  std::ofstream ofs("results/yield/TLT.json");
   ofs<<j_out.dump(4)<<std::endl;
 }
