@@ -115,7 +115,9 @@ void Total_live_time(int RunGroup = 0){
       double nominal_LT = edtm_acc/edtm_all;
       j_out[(std::to_string(RunNumber)).c_str()]["TLT"] = nominal_LT;
       std::cout<<nominal_LT<<" = "<<edtm_acc<<"/"<<edtm_all<<std::endl;
-      double LT_err = nominal_LT/sqrt(edtm_acc);
+      //double LT_err = nominal_LT/sqrt(edtm_acc);
+      //double LT_err = sqrt(edtm_acc)/edtm_all;
+      double LT_err = (1/edtm_all)*sqrt(edtm_acc*(1-nominal_LT));
       std::cout<<LT_err<<std::endl;
       j_out[(std::to_string(RunNumber)).c_str()]["TLT_error"] = LT_err;
       
@@ -193,7 +195,9 @@ void Total_live_time(int RunGroup = 0){
       double nominal_LT = edtm_acc/edtm_all;
       j_out[(std::to_string(RunNumber)).c_str()]["TLT"] = nominal_LT;
       std::cout<<nominal_LT<<" = "<<edtm_acc<<"/"<<edtm_all<<std::endl;
-      double LT_err = nominal_LT/sqrt(edtm_acc);
+      //double LT_err = nominal_LT/sqrt(edtm_acc);
+      //double LT_err = nominal_LT*sqrt((edtm_all-edtm_acc)/edtm_all);
+      double LT_err = (1/edtm_all)*sqrt(edtm_acc*(1-nominal_LT));
       std::cout<<LT_err<<std::endl;
       j_out[(std::to_string(RunNumber)).c_str()]["TLT_error"] = LT_err;
 
