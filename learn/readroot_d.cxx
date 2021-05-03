@@ -22,8 +22,9 @@
 int readroot_d(int RunNumber = 0){
   std::cout<<"Enter RunNumber"<<std::endl;
   std::cin>>RunNumber;
- std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
- //std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+ //std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
+ std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+ //std::string rootfile = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_100000.root";
  ROOT::RDataFrame d0("T",rootfile);
  auto d = d0;
  auto h = d.Histo1D({"","",100,0,100},"CTime.ePiCoinTime_ROC2");

@@ -12,7 +12,7 @@
     }
     json j_yield;
     {
-      std::ifstream ifs("db2/runs_info.json");
+      std::ifstream ifs("results/yield/runs_info.json");
       ifs>>j_yield;
     }
     for(auto it = j_te.begin();it!=j_te.end();it++){

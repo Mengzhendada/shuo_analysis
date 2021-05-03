@@ -37,9 +37,9 @@ int plot_Q2x_ratio_corr(){
     for(json::iterator it  = j_Q2z.begin();it!=j_Q2z.end();++it){
       double Q2 = std::stod(it.key());
       auto j_z = it.value();
-      std::string canvas_name = "x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5);
+      std::string canvas_name = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5);
       std::string canvas_filename = "x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4);
-      std::string q2x_name = "x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"_yieldratio";
+      std::string q2x_name = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5)+"_yieldratio";
       std::string q2x_filename = "x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4)+"_yieldratio";
       TCanvas *c_Q2x_ratio = new TCanvas("",q2x_name.c_str(),1900,1000);
       TH1D* h_neg_q2x = new TH1D("",(q2x_name).c_str(),100,0,1);
@@ -50,7 +50,7 @@ int plot_Q2x_ratio_corr(){
       if(xbj !=0 && Q2!=0){  
         for(json::iterator it = j_z.begin();it!=j_z.end();++it){
           double z = std::stod(it.key());
-          std::string q2xz_str = "x_Q2_z_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5)+"_"+std::to_string(z).substr(0,4);
+          std::string q2xz_str = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5)+",z:"+std::to_string(z).substr(0,4);
           std::string q2xz_str_filename = "x_Q2_z_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4)+"_"+std::to_string(100*z).substr(0,2);
           TH1D* h_z_neg_all = new TH1D("","neg;z;",100,0,1);
           //THStack *h_z_neg_all = new THStack("","");  
@@ -84,28 +84,28 @@ int plot_Q2x_ratio_corr(){
           std::cout<<"RunGroup "<<RunGroup<<std::endl;
           
           TFile *rootfile_neg_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
-          TH1D *h_z_neg_sim = new TH1D("","neg sim sum",100,0,1);
-          TH1D *h_z_neg_sim_incrad = new TH1D("","neg sim inc rad",100,0,1);
+          TH1D *h_z_neg_sim = new TH1D("","pi- sim sum",100,0,1);
+          TH1D *h_z_neg_sim_incrad = new TH1D("","pi- sim SIDIS",100,0,1);
           h_z_neg_sim_incrad = (TH1D*)rootfile_neg_sim->Get("z_neg_inc_rad");
-          TH1D *h_z_neg_sim_excrad = new TH1D("","neg sim exc rad",100,0,1);
+          TH1D *h_z_neg_sim_excrad = new TH1D("","pi- sim exc",100,0,1);
           h_z_neg_sim_excrad = (TH1D*)rootfile_neg_sim->Get("z_neg_exc_rad");
-          TH1D *h_z_neg_sim_rho = new TH1D("","neg sim rho",100,0,1);
+          TH1D *h_z_neg_sim_rho = new TH1D("","pi- sim rho",100,0,1);
           h_z_neg_sim_rho = (TH1D*)rootfile_neg_sim->Get("z_neg_rho");
-          TH1D *h_z_neg_sim_delta = new TH1D("","neg sim delta",100,0,1);
+          TH1D *h_z_neg_sim_delta = new TH1D("","pi- sim delta",100,0,1);
           h_z_neg_sim_delta = (TH1D*)rootfile_neg_sim->Get("z_neg_delta");
           h_z_neg_sim->Add(h_z_neg_sim_incrad,1);
           h_z_neg_sim->Add(h_z_neg_sim_excrad,1);
           //h_z_neg_sim->Add(h_z_neg_sim_rho,1);
           h_z_neg_sim->Add(h_z_neg_sim_delta,1);
           TFile *rootfile_pos_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
-          TH1D *h_z_pos_sim = new TH1D("","pos sim sum",100,0,1);
-          TH1D *h_z_pos_sim_incrad = new TH1D("","pos sim inc rad",100,0,1);
+          TH1D *h_z_pos_sim = new TH1D("","pi+ sim sum",100,0,1);
+          TH1D *h_z_pos_sim_incrad = new TH1D("","pi+ sim SIDIS",100,0,1);
           h_z_pos_sim_incrad = (TH1D*)rootfile_pos_sim->Get("z_pos_inc_rad");
-          TH1D *h_z_pos_sim_excrad = new TH1D("","pos sim exc rad",100,0,1);
+          TH1D *h_z_pos_sim_excrad = new TH1D("","pi+ sim exc",100,0,1);
           h_z_pos_sim_excrad = (TH1D*)rootfile_pos_sim->Get("z_pos_exc_rad");
-          TH1D *h_z_pos_sim_rho = new TH1D("","pos sim rho",100,0,1);
+          TH1D *h_z_pos_sim_rho = new TH1D("","pi+ sim rho",100,0,1);
           h_z_pos_sim_rho = (TH1D*)rootfile_pos_sim->Get("z_pos_rho");
-          TH1D *h_z_pos_sim_delta = new TH1D("","pos sim delta",100,0,1);
+          TH1D *h_z_pos_sim_delta = new TH1D("","pi+ sim delta",100,0,1);
           h_z_pos_sim_delta = (TH1D*)rootfile_pos_sim->Get("z_pos_delta");
           h_z_pos_sim->Add(h_z_pos_sim_incrad,1);
           h_z_pos_sim->Add(h_z_pos_sim_excrad,1);
@@ -174,7 +174,7 @@ int plot_Q2x_ratio_corr(){
           h_z_pos_bg_all->SetLineColor(kOrange);
           h_z_pos_bg_all->GetXaxis()->SetRangeUser(0.3,1);
           h_z_pos_bg_all->DrawCopy("hist same");
-          std::string c_counts_pos_name = "results/yield/statistics_corr/counts_"+q2xz_str_filename+"_pos.png";
+          std::string c_counts_pos_name = "results/yield/statistics_corr/counts_"+q2xz_str_filename+"_pos.pdf";
           c_counts_pos->SaveAs(c_counts_pos_name.c_str());
           
           TCanvas *c_counts_neg = new TCanvas();
@@ -183,7 +183,7 @@ int plot_Q2x_ratio_corr(){
           h_z_neg_all->DrawCopy("hist");
           h_z_neg_bg_all->SetLineColor(kOrange);
           h_z_neg_bg_all->DrawCopy("hist same");
-          std::string c_counts_neg_name = "results/yield/statistics_corr/counts_"+q2xz_str_filename+"_neg.png";
+          std::string c_counts_neg_name = "results/yield/statistics_corr/counts_"+q2xz_str_filename+"_neg.pdf";
           c_counts_neg->SaveAs(c_counts_neg_name.c_str());
 
 
@@ -202,50 +202,147 @@ int plot_Q2x_ratio_corr(){
           auto h_z_pos_yield = h_z_pos_all;
           auto h_z_pos_bg_yield = h_z_pos_bg_all;
 
+          TGraphErrors* g_z_pos_yield = new TGraphErrors();
+          g_z_pos_yield->SetTitle("pi+ data yield");
+          int nbins_yield_pos = h_z_pos_yield->GetXaxis()->GetNbins();
+         int ii_yield_pos = 0;
+        for(int i = 0;i<nbins_yield_pos;i++){
+          //std::cout<<i<<std::endl;
+          double x = h_z_pos_yield->GetBinCenter(i);
+          double y = h_z_pos_yield->GetBinContent(i);
+          double error = h_z_pos_yield->GetBinError(i);
+          //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+          if(y!=0){
+            g_z_pos_yield->SetPoint(ii_yield_pos,x,y);
+            g_z_pos_yield->SetPointError(ii_yield_pos,0,error);
+            ii_yield_pos++;
+          }
+        }
           TCanvas *c_yield_pos = new TCanvas();
-          h_z_pos_yield->GetYaxis()->SetTitle("yield");
-          h_z_pos_yield->GetYaxis()->SetTitleSize(0.53);
-          h_z_pos_yield->GetXaxis()->SetRangeUser(0.3,1);
-          h_z_pos_yield->SetMarkerStyle(4);
-          h_z_pos_yield->DrawCopy();
-          //h_z_pos_bg_yield->SetLineColor(kOrange);
-          //h_z_pos_bg_yield->GetXaxis()->SetRangeUser(0.3,1);
-          //h_z_pos_bg_yield->DrawCopy("hist same");
-          h_z_pos_sim->DrawCopy("hist same");
-          h_z_pos_sim_incrad->SetLineColor(kOrange);
-          h_z_pos_sim_incrad->DrawCopy("hist same");
-          h_z_pos_sim_excrad->SetLineColor(kBlue);
-          h_z_pos_sim_excrad->DrawCopy("hist same");
-          h_z_pos_sim_rho->SetLineColor(kRed);
-          h_z_pos_sim_rho->DrawCopy("hist same");
-          h_z_pos_sim_delta->SetLineColor(6);
-          h_z_pos_sim_delta->DrawCopy("hist same");
+          gStyle->SetOptTitle(0);
+          //h_z_pos_yield->GetYaxis()->SetTitle("yield");
+          //h_z_pos_yield->GetYaxis()->SetTitleSize(0.53);
+          //h_z_pos_yield->GetXaxis()->SetRangeUser(0.3,1);
+          //h_z_pos_yield->SetMarkerStyle(4);
+          //h_z_pos_yield->DrawCopy();
+          ////h_z_pos_bg_yield->SetLineColor(kOrange);
+          ////h_z_pos_bg_yield->GetXaxis()->SetRangeUser(0.3,1);
+          ////h_z_pos_bg_yield->DrawCopy("hist same");
+          //h_z_pos_sim->DrawCopy("hist same");
+          //h_z_pos_sim_incrad->SetLineColor(kOrange);
+          //h_z_pos_sim_incrad->SetTitle("pi+ sim SIDIS");
+          //h_z_pos_sim_incrad->DrawCopy("hist same");
+          //h_z_pos_sim_excrad->SetLineColor(kBlue);
+          //h_z_pos_sim_excrad->SetTitle("pi+ sim exc");
+          //h_z_pos_sim_excrad->DrawCopy("hist same");
+          //h_z_pos_sim_rho->SetLineColor(kRed);
+          //h_z_pos_sim_rho->SetTitle("pi+ sim rho");
+          //h_z_pos_sim_rho->DrawCopy("hist same");
+          //h_z_pos_sim_delta->SetLineColor(6);
+          //h_z_pos_sim_delta->SetTitle("pi+ sim delta");
+          //h_z_pos_sim_delta->DrawCopy("hist same");
+          TMultiGraph* mg_z_yield_pos = new TMultiGraph(); 
+          //TGraphErrors* g_z_pos_yield = new TGraphErrors(h_z_pos_yield);
+          g_z_pos_yield->GetYaxis()->SetTitle("yield");
+          g_z_pos_yield->GetYaxis()->SetTitleSize(0.53);
+          g_z_pos_yield->GetXaxis()->SetRangeUser(0.3,1);
+          g_z_pos_yield->SetMarkerStyle(4);
+          mg_z_yield_pos->Add(g_z_pos_yield,"P");
+          TGraph* g_z_pos_sim = new TGraph(h_z_pos_sim);
+          TGraph* g_z_pos_sim_incrad = new TGraph(h_z_pos_sim_incrad);
+          TGraph* g_z_pos_sim_excrad = new TGraph(h_z_pos_sim_excrad);
+          TGraph* g_z_pos_sim_rho = new TGraph(h_z_pos_sim_rho);
+          TGraph* g_z_pos_sim_delta = new TGraph(h_z_pos_sim_delta);
+          mg_z_yield_pos->Add(g_z_pos_sim); 
+          g_z_pos_sim_incrad->SetLineColor(kOrange);
+          g_z_pos_sim_incrad->SetTitle("pi- sim SIDIS");
+          mg_z_yield_pos->Add(g_z_pos_sim_incrad); 
+          g_z_pos_sim_excrad->SetLineColor(kBlue);
+          g_z_pos_sim_excrad->SetTitle("pi- sim exc");
+          mg_z_yield_pos->Add(g_z_pos_sim_excrad); 
+          g_z_pos_sim_rho->SetLineColor(kRed);
+          g_z_pos_sim_rho->SetTitle("pi- sim rho");
+          mg_z_yield_pos->Add(g_z_pos_sim_rho); 
+          g_z_pos_sim_delta->SetLineColor(kRed);
+          g_z_pos_sim_delta->SetTitle("pi- sim delta");
+          mg_z_yield_pos->Add(g_z_pos_sim_delta); 
+          mg_z_yield_pos->SetTitle(q2xz_str.c_str());
+          mg_z_yield_pos->GetYaxis()->SetTitle("yield");
+          mg_z_yield_pos->GetXaxis()->SetTitle("z");
+          mg_z_yield_pos->Draw("AL");
           c_yield_pos->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_pos_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_pos.png";
+          std::string c_yield_pos_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_pos.pdf";
           c_yield_pos->SaveAs(c_yield_pos_name.c_str());
           
           //h_z_neg_all->Rebin(2);
           //h_z_pos_all->Rebin(2);
+          TGraphErrors* g_z_neg_yield = new TGraphErrors();
+          g_z_neg_yield->SetTitle("pi- data yield");
+          int nbins_yield_neg = h_z_neg_yield->GetXaxis()->GetNbins();
+          int ii_yield_neg = 0;
+          for(int i = 0;i<nbins_yield_neg;i++){
+            //std::cout<<i<<std::endl;
+            double x = h_z_neg_yield->GetBinCenter(i);
+            double y = h_z_neg_yield->GetBinContent(i);
+            double error = h_z_neg_yield->GetBinError(i);
+            //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+            if(y!=0){
+              g_z_neg_yield->SetPoint(ii_yield_neg,x,y);
+              g_z_neg_yield->SetPointError(ii_yield_neg,0,error);
+              ii_yield_neg++;
+            }
+          }
           TCanvas *c_yield_neg = new TCanvas();
-          h_z_neg_yield->GetYaxis()->SetTitle("yield");
-          h_z_neg_yield->GetYaxis()->SetTitleSize(0.53);
-          h_z_neg_yield->GetXaxis()->SetRangeUser(0.3,1);
-          h_z_neg_yield->SetMarkerStyle(4);
-          h_z_neg_yield->DrawCopy();
+          gStyle->SetOptTitle(0);
+          //g_z_neg_yield->DrawCopy();
           //h_z_neg_bg_yield->SetLineColor(kOrange);
           //h_z_neg_bg_yield->GetXaxis()->SetRangeUser(0.3,1);
           //h_z_neg_bg_yield->DrawCopy("hist same");
-          h_z_neg_sim->DrawCopy("hist same");
-          h_z_neg_sim_incrad->SetLineColor(kOrange);
-          h_z_neg_sim_incrad->DrawCopy("hist same");
-          h_z_neg_sim_excrad->SetLineColor(kBlue);
-          h_z_neg_sim_excrad->DrawCopy("hist same");
-          h_z_neg_sim_rho->SetLineColor(kRed);
-          h_z_neg_sim_rho->DrawCopy("hist same");
-          h_z_neg_sim_delta->SetLineColor(6);
-          h_z_neg_sim_delta->DrawCopy("hist same");
+          TMultiGraph* mg_z_yield_neg = new TMultiGraph(); 
+          //TGraphErrors* g_z_neg_yield = new TGraphErrors(h_z_neg_yield);
+          g_z_neg_yield->GetYaxis()->SetTitle("yield");
+          g_z_neg_yield->GetYaxis()->SetTitleSize(0.53);
+          g_z_neg_yield->GetXaxis()->SetRangeUser(0.3,1);
+          g_z_neg_yield->SetMarkerStyle(4);
+          mg_z_yield_neg->Add(g_z_neg_yield,"P");
+          TGraph* g_z_neg_sim = new TGraph(h_z_neg_sim);
+          TGraph* g_z_neg_sim_incrad = new TGraph(h_z_neg_sim_incrad);
+          TGraph* g_z_neg_sim_excrad = new TGraph(h_z_neg_sim_excrad);
+          TGraph* g_z_neg_sim_rho = new TGraph(h_z_neg_sim_rho);
+          TGraph* g_z_neg_sim_delta = new TGraph(h_z_neg_sim_delta);
+          mg_z_yield_neg->Add(g_z_neg_sim,"L"); 
+          g_z_neg_sim_incrad->SetLineColor(kOrange);
+          g_z_neg_sim_incrad->SetTitle("pi- sim SIDIS");
+          mg_z_yield_neg->Add(g_z_neg_sim_incrad,"L"); 
+          g_z_neg_sim_excrad->SetLineColor(kBlue);
+          g_z_neg_sim_excrad->SetTitle("pi- sim exc");
+          mg_z_yield_neg->Add(g_z_neg_sim_excrad,"L"); 
+          g_z_neg_sim_rho->SetLineColor(kRed);
+          g_z_neg_sim_rho->SetTitle("pi- sim rho");
+          mg_z_yield_neg->Add(g_z_neg_sim_rho,"L"); 
+          g_z_neg_sim_delta->SetLineColor(kRed);
+          g_z_neg_sim_delta->SetTitle("pi- sim delta");
+          mg_z_yield_neg->Add(g_z_neg_sim_delta,"L"); 
+          mg_z_yield_neg->SetTitle(q2xz_str.c_str());
+          mg_z_yield_neg->GetYaxis()->SetTitle("yield");
+          mg_z_yield_neg->GetXaxis()->SetTitle("z");
+          mg_z_yield_neg->Draw("A");
+          mg_z_yield_neg->GetXaxis()->SetLimits(0.3,0.7);
+          //h_z_neg_sim->DrawCopy("hist same");
+          //h_z_neg_sim_incrad->SetLineColor(kOrange);
+          //h_z_neg_sim_incrad->SetTitle("pi- sim SIDIS");
+          //h_z_neg_sim_incrad->DrawCopy("hist same");
+          //h_z_neg_sim_excrad->SetLineColor(kBlue);
+          //h_z_neg_sim_excrad->SetTitle("pi- sim exc");
+          //h_z_neg_sim_excrad->DrawCopy("hist same");
+          //h_z_neg_sim_rho->SetLineColor(kRed);
+          //h_z_neg_sim_rho->SetTitle("pi- sim rho");
+          //h_z_neg_sim_rho->DrawCopy("hist same");
+          //h_z_neg_sim_delta->SetLineColor(6);
+          //h_z_neg_sim_delta->SetTitle("pi- sim delta");
+          //h_z_neg_sim_delta->DrawCopy("hist same");
           c_yield_neg->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_neg_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_neg.png";
+          std::string c_yield_neg_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_neg.pdf";
           c_yield_neg->SaveAs(c_yield_neg_name.c_str());
 
           h_z_neg_all->Rebin(2);
@@ -279,7 +376,7 @@ int plot_Q2x_ratio_corr(){
           double y = h_z_neg_all->GetBinContent(i);
           double error = h_z_neg_all->GetBinError(i);
           //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
-          if(y!=0){
+          if(y!=0 && error< 0.2){
             g_yield_ratio->SetPoint(ii,x,y);
             g_yield_ratio->SetPointError(ii,0,error);
             ii++;
@@ -351,7 +448,7 @@ int plot_Q2x_ratio_corr(){
           g_yield_ratio->GetXaxis()->SetTitleSize(0.053);
           g_yield_ratio->GetYaxis()->SetTitleSize(0.053);
           g_yield_ratio->Draw("AP"); 
-          g_yield_ratio_sim->Draw("P");
+          g_yield_ratio_sim->Draw("L");
           c_Q2x_z_ratio->BuildLegend(0.1,0.1,0.5,0.2,q2xz_str.c_str());
           std::string zratiopdfname = "results/yield/statistics_corr/"+q2xz_str_filename+"_ratio.pdf";
             

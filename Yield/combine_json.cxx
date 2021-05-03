@@ -36,7 +36,7 @@ int combine_json(){
       else{std::cout<<"can't find "<<RunGroup<<std::endl;}
     }
   }
-  std::ofstream ofs("results/yield/run_info/runs_info.json");
+  std::ofstream ofs("results/yield/runs_info.json");
   ofs<<jall.dump(4)<<std::endl;
   return 0;
 }

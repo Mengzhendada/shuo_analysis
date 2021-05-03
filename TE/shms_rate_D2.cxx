@@ -45,7 +45,7 @@ namespace fs = std::experimental::filesystem;
 #include <vector>
 #include <string>
 
-void shms_rate_D2(int RunGroup){
+void shms_rate_D2(int RunGroup = 0){
   if(RunGroup == 0){
     std::cout<<"Enter RunGroup Number(-1 to exit) ";
     std::cin>>RunGroup;

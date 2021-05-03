@@ -47,10 +47,10 @@ void Total_live_time(int RunGroup = 0){
   pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
 
   json j_out;
-  {
-    std::ifstream ifs("results/yield/TLT.json");
-    ifs>>j_out;
-  }
+ // {
+ //   std::ifstream ifs("results/yield/TLT.json");
+ //   ifs>>j_out;
+ // }
 
   if(!neg_D2.empty() && !pos_D2.empty()){
 
@@ -58,8 +58,8 @@ void Total_live_time(int RunGroup = 0){
     for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
-      //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
-      std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
+      std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+      //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
       ROOT::RDataFrame d_pos_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
@@ -138,8 +138,8 @@ void Total_live_time(int RunGroup = 0){
     for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
-      //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
-      std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
+      std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+      //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
       ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
@@ -216,6 +216,7 @@ void Total_live_time(int RunGroup = 0){
       //c_check->SaveAs("results/LT/TLT_type.pdf");
     }//loop over each neg runs
   }//if normal production rungoup
-  std::ofstream ofs("results/yield/TLT.json");
+  std::string ofs_name = "results/LT/TLT_"+std::to_string(RunGroup)+".json";
+  std::ofstream ofs(ofs_name.c_str());
   ofs<<j_out.dump(4)<<std::endl;
 }
