@@ -56,8 +56,8 @@ void make_latex(){
       ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
       ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[3]<<"_neg.pdf}"<<std::endl;
       ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
       }
+      ofs<<"\\end{columns}"<<std::endl;
       }
       ofs<<"\\end{frame}"<<std::endl;
         
