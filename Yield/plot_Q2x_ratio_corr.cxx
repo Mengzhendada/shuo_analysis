@@ -327,7 +327,7 @@ int plot_Q2x_ratio_corr(){
           mg_z_yield_neg->GetYaxis()->SetTitle("yield");
           mg_z_yield_neg->GetXaxis()->SetTitle("z");
           mg_z_yield_neg->Draw("A");
-          mg_z_yield_neg->GetXaxis()->SetLimits(0.3,0.7);
+          //mg_z_yield_neg->GetXaxis()->SetLimits(0.3,0.7);
           //h_z_neg_sim->DrawCopy("hist same");
           //h_z_neg_sim_incrad->SetLineColor(kOrange);
           //h_z_neg_sim_incrad->SetTitle("pi- sim SIDIS");
