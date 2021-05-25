@@ -49,7 +49,7 @@ double t_proton(double p){
   return (shms_length*std::sqrt(p*p+m*m)*1e9)/(c*p);
 }
 
-void SHMS_RF_twofit_high(int RunGroup = 0){
+void SHMS_RF_twofit_high_Dummy(int RunGroup = 0){
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
     std::cin>>RunGroup;
@@ -64,9 +64,9 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   }
   json j_rungroup_info;
 
-  std::vector<int> neg_D2,pos_D2;
-  neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-  pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> neg_Dummy,pos_Dummy;
+  neg_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["Dummy"].get<std::vector<int>>();
+  pos_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["Dummy"].get<std::vector<int>>();
   double shms_p_central = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
   double shms_p;
   json j_cuts;
@@ -124,7 +124,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
     ifs>>j_runsinfo;
   }
 
-  if(!neg_D2.empty() && !pos_D2.empty()){
+  if(!neg_Dummy.empty() && !pos_Dummy.empty()){
 
     double cointime_lowcut,cointime_highcut;
     if(RunGroup<410){
@@ -162,7 +162,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
         //SHMS_hgc_aero = aeroCutSHMS;}
       else{SHMS_hgc_aero = aeroCutSHMS;}
       std::cout<<"momentum lowend is "<<shms_p_lowend<<" ,cut is "<<SHMS_hgc_aero<<std::endl;
-      for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+      for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
         int RunNumber = *it;
         std::cout<<"pos data"<<RunNumber<<std::endl;
         std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
@@ -361,7 +361,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       pt_pos->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
       pt_pos->Draw();
       c_rftime_pos->Update();
-      std::string c_rftime_pos_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+".pdf";
+      std::string c_rftime_pos_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_Dummy.pdf";
       c_rftime_pos->SaveAs(c_rftime_pos_name.c_str());
 
 
@@ -424,7 +424,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       pt_pos_pi->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
       pt_pos_pi->Draw();
       c_pi_pos->Update();
-      std::string c_pi_pos_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi.pdf";
+      std::string c_pi_pos_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_Dummy.pdf";
       c_pi_pos->SaveAs(c_pi_pos_name.c_str());
 
       std::vector<double> n_pos_pi_rf,n_pos_K_rf;
@@ -478,11 +478,11 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       pt_pos_pi_2nd->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
       pt_pos_pi_2nd->Draw();
       c_pi_pos_2nd->Update();
-      std::string c_pi_pos_2nd_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd.pdf";
+      std::string c_pi_pos_2nd_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd_Dummy.pdf";
       c_pi_pos_2nd->SaveAs(c_pi_pos_2nd_name.c_str());
 
   //loop over each neg runs data
-  for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+  for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
     int RunNumber = *it;
     std::cout<<"neg data"<<RunNumber<<std::endl;
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
@@ -678,7 +678,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   pt_neg->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
   pt_neg->Draw();
   c_rftime_neg->Update();
-  std::string c_rftime_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+".pdf";
+  std::string c_rftime_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_Dummy.pdf";
   c_rftime_neg->SaveAs(c_rftime_neg_name.c_str());
 
 
@@ -740,7 +740,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   pt_neg_pi->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
   pt_neg_pi->Draw();
   c_pi_neg->Update();
-  std::string c_pi_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi.pdf";
+  std::string c_pi_neg_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_Dummy.pdf";
   c_pi_neg->SaveAs(c_pi_neg_name.c_str());
 
   std::vector<double> n_neg_pi_rf,n_neg_K_rf;
@@ -792,13 +792,13 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   pt_neg_pi_2nd->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
   pt_neg_pi_2nd->Draw();
   c_pi_neg_2nd->Update();
-  std::string c_pi_neg_2nd_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd.pdf";
+  std::string c_pi_neg_2nd_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd_Dummy.pdf";
   c_pi_neg_2nd->SaveAs(c_pi_neg_2nd_name.c_str());
       i_dpcut = i_dpcut+1;
       delta_lowend = *it;
 }//different delta cut    
 }//if normal production runs
-std::string of_name = "results/pid/rftime/rf_eff_"+std::to_string(RunGroup)+"_compare.json";
+std::string of_name = "results/pid/rftime/rf_eff_"+std::to_string(RunGroup)+"_compare_Dummy.json";
 std::ofstream ofs;
 ofs.open(of_name.c_str());
 ofs<<j_rungroup_info.dump(4)<<std::endl;

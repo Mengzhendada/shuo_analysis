@@ -28,7 +28,7 @@ using namespace std;
 #include "TEfficiency.h"
 #include "TGraphAsymmErrors.h"
 
-void Total_live_time(int RunGroup = 0){
+void Total_live_time_Dummy(int RunGroup = 0){
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
     std::cin>>RunGroup;
@@ -42,9 +42,9 @@ void Total_live_time(int RunGroup = 0){
     ifs>>j_rungroup;
   }
 
-  std::vector<int> neg_D2,pos_D2;
-  neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-  pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> neg_Dummy,pos_Dummy;
+  neg_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["Dummy"].get<std::vector<int>>();
+  pos_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["Dummy"].get<std::vector<int>>();
 
   json j_cuts;
   {
@@ -55,15 +55,16 @@ void Total_live_time(int RunGroup = 0){
   double current_offset = j_cuts["current_diff"].get<double>();
 
   json j_out;
- // {
- //   std::ifstream ifs("results/yield/TLT.json");
- //   ifs>>j_out;
- // }
+  {
+  std::string ifs_name = "results/LT/TLT_"+std::to_string(RunGroup)+".json";
+  std::ifstream ifs(ifs_name.c_str());
+    ifs>>j_out;
+  }
 
-  if(!neg_D2.empty() && !pos_D2.empty()){
+  if(!neg_Dummy.empty() && !pos_Dummy.empty()){
 
     //loop over each pos runs data
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
@@ -120,6 +121,7 @@ void Total_live_time(int RunGroup = 0){
       double edtm_acc = h_EDTM_acc->GetEntries();
       double edtm_all = tot_counts_currentcut; 
       double nominal_LT = edtm_acc/edtm_all;
+      if(edtm_acc!=0 && edtm_all!=0){
       j_out[(std::to_string(RunNumber)).c_str()]["TLT"] = nominal_LT;
       std::cout<<nominal_LT<<" = "<<edtm_acc<<"/"<<edtm_all<<std::endl;
       //double LT_err = nominal_LT/sqrt(edtm_acc);
@@ -127,7 +129,12 @@ void Total_live_time(int RunGroup = 0){
       double LT_err = (1/edtm_all)*sqrt(edtm_acc*(1-nominal_LT));
       std::cout<<LT_err<<std::endl;
       j_out[(std::to_string(RunNumber)).c_str()]["TLT_error"] = LT_err;
-      
+      }
+      else{
+      j_out[(std::to_string(RunNumber)).c_str()]["TLT"] = 1;
+      j_out[(std::to_string(RunNumber)).c_str()]["TLT_error"] = 0;
+        
+      }
       //TCanvas *c_tdc = new TCanvas();
       //h_EDTM_acc->DrawCopy("hist");
       //c_tdc->SaveAs("results/LT/TLT_tdctime.pdf");
@@ -142,7 +149,7 @@ void Total_live_time(int RunGroup = 0){
       //h_current->DrawCopy("hist");
       //c_check->SaveAs("results/LT/TLT_type.pdf");
     }//loop over each pos runs
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";

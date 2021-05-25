@@ -107,6 +107,7 @@ void SHMS_hgcer(int RunGroup=0){
   double P_yptar_high = j_cuts["P_yptar_high"].get<double>();
   std::string Normal_HMS = "H.gtr.th > "+std::to_string(H_xptar_low)+" && H.gtr.th < "+std::to_string(H_xptar_high)+" && H.gtr.ph > "+std::to_string(H_yptar_low)+" && H.gtr.ph < "+std::to_string(H_yptar_high); 
   std::string Normal_SHMS = "P.gtr.th > "+std::to_string(P_xptar_low)+" && P.gtr.th < "+std::to_string(P_xptar_high)+" && P.gtr.ph > "+std::to_string(P_yptar_low)+" && P.gtr.ph < "+std::to_string(P_yptar_high); 
+  double current_offset = j_cuts["current_diff"].get<double>();
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
   if(!neg_D2.empty() && !pos_D2.empty()){
@@ -155,9 +156,9 @@ void SHMS_hgcer(int RunGroup=0){
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
       ROOT::RDataFrame d_pos_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
-      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
+      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM1.scalerCurrent");
       auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
-      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM4B.scalerCurrent");
+      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM1.scalerCurrent");
       double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
       std::cout<<"set current "<<pos_setcurrent<<std::endl;
       //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
@@ -193,7 +194,7 @@ void SHMS_hgcer(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
+        .Filter([&](double current){return current>current_offset;},{"current"})
         ;
       //coin time cut for pos runs
       auto h_cointime_pos = d_pos_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");

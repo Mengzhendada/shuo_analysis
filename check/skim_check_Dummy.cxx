@@ -37,7 +37,7 @@ using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 bool shms_momentum_high = true;
 
-void skim_check(int RunGroup=0){
+void skim_check_Dummy(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
@@ -52,9 +52,9 @@ void skim_check(int RunGroup=0){
     ifs>>j_rungroup;
   }
 
-  std::vector<int> neg_D2,pos_D2;
-  neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-  pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> neg_Dummy,pos_Dummy;
+  neg_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["Dummy"].get<std::vector<int>>();
+  pos_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["Dummy"].get<std::vector<int>>();
 
   json j_cuts;
   {
@@ -120,7 +120,7 @@ void skim_check(int RunGroup=0){
     ifs>>j_rf_DE;
   }
       std::vector<int> delta_cut_num= j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>(); 
-  if(!neg_D2.empty() && !pos_D2.empty()){
+  if(!neg_Dummy.empty() && !pos_Dummy.empty()){
     std::vector<std::string> files_neg,files_pos;
     double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
     auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
@@ -196,7 +196,7 @@ void skim_check(int RunGroup=0){
 
 
     //loop over each pos runs data
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
       //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
@@ -281,6 +281,7 @@ void skim_check(int RunGroup=0){
       //rftime cut
       //offset
       double offset_pos = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
+      std::cout<<"Offset for rf time "<<offset_pos<<std::endl;
       auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
        double rf_pi_low,rf_pi_high; 
         int i_order = 0,i_which;
@@ -519,7 +520,7 @@ void skim_check(int RunGroup=0){
     }
 
     //loop over each neg runs data
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
       //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
@@ -624,7 +625,8 @@ void skim_check(int RunGroup=0){
         for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
           if(SHMS_dp>*it){
             i_which = i_order;
-            pi_eff = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_eff"].get<double>();
+            //pi_eff = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_eff"].get<double>();
+            pi_eff = 1;
           }
           i_order++;
         }
@@ -636,7 +638,8 @@ void skim_check(int RunGroup=0){
         for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
           if(SHMS_dp>*it){
             i_which = i_order;
-            pi_purity = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_purity"].get<double>();
+            pi_purity = 1;
+            //pi_purity = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_purity"].get<double>();
           }
           i_order++;
         }
@@ -841,9 +844,9 @@ void skim_check(int RunGroup=0){
     }
 
 
-    std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
-    std::ofstream outfile(of.c_str());
-    outfile<<jout.dump(4)<<std::endl;
+    //std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+    //std::ofstream outfile(of.c_str());
+    //outfile<<jout.dump(4)<<std::endl;
 
 
   }

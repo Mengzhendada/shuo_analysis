@@ -37,7 +37,7 @@ using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 bool shms_momentum_high = true;
 
-void skim_check(int RunGroup=0){
+void skim_check_checkonebranch(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
@@ -100,8 +100,12 @@ void skim_check(int RunGroup=0){
   double Mx2_cut_num = j_cuts["Mx2"].get<double>();
   std::string Mx2_cut = "Mx2>"+std::to_string(Mx2_cut_num);
   //auto Mx2_cut = [=](double Mx2){return Mx2>Mx2_cut_num;};
-  double current_offset = j_cuts["current_diff"].get<double>();
-
+  //json jout;
+  //{
+  //  std::string if_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+  //  std::ifstream ifs(if_name.c_str());
+  //  ifs>>jout;
+  //}
   json j_runsinfo;
   {
     std::string if_name = "db2/runs_info.json";
@@ -204,9 +208,9 @@ void skim_check(int RunGroup=0){
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
       ROOT::RDataFrame d_pos_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
-      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM1.scalerCurrent");
+      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
       auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
-      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM1.scalerCurrent");
+      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM4B.scalerCurrent");
       double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
       std::cout<<"set current "<<pos_setcurrent<<std::endl;
       //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
@@ -242,8 +246,7 @@ void skim_check(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return current>current_offset;},{"current"})
-        //.Filter([&](double current){return std::abs(current-pos_setcurrent)<current_offset;},{"current"})
+        .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
         ;
 
       auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
@@ -340,7 +343,6 @@ void skim_check(int RunGroup=0){
         //.Define("InvMass_pions","p_pion_HMS.Dot(p_pion)")
         .Define("emiss",Emiss,{"p_pion","p_electron"})
         .Define("mmiss",mmiss,{"p_pion","p_electron"})
-        //.Snapshot("T",skim_name.c_str());
         .Define("pmiss","P.kin.secondary.pmiss")
         .Define("Mx2",Mx2,{"H.kin.primary.nu","p_pion","P.kin.secondary.pmiss"})
         ;
@@ -353,12 +355,6 @@ void skim_check(int RunGroup=0){
         .Filter(Mx2_cut)
         .Filter(W2_cut)
         ;
-      ROOT::RDF::RSnapshotOptions opts;
-      //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
-      opts.fMode = "UPDATE";
-      d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp"});
-      //d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
-      std::cout<<"check"<<std::endl;
       int pion_counts = *d_pos_pi.Count();
 
       auto h_hms_dp_after_pos = d_pos_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
@@ -367,7 +363,7 @@ void skim_check(int RunGroup=0){
       auto h_hms_cer_after_pos = d_pos_pi.Histo1D({"","HMS cer",100,0,20},"H.cer.npeSum"); 
       auto h_shms_cal_after_pos = d_pos_pi.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
       auto h_shms_aero_after_pos = d_pos_pi.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
-
+      
     std::string bg_cut = " ";
 
     //for bg
@@ -420,9 +416,6 @@ void skim_check(int RunGroup=0){
         .Filter(Mx2_cut)
         .Filter(W2_cut)
         ;
-      //d_pos_bg.Snapshot("T_bg",skim_name.c_str());
-      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","pmiss","Mx2","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp"},opts);
-      //d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_pos_bg = d_pos_bg.Histo1D({"","pos bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
       TCanvas* c_pos_cointime = new TCanvas("","coin time",2200,1450);
@@ -511,6 +504,14 @@ void skim_check(int RunGroup=0){
       std::string c_pos_mx2_name = "results/yield/check/mx2_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_mx2->SaveAs(c_pos_mx2_name.c_str());
 
+      auto h_shms_p = d_pos_pi.Define("Pion_momentum","p_pion.E()").Histo1D({"","",100,1.5,5.5},"Pion_momentum");
+      auto h_shms_p_intree = d_pos_pi.Histo1D({"","",100,1.5,5.5},"P.gtr.p");
+      TCanvas* c_pionmomentum = new TCanvas();
+      h_shms_p->DrawCopy("hist");
+      h_shms_p_intree->SetLineColor(kRed);
+      h_shms_p_intree->DrawCopy("hist same");
+      std::string c_pionmomentum_name = "results/yield/check/pion_momentum"+std::to_string(RunNumber)+".pdf";
+      c_pionmomentum->SaveAs(c_pionmomentum_name.c_str());
 
       int bg_counts = *d_pos_bg.Count()/6;
       //jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_counts;
@@ -527,9 +528,9 @@ void skim_check(int RunGroup=0){
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
       ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
-      auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM1.scalerCurrent");
+      auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM4B.scalerCurrent");
       auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
-      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM1.scalerCurrent");
+      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM4B.scalerCurrent");
       double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
       std::cout<<"set current "<<neg_setcurrent<<std::endl;
       //std::cout<<"event size "<<neg_scaler_event_list->size()<<" current size "<<neg_scaler_current_list->size()<<std::endl;
@@ -565,8 +566,7 @@ void skim_check(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return current>current_offset;},{"current"})
-        //.Filter([&](double current){return std::abs(current-neg_setcurrent)<current_offset;},{"current"})
+        .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
         ;
     //coin time cut for neg runs
     auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
@@ -678,12 +678,6 @@ void skim_check(int RunGroup=0){
         .Filter(Mx2_cut)
         .Filter(W2_cut)
         ;
-      ROOT::RDF::RSnapshotOptions opts;
-      //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
-      opts.fMode = "UPDATE";
-      d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp"});
-      //d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
-      std::cout<<"check"<<std::endl;
       int pion_counts = *d_neg_pi.Count();
 
       auto h_hms_dp_after_neg = d_neg_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
@@ -745,9 +739,6 @@ void skim_check(int RunGroup=0){
         .Filter(Mx2_cut)
         .Filter(W2_cut)
         ;
-      //d_neg_bg.Snapshot("T_bg",skim_name.c_str());
-      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp"},opts);
-      //d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_neg_bg = d_neg_bg.Histo1D({"","neg bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
       TCanvas* c_neg_cointime = new TCanvas("","coin time",2200,1450);
@@ -836,14 +827,22 @@ void skim_check(int RunGroup=0){
       std::string c_neg_mx2_name = "results/yield/check/mx2_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_mx2->SaveAs(c_neg_mx2_name.c_str());
 
+      auto h_shms_p = d_neg_pi.Define("Pion_momentum","p_pion.E()").Histo1D({"","",100,1.5,5.5},"Pion_momentum");
+      auto h_shms_p_intree = d_neg_pi.Histo1D({"","",100,1.5,5.5},"P.gtr.p");
+      TCanvas* c_pionmomentum = new TCanvas();
+      h_shms_p->DrawCopy("hist");
+      h_shms_p_intree->SetLineColor(kRed);
+      h_shms_p_intree->DrawCopy("hist same");
+      std::string c_pionmomentum_name = "results/yield/check/pion_momentum"+std::to_string(RunNumber)+".pdf";
+      c_pionmomentum->SaveAs(c_pionmomentum_name.c_str());
       int bg_counts = *d_neg_bg.Count()/6;
       std::cout<<"bg counts "<<bg_counts<<std::endl;
     }
 
 
-    std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
-    std::ofstream outfile(of.c_str());
-    outfile<<jout.dump(4)<<std::endl;
+    //std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+    //std::ofstream outfile(of.c_str());
+    //outfile<<jout.dump(4)<<std::endl;
 
 
   }

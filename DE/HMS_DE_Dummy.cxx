@@ -37,7 +37,7 @@ using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 
 
-void HMS_DE(int RunGroup=0){
+void HMS_DE_Dummy(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
@@ -52,9 +52,9 @@ void HMS_DE(int RunGroup=0){
     ifs>>j_rungroup;
   }
 
-  std::vector<int> neg_D2,pos_D2;
-  neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-  pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> neg_Dummy,pos_Dummy;
+  neg_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["Dummy"].get<std::vector<int>>();
+  pos_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["Dummy"].get<std::vector<int>>();
 
   json j_cuts;
   {
@@ -114,7 +114,7 @@ void HMS_DE(int RunGroup=0){
   std::cout<<Normal_SHMS<<std::endl;
 
   
-    if(!neg_D2.empty() && !pos_D2.empty()){
+    if(!neg_Dummy.empty() && !pos_Dummy.empty()){
     std::vector<std::string> files_neg,files_pos;
     //double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
     //auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
@@ -169,7 +169,7 @@ void HMS_DE(int RunGroup=0){
     //};
 
     //for pos runs
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"pos "<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
@@ -225,7 +225,7 @@ void HMS_DE(int RunGroup=0){
     std::cout<<rf_pi_high<<std::endl;
 
     //loop over each pos runs data
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
@@ -554,7 +554,7 @@ void HMS_DE(int RunGroup=0){
 
 
     //for neg runs, updated version in new script
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"neg "<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
@@ -592,7 +592,7 @@ void HMS_DE(int RunGroup=0){
     auto h_coin_negcut_rungroup = d_neg_coin.Histo1D({"","coin_time",800,0,100},"CTime.ePiCoinTime_ROC2");
 
     //loop over each neg runs data
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"neg data "<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
