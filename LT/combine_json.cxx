@@ -17,12 +17,14 @@ int combine_json(){
   for(auto it = j_rungroup.begin();it!=j_rungroup.end();it++){
     int RunGroup = std::stoi(it.key());
     std::cout<<RunGroup<<std::endl;
-    std::vector<int> neg_D2,pos_D2,neg_Dummy,pos_Dummy;
+    std::vector<int> neg_D2,pos_D2,neg_Dummy,pos_Dummy,pos_H2,neg_H2;
     auto runjs = it.value();
     neg_D2 = runjs["neg"]["D2"].get<std::vector<int>>();
     pos_D2 = runjs["pos"]["D2"].get<std::vector<int>>();
     neg_Dummy = runjs["neg"]["Dummy"].get<std::vector<int>>();
     pos_Dummy = runjs["pos"]["Dummy"].get<std::vector<int>>();
+    neg_H2 = runjs["neg"]["H2"].get<std::vector<int>>();
+    pos_H2 = runjs["pos"]["H2"].get<std::vector<int>>();
     if(!neg_D2.empty() && !pos_D2.empty()){
       std::string filename = "results/LT/TLT_"+std::to_string(RunGroup)+".json"; 
       std::ifstream ifs(filename.c_str());
@@ -66,6 +68,24 @@ int combine_json(){
           //jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["CLT_all"] = j_CLT[(std::to_string(RunNumber)).c_str()]["CLT_all"].get<double>();
           //jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["CLT_phy"] = j_CLT[(std::to_string(RunNumber)).c_str()]["CLT_phy"].get<double>();
         }//loop over pos runs
+        if(!neg_H2.empty() && !pos_H2.empty()){
+          for(auto its = neg_H2.begin();its!=neg_H2.end();its++){
+            int RunNumber = *its;
+            std::cout<<"neg H2 "<<RunNumber<<std::endl;
+            jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["TLT"] = j_TLT[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
+            jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["TLT_error"] = j_TLT[(std::to_string(RunNumber)).c_str()]["TLT_error"].get<int>();
+            //jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["CLT_all"] = j_CLT[(std::to_string(RunNumber)).c_str()]["CLT_all"].get<double>();
+            //jout[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["CLT_phy"] = j_CLT[(std::to_string(RunNumber)).c_str()]["CLT_phy"].get<double>();
+          }//loop over neg runs
+          for(auto its = pos_H2.begin();its!=pos_H2.end();its++){
+            int RunNumber = *its;
+            std::cout<<"pos H2 "<<RunNumber<<std::endl;
+            jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["TLT"] = j_TLT[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
+            jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["TLT_error"] = j_TLT[(std::to_string(RunNumber)).c_str()]["TLT_error"].get<int>();
+            //jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["CLT_all"] = j_CLT[(std::to_string(RunNumber)).c_str()]["CLT_all"].get<double>();
+            //jout[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["CLT_phy"] = j_CLT[(std::to_string(RunNumber)).c_str()]["CLT_phy"].get<double>();
+          }//loop over pos runs
+        }//if H2 runs exit
       }//if good tracking infos
       else{std::cout<<"can't find "<<RunGroup<<" LT infos."<<std::endl;}
 

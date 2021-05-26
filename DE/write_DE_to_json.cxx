@@ -293,6 +293,84 @@ void write_DE_to_json(){
         }
       }//loop over each neg runs data
     }//if normal production runs
+    std::vector<int> neg_H2,pos_H2;
+    neg_H2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["H2"].get<std::vector<int>>();
+    pos_H2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["H2"].get<std::vector<int>>();
+
+    if(!neg_H2.empty() && !pos_H2.empty()){
+
+      //loop over each pos runs data
+      for(auto it = pos_H2.begin();it!=pos_H2.end();++it){
+        int RunNumber = *it;
+        double SHMS_cal_cut = j_cuts["P_cal_pi_high"].get<double>();
+        double SHMS_aero_cut = j_cuts["P_aero"].get<double>();
+        double HMS_cal_cut = j_cuts["H_cal_low"].get<double>();
+        double HMS_cer_cut = j_cuts["H_cer"].get<double>();
+
+        double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        double HMS_cer_eff = Get_HMS_cer_Eff(RunNumber,HMS_cer_cut);            
+
+
+        if(SHMS_cal_eff>0 && SHMS_cal_eff<1 && SHMS_aero_eff>0 && SHMS_aero_eff<1)
+        {
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"] = SHMS_cal_eff;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"] = SHMS_aero_eff;
+        }
+        else
+        {
+          std::cout<<"RunGroup "<<RunGroup<<", H2"<<RunNumber<<" SHMScal "<<SHMS_cal_eff<<" SHMSaero "<<SHMS_aero_eff<<std::endl;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"] = 1;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"] = 1;
+        }
+        if(HMS_cal_eff>0 && HMS_cal_eff<1 && HMS_cer_eff>0 && HMS_cer_eff<1 ){
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"] = HMS_cal_eff;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"] = HMS_cer_eff;
+        }
+        else
+        {
+          std::cout<<"RunGroup "<<RunGroup<<", H2 "<<RunNumber<<" HMScal "<<HMS_cal_eff<<" HMScer "<<HMS_cer_eff<<std::endl;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"] = 1;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"] = 1;
+        }
+      }//loop over each pos runs data
+      //loop over each neg runs data
+      for(auto it = neg_H2.begin();it!=neg_H2.end();++it){
+        int RunNumber = *it;
+        double SHMS_cal_cut = j_cuts["P_cal_pi_high"].get<double>();
+        double SHMS_aero_cut = j_cuts["P_aero"].get<double>();
+        double HMS_cal_cut = j_cuts["H_cal_low"].get<double>();
+        double HMS_cer_cut = j_cuts["H_cer"].get<double>();
+
+        double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        double HMS_cer_eff = Get_HMS_cer_Eff(RunNumber,HMS_cer_cut);            
+
+        if(SHMS_cal_eff>0 && SHMS_cal_eff<1 && SHMS_aero_eff>0 && SHMS_aero_eff<1)
+        {
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"] = SHMS_cal_eff;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"] = SHMS_aero_eff;
+        }
+        else
+        {
+          std::cout<<"RunGroup "<<RunGroup<<", H2 "<<RunNumber<<" SHMScal "<<SHMS_cal_eff<<" SHMSaero "<<SHMS_aero_eff<<std::endl;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"] = 1;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"] = 1;
+        }
+        if(HMS_cal_eff>0 && HMS_cal_eff<1 && HMS_cer_eff>0 && HMS_cer_eff<1 ){
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"] = HMS_cal_eff;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"] = HMS_cer_eff;
+        }
+        else
+        {
+          std::cout<<"RunGroup "<<RunGroup<<", H2 "<<RunNumber<<" HMScal "<<HMS_cal_eff<<" HMScer "<<HMS_cer_eff<<std::endl;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"] = 1;
+          j_runsinfo[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"] = 1;
+        }
+      }//loop over each neg runs data
+    }//if normal production runs
   }//loop over each rungroup
   std::ofstream ofs("results/yield/runs_info.json");
   ofs<<j_runsinfo.dump(4)<<std::endl;

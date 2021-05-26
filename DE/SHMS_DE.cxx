@@ -203,6 +203,9 @@ void SHMS_DE(int RunGroup=0){
 
   //rf cut
   auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
+    double rf_pi_low = j_DE["SHMS"]["rf_time_low"].get<double>();
+    double rf_pi_high = j_DE["SHMS"]["rf_time_high"].get<double>();
+    /*
     double rf_pi_low = 0.5,rf_pi_high = 1.3; 
     int i_order = 0,i_which;
     for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
@@ -213,6 +216,7 @@ void SHMS_DE(int RunGroup=0){
       }
       i_order++;
     }
+      */
     return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
 
   };
