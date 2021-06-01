@@ -219,9 +219,9 @@ void HMS_DE(int RunGroup=0){
     auto h_coin_poscut_rungroup = d_pos_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
     
     //rftime cut
-    double rf_pi_low = j_DE["SHMS"]["rf_pi_low"].get<double>();
+    double rf_pi_low = j_DE["SHMS"]["rf_time_low"].get<double>();
     std::cout<<rf_pi_low<<std::endl;
-    double rf_pi_high =j_DE["SHMS"]["rf_pi_high"].get<double>();
+    double rf_pi_high =j_DE["SHMS"]["rf_time_high"].get<double>();
     std::cout<<rf_pi_high<<std::endl;
 
     //loop over each pos runs data

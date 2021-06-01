@@ -478,6 +478,30 @@ int plot_Q2x_ratio_corr(){
           std::string c_yield_neg_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_neg.pdf";
           c_yield_neg->SaveAs(c_yield_neg_name.c_str());
 
+          /*
+          auto h_pos_yield = (TH1D*)h_z_pos_all->Clone("pos yield");
+          auto h_neg_yield = (TH1D*)h_z_neg_all->Clone("neg yield");
+          h_pos_yield->Add(h_neg_yield,-1);
+          TGraphErrors *g_fragmentation = new TGraphErrors();
+          int n_frag = h_pos_yield->GetXaxis()->GetNbins();
+          int i_frag = 0;
+          for(int i = 0;i<n_frag;i++){
+            double x = h_z_neg_all->GetBinCenter(i);
+            double y = h_z_neg_all->GetBinContent(i);
+            double error = h_z_neg_all->GetBinError(i);
+            if(y!=0 && error< 0.2){
+              double y_frag = y*(1+x)/(2*x);
+              g_fragmentation->SetPoint(i_frag,x,y_frag);
+              g_fragmentation->SetPointError(i_frag,0,error);
+              i_frag++;
+            }
+          }
+          TCanvas *c_D_fragmentation = new TCanvas();
+          h_pos_yield->Draw("AP");
+          //g_fragmentation->Draw("AP");
+          std::string c_D_fragmentation_name = "results/yield/statistics_corr/fragmentation_"+q2xz_str_filename+".pdf";
+          c_D_fragmentation->SaveAs(c_D_fragmentation_name.c_str());
+          */
           //h_z_neg_all->Rebin(2);
           //h_z_pos_all->Rebin(2);
           //h_z_neg_sim->Rebin(2);
@@ -516,7 +540,8 @@ int plot_Q2x_ratio_corr(){
           double error = h_z_neg_all->GetBinError(i);
           //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
           if(y!=0 && error< 0.2){
-            g_yield_ratio->SetPoint(ii,x,y);
+            double y_RD = (4*y-1)/(1-y);
+            g_yield_ratio->SetPoint(ii,x,y_RD);
             g_yield_ratio->SetPointError(ii,0,error);
             ii++;
           }
@@ -535,7 +560,8 @@ int plot_Q2x_ratio_corr(){
            double error = h_z_neg_sim_incnorad->GetBinError(i);
            //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
            if(y!=0){
-             g_yield_ratio_sim->SetPoint(ii_sim,x,y);
+            double y_RD = (4*y-1)/(1-y);
+             g_yield_ratio_sim->SetPoint(ii_sim,x,y_RD);
              //g_yield_ratio_sim->SetPointError(ii_sim,0,error);
              ii_sim++;
            }
@@ -581,7 +607,7 @@ int plot_Q2x_ratio_corr(){
           //TCanvas *c_Q2x_z_ratio = new TCanvas();
          // //h_z_neg_all->Draw();
           g_yield_ratio->GetXaxis()->SetRangeUser(0.1,1);
-          g_yield_ratio->GetYaxis()->SetRangeUser(0.1,1.2);
+          //g_yield_ratio->GetYaxis()->SetRangeUser(0.1,1.2);
           g_yield_ratio->GetXaxis()->SetTitle("z");
           g_yield_ratio->GetYaxis()->SetTitle("yield_ratio");
           g_yield_ratio->GetXaxis()->SetTitleSize(0.053);
@@ -621,16 +647,23 @@ int plot_Q2x_ratio_corr(){
       c_Q2x_ratio->cd();
       c_Q2x_ratio->SetTitle(canvas_name.c_str());
       //hs->Draw();
-      mg->SetTitle(canvas_name.c_str());
-      mg->GetXaxis()->SetTitle("z");
-      mg->GetYaxis()->SetTitle("yield ratio");
+      TF1 *f_RD = new TF1("f1","2.5/x-2.5",0,1);
       mg->GetXaxis()->SetTitleSize(0.053);
       mg->GetYaxis()->SetTitleSize(0.053);
       mg->GetXaxis()->SetLabelSize(0.05);
       mg->GetYaxis()->SetLabelSize(0.05);
-      mg->SetMinimum(0.1);
-      mg->SetMaximum(1.2);
-      mg->Draw("A");
+      //mg->SetMinimum(0.1);
+      //mg->SetMaximum(1.2);
+      std::string mg_title = canvas_name+",z";
+      mg->SetTitle(mg_title.c_str());
+      TPaveText *pt_mg = new TPaveText(0.5,0.8,0.8,1);
+      pt_mg->AddText(canvas_name.c_str());
+      pt_mg->Draw("same");
+      mg->Draw("APL");
+      f_RD->Draw("same");
+      mg->GetHistogram()->SetTitle(canvas_name.c_str());
+      mg->GetXaxis()->SetTitle(mg_title.c_str());
+      mg->GetYaxis()->SetTitle("R^D_meas");
       mg->GetXaxis()->SetLimits(0.3,1);
       //auto hermes_RD = [](double z){return ((1.0-z)*0.083583)/((1.0+z)*1.988);};
       //TF1 *fit = new TF1("HERMES","(1.0-x)**0.083583/(1.0+x)**1.9838",0,1);
@@ -645,7 +678,7 @@ int plot_Q2x_ratio_corr(){
 
   TCanvas* c_yield_ratio_all = new TCanvas();
   mg_all->GetXaxis()->SetTitle("z");
-  mg_all->GetYaxis()->SetTitle("yield ratio");
+  mg_all->GetYaxis()->SetTitle("R^D_meas");
   mg_all->GetXaxis()->SetTitleSize(0.053);
   mg_all->GetYaxis()->SetTitleSize(0.053);
   mg_all->GetXaxis()->SetLabelSize(0.05);
