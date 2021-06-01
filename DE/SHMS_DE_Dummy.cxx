@@ -67,7 +67,7 @@ void change_bincontent(TH1D* h1,TH1D* h2){
 };
 
 
-void SHMS_DE(int RunGroup=0){
+void SHMS_DE_Dummy(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
@@ -82,9 +82,9 @@ void SHMS_DE(int RunGroup=0){
     ifs>>j_rungroup;
   }
 
-  std::vector<int> neg_D2,pos_D2;
-  neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-  pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> neg_Dummy,pos_Dummy;
+  neg_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["Dummy"].get<std::vector<int>>();
+  pos_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["Dummy"].get<std::vector<int>>();
 
   json j_cuts;
   {
@@ -218,10 +218,10 @@ void SHMS_DE(int RunGroup=0){
   };
 
 
-  if(!neg_D2.empty() && !pos_D2.empty()){
+  if(!neg_Dummy.empty() && !pos_Dummy.empty()){
 
     //loop over each pos runs data
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
@@ -555,7 +555,7 @@ void SHMS_DE(int RunGroup=0){
     }//end of pos runs
 
     //loop over each neg runs data
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
       std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";

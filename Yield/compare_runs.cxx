@@ -108,7 +108,7 @@ void compare_runs(int Rungroup = 0){
     int RunNumber = *it;
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
     ROOT::RDataFrame d_sh("TSP",rootfile_name);
-    double charge = *d_sh.Max("P.BCM4B.scalerChargeCut");
+    double charge = *d_sh.Max("P.BCM1.scalerChargeCut");
     neg_charge += charge;
     chain_neg.Add(rootfile_name.c_str());
     TFile *rootfile = new TFile(rootfile_name.c_str());
@@ -170,7 +170,7 @@ void compare_runs(int Rungroup = 0){
     int RunNumber = *it;
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
     ROOT::RDataFrame d_sh("TSP",rootfile_name);
-    double charge = *d_sh.Max("P.BCM4B.scalerChargeCut");
+    double charge = *d_sh.Max("P.BCM1.scalerChargeCut");
     pos_charge += charge;
     chain_pos.Add(rootfile_name.c_str());
     TFile *rootfile = new TFile(rootfile_name.c_str());

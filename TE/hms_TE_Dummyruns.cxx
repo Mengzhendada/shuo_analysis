@@ -42,7 +42,7 @@ R__LOAD_LIBRARY(libGenVector.so)
 #include <vector>
 #include <string>
 
-  void hms_TE_D2runs(int RunGroup = 0){
+  void hms_TE_Dummyruns(int RunGroup = 0){
     if(RunGroup == 0){
       std::cout<<"Enter RunGroup Number(-1 to exit) ";
       std::cin>>RunGroup;
@@ -54,9 +54,9 @@ R__LOAD_LIBRARY(libGenVector.so)
       std::ifstream ifs("db2/ratio_run_group_updated.json");
       ifs>>j_rungroup;
     }
-    std::vector<int> neg_D2,pos_D2;
-    neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-    pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+    std::vector<int> neg_Dummy,pos_Dummy;
+    neg_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["Dummy"].get<std::vector<int>>();
+    pos_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["Dummy"].get<std::vector<int>>();
     json j_runsinfo;
     {
       std::string if_name = "db2/runs_info.json";
@@ -79,8 +79,14 @@ R__LOAD_LIBRARY(libGenVector.so)
       std::ifstream ifs("db2/PID_test.json");
       ifs>>j_DE;
     }
+    std::cout<<"check"<<std::endl;
     std::vector<int> delta_cut_num= j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>(); 
     json j_out;
+    {
+      std::string ifs_name =  "results/TE/trackingeff_info_"+std::to_string(RunGroup)+"_HMS.json";
+      std::ifstream ifs(ifs_name.c_str());
+      ifs>>j_out;
+    }
 
     //use only strict HMS cuts, and shms without tracking cuts
     double H_dp_low = j_cuts["H_dp_low"].get<double>();
@@ -120,10 +126,10 @@ R__LOAD_LIBRARY(libGenVector.so)
     std::cout<<Normal_SHMS<<std::endl;
 
 
-    if(!neg_D2.empty() && !pos_D2.empty()){
+    if(!neg_Dummy.empty() && !pos_Dummy.empty()){
 
       //for neg runs
-      for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+      for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();++it){
         int RunNumber = *it;
         std::cout<<RunNumber<<std::endl;
         //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
@@ -142,14 +148,12 @@ R__LOAD_LIBRARY(libGenVector.so)
         //rftime cut
         //offset
         double offset_neg = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
-        std::cout<<offset_neg<<std::endl;
         auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
           double rf_pi_low,rf_pi_high; 
           int i_order = 0,i_which;
           for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
             if(SHMS_dp>*it){
               i_which = i_order;
-              //std::cout<<i_which<<std::endl;
               rf_pi_low = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["neg"]["rf_cut_low"].get<double>();
               rf_pi_high = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["neg"]["rf_cut_high"].get<double>();
             }
@@ -215,10 +219,10 @@ R__LOAD_LIBRARY(libGenVector.so)
         j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["counts"] = neg_all;
         j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["HMS_e_expected"] = neg_pi_expected;
         j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["HMS_e_found_1"] = neg_pi_found;
-        j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["target"] = "D2";
+        j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["target"] = "Dummy";
       }//for neg runs
       //for pos runs
-      for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+      for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){
         int RunNumber = *it;
         std::cout<<RunNumber<<std::endl;
         //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
@@ -310,7 +314,7 @@ R__LOAD_LIBRARY(libGenVector.so)
         j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["counts"] = pos_all;
         j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["HMS_e_expected"] = pos_pi_expected;
         j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["HMS_e_found_1"] = pos_pi_found;
-        j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["target"] = "D2";
+        j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["target"] = "Dummy";
       }//for pos runs
 
     }//if not empty

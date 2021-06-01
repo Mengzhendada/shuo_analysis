@@ -49,6 +49,11 @@ R__LOAD_LIBRARY(libGenVector.so)
       std::ifstream ifs("results/TE/trackingeff_info.json");
       ifs>>j_te;
     }
+    json j_rate;
+    {
+      std::ifstream ifs("results/TE/trackingeff_info_old.json");
+      ifs>>j_rate;
+    }
     int i = 0;
     int i_neg = 0;
     int i_pos = 0;
@@ -174,6 +179,8 @@ R__LOAD_LIBRARY(libGenVector.so)
               if(ik_neg.find("data_n") != ik_neg.end() && ik_neg.find("SHMS_pi_expected") != ik_neg.end() && ik_neg.find("time") != ik_neg.end() && ik_neg.find("start_time")!= ik_neg.end()){
                 double pi_expected = ik_neg["SHMS_pi_expected"].get<double>();
                 double pi_found = ik_neg["SHMS_pi_found_1"].get<double>();
+                //double pi_expected = j_te[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["SHMS_pi_expected"].get<double>();
+                //double pi_found = j_te[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["SHMS_pi_found_1"].get<double>();
                 double charge = ik_neg["charge"].get<double>();
                 double time = ik_neg["time"].get<double>();
                 double counts = ik_neg["data_n"].get<double>();
@@ -182,6 +189,7 @@ R__LOAD_LIBRARY(libGenVector.so)
                 double rate = counts/(1000*time);
                 double neg_fit_value;
                 double te_corr;
+                double te_err = (1/pi_expected)*sqrt(pi_found*(1-te));
                 if(RunNumber<7000)
                 { 
                   neg_fit_value = -2.396e-5*rate+0.98;
@@ -197,6 +205,7 @@ R__LOAD_LIBRARY(libGenVector.so)
                 double yield_te = yield/te;
                 double yield_teratecorr = yield/te_corr;
                 G_te_all_neg_vs_rate->SetPoint(i_neg,rate,te);
+                G_te_all_neg_vs_rate->SetPointError(i_neg,0,te_err);
                 G_te_all_neg_vs_yield->SetPoint(i_neg,rate,yield);
                 G_te_all_neg_yieldte->SetPoint(i_neg,rate,yield_te);
                 G_te_all_neg_yieldteratecorr->SetPoint(i_neg,rate,yield_teratecorr);
@@ -242,10 +251,13 @@ R__LOAD_LIBRARY(libGenVector.so)
               if(ik_pos.find("data_n") != ik_pos.end() && ik_pos.find("SHMS_pi_expected")!=ik_pos.end() && ik_pos.find("time") != ik_pos.end() && ik_pos.find("start_time")!= ik_pos.end()){
                 double pi_expected = ik_pos["SHMS_pi_expected"].get<double>();
                 double pi_found = ik_pos["SHMS_pi_found_1"].get<double>();
+                //double pi_expected = j_te[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["SHMS_pi_expected"].get<double>();
+                //double pi_found = j_te[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["SHMS_pi_found_1"].get<double>();
                 double charge = ik_pos["charge"].get<double>();
                 double time = ik_pos["time"].get<double>();
                 double counts = ik_pos["data_n"].get<double>();
                 double te = pi_found/pi_expected;
+                double te_err = (1/pi_expected)*sqrt(pi_found*(1-te));
                 double yield = pi_found/charge;
                 if(yield>2000){std::cout<<"yield greater than 2000 "<<RunNumber<<std::endl;}
                 else{
@@ -265,6 +277,7 @@ R__LOAD_LIBRARY(libGenVector.so)
                   double yield_te = yield/te;
                   double yield_teratecorr = yield/te_corr;
                   G_te_all_pos_vs_rate->SetPoint(i_pos,rate,te);
+                  G_te_all_pos_vs_rate->SetPointError(i_pos,0,te_err);
                   G_te_all_pos_vs_yield->SetPoint(i_pos,rate,yield);
                   G_te_all_pos_yieldte->SetPoint(i_pos,rate,yield_te);
                   G_te_all_pos_yieldteratecorr->SetPoint(i_pos,rate,yield_teratecorr);
@@ -320,38 +333,47 @@ R__LOAD_LIBRARY(libGenVector.so)
     std::string c_te_all_yield_name = "results/TE/pi_te_both_vs_yield.pdf";
     c_te_all_yield->SaveAs(c_te_all_yield_name.c_str());
 
+    auto mg_rate = new TMultiGraph();
     TCanvas* c_te_all_rate = new TCanvas();
     c_te_all_rate->SetGrid();
     G_te_all_pos_vs_rate->SetMarkerColor(kRed);
     G_te_all_pos_vs_rate->SetMarkerStyle(8);
     G_te_all_pos_vs_rate->GetYaxis()->SetRangeUser(0.95,1.01);
-    TF1 *pos_fit = new TF1("pol1","pol1",0,500);
-  //  pos_fit->FixParameter(0,1);
-    G_te_all_pos_vs_rate->Fit(pos_fit);
-    pos_fit = G_te_all_pos_vs_rate->GetFunction("pol1");
-    pos_fit->SetLineColor(kRed);
-    pos_fit->Draw("same");
-    G_te_all_pos_vs_rate->Draw("ap");
+    //TF1 *pos_fit = new TF1("pol1","pol1",0,500);
+  ////  pos_fit->FixParameter(0,1);
+    //G_te_all_pos_vs_rate->Fit(pos_fit);
+    //pos_fit = G_te_all_pos_vs_rate->GetFunction("pol1");
+    //pos_fit->SetLineColor(kRed);
+    //pos_fit->Draw("same");
+    //G_te_all_pos_vs_rate->Draw("ap");
+    mg_rate->Add(G_te_all_pos_vs_rate,"P");
     gStyle->SetOptFit(1);
     G_te_all_neg_vs_rate->SetMarkerColor(kBlack);
     G_te_all_neg_vs_rate->SetMarkerStyle(8);
     G_te_all_neg_vs_rate->GetYaxis()->SetRangeUser(0.95,1.01);
-    TF1 *neg_fit = new TF1("pol1","pol1",0,500);
-  //  neg_fit->FixParameter(0,1);
-    G_te_all_neg_vs_rate->Fit(neg_fit);
-    neg_fit = G_te_all_neg_vs_rate->GetFunction("pol1");
-    neg_fit->Draw("same");
-    gStyle->SetOptFit(1);
-    G_te_all_neg_vs_rate->Draw("p");
+    //TF1 *neg_fit = new TF1("pol1","pol1",0,500);
+  ////  neg_fit->FixParameter(0,1);
+    //G_te_all_neg_vs_rate->Fit(neg_fit);
+    //neg_fit = G_te_all_neg_vs_rate->GetFunction("pol1");
+    //neg_fit->Draw("same");
+    //gStyle->SetOptFit(1);
+    //G_te_all_neg_vs_rate->Draw("p");
+    mg_rate->Add(G_te_all_neg_vs_rate,"P");
+    mg_rate->GetXaxis()->SetTitle("SHMS rate");
+    mg_rate->GetYaxis()->SetTitle("TE");
+    mg_rate->SetTitle("SHMS tracking efficiency");
+    mg_rate->SetMinimum(0.95);
+    mg_rate->SetMaximum(1.01);
+    mg_rate->Draw("a");
     std::string c_te_all_rate_name = "results/TE/pi_te_both_vs_rate.pdf";
     c_te_all_rate->SaveAs(c_te_all_rate_name.c_str());
 
-    double pos_param_1 = pos_fit->GetParameter(0);
-    double pos_param_2 = pos_fit->GetParameter(1);
-    double neg_param_1 = neg_fit->GetParameter(0);
-    double neg_param_2 = neg_fit->GetParameter(1);
-    std::cout<<" pos fitting "<<pos_param_1<<" "<<pos_param_2<<std::endl;
-    std::cout<<" neg fitting "<<neg_param_1<<" "<<neg_param_2<<std::endl;
+    //double pos_param_1 = pos_fit->GetParameter(0);
+    //double pos_param_2 = pos_fit->GetParameter(1);
+    //double neg_param_1 = neg_fit->GetParameter(0);
+    //double neg_param_2 = neg_fit->GetParameter(1);
+    //std::cout<<" pos fitting "<<pos_param_1<<" "<<pos_param_2<<std::endl;
+    //std::cout<<" neg fitting "<<neg_param_1<<" "<<neg_param_2<<std::endl;
 
     TCanvas* c_te_all_ratecorr = new TCanvas();
     c_te_all_ratecorr->SetGrid();

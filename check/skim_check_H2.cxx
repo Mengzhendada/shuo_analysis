@@ -52,9 +52,9 @@ void skim_check(int RunGroup=0){
     ifs>>j_rungroup;
   }
 
-  std::vector<int> neg_D2,pos_D2;
-  neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-  pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> neg_H2,pos_H2;
+  neg_H2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["H2"].get<std::vector<int>>();
+  pos_H2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["H2"].get<std::vector<int>>();
 
   json j_cuts;
   {
@@ -120,7 +120,7 @@ void skim_check(int RunGroup=0){
     ifs>>j_rf_DE;
   }
       std::vector<int> delta_cut_num= j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>(); 
-  if(!neg_D2.empty() && !pos_D2.empty()){
+  if(!neg_H2.empty() && !pos_H2.empty()){
     std::vector<std::string> files_neg,files_pos;
     double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
     auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
@@ -196,7 +196,7 @@ void skim_check(int RunGroup=0){
 
 
     //loop over each pos runs data
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_H2.begin();it!=pos_H2.end();++it){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
       //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
@@ -519,7 +519,7 @@ void skim_check(int RunGroup=0){
     }
 
     //loop over each neg runs data
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    for(auto it = neg_H2.begin();it!=neg_H2.end();++it){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
       //std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_-1.root";
@@ -841,9 +841,9 @@ void skim_check(int RunGroup=0){
     }
 
 
-    std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
-    std::ofstream outfile(of.c_str());
-    outfile<<jout.dump(4)<<std::endl;
+    //std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+    //std::ofstream outfile(of.c_str());
+    //outfile<<jout.dump(4)<<std::endl;
 
 
   }

@@ -45,7 +45,7 @@ namespace fs = std::experimental::filesystem;
 #include <vector>
 #include <string>
 
-void shms_rate_D2(int RunGroup){
+void shms_rate_D2(int RunGroup = 0){
   if(RunGroup == 0){
     std::cout<<"Enter RunGroup Number(-1 to exit) ";
     std::cin>>RunGroup;
@@ -139,7 +139,7 @@ void shms_rate_D2(int RunGroup){
         //double ps_factor = (ps6 == 0 ) ? 1. : (std::pow(2,ps6 - 1) + 1);
 
        // auto h_ptrig1 = d_neg_scale.Histo1D({"","",}) 
-        double total_charge = *d_neg_scale.Max("P.BCM4B.scalerChargeCut")/1000.0;
+        double total_charge = *d_neg_scale.Max("P.BCM1.scalerChargeCut")/1000.0;
         double time_1MHz_cut = *d_neg_scale.Max("P.1MHz.scalerTimeCut");
         int scaler_events = *d_neg_scale.Count();
         long int datacounts = *d_neg_scale.Max("P.pTRIG1.scaler"); 
@@ -217,7 +217,7 @@ void shms_rate_D2(int RunGroup){
         //double ps_factor = (ps6 == 0 ) ? 1. : (std::pow(2,ps6 - 1) + 1);
 
 
-        double total_charge = *d_pos_scale.Max("P.BCM4B.scalerChargeCut")/1000.0;
+        double total_charge = *d_pos_scale.Max("P.BCM1.scalerChargeCut")/1000.0;
         double time_1MHz_cut = *d_pos_scale.Max("P.1MHz.scalerTimeCut");
         int scaler_events = *d_pos_scale.Count();
         long int datacounts = *d_pos_scale.Max("P.pTRIG1.scaler"); 

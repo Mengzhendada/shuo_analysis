@@ -90,8 +90,8 @@ void compare_sim_data(int RunGroup = 0){
     if(RunGroup < 0)
       return;
   }
-  std::string pos_sim_rootfile = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.root";
-  std::string neg_sim_rootfile = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.root";
+  std::string pos_sim_rootfile = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.root";
+  std::string neg_sim_rootfile = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.root";
   json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -113,14 +113,14 @@ void compare_sim_data(int RunGroup = 0){
   //for neg runs
   for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
     int RunNumber = *it;
-    std::cout<<RunNumber<<std::endl;
+    std::cout<<"neg"<<RunNumber<<std::endl;
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
     files_neg.push_back(rootfile_name);
   }
   //for pos runs
   for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
     int RunNumber = *it;
-    std::cout<<RunNumber<<std::endl;
+    std::cout<<"pos"<<RunNumber<<std::endl;
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
     files_pos.push_back(rootfile_name);
   }
@@ -279,24 +279,26 @@ void compare_sim_data(int RunGroup = 0){
     ;
 
   double dcharge_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["charge"].get<double>();
-  double d_shmsTE_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["shmsTE"].get<double>();
-  double d_hmsTE_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["hmsTE"].get<double>();
-  double d_coinlive_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["coinlive"].get<double>();
-  double normfac_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["normfac"].get<double>();
-  double factor_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["factor"].get<double>();
-  double nentries_pos = *d_sim_pos_raw.Count();
-  double nentries_neg = *d_sim_neg_raw.Count();
+  //double d_shmsTE_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["TE"].get<double>();
+  //double d_hmsTE_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["TEHMS"].get<double>();
+  //double d_coinlive_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["TLT"].get<double>();
+  double normfac_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["normfac"]["inc"]["rad"]["normfac"].get<double>();
+  //double factor_neg = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["factor"].get<double>();
+  double nentries_pos = *d_sim_pos_raw_1.Count();
+  double nentries_neg = *d_sim_neg_raw_1.Count();
   std::cout<<"neg sim entries "<<nentries_neg<<" pos "<<nentries_pos<<std::endl;
   double wfac_neg = (normfac_neg/nentries_neg)*(dcharge_neg/1);
-  auto weightcalculate_neg = [wfac_neg,d_coinlive_neg,d_shmsTE_neg,d_hmsTE_neg,factor_neg](float weight){return wfac_neg*d_coinlive_neg*d_shmsTE_neg*d_hmsTE_neg*weight*factor_neg;};
+  auto weightcalculate_neg = [wfac_neg](float weight){return wfac_neg*weight;};
+  //auto weightcalculate_neg = [wfac_neg,d_coinlive_neg,d_shmsTE_neg,d_hmsTE_neg,factor_neg](float weight){return wfac_neg*d_coinlive_neg*d_shmsTE_neg*d_hmsTE_neg*weight*factor_neg;};
   double dcharge_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["charge"].get<double>();
-  double d_shmsTE_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["shmsTE"].get<double>();
-  double d_hmsTE_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["hmsTE"].get<double>();
-  double d_coinlive_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["coinlive"].get<double>();
-  double factor_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["factor"].get<double>();
-  double normfac_pos = j_info[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["normfac"].get<double>();
+  //double d_shmsTE_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["shmsTE"].get<double>();
+  //double d_hmsTE_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["hmsTE"].get<double>();
+  //double d_coinlive_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["coinlive"].get<double>();
+  //double factor_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["factor"].get<double>();
+  double normfac_pos = j_info[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["normfac"]["inc"]["rad"]["normfac"].get<double>();
   double wfac_pos = (normfac_pos/nentries_pos)*(dcharge_pos/1);
-  auto weightcalculate_pos = [wfac_pos,d_coinlive_pos,d_shmsTE_pos,d_hmsTE_pos,factor_pos](float weight){return wfac_pos*d_coinlive_pos*d_shmsTE_pos*d_hmsTE_pos*weight*factor_pos;};
+  auto weightcalculate_pos = [wfac_pos](float weight){return wfac_pos*weight;};
+  //auto weightcalculate_pos = [wfac_pos,d_coinlive_pos,d_shmsTE_pos,d_hmsTE_pos,factor_pos](float weight){return wfac_pos*d_coinlive_pos*d_shmsTE_pos*d_hmsTE_pos*weight*factor_pos;};
   auto d_sim_pos = d_sim_pos_raw
     //.Define("weight_neg",weightcalculate_neg,{"Weight"})
     .Define("weight_pos",weightcalculate_pos,{"Weight"})
