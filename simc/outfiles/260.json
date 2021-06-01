@@ -1,45 +1,49 @@
 {
     "260": {
         "neg": {
-            "delta": {
-                "normfac": 24697300.0
-            },
-            "exc": {
-                "norad": {
-                    "normfac": 22004700.0
-                }
-            },
-            "inc": {
-                "norad": {
-                    "normfac": 74592800000.0
+            "D2": {
+                "delta": {
+                    "normfac": 24697300.0
                 },
-                "rad": {
-                    "normfac": 83723100000.0
+                "exc": {
+                    "rad": {
+                        "normfac": 22004700.0
+                    }
+                },
+                "inc": {
+                    "norad": {
+                        "normfac": 74592800000.0
+                    },
+                    "rad": {
+                        "normfac": 83723100000.0
+                    }
+                },
+                "rho": {
+                    "normfac": 706059000.0
                 }
-            },
-            "rho": {
-                "normfac": 706059000.0
             }
         },
         "pos": {
-            "delta": {
-                "normfac": 24697300.0
-            },
-            "exc": {
-                "norad": {
-                    "normfac": 22053100.0
-                }
-            },
-            "inc": {
-                "norad": {
-                    "normfac": 74592800000.0
+            "D2": {
+                "delta": {
+                    "normfac": 24697300.0
                 },
-                "rad": {
-                    "normfac": 83723100000.0
+                "exc": {
+                    "rad": {
+                        "normfac": 22053100.0
+                    }
+                },
+                "inc": {
+                    "norad": {
+                        "normfac": 74592800000.0
+                    },
+                    "rad": {
+                        "normfac": 83723100000.0
+                    }
+                },
+                "rho": {
+                    "normfac": 706059000.0
                 }
-            },
-            "rho": {
-                "normfac": 706059000.0
             }
         }
     }
