@@ -21,16 +21,9 @@ int combine_json(){
       std::ifstream ifs(filename.c_str());
       if(ifs.good()){
         ifs>>jout;
-        jall[std::to_string(RunGroup).c_str()]["D2"]["neg"]["delta"] = jout[std::to_string(RunGroup).c_str()]["neg"]["delta"];
-        jall[std::to_string(RunGroup).c_str()]["D2"]["neg"]["exc"] = jout[std::to_string(RunGroup).c_str()]["neg"]["exc"];
-        jall[std::to_string(RunGroup).c_str()]["D2"]["neg"]["inc"] = jout[std::to_string(RunGroup).c_str()]["neg"]["inc"];
-        jall[std::to_string(RunGroup).c_str()]["D2"]["neg"]["rho"] = jout[std::to_string(RunGroup).c_str()]["neg"]["rho"];
-        jall[std::to_string(RunGroup).c_str()]["H2"]["neg"] = jout[std::to_string(RunGroup).c_str()]["neg"]["H2"];
-        jall[std::to_string(RunGroup).c_str()]["D2"]["pos"]["delta"] = jout[std::to_string(RunGroup).c_str()]["pos"]["delta"];
-        jall[std::to_string(RunGroup).c_str()]["D2"]["pos"]["exc"] = jout[std::to_string(RunGroup).c_str()]["pos"]["exc"];
-        jall[std::to_string(RunGroup).c_str()]["D2"]["pos"]["inc"] = jout[std::to_string(RunGroup).c_str()]["pos"]["inc"];
-        jall[std::to_string(RunGroup).c_str()]["D2"]["pos"]["rho"] = jout[std::to_string(RunGroup).c_str()]["pos"]["rho"];
         jall[std::to_string(RunGroup).c_str()]["D2"]["neg"] = jout[std::to_string(RunGroup).c_str()]["neg"]["D2"];
+        jall[std::to_string(RunGroup).c_str()]["D2"]["pos"] = jout[std::to_string(RunGroup).c_str()]["pos"]["D2"];
+        jall[std::to_string(RunGroup).c_str()]["H2"]["neg"] = jout[std::to_string(RunGroup).c_str()]["neg"]["H2"];
         jall[std::to_string(RunGroup).c_str()]["H2"]["pos"] = jout[std::to_string(RunGroup).c_str()]["pos"]["H2"];
                 
       }
