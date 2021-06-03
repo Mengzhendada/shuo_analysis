@@ -37,7 +37,7 @@ using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 bool shms_momentum_high = true;
 
-void skim_check(int RunGroup=0){
+void skim_check_H2(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
@@ -281,6 +281,7 @@ void skim_check(int RunGroup=0){
       //rftime cut
       //offset
       double offset_pos = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
+      std::cout<<"Offset for rf time "<<offset_pos<<std::endl;
       auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
        double rf_pi_low,rf_pi_high; 
         int i_order = 0,i_which;
@@ -624,7 +625,8 @@ void skim_check(int RunGroup=0){
         for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
           if(SHMS_dp>*it){
             i_which = i_order;
-            pi_eff = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_eff"].get<double>();
+            //pi_eff = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_eff"].get<double>();
+            pi_eff = 1;
           }
           i_order++;
         }
@@ -636,7 +638,8 @@ void skim_check(int RunGroup=0){
         for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
           if(SHMS_dp>*it){
             i_which = i_order;
-            pi_purity = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_purity"].get<double>();
+            pi_purity = 1;
+            //pi_purity = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_purity"].get<double>();
           }
           i_order++;
         }
