@@ -39,7 +39,7 @@ void make_latex(){
         ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/polar_neg_"<<q2x_filestr<<".pdf}"<<std::endl;
         ofs<<"\\end{frame}"<<std::endl;
         ofs<<"\\begin{frame}{"<<q2x_str<<",pt phi polar pos}"<<std::endl;
-        ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/polar_pos_"<<q2x_str<<".pdf}"<<std::endl;
+        ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/polar_pos_"<<q2x_filestr<<".pdf}"<<std::endl;
         ofs<<"\\end{frame}"<<std::endl;
       
         ofs<<"\\begin{frame}{one of the neg run example "<<neg_D2_z[0]<<"}"<<std::endl;
@@ -67,7 +67,7 @@ void make_latex(){
         ofs<<"\\end{frame}"<<std::endl;
         
         ofs<<"\\begin{frame}{"<<q2x_str<<",pt phi polar pos}"<<std::endl;
-        ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/pt_ratio_"<<q2x_str<<"_ratio.pdf}"<<std::endl;
+        ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/pt_ratio_"<<q2x_filestr<<"_ratio.pdf}"<<std::endl;
         ofs<<"\\end{frame}"<<std::endl;
       
       //ofs<<"\\begin{columns}"<<std::endl;
