@@ -4,6 +4,7 @@ using json = nlohmann::json;
 
 void make_latex(){
   std::ofstream ofs("yield_ratio.tex");
+     std::cout<<"check"<<std::endl;
   json j_Q2x;
   {
     std::ifstream ifs("db2/kin_group_xQ2z.json");
@@ -12,7 +13,6 @@ void make_latex(){
   for(json::iterator it = j_Q2x.begin();it!=j_Q2x.end();++it){
      double xbj = std::stod(it.key());
      auto j_Q2z = it.value();
-
      for(json::iterator i_Q2 = j_Q2z.begin();i_Q2!=j_Q2z.end();++i_Q2){
        double Q2 = std::stod(i_Q2.key());
        auto j_z = i_Q2.value();
@@ -26,40 +26,40 @@ void make_latex(){
         counts_z_name.push_back(q2xz_str);
       }
       
-        ofs<<"\\begin{frame}{corrected yield}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[0]<<"_pos.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[0]<<"_neg.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[1]<<"_pos.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[1]<<"_neg.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      if(counts_z_name.size()>2){
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[2]<<"_pos.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[2]<<"_neg.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      if(counts_z_name.size()>3){
-      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[3]<<"_pos.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[3]<<"_neg.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      }
-      ofs<<"\\end{columns}"<<std::endl;
-      }
-      ofs<<"\\end{frame}"<<std::endl;
+//        ofs<<"\\begin{frame}{corrected yield}"<<std::endl;
+//      ofs<<"\\begin{columns}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[0]<<"_pos.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[0]<<"_neg.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[1]<<"_pos.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[1]<<"_neg.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\end{columns}"<<std::endl;
+//      if(counts_z_name.size()>2){
+//      ofs<<"\\begin{columns}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[2]<<"_pos.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[2]<<"_neg.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      if(counts_z_name.size()>3){
+//      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[3]<<"_pos.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.25\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = \\textwidth]{results/yield/statistics_corr/yield_"<<counts_z_name[3]<<"_neg.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      }
+//      ofs<<"\\end{columns}"<<std::endl;
+//      }
+//      ofs<<"\\end{frame}"<<std::endl;
         
       //ofs<<"\\begin{frame}{raw yield ratio}"<<std::endl;
       //ofs<<"\\begin{columns}"<<std::endl;
@@ -90,29 +90,29 @@ void make_latex(){
       //ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
       //ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/check/"<<counts_z_name[0]<<"_ratio.pdf}"<<std::endl;
       
-      ofs<<"\\begin{frame}{TE,pi eff, pi purity corrected yield ratio}"<<std::endl;
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[0]<<"_ratio.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[1]<<"_ratio.pdf}"<<std::endl;
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      if(counts_z_name.size()>2){
-      ofs<<"\\begin{columns}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[2]<<"_ratio.pdf}"<<std::endl;
-
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
-      if(counts_z_name.size()>3){
-      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[3]<<"_ratio.pdf}"<<std::endl;
-      }
-      ofs<<"\\end{column}"<<std::endl;
-      ofs<<"\\end{columns}"<<std::endl;
-      }
-      ofs<<"\\end{frame}"<<std::endl;
+//      ofs<<"\\begin{frame}{TE,pi eff, pi purity corrected yield ratio}"<<std::endl;
+//      ofs<<"\\begin{columns}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[0]<<"_ratio.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[1]<<"_ratio.pdf}"<<std::endl;
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\end{columns}"<<std::endl;
+//      if(counts_z_name.size()>2){
+//      ofs<<"\\begin{columns}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+//      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[2]<<"_ratio.pdf}"<<std::endl;
+//
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+//      if(counts_z_name.size()>3){
+//      ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics_corr/"<<counts_z_name[3]<<"_ratio.pdf}"<<std::endl;
+//      }
+//      ofs<<"\\end{column}"<<std::endl;
+//      ofs<<"\\end{columns}"<<std::endl;
+//      }
+//      ofs<<"\\end{frame}"<<std::endl;
       
       //ofs<<"\\begin{frame}{raw yield ratio}"<<std::endl;
       //ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/yield/statistics/"<<q2x_str<<"_ratio.pdf}"<<std::endl;
