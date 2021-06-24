@@ -50,6 +50,8 @@ int plot_Q2x_ratio_corr(){
       TH1D* h_pos_q2x = new TH1D("",(q2x_name).c_str(),100,0,1);
       int i_color = 1;
       auto mg = new TMultiGraph();
+      auto mg_frag = new TMultiGraph();
+      auto mg_RD = new TMultiGraph();
       //THStack* hs = new THStack("yield_ratio","yield ratio");
       if(xbj !=0 && Q2!=0){  
         for(json::iterator it = j_z.begin();it!=j_z.end();++it){
@@ -295,20 +297,20 @@ int plot_Q2x_ratio_corr(){
           auto h_z_pos_incnorad = h_z_pos_sim_incnorad;
           auto h_z_pos_incrad = h_z_pos_sim_incrad;
           
-          h_z_neg_all->Rebin(5);
-          h_z_pos_all->Rebin(5);
-          h_z_neg_sim->Rebin(5);
-          h_z_pos_sim->Rebin(5);
-          h_z_neg_incnorad->Rebin(5);
-          h_z_neg_incrad->Rebin(5);
-          h_z_neg_sim_excrad->Rebin(5);
-          h_z_neg_sim_delta->Rebin(5);
-          h_z_neg_sim_rho->Rebin(5);
-          h_z_pos_incnorad->Rebin(5);
-          h_z_pos_incrad->Rebin(5);
-          h_z_pos_sim_excrad->Rebin(5);
-          h_z_pos_sim_delta->Rebin(5);
-          h_z_pos_sim_rho->Rebin(5);
+          h_z_neg_all->Rebin(2);
+          h_z_pos_all->Rebin(2);
+          h_z_neg_sim->Rebin(2);
+          h_z_pos_sim->Rebin(2);
+          h_z_neg_incnorad->Rebin(2);
+          h_z_neg_incrad->Rebin(2);
+          h_z_neg_sim_excrad->Rebin(2);
+          h_z_neg_sim_delta->Rebin(2);
+          h_z_neg_sim_rho->Rebin(2);
+          h_z_pos_incnorad->Rebin(2);
+          h_z_pos_incrad->Rebin(2);
+          h_z_pos_sim_excrad->Rebin(2);
+          h_z_pos_sim_delta->Rebin(2);
+          h_z_pos_sim_rho->Rebin(2);
           ///auto rp_radia_corr_neg = new TRatioPlot(h_z_neg_sim_incnorad,h_z_neg_sim_incrad);
           ///auto rp_radia_corr_pos = new TRatioPlot(h_z_pos_sim_incnorad,h_z_pos_sim_incrad);
           TH1* rp_radia_corr_neg = (TH1*)h_z_neg_incnorad->Clone("rp_radia_corr");
@@ -514,9 +516,10 @@ int plot_Q2x_ratio_corr(){
           //// rp->GetLowerRefGraph()->SetMinimum(0);
           //// rp->GetLowerRefGraph()->SetMaximum(1);
           
-          //h_z_neg_all->Sumw2();
-          //h_z_pos_all->Sumw2();
-          h_z_neg_all->Divide(h_z_pos_all);
+          h_z_neg_all->Sumw2();
+          h_z_pos_all->Sumw2();
+          
+          //h_z_neg_all->Divide(h_z_pos_all);
           h_z_neg_sim_incnorad->Divide(h_z_pos_sim_incnorad);
 
           h_z_neg_all->SetTitle(q2xz_str_filename.c_str());
@@ -529,20 +532,43 @@ int plot_Q2x_ratio_corr(){
          
           // TGraphErrors* g_yield_ratio = new TGraphErrors(h_z_neg_all);
           TGraphErrors* g_yield_ratio = new TGraphErrors();
-          std::string z_string = "z setting "+(std::to_string(z)).substr(0,4);
+          std::string z_string = "R_Y z setting "+(std::to_string(z)).substr(0,4);
           g_yield_ratio->SetName(z_string.c_str());
+          TGraphErrors* g_frag_ratio = new TGraphErrors();
+          std::string frag_z_string = "frag z setting "+(std::to_string(z)).substr(0,4);
+          g_frag_ratio->SetName(frag_z_string.c_str());
+          TGraphErrors* g_RDmeas_ratio = new TGraphErrors();
+          std::string RDmeas_z_string = "R^D_meas z setting "+(std::to_string(z)).substr(0,4);
+          g_RDmeas_ratio->SetName(RDmeas_z_string.c_str());
          
          int ii = 0;
         for(int i = 0;i<nbins;i++){
           //std::cout<<i<<std::endl;
           double x = h_z_neg_all->GetBinCenter(i)+0.001*i_color;
-          double y = h_z_neg_all->GetBinContent(i);
-          double error = h_z_neg_all->GetBinError(i);
-          //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+          double y_neg = h_z_neg_all->GetBinContent(i);
+          double error_neg = h_z_neg_all->GetBinError(i);
+          double y_pos = h_z_pos_all->GetBinContent(i);
+          double error_pos = h_z_pos_all->GetBinError(i);
+          double radia_corr_neg = rp_radia_corr_neg->GetBinContent(i);
+          double radia_corr_pos = rp_radia_corr_pos->GetBinContent(i);
+          //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl; rp_radia_corr_pos
+          y_neg = y_neg*radia_corr_neg;
+          y_pos = y_pos*radia_corr_pos;
+          double y = (y_neg)/(y_pos);
+          double error = (y_neg/y_pos)*std::sqrt((error_neg*error_neg)/(y_neg*y_neg)+(error_pos*error_pos)/(y_pos*y_pos));
+          double y_RD = (4*y-1)/(1-y);
+          double error_RD = y_RD*std::sqrt(2*(error*error)/(y*y));
+          double y_frag = (4*y-1)/(4-y);
+          double error_frag = y_frag*std::sqrt((error*error)/(y*y));
           if(y!=0 && error< 0.2){
-            double y_RD = (4*y-1)/(1-y);
-            g_yield_ratio->SetPoint(ii,x,y_RD);
+            //double y_RD = (4*y-1)/(1-y);
+            g_yield_ratio->SetPoint(ii,x,y);
+            //g_yield_ratio->SetPoint(ii,x,y_RD);
             g_yield_ratio->SetPointError(ii,0,error);
+            g_frag_ratio ->SetPoint(ii,x,y_frag);
+            g_frag_ratio->SetPointError(ii,0,error_frag);
+            g_RDmeas_ratio->SetPoint(ii,x,y_RD);
+            g_RDmeas_ratio->SetPointError(ii,0,error_RD);
             ii++;
           }
         }
@@ -560,8 +586,9 @@ int plot_Q2x_ratio_corr(){
            double error = h_z_neg_sim_incnorad->GetBinError(i);
            //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
            if(y!=0){
-            double y_RD = (4*y-1)/(1-y);
-             g_yield_ratio_sim->SetPoint(ii_sim,x,y_RD);
+      //      double y_RD = (4*y-1)/(1-y);
+      //       g_yield_ratio_sim->SetPoint(ii_sim,x,y_RD);
+             g_yield_ratio_sim->SetPoint(ii_sim,x,y);
              //g_yield_ratio_sim->SetPointError(ii_sim,0,error);
              ii_sim++;
            }
@@ -599,6 +626,14 @@ int plot_Q2x_ratio_corr(){
           //h_z_neg_all->Draw("same");
           mg->Add(g_yield_ratio,"P");
           mg->Add(g_yield_ratio_sim,"L");
+          g_frag_ratio->SetMarkerStyle(4);
+          g_frag_ratio->SetMarkerColor(i_color);
+          g_frag_ratio->SetLineColor(i_color);
+          mg_frag->Add(g_frag_ratio,"P");
+          g_RDmeas_ratio->SetMarkerStyle(4);
+          g_RDmeas_ratio->SetMarkerColor(i_color);
+          g_RDmeas_ratio->SetLineColor(i_color);
+          mg_RD->Add(g_RDmeas_ratio,"P");
           //c_Q2x_ratio->Update();
 
 
@@ -623,23 +658,23 @@ int plot_Q2x_ratio_corr(){
           std::string z_string_all = "z setting "+(std::to_string(z)).substr(0,4);
           g_yield_ratio_all->SetName(z_string_all.c_str());
          
-         int ii_all = 0;
-        for(int i = 0;i<nbins;i++){
-          //std::cout<<i<<std::endl;
-          double x = h_z_neg_all->GetBinCenter(i)+0.001*i_color+0.6*i_which_x[i_whichx];
-          double y = h_z_neg_all->GetBinContent(i)+i_which_Q2[i_whichx];
-          double error = h_z_neg_all->GetBinError(i);
-          //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
-          if(y!=0 && y!= 1 && y!=2 && error< 0.2){
-            g_yield_ratio_all->SetPoint(ii_all,x,y);
-            g_yield_ratio_all->SetPointError(ii_all,0,error);
-            ii_all++;
-          }
-        }
-          g_yield_ratio_all->SetMarkerStyle(4);
-          g_yield_ratio_all->SetMarkerColor(i_color);
-          g_yield_ratio_all->SetLineColor(i_color);
-          mg_all->Add(g_yield_ratio_all,"P");
+        // int ii_all = 0;
+        //for(int i = 0;i<nbins;i++){
+        //  //std::cout<<i<<std::endl;
+        //  double x = h_z_neg_all->GetBinCenter(i)+0.001*i_color+0.6*i_which_x[i_whichx];
+        //  double y = h_z_neg_all->GetBinContent(i)+i_which_Q2[i_whichx];
+        //  double error = h_z_neg_all->GetBinError(i);
+        //  //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+        //  if(y!=0 && y!= 1 && y!=2 && error< 0.2){
+        //    g_yield_ratio_all->SetPoint(ii_all,x,y);
+        //    g_yield_ratio_all->SetPointError(ii_all,0,error);
+        //    ii_all++;
+        //  }
+        //}
+        //  g_yield_ratio_all->SetMarkerStyle(4);
+        //  g_yield_ratio_all->SetMarkerColor(i_color);
+        //  g_yield_ratio_all->SetLineColor(i_color);
+        //  mg_all->Add(g_yield_ratio_all,"P");
           i_color++;
         }//loop over z
     i_whichx++;
@@ -647,45 +682,86 @@ int plot_Q2x_ratio_corr(){
       c_Q2x_ratio->cd();
       c_Q2x_ratio->SetTitle(canvas_name.c_str());
       //hs->Draw();
-      TF1 *f_RD = new TF1("f1","2.5/x-2.5",0,1);
+      //TF1 *f_RD = new TF1("f1","2.5/x-2.5",0,1);
       mg->GetXaxis()->SetTitleSize(0.053);
       mg->GetYaxis()->SetTitleSize(0.053);
       mg->GetXaxis()->SetLabelSize(0.05);
       mg->GetYaxis()->SetLabelSize(0.05);
-      //mg->SetMinimum(0.1);
-      //mg->SetMaximum(1.2);
+      mg->SetMinimum(0.1);
+      mg->SetMaximum(1.2);
       std::string mg_title = canvas_name+",z";
       mg->SetTitle(mg_title.c_str());
       TPaveText *pt_mg = new TPaveText(0.5,0.8,0.8,1);
       pt_mg->AddText(canvas_name.c_str());
       pt_mg->Draw("same");
       mg->Draw("APL");
-      f_RD->Draw("same");
+      //f_RD->Draw("same");
       mg->GetHistogram()->SetTitle(canvas_name.c_str());
       mg->GetXaxis()->SetTitle(mg_title.c_str());
-      mg->GetYaxis()->SetTitle("R^D_meas");
-      mg->GetXaxis()->SetLimits(0.3,1);
+      mg->GetXaxis()->SetLimits(0.3,0.8);
       //auto hermes_RD = [](double z){return ((1.0-z)*0.083583)/((1.0+z)*1.988);};
       //TF1 *fit = new TF1("HERMES","(1.0-x)**0.083583/(1.0+x)**1.9838",0,1);
       //fit->Draw("same");
+//      std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_RDratio.pdf";
       std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_ratio.pdf";
       c_Q2x_ratio->BuildLegend(0.7,0.7,0.9,0.9);
       c_Q2x_ratio->SaveAs(ratiopdfname.c_str());
+      TCanvas* c_frag_ratio = new TCanvas("","",1900,1000);
+      mg_frag->GetXaxis()->SetTitleSize(0.053);
+      mg_frag->GetYaxis()->SetTitleSize(0.053);
+      mg_frag->GetXaxis()->SetLabelSize(0.05);
+      mg_frag->GetYaxis()->SetLabelSize(0.05);
+      mg_frag->SetMinimum(0.1);
+      mg_frag->SetMaximum(0.8);
+      std::string mg_frag_title = canvas_name+",z";
+      mg_frag->SetTitle(mg_frag_title.c_str());
+      TPaveText *pt_mg_frag = new TPaveText(0.5,0.8,0.8,1);
+      pt_mg_frag->AddText(canvas_name.c_str());
+      pt_mg_frag->Draw("same");
+      mg_frag->Draw("APL");
+      mg_frag->GetHistogram()->SetTitle(canvas_name.c_str());
+      mg_frag->GetXaxis()->SetTitle(mg_frag_title.c_str());
+      mg_frag->GetYaxis()->SetTitle("frag_Ratio");
+      mg_frag->GetXaxis()->SetLimits(0.3,0.8);
+      std::string fragpdfname = "results/yield/statistics_corr/"+canvas_filename+"_fragratio.pdf";
+      c_frag_ratio->BuildLegend(0.7,0.7,0.9,0.9);
+      c_frag_ratio->SaveAs(fragpdfname.c_str());
+      TCanvas* c_RD_ratio = new TCanvas();
+      mg_RD->GetXaxis()->SetTitleSize(0.053);
+      mg_RD->GetYaxis()->SetTitleSize(0.053);
+      mg_RD->GetXaxis()->SetLabelSize(0.05);
+      mg_RD->GetYaxis()->SetLabelSize(0.05);
+      mg_RD->SetMinimum(0.1);
+      mg_RD->SetMaximum(0.8);
+      std::string mg_RD_title = canvas_name+",z";
+      mg_RD->SetTitle(mg_RD_title.c_str());
+      TPaveText *pt_mg_RD = new TPaveText(0.5,0.8,0.8,1);
+      pt_mg_RD->AddText(canvas_name.c_str());
+      pt_mg_RD->Draw("same");
+      mg_RD->Draw("APL");
+      mg_RD->GetHistogram()->SetTitle(canvas_name.c_str());
+      mg_RD->GetXaxis()->SetTitle(mg_RD_title.c_str());
+      mg_RD->GetYaxis()->SetTitle("RD_Ratio");
+      mg_RD->GetXaxis()->SetLimits(0.3,0.8);
+      std::string RDpdfname = "results/yield/statistics_corr/"+canvas_filename+"_RDratio.pdf";
+      c_RD_ratio->BuildLegend(0.7,0.7,0.9,0.9);
+      c_RD_ratio->SaveAs(RDpdfname.c_str());
+
       //i_whichq2++;
     std::cout<<i_whichx<<std::endl;
     }//loop over Q2
   }//loop over x
 
-  TCanvas* c_yield_ratio_all = new TCanvas();
-  mg_all->GetXaxis()->SetTitle("z");
-  mg_all->GetYaxis()->SetTitle("R^D_meas");
-  mg_all->GetXaxis()->SetTitleSize(0.053);
-  mg_all->GetYaxis()->SetTitleSize(0.053);
-  mg_all->GetXaxis()->SetLabelSize(0.05);
-  mg_all->GetYaxis()->SetLabelSize(0.05);
-  mg_all->Draw("A");
-  std::string c_yield_ratio_all_name = "results/yield/yield_ratio_all.pdf";
-  c_yield_ratio_all->SaveAs(c_yield_ratio_all_name.c_str());
+  //TCanvas* c_yield_ratio_all = new TCanvas();
+  //mg_all->GetXaxis()->SetTitle("z");
+  //mg_all->GetYaxis()->SetTitle("R^D_meas");
+  //mg_all->GetXaxis()->SetTitleSize(0.053);
+  //mg_all->GetYaxis()->SetTitleSize(0.053);
+  //mg_all->GetXaxis()->SetLabelSize(0.05);
+  //mg_all->GetYaxis()->SetLabelSize(0.05);
+  //mg_all->Draw("A");
+  //std::string c_yield_ratio_all_name = "results/yield/yield_ratio_all.pdf";
+  //c_yield_ratio_all->SaveAs(c_yield_ratio_all_name.c_str());
 
   return 0;
 }

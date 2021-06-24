@@ -47,6 +47,7 @@ int plot_Q2z_ratio_corr(){
       TH1D* h_pos_q2z = new TH1D("",(q2z_name).c_str(),100,0,1);
       int i_color = 1;
       auto mg = new TMultiGraph();
+      auto mg_frag = new TMultiGraph();
       //THStack* hs = new THStack("yield_ratio","yield ratio");
       if(z !=0 && Q2!=0){  
         for(json::iterator it = j_x.begin();it!=j_x.end();++it){
@@ -345,8 +346,8 @@ int plot_Q2z_ratio_corr(){
           h_xbj_pos_sim->Rebin(2);
 
 
-          h_xbj_neg_all->Divide(h_xbj_pos_all);
-          h_xbj_neg_sim->Divide(h_xbj_pos_sim);
+         // h_xbj_neg_all->Divide(h_xbj_pos_all);
+         // h_xbj_neg_sim->Divide(h_xbj_pos_sim);
 
           int nbins = h_xbj_neg_all->GetXaxis()->GetNbins();
 
@@ -354,17 +355,28 @@ int plot_Q2z_ratio_corr(){
           TGraphErrors* g_yield_ratio = new TGraphErrors();
           std::string xbj_string = "xbj setting "+(std::to_string(xbj)).substr(0,4);
           g_yield_ratio->SetName(xbj_string.c_str());
+          TGraphErrors* g_frag_ratio = new TGraphErrors();
+          std::string frag_xbj_string = "frag xbj setting "+(std::to_string(xbj)).substr(0,4);
+          g_frag_ratio->SetName(frag_xbj_string.c_str());
 
           int ii = 0;
           for(int i = 0;i<nbins;i++){
             //std::cout<<i<<std::endl;
             double x = h_xbj_neg_all->GetBinCenter(i)+0.001*i_color;
-            double y = h_xbj_neg_all->GetBinContent(i);
-            double error = h_xbj_neg_all->GetBinError(i);
+            double y_neg = h_xbj_neg_all->GetBinContent(i);
+            double error_neg = h_xbj_neg_all->GetBinError(i);
+            double y_pos = h_xbj_pos_all->GetBinContent(i);
+            double error_pos = h_xbj_pos_all->GetBinError(i);
+            double y = y_neg/y_pos;
+            double error = (y_neg/y_pos)*std::sqrt((error_neg*error_neg)/(y_neg*y_neg)+(error_pos*error_pos)/(y_pos*y_pos));
             //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
-            if(y!=0){
+            double y_frag = (4*y-1)/(4-y);
+            double error_frag = y_frag*std::sqrt((error*error)/(y*y));
+            if(y!=0 && error_frag < 0.2){
               g_yield_ratio->SetPoint(ii,x,y);
               g_yield_ratio->SetPointError(ii,0,error);
+              g_frag_ratio ->SetPoint(ii,x,y_frag);
+              g_frag_ratio->SetPointError(ii,0,error_frag);
               ii++;
             }
           }
@@ -419,6 +431,10 @@ int plot_Q2z_ratio_corr(){
           //h_z_neg_all->Draw("same");
           mg->Add(g_yield_ratio,"P");
           mg->Add(g_yield_ratio_sim,"L");
+          g_frag_ratio->SetMarkerStyle(4);
+          g_frag_ratio->SetMarkerColor(i_color);
+          g_frag_ratio->SetLineColor(i_color);
+          mg_frag->Add(g_frag_ratio,"P");
           i_color++;
 
           TCanvas *c_Q2z_xbj_ratio = new TCanvas(q2z_name.c_str(),q2z_name.c_str(),1900,1000);
@@ -441,15 +457,18 @@ int plot_Q2z_ratio_corr(){
       //hs->Draw();
       mg->SetTitle(canvas_name.c_str());
       mg->GetXaxis()->SetTitle("xbj");
-      mg->GetYaxis()->SetTitle("yield ratio");
+      mg->GetYaxis()->SetTitle("frag ratio");
       mg->GetXaxis()->SetTitleSize(0.053);
       mg->GetYaxis()->SetTitleSize(0.053);
       mg->GetXaxis()->SetLabelSize(0.05);
       mg->GetYaxis()->SetLabelSize(0.05);
+      std::string mg_title = canvas_name+",xbj";
+      mg->GetHistogram()->SetTitle(canvas_name.c_str());
+      mg->GetXaxis()->SetTitle(mg_title.c_str());
       mg->SetMinimum(0.1);
-      mg->SetMaximum(1.2);
+      mg->SetMaximum(0.8);
       mg->Draw("A");
-      mg->GetXaxis()->SetLimits(0.3,1);
+      mg->GetXaxis()->SetLimits(0.3,0.7);
       //auto hermes_RD = [](double z){return ((1.0-z)*0.083583)/((1.0+z)*1.988);};
       //TF1 *fit = new TF1("HERMES","(1.0-x)**0.083583/(1.0+x)**1.9838",0,1);
       //fit->Draw("same");
