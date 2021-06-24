@@ -21,7 +21,7 @@ void make_latex(){
 
 
       if(xbj!=0 && Q2!=0){
-        std::string q2x_str = "x_Q2_"+std::to_string(xbj).substr(0,4)+"_"+std::to_string(Q2).substr(0,5);
+        std::string q2x_str = "x\\_Q2\\_"+std::to_string(xbj).substr(0,4)+"\\_"+std::to_string(Q2).substr(0,5);
         std::string q2x_filestr = "x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4);
   std::cout<<"check"<<q2x_str<<std::endl;
         std::vector<std::string> counts_z_name;
@@ -39,7 +39,7 @@ void make_latex(){
         ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/polar_neg_"<<q2x_filestr<<".pdf}"<<std::endl;
         ofs<<"\\end{frame}"<<std::endl;
         ofs<<"\\begin{frame}{"<<q2x_str<<",pt phi polar pos}"<<std::endl;
-        ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/polar_pos_"<<q2x_filestr<<".pdf}"<<std::endl;
+        ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/polar_pos_"<<q2x_str<<".pdf}"<<std::endl;
         ofs<<"\\end{frame}"<<std::endl;
       
         ofs<<"\\begin{frame}{one of the neg run example "<<neg_D2_z[0]<<"}"<<std::endl;
@@ -63,11 +63,17 @@ void make_latex(){
       ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/th_pos_"<<std::to_string(pos_D2_z[0])<<".pdf}"<<std::endl;
       ofs<<"\\end{column}"<<std::endl;
       ofs<<"\\end{columns}"<<std::endl;
+      ofs<<"\\begin{columns}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
       ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/pt_pos_"<<std::to_string(pos_D2_z[0])<<".pdf}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
+      ofs<<"\\end{column}"<<std::endl;
+      ofs<<"\\end{columns}"<<std::endl;
         ofs<<"\\end{frame}"<<std::endl;
         
         ofs<<"\\begin{frame}{"<<q2x_str<<",pt phi polar pos}"<<std::endl;
-        ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/pt_ratio_"<<q2x_filestr<<"_ratio.pdf}"<<std::endl;
+        ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/pt_ratio_"<<q2x_str<<"_ratio.pdf}"<<std::endl;
         ofs<<"\\end{frame}"<<std::endl;
       
       //ofs<<"\\begin{columns}"<<std::endl;
