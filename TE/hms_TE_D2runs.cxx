@@ -17,7 +17,7 @@ R__LOAD_LIBRARY(libfmt.so)
 #include "TLatex.h"
 #include "TStyle.h"
 #include "TSystem.h"
-R__LOAD_LIBRARY(libMathMore.so)
+  R__LOAD_LIBRARY(libMathMore.so)
 R__LOAD_LIBRARY(libGenVector.so)
 
 #ifdef __cpp_lib_filesystem
@@ -57,29 +57,29 @@ R__LOAD_LIBRARY(libGenVector.so)
     std::vector<int> neg_D2,pos_D2;
     neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
     pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
-  json j_runsinfo;
-  {
-    std::string if_name = "db2/runs_info.json";
-    std::ifstream ifs(if_name.c_str());
-    ifs>>j_runsinfo;
-  }
+    json j_runsinfo;
+    {
+      std::string if_name = "db2/runs_info.json";
+      std::ifstream ifs(if_name.c_str());
+      ifs>>j_runsinfo;
+    }
     json j_cuts;
     {
       std::ifstream ifs("db2/all_cut.json");
       ifs>>j_cuts;
     }
-  json j_rf_DE;
-  {
-    std::string name = "shuo_analysis/dbase/rf_eff.json";
-    std::ifstream ifs(name.c_str());
-    ifs>>j_rf_DE;
-  }
+    json j_rf_DE;
+    {
+      std::string name = "shuo_analysis/dbase/rf_eff.json";
+      std::ifstream ifs(name.c_str());
+      ifs>>j_rf_DE;
+    }
     json j_DE;
     {
       std::ifstream ifs("db2/PID_test.json");
       ifs>>j_DE;
     }
-      std::vector<int> delta_cut_num= j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>(); 
+    std::vector<int> delta_cut_num= j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>(); 
     json j_out;
 
     //use only strict HMS cuts, and shms without tracking cuts
@@ -138,7 +138,41 @@ R__LOAD_LIBRARY(libGenVector.so)
         //auto h_hod_betanotrack_neg = d_neg_raw.Histo1D({"","betanotrk neg",100,0,1.2},"P.hod.betanotrack");
         //auto h_dc_ntrack_neg = d_neg_raw.Histo1D({"","dcntrack neg",10,0,10},"P.dc.ntrack");
         //auto h_dc_inside_neg = d_neg_raw.Histo1D({"","dc inside neg",10,0,2},"P.dc.InsideDipoleExit");
-        auto h_cointime_neg = d_neg_raw.Histo1D({"","cointime",800,30,55},"CTime.ePiCoinTime_ROC2");
+
+        //rftime cut
+        //offset
+        double offset_neg = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
+        std::cout<<offset_neg<<std::endl;
+        auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
+          double rf_pi_low,rf_pi_high; 
+          int i_order = 0,i_which;
+          for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
+            if(SHMS_dp>*it){
+              i_which = i_order;
+              //std::cout<<i_which<<std::endl;
+              rf_pi_low = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["neg"]["rf_cut_low"].get<double>();
+              rf_pi_high = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["neg"]["rf_cut_high"].get<double>();
+            }
+            i_order++;
+          }
+          return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
+
+        };
+        auto d_neg_pi = d_neg_raw
+          .Filter(piCutSHMS)
+          .Filter(Normal_SHMS)
+          .Filter(goodTrackSHMS)
+          .Filter(aeroCutSHMS)
+          .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+          .Define("diff_time_mod",[offset_neg](double difftime){return std::fmod(difftime+offset_neg,4.008);},{"fptime_minus_rf"})
+          .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+          .Define("cointime_raw",[](double pTRIG1,double pTRIG4,double pstarttime,double hstarttime){return (pTRIG1+pstarttime)-(pTRIG4+hstarttime);},{"T.coin.pTRIG1_ROC2_tdcTime","T.coin.pTRIG4_ROC2_tdcTime","P.hod.starttime","H.hod.starttime"})
+          //  .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
+          .Filter([](double etot){return etot> 1 && etot< 2;},{"H.cal.etotnorm"})
+          //.Filter("P.aero.npeSum > 2")
+          .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"H.hod.betanotrack"})
+          ;  
+        auto h_cointime_neg = d_neg_pi.Histo1D({"","cointime",800,25,55},"cointime_raw");
         int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
         double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
         std::cout<<"coin peak "<<coin_peak_center_neg<<std::endl;
@@ -151,54 +185,37 @@ R__LOAD_LIBRARY(libGenVector.so)
           cointime_low = coin_peak_center_neg+j_cuts["cointime_low_spring"].get<double>();
           cointime_high = coin_peak_center_neg+j_cuts["cointime_high_spring"].get<double>();
         }
-
-      //rftime cut
-      //offset
-      double offset_neg = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
-      auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
-       double rf_pi_low,rf_pi_high; 
-        int i_order = 0,i_which;
-        for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
-          if(SHMS_dp>*it){
-            i_which = i_order;
-            rf_pi_low = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["neg"]["rf_cut_low"].get<double>();
-            rf_pi_high = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["neg"]["rf_cut_high"].get<double>();
-          }
-          i_order++;
-        }
-        return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
-        
-      };
-        auto d_neg_pi_hod = d_neg_raw
-        .Filter(piCutSHMS)
-        .Filter(Normal_SHMS)
-        .Filter(goodTrackSHMS)
-        .Filter(aeroCutSHMS)
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
-        .Define("diff_time_mod",[offset_neg](double difftime){return std::fmod(difftime+offset_neg,4.008);},{"fptime_minus_rf"})
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
-        .Filter("H.hod.goodscinhit==1")
-        .Define("cointime_raw",[](double pTRIG1,double pTRIG4,double pstarttime,double hstarttime){return (pTRIG1+pstarttime)-(pTRIG4+hstarttime);},{"T.coin.pTRIG1_ROC2_tdcTime","T.coin.pTRIG4_ROC2_tdcTime","P.hod.starttime","H.hod.starttime"})
-        //  .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
-        .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
-        .Filter([](double etot){return etot> 1 && etot< 2;},{"H.cal.etotnorm"})
-        //.Filter("P.aero.npeSum > 2")
-        .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"H.hod.betanotrack"})
-        ;  
+        auto d_neg_pi_hod = d_neg_pi
+          .Filter("H.hod.goodscinhit==1")
+          .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
+          ;
         auto d_neg_pi_dc = d_neg_pi_hod
-        .Filter("H.dc.ntrack>=1")
-        .Filter("H.dc.InsideDipoleExit == 1")
-        .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"H.gtr.dp"})
-        ;
+          .Filter("H.dc.ntrack>=1")
+          .Filter("H.dc.InsideDipoleExit == 1")
+          .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"H.gtr.dp"})
+          ;
         double  neg_pi_expected = *d_neg_pi_hod.Count();
         double  neg_pi_found = *d_neg_pi_dc.Count();
         double neg_all = *d_neg_raw.Count();
 
+        auto h_rawcoin = d_neg_pi
+          .Filter("H.hod.goodscinhit==1")
+          .Histo1D({"","raw coin time",100,0,100},"cointime_raw")
+          ;
+        auto h_rawcoin_cut = d_neg_pi_hod
+          .Histo1D({"","raw coin time",100,0,100},"cointime_raw")
+          ;
+        TCanvas* c_rawcoin_te = new TCanvas();
+        h_rawcoin->DrawCopy("hist");
+        h_rawcoin_cut->SetLineColor(kRed);
+        h_rawcoin_cut->DrawCopy("hist");
+        std::string c_rawcoin_te_name = "results/TE/check/rawcointime_"+std::to_string(RunNumber)+".pdf";
+        c_rawcoin_te->SaveAs(c_rawcoin_te_name.c_str());
 
-
-     //   j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["counts"] = neg_all;
+        j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["counts"] = neg_all;
         j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["HMS_e_expected"] = neg_pi_expected;
         j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["HMS_e_found_1"] = neg_pi_found;
+        j_out[(std::to_string(RunGroup)).c_str()]["neg"][(std::to_string(RunNumber)).c_str()]["target"] = "D2";
       }//for neg runs
       //for pos runs
       for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
@@ -218,7 +235,39 @@ R__LOAD_LIBRARY(libGenVector.so)
 
         //auto h_dc_ntrack_pos = d_pos_raw.Histo1D({"","dcntrack pos",10,0,10},"P.dc.ntrack");
         //auto h_dc_inside_pos = d_pos_raw.Histo1D({"","dc inside pos",10,0,2},"P.dc.InsideDipoleExit");
-        auto h_cointime_pos = d_pos_raw.Histo1D({"","cointime",800,30,55},"CTime.ePiCoinTime_ROC2");
+        
+        //rftime cut
+        //offset
+        double offset_pos = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
+        auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
+          double rf_pi_low,rf_pi_high; 
+          int i_order = 0,i_which;
+          for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
+            if(SHMS_dp>*it){
+              i_which = i_order;
+              rf_pi_low = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["rf_cut_low"].get<double>();
+              rf_pi_high = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["rf_cut_high"].get<double>();
+            }
+            i_order++;
+          }
+          return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
+
+        };
+        auto d_pos_pi = d_pos_raw
+          .Filter(piCutSHMS)
+          .Filter(Normal_SHMS)
+          .Filter(goodTrackSHMS)
+          .Filter(aeroCutSHMS)
+          .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+          .Define("diff_time_mod",[offset_pos](double difftime){return std::fmod(difftime+offset_pos,4.008);},{"fptime_minus_rf"})
+          .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+          .Define("cointime_raw",[](double pTRIG1,double pTRIG4,double pstarttime,double hstarttime){return (pTRIG1+pstarttime)-(pTRIG4+hstarttime);},{"T.coin.pTRIG1_ROC2_tdcTime","T.coin.pTRIG4_ROC2_tdcTime","P.hod.starttime","H.hod.starttime"})
+          //  .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
+          .Filter([](double etot){return etot> 1 && etot< 2;},{"H.cal.etotnorm"})
+          //.Filter("P.aero.npeSum > 2")
+          .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"H.hod.betanotrack"})
+          ;  
+        auto h_cointime_pos = d_pos_pi.Histo1D({"","cointime",800,25,55},"cointime_raw");
         int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
         double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
         std::cout<<"coin peak "<<coin_peak_center_pos<<std::endl;
@@ -231,50 +280,37 @@ R__LOAD_LIBRARY(libGenVector.so)
           cointime_low = coin_peak_center_pos+j_cuts["cointime_low_spring"].get<double>();
           cointime_high = coin_peak_center_pos+j_cuts["cointime_high_spring"].get<double>();
         }
-      //rftime cut
-      //offset
-      double offset_pos = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
-      auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
-       double rf_pi_low,rf_pi_high; 
-        int i_order = 0,i_which;
-        for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
-          if(SHMS_dp>*it){
-            i_which = i_order;
-            rf_pi_low = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["rf_cut_low"].get<double>();
-            rf_pi_high = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["rf_cut_high"].get<double>();
-          }
-          i_order++;
-        }
-        return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
-        
-      };
-        auto d_pos_pi_hod = d_pos_raw
-        .Filter("H.hod.goodscinhit==1")
-        .Filter(piCutSHMS)
-        .Filter(Normal_SHMS)
-        .Filter(goodTrackSHMS)
-        .Filter(aeroCutSHMS)
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
-        .Define("diff_time_mod",[offset_pos](double difftime){return std::fmod(difftime+offset_pos,4.008);},{"fptime_minus_rf"})
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
-        .Define("cointime_raw",[](double pTRIG1,double pTRIG4,double pstarttime,double hstarttime){return (pTRIG1+pstarttime)-(pTRIG4+hstarttime);},{"T.coin.pTRIG1_ROC2_tdcTime","T.coin.pTRIG4_ROC2_tdcTime","P.hod.starttime","H.hod.starttime"})
-        .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
-        .Filter([](double etot){return etot> 1 && etot< 2;},{"H.cal.etotnorm"})
-        //.Filter("P.aero.npeSum > 2")
-        .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"H.hod.betanotrack"})
-        ;  
+        auto d_pos_pi_hod = d_pos_pi
+          .Filter("H.hod.goodscinhit==1")
+          .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
+          ;
         auto d_pos_pi_dc = d_pos_pi_hod
-        .Filter("H.dc.ntrack>=1")
-        .Filter("H.dc.InsideDipoleExit == 1")
-        .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"H.gtr.dp"})
-        ;
-        double pos_pi_expected = *d_pos_pi_hod.Count();
+          .Filter("H.dc.ntrack>=1")
+          .Filter("H.dc.InsideDipoleExit == 1")
+          .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"H.gtr.dp"})
+          ;
+        double  pos_pi_expected = *d_pos_pi_hod.Count();
         double  pos_pi_found = *d_pos_pi_dc.Count();
         double pos_all = *d_pos_raw.Count();
 
-   //     j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["counts"] = pos_all;
+        auto h_rawcoin = d_pos_pi
+          .Filter("H.hod.goodscinhit==1")
+          .Histo1D({"","raw coin time",100,0,100},"cointime_raw")
+          ;
+        auto h_rawcoin_cut = d_pos_pi_hod
+          .Histo1D({"","raw coin time",100,0,100},"cointime_raw")
+          ;
+        TCanvas* c_rawcoin_te = new TCanvas();
+        h_rawcoin->DrawCopy("hist");
+        h_rawcoin_cut->SetLineColor(kRed);
+        h_rawcoin_cut->DrawCopy("hist");
+        std::string c_rawcoin_te_name = "results/TE/check/rawcointime_"+std::to_string(RunNumber)+".pdf";
+        c_rawcoin_te->SaveAs(c_rawcoin_te_name.c_str());
+
+        j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["counts"] = pos_all;
         j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["HMS_e_expected"] = pos_pi_expected;
         j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["HMS_e_found_1"] = pos_pi_found;
+        j_out[(std::to_string(RunGroup)).c_str()]["pos"][(std::to_string(RunNumber)).c_str()]["target"] = "D2";
       }//for pos runs
 
     }//if not empty

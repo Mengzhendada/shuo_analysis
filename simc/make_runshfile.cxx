@@ -19,7 +19,7 @@ int make_runshfile(){
     //of<<"echo csv_"<<10*i<<"_D2_pos_inc_rad | ./simc"<<std::endl;
     //of<<"echo csv_"<<10*i<<"_D2_pos_exc_norad | ./simc"<<std::endl;
     //of<<"echo csv_"<<10*i<<"_D2_pos_rho | ./simc"<<std::endl;
-    of<<"echo csv_"<<10*i<<"_D2_pos_delta | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_D2_pos_delta | ./simc"<<std::endl;
     //of<<"echo csv_"<<10*i<<"_Dummy_neg_inc_norad | ./simc"<<std::endl;
     //of<<"echo csv_"<<10*i<<"_Dummy_neg_inc_rad | ./simc"<<std::endl;
     //of<<"echo csv_"<<10*i<<"_Dummy_neg_exc_rad | ./simc"<<std::endl;
@@ -28,6 +28,16 @@ int make_runshfile(){
     //of<<"echo csv_"<<10*i<<"_Dummy_pos_inc_rad | ./simc"<<std::endl;
     //of<<"echo csv_"<<10*i<<"_Dummy_pos_exc_rad | ./simc"<<std::endl;
     //of<<"echo csv_"<<10*i<<"_Dummy_pos_rho | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_H2_neg_inc_norad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_H2_neg_inc_rad | ./simc"<<std::endl;
+    of<<"echo csv_"<<10*i<<"_H2_neg_exc_rad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_H2_neg_rho | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_H2_neg_delta | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_H2_pos_inc_norad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_H2_pos_inc_rad | ./simc"<<std::endl;
+    of<<"echo csv_"<<10*i<<"_H2_pos_exc_rad | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_H2_pos_rho | ./simc"<<std::endl;
+    //of<<"echo csv_"<<10*i<<"_H2_pos_delta | ./simc"<<std::endl;
     of.close();
   }
   return 0;

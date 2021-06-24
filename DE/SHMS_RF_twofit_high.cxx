@@ -114,6 +114,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   double P_yptar_high = j_cuts["P_yptar_high"].get<double>();
   std::string Normal_HMS = "H.gtr.th > "+std::to_string(H_xptar_low)+" && H.gtr.th < "+std::to_string(H_xptar_high)+" && H.gtr.ph > "+std::to_string(H_yptar_low)+" && H.gtr.ph < "+std::to_string(H_yptar_high); 
   std::string Normal_SHMS = "P.gtr.th > "+std::to_string(P_xptar_low)+" && P.gtr.th < "+std::to_string(P_xptar_high)+" && P.gtr.ph > "+std::to_string(P_yptar_low)+" && P.gtr.ph < "+std::to_string(P_yptar_high); 
+  double current_offset = j_cuts["current_diff"].get<double>();
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
 
@@ -122,11 +123,6 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
     std::ifstream ifs("db2/runs_info.json");
     ifs>>j_runsinfo;
   }
-
-  double rf_pi_low = j_cuts["rf_pi_low"].get<double>();
-  std::cout<<rf_pi_low<<std::endl;
-  double rf_pi_high =j_cuts["rf_pi_high"].get<double>();
-  std::cout<<rf_pi_high<<std::endl;
 
   if(!neg_D2.empty() && !pos_D2.empty()){
 
@@ -173,9 +169,9 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
         ROOT::RDataFrame d_pos_raw("T",rootfile_name);
         ROOT::RDataFrame d_pos_scaler("TSP",rootfile_name);
         std::cout<<rootfile_name<<std::endl;
-        auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
+        auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM1.scalerCurrent");
         auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
-        auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM4B.scalerCurrent");
+        auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM1.scalerCurrent");
         double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
         std::cout<<"set current "<<pos_setcurrent<<std::endl;
         //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
@@ -204,7 +200,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           .Filter(Normal_HMS)
           .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
           .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
-          .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
+          .Filter([&](double current){return current>current_offset;},{"current"})
           ;
 
 
@@ -411,10 +407,6 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       K_pos_piall->SetLineColor(kOrange);
       pi_pos_piall->Draw("same");
       K_pos_piall->Draw("same");
-      TLine *l_rf_low_pos = new TLine(rf_pi_low,0,rf_pi_low,1000);
-      TLine *l_rf_high_pos = new TLine(rf_pi_high,0,rf_pi_high,1000);
-      l_rf_low_pos->Draw("same");
-      l_rf_high_pos->Draw("same");
       double width_pos = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
       std::cout<<"Bin width "<<width_pos<<std::endl;
       double pos_pi_all_pifit = pi_pos_piall->Integral(0,4,width_pos);
@@ -497,9 +489,9 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
     ROOT::RDataFrame d_neg_raw("T",rootfile_name);
     ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
     std::cout<<rootfile_name<<std::endl;
-    auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM4B.scalerCurrent");
+    auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM1.scalerCurrent");
     auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
-    auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM4B.scalerCurrent");
+    auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM1.scalerCurrent");
     double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
     std::cout<<"set current "<<neg_setcurrent<<std::endl;
     //std::cout<<"event size "<<neg_scaler_event_list->size()<<" current size "<<neg_scaler_current_list->size()<<std::endl;
@@ -528,7 +520,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       .Filter(Normal_HMS)
       .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
       .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
-      .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
+      .Filter([&](double current){return current>current_offset;},{"current"})
       ;
 
 
@@ -731,10 +723,6 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   K_neg_piall->SetLineColor(kOrange);
   pi_neg_piall->Draw("same");
   K_neg_piall->Draw("same");
-  TLine *l_rf_low_neg = new TLine(rf_pi_low,0,rf_pi_low,1000);
-  TLine *l_rf_high_neg = new TLine(rf_pi_high,0,rf_pi_high,1000);
-  l_rf_low_neg->Draw("same");
-  l_rf_high_neg->Draw("same");
   double width_neg = h_rf_neg_piall->GetXaxis()->GetBinWidth(1);
   std::cout<<"Bin width "<<width_neg<<std::endl;
   double neg_pi_all_pifit = pi_neg_piall->Integral(0,4,width_neg);

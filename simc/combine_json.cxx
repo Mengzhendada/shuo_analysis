@@ -21,8 +21,11 @@ int combine_json(){
       std::ifstream ifs(filename.c_str());
       if(ifs.good()){
         ifs>>jout;
-        jall[std::to_string(RunGroup).c_str()]["D2"] = jout[std::to_string(RunGroup).c_str()];
-        
+        jall[std::to_string(RunGroup).c_str()]["D2"]["neg"] = jout[std::to_string(RunGroup).c_str()]["neg"]["D2"];
+        jall[std::to_string(RunGroup).c_str()]["D2"]["pos"] = jout[std::to_string(RunGroup).c_str()]["pos"]["D2"];
+        jall[std::to_string(RunGroup).c_str()]["H2"]["neg"] = jout[std::to_string(RunGroup).c_str()]["neg"]["H2"];
+        jall[std::to_string(RunGroup).c_str()]["H2"]["pos"] = jout[std::to_string(RunGroup).c_str()]["pos"]["H2"];
+                
       }
       else{std::cout<<"can't find "<<RunGroup<<std::endl;}
     }

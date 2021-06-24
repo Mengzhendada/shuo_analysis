@@ -149,6 +149,7 @@ void SHMS_DE(int RunGroup=0){
   double P_yptar_high = j_cuts["P_yptar_high"].get<double>();
   std::string Normal_HMS = "H.gtr.th > "+std::to_string(H_xptar_low)+" && H.gtr.th < "+std::to_string(H_xptar_high)+" && H.gtr.ph > "+std::to_string(H_yptar_low)+" && H.gtr.ph < "+std::to_string(H_yptar_high); 
   std::string Normal_SHMS = "P.gtr.th > "+std::to_string(P_xptar_low)+" && P.gtr.th < "+std::to_string(P_xptar_high)+" && P.gtr.ph > "+std::to_string(P_yptar_low)+" && P.gtr.ph < "+std::to_string(P_yptar_high); 
+  double current_offset = j_cuts["current_diff"].get<double>();
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
 
@@ -202,6 +203,9 @@ void SHMS_DE(int RunGroup=0){
 
   //rf cut
   auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
+    double rf_pi_low = j_DE["SHMS"]["rf_time_low"].get<double>();
+    double rf_pi_high = j_DE["SHMS"]["rf_time_high"].get<double>();
+    /*
     double rf_pi_low = 0.5,rf_pi_high = 1.3; 
     int i_order = 0,i_which;
     for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
@@ -212,6 +216,7 @@ void SHMS_DE(int RunGroup=0){
       }
       i_order++;
     }
+      */
     return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
 
   };
@@ -227,9 +232,9 @@ void SHMS_DE(int RunGroup=0){
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
       ROOT::RDataFrame d_pos_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
-      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
+      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM1.scalerCurrent");
       auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
-      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM4B.scalerCurrent");
+      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM1.scalerCurrent");
       double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
       std::cout<<"set current "<<pos_setcurrent<<std::endl;
       //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
@@ -260,7 +265,7 @@ void SHMS_DE(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
+        .Filter([&](double current){return current>current_offset;},{"current"})
         .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
         .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
         .Define("p_q", p_q, {"p_electron"})
@@ -561,9 +566,9 @@ void SHMS_DE(int RunGroup=0){
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
       ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
-      auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM4B.scalerCurrent");
+      auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM1.scalerCurrent");
       auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
-      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM4B.scalerCurrent");
+      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM1.scalerCurrent");
       double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
       std::cout<<"set current "<<neg_setcurrent<<std::endl;
       //std::cout<<"event size "<<neg_scaler_event_list->size()<<" current size "<<neg_scaler_current_list->size()<<std::endl;
@@ -592,7 +597,7 @@ void SHMS_DE(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
+        .Filter([&](double current){return current>current_offset;},{"current"})
         .Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
         .Define("p_pion", p_pion, {"P.gtr.py", "P.gtr.px", "P.gtr.pz"})
         .Define("p_q", p_q, {"p_electron"})

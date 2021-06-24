@@ -100,7 +100,7 @@ void skim_check(int RunGroup=0){
   double Mx2_cut_num = j_cuts["Mx2"].get<double>();
   std::string Mx2_cut = "Mx2>"+std::to_string(Mx2_cut_num);
   //auto Mx2_cut = [=](double Mx2){return Mx2>Mx2_cut_num;};
-  double current_diff = j_cuts["current_diff"].get<double>();
+  double current_offset = j_cuts["current_diff"].get<double>();
 
   json j_runsinfo;
   {
@@ -242,8 +242,8 @@ void skim_check(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return current>current_diff;},{"current"})
-        //.Filter([&](double current){return std::abs(current-pos_setcurrent)<current_diff;},{"current"})
+        .Filter([&](double current){return current>current_offset;},{"current"})
+        //.Filter([&](double current){return std::abs(current-pos_setcurrent)<current_offset;},{"current"})
         ;
 
       auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
@@ -565,8 +565,8 @@ void skim_check(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return current>current_diff;},{"current"})
-        //.Filter([&](double current){return std::abs(current-neg_setcurrent)<current_diff;},{"current"})
+        .Filter([&](double current){return current>current_offset;},{"current"})
+        //.Filter([&](double current){return std::abs(current-neg_setcurrent)<current_offset;},{"current"})
         ;
     //coin time cut for neg runs
     auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
@@ -841,9 +841,9 @@ void skim_check(int RunGroup=0){
     }
 
 
-    //std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
-    //std::ofstream outfile(of.c_str());
-    //outfile<<jout.dump(4)<<std::endl;
+    std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+    std::ofstream outfile(of.c_str());
+    outfile<<jout.dump(4)<<std::endl;
 
 
   }

@@ -61,6 +61,11 @@ void rf_offset(int RunGroup=0){
     std::ifstream ifs("db2/all_cut.json");
     ifs>>j_cuts;
   };
+  json j_DE;
+  {
+    std::ifstream ifs("db2/PID_test.json");
+    ifs>>j_DE;
+  }
 
   double H_dp_low = j_cuts["H_dp_low"].get<double>();
   double H_dp_high = j_cuts["H_dp_high"].get<double>();
@@ -93,6 +98,7 @@ void rf_offset(int RunGroup=0){
   double P_yptar_high = j_cuts["P_yptar_high"].get<double>();
   std::string Normal_HMS = "H.gtr.th > "+std::to_string(H_xptar_low)+" && H.gtr.th < "+std::to_string(H_xptar_high)+" && H.gtr.ph > "+std::to_string(H_yptar_low)+" && H.gtr.ph < "+std::to_string(H_yptar_high); 
   std::string Normal_SHMS = "P.gtr.th > "+std::to_string(P_xptar_low)+" && P.gtr.th < "+std::to_string(P_xptar_high)+" && P.gtr.ph > "+std::to_string(P_yptar_low)+" && P.gtr.ph < "+std::to_string(P_yptar_high); 
+  double current_offset = j_cuts["current_diff"].get<double>();
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
   json jout;
@@ -169,9 +175,9 @@ void rf_offset(int RunGroup=0){
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
       ROOT::RDataFrame d_pos_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
-      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM4B.scalerCurrent");
+      auto pos_scaler_current_list = d_pos_scaler.Take<double>("P.BCM1.scalerCurrent");
       auto pos_scaler_event_list = d_pos_scaler.Take<double>("evNumber");
-      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM4B.scalerCurrent");
+      auto h_pos_current = d_pos_scaler.Histo1D({"pos current","pos current",100,3,100},"P.BCM1.scalerCurrent");
       double pos_setcurrent = h_pos_current->GetBinCenter(h_pos_current->GetMaximumBin());
       std::cout<<"set current "<<pos_setcurrent<<std::endl;
       //std::cout<<"event size "<<pos_scaler_event_list->size()<<" current size "<<pos_scaler_current_list->size()<<std::endl;
@@ -207,7 +213,7 @@ void rf_offset(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return std::abs(current-pos_setcurrent)<3;},{"current"})
+        .Filter([&](double current){return current>current_offset;},{"current"})
         ;
 
       auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
@@ -233,9 +239,9 @@ void rf_offset(int RunGroup=0){
       double cointime_low_pos = coin_peak_center_pos+cointime_lowcut;
       double cointime_high_pos = coin_peak_center_pos+cointime_highcut;
 
-      double rf_pi_low = j_cuts["rf_pi_low"].get<double>();
+      double rf_pi_low = j_DE["SHMS"]["rf_time_low"].get<double>();
       std::cout<<rf_pi_low<<std::endl;
-      double rf_pi_high =j_cuts["rf_pi_high"].get<double>();
+      double rf_pi_high =j_DE["SHMS"]["rf_time_high"].get<double>();
       std::cout<<rf_pi_high<<std::endl;
 
       auto d_pos_first = d_pos_run
@@ -373,9 +379,9 @@ void rf_offset(int RunGroup=0){
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
       ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
       std::cout<<rootfile_name<<std::endl;
-      auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM4B.scalerCurrent");
+      auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM1.scalerCurrent");
       auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
-      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM4B.scalerCurrent");
+      auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM1.scalerCurrent");
       double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
       std::cout<<"set current "<<neg_setcurrent<<std::endl;
       //std::cout<<"event size "<<neg_scaler_event_list->size()<<" current size "<<neg_scaler_current_list->size()<<std::endl;
@@ -411,7 +417,7 @@ void rf_offset(int RunGroup=0){
         .Filter(Normal_HMS)
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
-        .Filter([&](double current){return std::abs(current-neg_setcurrent)<3;},{"current"})
+        .Filter([&](double current){return current>current_offset;},{"current"})
         ;
     //coin time cut for neg runs
     auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
@@ -431,9 +437,9 @@ void rf_offset(int RunGroup=0){
     double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
     
     //rftime cut
-    double rf_pi_low = j_cuts["rf_pi_low"].get<double>();
+    double rf_pi_low = j_DE["SHMS"]["rf_time_low"].get<double>();
     std::cout<<rf_pi_low<<std::endl;
-    double rf_pi_high =j_cuts["rf_pi_high"].get<double>();
+    double rf_pi_high =j_DE["SHMS"]["rf_time_high"].get<double>();
     std::cout<<rf_pi_high<<std::endl;
       
       auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,3,100},"current");
