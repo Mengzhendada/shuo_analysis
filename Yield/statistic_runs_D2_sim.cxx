@@ -183,8 +183,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     ;
   double nentries_D2_neg_exc_rad = *d_D2_neg_exc_rad_raw.Count();
 
-  double normfac_D2_neg_exc_rad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["neg"]["exc"]["norad"]["normfac"].get<double>();
-  double normfac_D2_pos_exc_rad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["pos"]["exc"]["norad"]["normfac"].get<double>();
+  double normfac_D2_neg_exc_rad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["neg"]["exc"]["rad"]["normfac"].get<double>();
+  double normfac_D2_pos_exc_rad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["pos"]["exc"]["rad"]["normfac"].get<double>();
 
   double wfac_D2_neg_exc_rad = (normfac_D2_neg_exc_rad/nentries_D2_neg_exc_rad);
   //auto weight_calculate = [&](float weight){return wfac_D2_neg_exc_rad*weight;}
