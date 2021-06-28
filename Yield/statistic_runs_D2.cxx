@@ -55,6 +55,8 @@ void statistic_runs_D2(int RunGroup=0){
   std::vector<int> neg_D2,pos_D2;
   neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
   pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+  
+  auto pt = [](double p,double th){return p*std::sin(th);};
 
 
   if(!neg_D2.empty() && !pos_D2.empty()){
@@ -64,11 +66,15 @@ void statistic_runs_D2(int RunGroup=0){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
       std::string rootfile_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
-      ROOT::RDataFrame d_pos_pi("T",rootfile_name);
+      ROOT::RDataFrame d_pos_raw("T",rootfile_name);
 
+      auto d_pos_pi = d_pos_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
+        .Filter("pt<0.12");
 
       // for bg
-      ROOT::RDataFrame d_pos_bg("T_bg",rootfile_name);
+      ROOT::RDataFrame d_pos_bgraw("T_bg",rootfile_name);
+      auto d_pos_bg = d_pos_bgraw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
+        .Filter("pt<0.12");
 
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
@@ -98,12 +104,16 @@ void statistic_runs_D2(int RunGroup=0){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
       std::string rootfile_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
-      ROOT::RDataFrame d_neg_pi("T",rootfile_name);
 
+      ROOT::RDataFrame d_neg_raw("T",rootfile_name);
+
+      auto d_neg_pi = d_neg_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
+        .Filter("pt<0.12");
 
       // for bg
-      ROOT::RDataFrame d_neg_bg("T_bg",rootfile_name);
-
+      ROOT::RDataFrame d_neg_bgraw("T_bg",rootfile_name);
+      auto d_neg_bg = d_neg_bgraw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
+        .Filter("pt<0.12");
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
