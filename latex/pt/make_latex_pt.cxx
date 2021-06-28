@@ -61,7 +61,7 @@ void make_latex_pt(){
           ofs<<"\\end{column}"<<std::endl;
           ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
           if(counts_z_name.size()>3){
-            ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/ptpolar_neg_"<<counts_z_name[3]<<".pdf}"<<std::endl;
+            ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/polar_neg_"<<counts_z_name[3]<<".pdf}"<<std::endl;
           }
           ofs<<"\\end{column}"<<std::endl;
           ofs<<"\\end{columns}"<<std::endl;
@@ -84,7 +84,7 @@ void make_latex_pt(){
           ofs<<"\\end{column}"<<std::endl;
           ofs<<"\\begin{column}[T]{0.5\\textwidth}"<<std::endl;
           if(counts_z_name.size()>3){
-            ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/ptpolar_pos_"<<counts_z_name[3]<<".pdf}"<<std::endl;
+            ofs<<"\\includegraphics[width = 0.9\\textwidth]{results/pt/polar_pos_"<<counts_z_name[3]<<".pdf}"<<std::endl;
           }
           ofs<<"\\end{column}"<<std::endl;
           ofs<<"\\end{columns}"<<std::endl;
