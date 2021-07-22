@@ -15,6 +15,7 @@ void kin_group(){
   }
   json j_xq2;
   json j_xq2z;
+  json j_q2xz;
   for(json::iterator it = j.begin(); it!=j.end();++it){
     auto runjs = it.value();
     double x = runjs["x"].get<double>();
@@ -31,29 +32,37 @@ void kin_group(){
     
       j_xq2z[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()][(std::to_string(z)).c_str()]["shms_p"] = shms_p;
       j_xq2z[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()][(std::to_string(z)).c_str()]["group_num"] = RunGroup;
+      j_q2xz[(std::to_string(Q2)).c_str()][(std::to_string(x)).c_str()][(std::to_string(z)).c_str()]["shms_p"] = shms_p;
+      j_q2xz[(std::to_string(Q2)).c_str()][(std::to_string(x)).c_str()][(std::to_string(z)).c_str()]["group_num"] = RunGroup;
     for(auto it = pos_D2.begin();it!=pos_D2.end();it++){
       j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["D2"].push_back(*it);
       j_xq2z[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()][(std::to_string(z)).c_str()]["pos"]["D2"].push_back(*it);
+      j_q2xz[(std::to_string(Q2)).c_str()][(std::to_string(x)).c_str()][(std::to_string(z)).c_str()]["pos"]["D2"].push_back(*it);
     }
     for(auto it = neg_D2.begin();it!=neg_D2.end();it++){
       j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["neg"]["D2"].push_back(*it);
       j_xq2z[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()][(std::to_string(z)).c_str()]["neg"]["D2"].push_back(*it);
+      j_q2xz[(std::to_string(Q2)).c_str()][(std::to_string(x)).c_str()][(std::to_string(z)).c_str()]["neg"]["D2"].push_back(*it);
     }
     for(auto it = pos_H2.begin();it!=pos_H2.end();it++){
       j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["H2"].push_back(*it);
       j_xq2z[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()][(std::to_string(z)).c_str()]["pos"]["H2"].push_back(*it);
+      j_q2xz[(std::to_string(Q2)).c_str()][(std::to_string(x)).c_str()][(std::to_string(z)).c_str()]["pos"]["H2"].push_back(*it);
     }
     for(auto it = neg_H2.begin();it!=neg_H2.end();it++){
       j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["neg"]["H2"].push_back(*it);
       j_xq2z[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()][(std::to_string(z)).c_str()]["neg"]["H2"].push_back(*it);
+      j_q2xz[(std::to_string(Q2)).c_str()][(std::to_string(x)).c_str()][(std::to_string(z)).c_str()]["neg"]["H2"].push_back(*it);
     }
     for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();it++){
       j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["Dummy"].push_back(*it);
       j_xq2z[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()][(std::to_string(z)).c_str()]["pos"]["Dummy"].push_back(*it);
+      j_q2xz[(std::to_string(Q2)).c_str()][(std::to_string(x)).c_str()][(std::to_string(z)).c_str()]["pos"]["Dummy"].push_back(*it);
     }
     for(auto it = neg_Dummy.begin();it!=neg_Dummy.end();it++){
       j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["neg"]["Dummy"].push_back(*it);
       j_xq2z[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()][(std::to_string(z)).c_str()]["neg"]["Dummy"].push_back(*it);
+      j_q2xz[(std::to_string(Q2)).c_str()][(std::to_string(x)).c_str()][(std::to_string(z)).c_str()]["neg"]["Dummy"].push_back(*it);
     }
     //pos_D2_all = j_xq2[(std::to_string(x)).c_str()][(std::to_string(Q2)).c_str()]["pos"]["D2"].get<std::vector<int>>;
     //pos_D2_all.push_back(pos_D2);
@@ -67,4 +76,8 @@ void kin_group(){
   std::string ofs_xq2z_name = "kin_group_xQ2z.json";
   std::ofstream ofs_xq2z(ofs_xq2z_name.c_str());
   ofs_xq2z<<j_xq2z.dump(4)<<std::endl;
+  
+  std::string ofs_q2xz_name = "kin_group_q2xz.json";
+  std::ofstream ofs_q2xz(ofs_q2xz_name.c_str());
+  ofs_q2xz<<j_q2xz.dump(4)<<std::endl;
 }

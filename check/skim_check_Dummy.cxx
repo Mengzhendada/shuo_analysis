@@ -361,6 +361,7 @@ void skim_check_Dummy(int RunGroup=0){
       //d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_pos_pi.Count();
+      std::cout<<"counts "<<pion_counts<<std::endl;
 
       auto h_hms_dp_after_pos = d_pos_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_after_pos = d_pos_pi.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
@@ -515,7 +516,6 @@ void skim_check_Dummy(int RunGroup=0){
 
       int bg_counts = *d_pos_bg.Count()/6;
       //jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_counts;
-      std::cout<<"bg counts "<<bg_counts<<std::endl;
 
     }
 
@@ -688,6 +688,7 @@ void skim_check_Dummy(int RunGroup=0){
       //d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_neg_pi.Count();
+      std::cout<<"counts "<<pion_counts<<std::endl;
 
       auto h_hms_dp_after_neg = d_neg_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_after_neg = d_neg_pi.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
@@ -716,7 +717,7 @@ void skim_check_Dummy(int RunGroup=0){
       bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
     }
     bg_cut = bg_cut.substr(0,bg_cut.size()-2);
-    std::cout<<bg_cut<<std::endl;
+    //std::cout<<bg_cut<<std::endl;
       // for bg
       auto d_neg_forbg = d_neg_run
         .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
@@ -840,7 +841,6 @@ void skim_check_Dummy(int RunGroup=0){
       c_neg_mx2->SaveAs(c_neg_mx2_name.c_str());
 
       int bg_counts = *d_neg_bg.Count()/6;
-      std::cout<<"bg counts "<<bg_counts<<std::endl;
     }
 
 

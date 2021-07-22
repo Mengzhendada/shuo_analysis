@@ -37,7 +37,7 @@ using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 bool shms_momentum_high = true;
 
-void statistic_runs_D2(int RunGroup=0){
+void statistic_pt(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
@@ -69,37 +69,25 @@ void statistic_runs_D2(int RunGroup=0){
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
 
       auto d_pos_pi = d_pos_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        //.Filter("pt<0.12")
-        ;
+        .Filter("pt<0.12");
 
       // for bg
       ROOT::RDataFrame d_pos_bgraw("T_bg",rootfile_name);
       auto d_pos_bg = d_pos_bgraw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        //.Filter("pt<0.12")
-        ;
+        .Filter("pt<0.12");
 
 
-      std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
-      TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
-      auto h_Q2_x_pos = d_pos_pi.Histo2D({"Q2_x","Q2_x",100,0,1,100,0,10},"xbj","Q2");
-      h_Q2_x_pos->Write();
-      auto h_xbj = d_pos_pi.Histo1D({"xbj","xbj",100,0,1},"xbj","weight");
-      h_xbj->Write();
-      auto h_z = d_pos_pi.Histo1D({"z","z",100,0,1},"z","weight");
-      h_z->Write();
-      auto h_xbj_bg = d_pos_bg.Histo1D({"xbj_bg","xbj_bg",100,0,1},"xbj","weight");
-      h_xbj_bg->Write();
-      auto h_z_bg = d_pos_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
-      h_z_bg->Write();
-      auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj","weight");
-      h_x_z_pos->Write();
-      auto h_x_z_bg = d_pos_bg.Histo2D({"x_z_bg","x_z_bg",100,0,1,100,0,1},"z","xbj","weight");
-      h_x_z_bg->Write();
-      
-      auto h_Q2_z_pos = d_pos_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
-      h_Q2_z_pos->Write();
-      rootfile_out->Close();
-    
+      auto h_pt_pos = d_pos_pi.Histo1D({"pt","pt",100,0,0.5},"pt","weight");
+      auto h_phi_pos = d_pos_pi.Histo1D({"phi","phi",100,-4,4},"P_kin_secondary_ph_xq","weight");
+      auto h_pt_pos_bg = d_pos_bg.Histo1D({"pt","pt",100,0,0.5},"pt","weight");
+      auto h_phi_pos_bg = d_pos_bg.Histo1D({"phi","phi",100,-4,4},"P_kin_secondary_ph_xq","weight");
+   
+      h_phi_pos->Add(h_phi_pos_bg.GetPtr(),-1.0/6);
+      TCanvas* c_phi = new TCanvas();
+      h_phi_pos->DrawCopy("hist");
+      std::string c_phi_name = "results/pt/phi_afterpt_"+std::to_string(RunNumber)+".pdf";
+      c_phi->SaveAs(c_phi_name.c_str());
+
     }
 
     //for neg runs
@@ -112,35 +100,23 @@ void statistic_runs_D2(int RunGroup=0){
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
 
       auto d_neg_pi = d_neg_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        //.Filter("pt<0.12")
-        ;
+        .Filter("pt<0.12");
 
       // for bg
       ROOT::RDataFrame d_neg_bgraw("T_bg",rootfile_name);
       auto d_neg_bg = d_neg_bgraw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        //.Filter("pt<0.12")
-        ;
+        .Filter("pt<0.12");
 
-      std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
-      TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
-      auto h_Q2_x_neg = d_neg_pi.Histo2D({"Q2_x","Q2_x",100,0,1,100,0,10},"xbj","Q2");
-      h_Q2_x_neg->Write();
-      auto h_xbj = d_neg_pi.Histo1D({"xbj","xbj",100,0,1},"xbj","weight");
-      h_xbj->Write();
-      auto h_z = d_neg_pi.Histo1D({"z","z",100,0,1},"z","weight");
-      h_z->Write();
-      auto h_xbj_bg = d_neg_bg.Histo1D({"xbj_bg","xbj_bg",100,0,1},"xbj","weight");
-      h_xbj_bg->Write();
-      auto h_z_bg = d_neg_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
-      h_z_bg->Write();
-      auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj","weight");
-      h_x_z_neg->Write();
-      auto h_x_z_bg = d_neg_bg.Histo2D({"x_z_bg","x_z_bg",100,0,1,100,0,1},"z","xbj","weight");
-      h_x_z_bg->Write();
-      
-      auto h_Q2_z_neg = d_neg_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
-      h_Q2_z_neg->Write();
-      rootfile_out->Close();
+      auto h_pt_neg = d_neg_pi.Histo1D({"pt","pt",100,0,0.5},"pt","weight");
+      auto h_phi_neg = d_neg_pi.Histo1D({"phi","phi",100,-4,4},"P_kin_secondary_ph_xq","weight");
+      auto h_pt_neg_bg = d_neg_bg.Histo1D({"pt","pt",100,0,0.5},"pt","weight");
+      auto h_phi_neg_bg = d_neg_bg.Histo1D({"phi","phi",100,-4,4},"P_kin_secondary_ph_xq","weight");
+   
+      h_phi_neg->Add(h_phi_neg_bg.GetPtr(),-1.0/6);
+      TCanvas* c_phi = new TCanvas();
+      h_phi_neg->DrawCopy("hist");
+      std::string c_phi_name = "results/pt/phi_afterpt_"+std::to_string(RunNumber)+".pdf";
+      c_phi->SaveAs(c_phi_name.c_str());
     
     }
 

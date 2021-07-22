@@ -37,7 +37,7 @@ using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 bool shms_momentum_high = true;
 
-void statistic_runs_D2(int RunGroup=0){
+void statistic_runs_H2(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
@@ -52,32 +52,30 @@ void statistic_runs_D2(int RunGroup=0){
     ifs>>j_rungroup;
   }
 
-  std::vector<int> neg_D2,pos_D2;
-  neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
-  pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
-  
   auto pt = [](double p,double th){return p*std::sin(th);};
+  
+  std::vector<int> neg_H2,pos_H2;
+  neg_H2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["H2"].get<std::vector<int>>();
+  pos_H2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["H2"].get<std::vector<int>>();
 
 
-  if(!neg_D2.empty() && !pos_D2.empty()){
+  if(!neg_H2.empty() && !pos_H2.empty()){
     //for pos runs
     //loop over each pos runs data
-    for(auto it = pos_D2.begin();it!=pos_D2.end();++it){
+    for(auto it = pos_H2.begin();it!=pos_H2.end();++it){
       int RunNumber = *it;
       std::cout<<"pos data"<<RunNumber<<std::endl;
       std::string rootfile_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
+
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
 
       auto d_pos_pi = d_pos_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        //.Filter("pt<0.12")
-        ;
+        .Filter("pt<0.12");
 
       // for bg
       ROOT::RDataFrame d_pos_bgraw("T_bg",rootfile_name);
       auto d_pos_bg = d_pos_bgraw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        //.Filter("pt<0.12")
-        ;
-
+        .Filter("pt<0.12");
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
@@ -91,10 +89,8 @@ void statistic_runs_D2(int RunGroup=0){
       h_xbj_bg->Write();
       auto h_z_bg = d_pos_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
       h_z_bg->Write();
-      auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj","weight");
+      auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj");
       h_x_z_pos->Write();
-      auto h_x_z_bg = d_pos_bg.Histo2D({"x_z_bg","x_z_bg",100,0,1,100,0,1},"z","xbj","weight");
-      h_x_z_bg->Write();
       
       auto h_Q2_z_pos = d_pos_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
       h_Q2_z_pos->Write();
@@ -104,7 +100,7 @@ void statistic_runs_D2(int RunGroup=0){
 
     //for neg runs
     //loop over each neg runs data
-    for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+    for(auto it = neg_H2.begin();it!=neg_H2.end();++it){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
       std::string rootfile_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
@@ -112,14 +108,12 @@ void statistic_runs_D2(int RunGroup=0){
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
 
       auto d_neg_pi = d_neg_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        //.Filter("pt<0.12")
-        ;
+        .Filter("pt<0.12");
 
       // for bg
       ROOT::RDataFrame d_neg_bgraw("T_bg",rootfile_name);
       auto d_neg_bg = d_neg_bgraw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        //.Filter("pt<0.12")
-        ;
+        .Filter("pt<0.12");
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
@@ -133,10 +127,8 @@ void statistic_runs_D2(int RunGroup=0){
       h_xbj_bg->Write();
       auto h_z_bg = d_neg_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
       h_z_bg->Write();
-      auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj","weight");
+      auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj");
       h_x_z_neg->Write();
-      auto h_x_z_bg = d_neg_bg.Histo2D({"x_z_bg","x_z_bg",100,0,1,100,0,1},"z","xbj","weight");
-      h_x_z_bg->Write();
       
       auto h_Q2_z_neg = d_neg_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
       h_Q2_z_neg->Write();

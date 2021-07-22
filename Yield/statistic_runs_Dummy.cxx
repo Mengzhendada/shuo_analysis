@@ -85,6 +85,8 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_z_bg->Write();
       auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj");
       h_x_z_pos->Write();
+      auto h_x_z_bg = d_pos_bg.Histo2D({"x_z_bg","x_z_bg",100,0,1,100,0,1},"z","xbj","weight");
+      h_x_z_bg->Write();
       
       auto h_Q2_z_pos = d_pos_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
       h_Q2_z_pos->Write();
@@ -117,8 +119,10 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_xbj_bg->Write();
       auto h_z_bg = d_neg_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
       h_z_bg->Write();
-      auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj");
+      auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj","weight");
       h_x_z_neg->Write();
+      auto h_x_z_bg = d_neg_bg.Histo2D({"x_z_bg","x_z_bg",100,0,1,100,0,1},"z","xbj","weight");
+      h_x_z_bg->Write();
       
       auto h_Q2_z_neg = d_neg_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
       h_Q2_z_neg->Write();

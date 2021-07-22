@@ -10,6 +10,7 @@
 #include <iosfwd>
 #include <iomanip>
 #include <streambuf>
+#include <math.h>
 
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
@@ -47,6 +48,13 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     auto xbj = [=](float Q2,float pq){
       return Q2/(2.0*M_P*pq);
     };
+    auto phi_2pi = [](double phi){
+     if(phi>M_PI){
+       return phi-2*M_PI;
+     }
+     return phi;
+    };
+    auto pt = [](double p,double th){return p*std::sin(th);};
     json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -101,7 +109,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   std::string W2_cut = "W2 > "+std::to_string(W2_cut_num);
   double Mx2_cut_num = j_cuts["Mx2"].get<double>();
   std::string Mx2_cut = "Mx2>"+std::to_string(Mx2_cut_num);
-
+  double pt_cut_num = j_cuts["pt_cut"].get<double>();
+  std::string pt_cut = "pt<"+std::to_string(pt_cut_num);
   std::string D2_neg_inc_norad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.root";
   std::string D2_neg_inc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.root";
   std::string D2_neg_exc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.root";
@@ -137,12 +146,15 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    .Define("phi_2pi",phi_2pi,{"phipq"})
+    .Define("pt",pt,{"ppi","thetapq"})
+    .Filter(pt_cut)
     ;
   double wfac_D2_neg_inc_norad = (normfac_D2_neg_inc_norad/nentries_D2_neg_inc_norad);
   //auto weight_calculate = [&](float weight){return wfac_D2_neg_inc_norad*weight;}
   //neg inc norad
   auto d_D2_neg_inc_norad = d_D2_neg_inc_norad_1.Define("weight_new",[wfac_D2_neg_inc_norad](float weight){return wfac_D2_neg_inc_norad*weight;},{"Weight"});
-  d_D2_neg_inc_norad.Snapshot("T_neg_inc_norad",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"});
+  d_D2_neg_inc_norad.Snapshot("T_neg_inc_norad",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta","phipq","thetapq","ppi","phi_2pi"});
   auto d_D2_pos_inc_norad_1 = d_D2_pos_inc_norad_raw
     .Filter(Good_Track_SHMS_sim)
     .Filter(Good_Track_HMS_sim)
@@ -154,13 +166,16 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    .Define("phi_2pi",phi_2pi,{"phipq"})
+    .Define("pt",pt,{"ppi","thetapq"})
+    .Filter(pt_cut)
     ;
   std::cout<<"sim counts "<<nentries_D2_pos_inc_norad<<std::endl;
   double wfac_D2_pos_inc_norad = (normfac_D2_pos_inc_norad/nentries_D2_pos_inc_norad);
   //pos inc norad
   auto d_D2_pos_inc_norad = d_D2_pos_inc_norad_1.Define("weight_new",[wfac_D2_pos_inc_norad](float weight){return wfac_D2_pos_inc_norad*weight;},{"Weight"})
     ;
-  d_D2_pos_inc_norad.Snapshot("T_pos_inc_norad",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
+  d_D2_pos_inc_norad.Snapshot("T_pos_inc_norad",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta","phipq","thetapq","ppi","phi_2pi"},opts);
 
   std::cout<<"normfac check "<<std::endl;
   
@@ -180,6 +195,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    //.Define("phi_2pi",phi_2pi,{"phipq"})
+    //.Define("pt",pt,{"ppi","thetapq"})
+    //.Filter(pt_cut)
     ;
   double nentries_D2_neg_exc_rad = *d_D2_neg_exc_rad_raw.Count();
 
@@ -204,6 +222,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    //.Define("phi_2pi",phi_2pi,{"phipq"})
+    //.Define("pt",pt,{"ppi","thetapq"})
+    //.Filter(pt_cut)
     ;
   double nentries_D2_pos_exc_rad = *d_D2_pos_exc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_exc_rad<<std::endl;
@@ -226,6 +247,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    .Define("phi_2pi",phi_2pi,{"phipq"})
+    .Define("pt",pt,{"ppi","thetapq"})
+    .Filter(pt_cut)
     ;
   double nentries_D2_neg_inc_rad = *d_D2_neg_inc_rad_raw.Count();
 
@@ -249,6 +273,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    .Define("phi_2pi",phi_2pi,{"phipq"})
+    .Define("pt",pt,{"ppi","thetapq"})
+    .Filter(pt_cut)
     ;
   double nentries_D2_pos_inc_rad = *d_D2_pos_inc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_inc_rad<<std::endl;
@@ -270,6 +297,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    //.Define("phi_2pi",phi_2pi,{"phipq"})
+    //.Define("pt",pt,{"ppi","thetapq"})
+    //.Filter(pt_cut)
     ;
   double nentries_D2_neg_rho = *d_D2_neg_rho_raw.Count();
 
@@ -292,6 +322,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    //.Define("phi_2pi",phi_2pi,{"phipq"})
+    //.Define("pt",pt,{"ppi","thetapq"})
+    //.Filter(pt_cut)
     ;
   double nentries_D2_pos_rho = *d_D2_pos_rho_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_rho<<std::endl;
@@ -314,6 +347,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    //.Define("phi_2pi",phi_2pi,{"phipq"})
+    //.Define("pt",pt,{"ppi","thetapq"})
+    //.Filter(pt_cut)
     ;
   double nentries_D2_neg_delta = *d_D2_neg_delta_raw.Count();
 
@@ -338,6 +374,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter(Mx2_cut)
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
+    //.Define("phi_2pi",phi_2pi,{"phipq"})
+    //.Define("pt",pt,{"ppi","thetapq"})
+    //.Filter(pt_cut)
     ;
   double nentries_D2_pos_delta = *d_D2_pos_delta_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_delta<<std::endl;
@@ -402,6 +441,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   auto h_xbj_D2_pos_inc_norad = d_D2_pos_inc_norad.Histo1D({"xbj_pos_inc_norad","xbj_pos_inc_norad",100,0,1},"xbj","weight_new");
   auto h_z_D2_neg_inc_norad = d_D2_neg_inc_norad.Histo1D({"z_neg_inc_norad","z_neg_inc_norad",100,0,1},"z","weight_new");
   auto h_z_D2_pos_inc_norad = d_D2_pos_inc_norad.Histo1D({"z_pos_inc_norad","z_pos_inc_norad",100,0,1},"z","weight_new");
+  auto h_x_z_neg_inc_norad = d_D2_neg_inc_norad.Histo2D({"x_z_neg_inc_norad","x_z_neg_inc_norad",100,0,1,100,0,1},"z","xbj","weight_new");
+  auto h_x_z_pos_inc_norad = d_D2_pos_inc_norad.Histo2D({"x_z_pos_inc_norad","x_z_pos_inc_norad",100,0,1,100,0,1},"z","xbj","weight_new");
   std::cout<<"inc norad check"<<std::endl;  
   auto h_Q2_D2_neg_exc_rad = d_D2_neg_exc_rad.Histo1D({"Q2_neg_exc_rad","Q2_neg_exc_rad",100,0,10},"Q2","weight_new");
   auto h_Q2_D2_pos_exc_rad = d_D2_pos_exc_rad.Histo1D({"Q2_pos_exc_rad","Q2_pos_exc_rad",100,0,10},"Q2","weight_new");
@@ -409,6 +450,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   auto h_xbj_D2_pos_exc_rad = d_D2_pos_exc_rad.Histo1D({"xbj_pos_exc_rad","xbj_pos_exc_rad",100,0,1},"xbj","weight_new");
   auto h_z_D2_neg_exc_rad = d_D2_neg_exc_rad.Histo1D({"z_neg_exc_rad","z_neg_exc_rad",100,0,1},"z","weight_new");
   auto h_z_D2_pos_exc_rad = d_D2_pos_exc_rad.Histo1D({"z_pos_exc_rad","z_pos_exc_rad",100,0,1},"z","weight_new");
+  auto h_x_z_neg_exc_rad = d_D2_neg_exc_rad.Histo2D({"x_z_neg_exc_rad","x_z_neg_exc_rad",100,0,1,100,0,1},"z","xbj","weight_new");
+  auto h_x_z_pos_exc_rad = d_D2_pos_exc_rad.Histo2D({"x_z_pos_exc_rad","x_z_pos_exc_rad",100,0,1,100,0,1},"z","xbj","weight_new");
   std::cout<<"exc norad check"<<std::endl;  
   auto h_Q2_D2_neg_inc_rad = d_D2_neg_inc_rad.Histo1D({"Q2_neg_inc_rad","Q2_neg_inc_rad",100,0,10},"Q2","weight_new");
   auto h_Q2_D2_pos_inc_rad = d_D2_pos_inc_rad.Histo1D({"Q2_pos_inc_rad","Q2_pos_inc_rad",100,0,10},"Q2","weight_new");
@@ -416,6 +459,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   auto h_xbj_D2_pos_inc_rad = d_D2_pos_inc_rad.Histo1D({"xbj_pos_inc_rad","xbj_pos_inc_rad",100,0,1},"xbj","weight_new");
   auto h_z_D2_neg_inc_rad = d_D2_neg_inc_rad.Histo1D({"z_neg_inc_rad","z_neg_inc_rad",100,0,1},"z","weight_new");
   auto h_z_D2_pos_inc_rad = d_D2_pos_inc_rad.Histo1D({"z_pos_inc_rad","z_pos_inc_rad",100,0,1},"z","weight_new");
+  auto h_x_z_neg_inc_rad = d_D2_neg_inc_rad.Histo2D({"x_z_neg_inc_rad","x_z_neg_inc_rad",100,0,1,100,0,1},"z","xbj","weight_new");
+  auto h_x_z_pos_inc_rad = d_D2_pos_inc_rad.Histo2D({"x_z_pos_inc_rad","x_z_pos_inc_rad",100,0,1,100,0,1},"z","xbj","weight_new");
   std::cout<<"inc rad check"<<std::endl;  
 
   auto h_Q2_D2_neg_rho = d_D2_neg_rho.Histo1D({"Q2_neg_rho","Q2_neg_rho",100,0,10},"Q2","weight_new");
@@ -424,6 +469,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   auto h_xbj_D2_pos_rho = d_D2_pos_rho.Histo1D({"xbj_pos_rho","xbj_pos_rho",100,0,1},"xbj","weight_new");
   auto h_z_D2_neg_rho = d_D2_neg_rho.Histo1D({"z_neg_rho","z_neg_rho",100,0,1},"z","weight_new");
   auto h_z_D2_pos_rho = d_D2_pos_rho.Histo1D({"z_pos_rho","z_pos_rho",100,0,1},"z","weight_new");
+  auto h_x_z_neg_rho = d_D2_neg_rho.Histo2D({"x_z_neg_rho","x_z_neg_rho",100,0,1,100,0,1},"z","xbj","weight_new");
+  auto h_x_z_pos_rho = d_D2_pos_rho.Histo2D({"x_z_pos_rho","x_z_pos_rho",100,0,1,100,0,1},"z","xbj","weight_new");
   std::cout<<"rho check"<<std::endl;  
   
   auto h_Q2_D2_neg_delta = d_D2_neg_delta.Histo1D({"Q2_neg_delta","Q2_neg_delta",100,0,10},"Q2","weight_new");
@@ -432,6 +479,8 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   auto h_xbj_D2_pos_delta = d_D2_pos_delta.Histo1D({"xbj_pos_delta","xbj_pos_delta",100,0,1},"xbj","weight_new");
   auto h_z_D2_neg_delta = d_D2_neg_delta.Histo1D({"z_neg_delta","z_neg_delta",100,0,1},"z","weight_new");
   auto h_z_D2_pos_delta = d_D2_pos_delta.Histo1D({"z_pos_delta","z_pos_delta",100,0,1},"z","weight_new");
+  auto h_x_z_neg_delta = d_D2_neg_delta.Histo2D({"x_z_neg_delta","x_z_neg_delta",100,0,1,100,0,1},"z","xbj","weight_new");
+  auto h_x_z_pos_delta = d_D2_pos_delta.Histo2D({"x_z_pos_delta","x_z_pos_delta",100,0,1,100,0,1},"z","xbj","weight_new");
   std::cout<<"delta check"<<std::endl;  
   
   std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root";
@@ -442,30 +491,40 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   h_xbj_D2_pos_inc_norad->Write();
   h_z_D2_neg_inc_norad->Write();
   h_z_D2_pos_inc_norad->Write();
+  h_x_z_neg_inc_norad->Write();
+  h_x_z_pos_inc_norad->Write();
   h_Q2_D2_neg_exc_rad->Write();
   h_Q2_D2_pos_exc_rad->Write();
   h_xbj_D2_neg_exc_rad->Write();
   h_xbj_D2_pos_exc_rad->Write();
   h_z_D2_neg_exc_rad->Write();
   h_z_D2_pos_exc_rad->Write();
+  h_x_z_neg_exc_rad->Write();
+  h_x_z_pos_exc_rad->Write();
   h_Q2_D2_neg_inc_rad->Write();
   h_Q2_D2_pos_inc_rad->Write();
   h_xbj_D2_neg_inc_rad->Write();
   h_xbj_D2_pos_inc_rad->Write();
   h_z_D2_neg_inc_rad->Write();
   h_z_D2_pos_inc_rad->Write();
+  h_x_z_neg_inc_rad->Write();
+  h_x_z_pos_inc_rad->Write();
   h_Q2_D2_neg_rho->Write();
   h_Q2_D2_pos_rho->Write();
   h_xbj_D2_neg_rho->Write();
   h_xbj_D2_pos_rho->Write();
   h_z_D2_neg_rho->Write();
   h_z_D2_pos_rho->Write();
+  h_x_z_neg_rho->Write();
+  h_x_z_pos_rho->Write();
   h_Q2_D2_neg_delta->Write();
   h_Q2_D2_pos_delta->Write();
   h_xbj_D2_neg_delta->Write();
   h_xbj_D2_pos_delta->Write();
   h_z_D2_neg_delta->Write();
   h_z_D2_pos_delta->Write();
+  h_x_z_neg_delta->Write();
+  h_x_z_pos_delta->Write();
 
   rootfile_out->Close();
 
