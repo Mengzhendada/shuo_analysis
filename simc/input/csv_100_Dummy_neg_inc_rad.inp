@@ -1,7 +1,7 @@
-;This is a CTP file, using info from Run 6097
+;This is a CTP file, using info from Run 6091
 
 begin parm experiment
- ngen = 10000
+ ngen = 100000
  EXPER%charge = 1
  doing_phsp = 0
  doing_kaon = 0
@@ -119,7 +119,6 @@ begin parm simulate
  tgt_field_file = trg_field_map.dat
  drift_to_cal = 320.0
  do_fermi = 0
- pt_b_param = 3.8
  sigc_flag = 1
  sigc_nbin = 10
  sigc_kin_min = 0.035
