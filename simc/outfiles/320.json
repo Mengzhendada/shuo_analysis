@@ -3,46 +3,30 @@
         "neg": {
             "D2": {
                 "delta": {
-                    "normfac": 64212700.0
-                },
-                "exc": {
-                    "rad": {
-                        "normfac": 63643900.0
-                    }
+                    "normfac": 64434300.0
                 },
                 "inc": {
                     "norad": {
-                        "normfac": 103568000000.0
+                        "normfac": 101182000000.0
                     },
                     "rad": {
-                        "normfac": 95822500000.0
+                        "normfac": 93457100000.0
                     }
-                },
-                "rho": {
-                    "normfac": 756607000.0
                 }
             }
         },
         "pos": {
             "D2": {
                 "delta": {
-                    "normfac": 64212700.0
-                },
-                "exc": {
-                    "rad": {
-                        "normfac": 63863300.0
-                    }
+                    "normfac": 64434300.0
                 },
                 "inc": {
                     "norad": {
-                        "normfac": 103568000000.0
+                        "normfac": 101182000000.0
                     },
                     "rad": {
-                        "normfac": 95822500000.0
+                        "normfac": 93457100000.0
                     }
-                },
-                "rho": {
-                    "normfac": 756607000.0
                 }
             }
         }
