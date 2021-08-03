@@ -5,6 +5,11 @@
                 "delta": {
                     "normfac": 32534700.0
                 },
+                "exc": {
+                    "rad": {
+                        "normfac": 21355600.0
+                    }
+                },
                 "inc": {
                     "norad": {
                         "normfac": 88915600000.0
@@ -12,12 +17,21 @@
                     "rad": {
                         "normfac": 141756000000.0
                     }
+                },
+                "rho": {
+                    "normfac": 825130000.0
                 }
             },
             "H2": {
+                "delta": {
+                    "normfac": 28695900.0
+                },
                 "inc": {
                     "norad": {
                         "normfac": 77323200000.0
+                    },
+                    "rad": {
+                        "normfac": 123210000000.0
                     }
                 }
             }
@@ -27,12 +41,38 @@
                 "delta": {
                     "normfac": 32534700.0
                 },
+                "exc": {
+                    "rad": {
+                        "normfac": 21452100.0
+                    }
+                },
                 "inc": {
                     "norad": {
                         "normfac": 88915600000.0
                     },
                     "rad": {
                         "normfac": 141756000000.0
+                    }
+                },
+                "rho": {
+                    "normfac": 825130000.0
+                }
+            },
+            "H2": {
+                "delta": {
+                    "normfac": 91640300.0
+                },
+                "exc": {
+                    "rad": {
+                        "normfac": 24202200.0
+                    }
+                },
+                "inc": {
+                    "norad": {
+                        "normfac": 77323200000.0
+                    },
+                    "rad": {
+                        "normfac": 123210000000.0
                     }
                 }
             }
