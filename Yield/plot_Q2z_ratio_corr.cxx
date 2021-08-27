@@ -28,6 +28,7 @@ int plot_Q2z_ratio_corr(){
     std::ifstream ifs("db2/runs_info.json");
     ifs>>j_info;
   }
+  json jout;
   int coolcolor[11] = {4,3,7,39,38,37,36,35,34,33,32};
   int warmcolor[11] = {2,6,46,45,44,43,42,41,40,47,48};
   for(json::iterator it = j_Q2z.begin();it!=j_Q2z.end();++it){
@@ -48,6 +49,7 @@ int plot_Q2z_ratio_corr(){
       int i_color = 1;
       auto mg = new TMultiGraph();
       auto mg_frag = new TMultiGraph();
+      auto mg_RD = new TMultiGraph();
       //THStack* hs = new THStack("yield_ratio","yield ratio");
       if(z !=0 && Q2!=0){  
         for(json::iterator it = j_x.begin();it!=j_x.end();++it){
@@ -148,7 +150,8 @@ int plot_Q2z_ratio_corr(){
               //double TE = 1;
               //std::cout<<"neg TE check "<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+              double HMS_cer_eff = 1;
+              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"neg DE check "<<std::endl;
@@ -172,7 +175,7 @@ int plot_Q2z_ratio_corr(){
               double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               //std::cout<<"pos TE check"<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+              double HMS_cer_eff = 1;
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"pos DE check"<<std::endl;
@@ -199,7 +202,8 @@ int plot_Q2z_ratio_corr(){
               //double TE = 1;
               //std::cout<<"neg TE check "<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+              double HMS_cer_eff = 1;
+              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"neg DE check "<<std::endl;
@@ -223,7 +227,8 @@ int plot_Q2z_ratio_corr(){
               double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               //std::cout<<"pos TE check"<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+              double HMS_cer_eff = 1;
+              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"pos DE check"<<std::endl;
@@ -337,7 +342,7 @@ int plot_Q2z_ratio_corr(){
           h_xbj_neg_sim_delta->SetLineColor(6);
           h_xbj_neg_sim_delta->DrawCopy("hist same");
           c_yield_neg->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_neg_name = "results/yield/statistics_q2zq2zcorr/yield_"+q2xz_str_filename+"_neg.pdf";
+          std::string c_yield_neg_name = "results/yield/statistics_q2zcorr/yield_"+q2xz_str_filename+"_neg.pdf";
           c_yield_neg->SaveAs(c_yield_neg_name.c_str());
 
           h_xbj_neg_all->Rebin(2);
@@ -358,6 +363,9 @@ int plot_Q2z_ratio_corr(){
           TGraphErrors* g_frag_ratio = new TGraphErrors();
           std::string frag_xbj_string = "frag xbj setting "+(std::to_string(xbj)).substr(0,4);
           g_frag_ratio->SetName(frag_xbj_string.c_str());
+          TGraphErrors* g_RD_ratio = new TGraphErrors();
+          std::string RD_xbj_string = "RD xbj setting "+(std::to_string(xbj)).substr(0,4);
+          g_RD_ratio->SetName(RD_xbj_string.c_str());
 
           int ii = 0;
           for(int i = 0;i<nbins;i++){
@@ -370,6 +378,8 @@ int plot_Q2z_ratio_corr(){
             double y = y_neg/y_pos;
             double error = (y_neg/y_pos)*std::sqrt((error_neg*error_neg)/(y_neg*y_neg)+(error_pos*error_pos)/(y_pos*y_pos));
             //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+            double y_RD = (4*y-1)/(4-y);
+            double error_RD = 3*error/((1-y)*(1-y));
             double y_frag = (4*y-1)/(4-y);
             double error_frag = y_frag*std::sqrt((error*error)/(y*y));
             if(y!=0 && error_frag < 0.2){
@@ -377,7 +387,15 @@ int plot_Q2z_ratio_corr(){
               g_yield_ratio->SetPointError(ii,0,error);
               g_frag_ratio ->SetPoint(ii,x,y_frag);
               g_frag_ratio->SetPointError(ii,0,error_frag);
+              g_RD_ratio ->SetPoint(ii,x,y_RD);
+              g_RD_ratio->SetPointError(ii,0,error_RD);
               ii++;
+              std::string xbj_str = std::to_string(x);
+              if(error_RD<2){
+                jout[std::to_string(Q2)][std::to_string(z)][xbj_str]["value"] = y_RD;
+                jout[std::to_string(Q2)][std::to_string(z)][xbj_str]["error"] = error_RD;
+              }
+
             }
           }
 
@@ -435,6 +453,10 @@ int plot_Q2z_ratio_corr(){
           g_frag_ratio->SetMarkerColor(i_color);
           g_frag_ratio->SetLineColor(i_color);
           mg_frag->Add(g_frag_ratio,"P");
+          g_RD_ratio->SetMarkerStyle(4);
+          g_RD_ratio->SetMarkerColor(i_color);
+          g_RD_ratio->SetLineColor(i_color);
+          mg_RD->Add(g_RD_ratio,"P");
           i_color++;
 
           TCanvas *c_Q2z_xbj_ratio = new TCanvas(q2z_name.c_str(),q2z_name.c_str(),1900,1000);
@@ -457,7 +479,7 @@ int plot_Q2z_ratio_corr(){
       //hs->Draw();
       mg->SetTitle(canvas_name.c_str());
       mg->GetXaxis()->SetTitle("xbj");
-      mg->GetYaxis()->SetTitle("frag ratio");
+      mg->GetYaxis()->SetTitle("ratio");
       mg->GetXaxis()->SetTitleSize(0.053);
       mg->GetYaxis()->SetTitleSize(0.053);
       mg->GetXaxis()->SetLabelSize(0.05);
@@ -475,8 +497,26 @@ int plot_Q2z_ratio_corr(){
       std::string ratiopdfname = "results/yield/statistics_q2zcorr/"+canvas_filename+"_ratio.pdf";
       c_q2z_ratio->BuildLegend(0.7,0.7,0.9,0.9);
       c_q2z_ratio->SaveAs(ratiopdfname.c_str());
+
+      TCanvas *c_q2z_RD = new TCanvas();
+      mg_RD->SetTitle(canvas_name.c_str());
+      mg_RD->GetXaxis()->SetTitle("xbj");
+      mg_RD->GetYaxis()->SetTitle("RD ratio");
+      std::string mg_RD_title = canvas_name+",xbj";
+      mg_RD->GetHistogram()->SetTitle(canvas_name.c_str());
+      mg_RD->GetXaxis()->SetTitle(mg_RD_title.c_str());
+      mg_RD->Draw("A");
+      mg_RD->GetXaxis()->SetLimits(0.3,0.7);
+      mg_RD->SetMinimum(0.1);
+      mg_RD->SetMaximum(10);
+      std::string RDpdfname = "results/yield/statistics_q2zcorr/"+canvas_filename+"_RDratio.pdf";
+      c_q2z_RD->BuildLegend();
+      c_q2z_RD->SaveAs(RDpdfname.c_str());
       }//if x,Q2 not 0
     }//loop over Q2
   }//loop over z 
+  std::string jout_name = "results/yield_ratio_xbj.json";
+  std::ofstream ofs_jout(jout_name.c_str());
+  ofs_jout<<jout.dump(4)<<std::endl;
   return 0;
 }

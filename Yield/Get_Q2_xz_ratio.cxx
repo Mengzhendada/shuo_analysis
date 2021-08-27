@@ -36,6 +36,7 @@ int Get_Q2_xz_ratio(){
   std::vector<int> i_which_Q2= {0,0,0,1,0,1,2,1,2,2,1,2};
   int i_whichx = 0; 
   json jout;
+  json jout_sthwrong;
   for(json::iterator it = j_Q2x.begin();it!=j_Q2x.end();++it){
     double Q2 = std::stod(it.key());
     auto j_xz = it.value();
@@ -140,7 +141,8 @@ int Get_Q2_xz_ratio(){
               //double TE = 1;
               //std::cout<<"neg TE check "<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+              double HMS_cer_eff = 1; 
+              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"neg DE check "<<std::endl;
@@ -162,7 +164,8 @@ int Get_Q2_xz_ratio(){
               double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               //std::cout<<"pos TE check"<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+              double HMS_cer_eff = 1;
+              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"pos DE check"<<std::endl;
@@ -185,7 +188,8 @@ int Get_Q2_xz_ratio(){
               //double TE = 1;
               //std::cout<<"neg Dummy TE check "<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+              double HMS_cer_eff = 1; 
+              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"neg Dummy DE check "<<std::endl;
@@ -207,7 +211,8 @@ int Get_Q2_xz_ratio(){
               double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               //std::cout<<"pos TE check"<<std::endl;
               double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+              double HMS_cer_eff = 1; 
+              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
               double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
               double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"pos DE check"<<std::endl;
@@ -313,19 +318,28 @@ int Get_Q2_xz_ratio(){
               double error_pos_D2 = h_xz_pos_all->GetBinError(i,j)/charge_pos_all;
               double error_pos_Dummy = h_xz_pos_Dummy_all->GetBinError(i,j)/charge_pos_Dummy_all;
               double error_pos = std::sqrt(error_pos_D2*error_pos_D2+0.245*0.245*error_pos_Dummy*error_pos_Dummy);
-              //double radia_corr_neg = rp_radia_corr_neg->GetBinContent(i,j);
-              //double radia_corr_pos = rp_radia_corr_pos->GetBinContent(i,j);
+              
+              //for yield
+              double radia_corr_neg = rp_radia_corr_neg->GetBinContent(i,j);
+              double radia_corr_pos = rp_radia_corr_pos->GetBinContent(i,j);
               //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl; rp_radia_corr_pos
-              //yield_neg = yield_neg*radia_corr_neg;
-              //yield_pos = yield_pos*radia_corr_pos;
+              yield_neg = yield_neg*radia_corr_neg;
+              yield_pos = yield_pos*radia_corr_pos;
+              error_pos = error_pos*radia_corr_pos;
+              error_neg = error_neg*radia_corr_neg;
+
+              //need to think of how to convert to xs
+
+
               double RY = (yield_neg)/(yield_pos);
               //std::cout<<"RY "<<RY<<std::endl;
               double error = RY*std::sqrt((error_neg*error_neg)/(yield_neg*yield_neg)+(error_pos*error_pos)/(yield_pos*yield_pos));
               double y_RD = (4*RY-1)/(1-RY);
-              double error_RD = y_RD*std::sqrt((error*error)/(RY*RY));
+              //double error_RD = error;
+              double error_RD = 3*error/((1-y)*(1-y));
               double y_frag = (4*y-1)/(4-y);
               double error_frag = y_frag*std::sqrt((error*error)/(RY*RY));
-              if(RY!=0 && error< 0.1){
+              if(RY>0 && error< 0.1){
                 //double y_RD = (4*y-1)/(1-y);
                 g_yield_ratio->SetPoint(ii,x,y,RY);
                 //g_yield_ratio->SetPoint(ii,x,y_RD);
@@ -337,8 +351,26 @@ int Get_Q2_xz_ratio(){
                 ii++;
                 std::string z_str = std::to_string(x); 
                 std::string xbj_str = std::to_string(y); 
+                
+                if(y_RD>0 && y_RD<10 && error_RD<2 && error_RD>0){
                 jout[std::to_string(Q2)][xbj_str][z_str]["value"] = y_RD;
                 jout[std::to_string(Q2)][xbj_str][z_str]["error"] = error_RD;
+                jout[std::to_string(Q2)][xbj_str][z_str]["yield_neg"] = yield_neg;
+                jout[std::to_string(Q2)][xbj_str][z_str]["yield_pos"] = yield_pos;
+                jout[std::to_string(Q2)][xbj_str][z_str]["charge_neg"] = charge_neg_all;
+                jout[std::to_string(Q2)][xbj_str][z_str]["charge_pos"] = charge_pos_all;
+
+                }
+                else{
+                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["value"] = y_RD;
+                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["error"] = error_RD;
+                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["yield_neg"] = yield_neg;
+                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["yield_pos"] = yield_pos;
+                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["charge_neg"] = charge_neg_all;
+                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["charge_pos"] = charge_pos_all;
+                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["rungroup"] = RunGroup;
+                
+                }
               }
             }
           }
@@ -387,6 +419,10 @@ int Get_Q2_xz_ratio(){
   std::string jout_name = "results/yield_ratio_xz.json";
   std::ofstream ofs_jout(jout_name.c_str());
   ofs_jout<<jout.dump(4)<<std::endl;
+  
+  std::string jout_sthwrong_name = "results/yield_ratio_xz_sthwrong.json";
+  std::ofstream ofs_jout_sthwrong(jout_sthwrong_name.c_str());
+  ofs_jout_sthwrong<<jout_sthwrong.dump(4)<<std::endl;
 
   return 0;
 }

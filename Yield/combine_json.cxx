@@ -13,6 +13,7 @@ int combine_json(){
     ifs>>j_rungroup;
   }
   json jall;
+  json jsim;
   for(auto it = j_rungroup.begin();it!=j_rungroup.end();it++){
     json jout;
     int RunGroup = std::stoi(it.key());
@@ -34,9 +35,26 @@ int combine_json(){
         
       }
       else{std::cout<<"can't find "<<RunGroup<<std::endl;}
+      
+      json jout_sim;
+      std::string sim_filename = "results/yield/run_info/simc_"+std::to_string(RunGroup)+"_info.json"; 
+      std::ifstream sim_ifs(sim_filename.c_str());
+      if(sim_ifs.good()){
+        sim_ifs>>jout_sim;
+        for(auto it = jout_sim.begin();it!=jout_sim.end();it++){
+          //std::cout<<it.key()<<std::endl;
+          jsim[(std::to_string(RunGroup)).c_str()] = *it;
+          std::cout<<it.value()["D2"]["neg"]["inc_norad"].get<double>()<<std::endl;;
+          //std::cout<<jout_sim[(std::to_string(RunGroup)).c_str()]["D2"]["neg"]["inc_norad"].get<double>()<<std::endl;;
+        }
+        
+      }
+      else{std::cout<<"can't find sim "<<RunGroup<<std::endl;}
     }
   }
   std::ofstream ofs("results/yield/runs_info.json");
   ofs<<jall.dump(4)<<std::endl;
+  std::ofstream ofs_sim("results/yield/simc_rungroups_info.json");
+  ofs_sim<<jsim.dump(4)<<std::endl;
   return 0;
 }
