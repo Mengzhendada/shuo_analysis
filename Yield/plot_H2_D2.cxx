@@ -128,10 +128,12 @@ int plot_H2_D2(){
           h_z_neg_D2_sim_excrad = (TH1D*)rootfile_neg_sim->Get("z_neg_exc_rad");
           TH1D *h_z_neg_D2_sim_delta = new TH1D("","pi- sim delta",100,0,1);
           h_z_neg_D2_sim_delta = (TH1D*)rootfile_neg_sim->Get("z_neg_delta");
-          TGraph *g_xs_z_neg_D2 = new TGraph();
-          g_xs_z_neg_D2 = (TGraph*)rootfile_neg_sim->Get("xs_z_neg_inc_rad");
-          g_xs_z_neg_D2->SetTitle(z_string.c_str());
-          mg_xs_D2_neg->Add(g_xs_z_neg_D2,"P");
+          TH2D *h_xs_z_neg_D2 = new TH2D();
+          h_xs_z_neg_D2 = (TH2D*)rootfile_neg_sim->Get("xs_z_neg_inc_norad");
+          h_xs_z_neg_D2->RebinX(5);
+          h_xs_z_neg_D2->RebinY(5);
+          auto xs_z_neg_D2 = h_xs_z_neg_D2->ProfileX("xs_z_neg",1,-1,"d");
+          h_xs_z_neg_D2->SetTitle(z_string.c_str());
           h_z_neg_D2_sim->Add(h_z_neg_D2_sim_incrad,1);
           h_z_neg_D2_sim->Add(h_z_neg_D2_sim_excrad,1);
           //h_z_neg_D2_sim->Add(h_z_neg_D2_sim_rho,1);
@@ -148,10 +150,12 @@ int plot_H2_D2(){
           h_z_pos_D2_sim_rho = (TH1D*)rootfile_pos_sim->Get("z_pos_rho");
           TH1D *h_z_pos_D2_sim_delta = new TH1D("","pi+ sim delta",100,0,1);
           h_z_pos_D2_sim_delta = (TH1D*)rootfile_pos_sim->Get("z_pos_delta");
-          TGraph *g_xs_z_pos_D2 = new TGraph();
-          g_xs_z_pos_D2 = (TGraph*)rootfile_pos_sim->Get("xs_z_pos_inc_rad");
-          g_xs_z_pos_D2->SetTitle(z_string.c_str());
-          mg_xs_D2_pos->Add(g_xs_z_pos_D2,"P");
+          TH2D *h_xs_z_pos_D2 = new TH2D();
+          h_xs_z_pos_D2 = (TH2D*)rootfile_pos_sim->Get("xs_z_pos_inc_norad");
+          h_xs_z_pos_D2->SetTitle(z_string.c_str());
+          h_xs_z_pos_D2->RebinX(5);
+          h_xs_z_pos_D2->RebinY(5);
+          auto xs_z_pos_D2 = h_xs_z_pos_D2->ProfileX("xs_z_pos_D2",1,-1,"d");
           h_z_pos_D2_sim->Add(h_z_pos_D2_sim_incrad,1);
           h_z_pos_D2_sim->Add(h_z_pos_D2_sim_excrad,1);
           //h_z_pos_D2_sim->Add(h_z_pos_D2_sim_rho,1);
@@ -180,10 +184,12 @@ int plot_H2_D2(){
               h_z_neg_H2_sim_rho = (TH1D*)rootfile_neg_H2_sim->Get("z_neg_rho");
               TH1D *h_z_neg_H2_sim_delta = new TH1D("","pi- sim delta",100,0,1);
               h_z_neg_H2_sim_delta = (TH1D*)rootfile_neg_H2_sim->Get("z_neg_delta");
-              TGraph *g_xs_z_neg_H2 = new TGraph();
-              g_xs_z_neg_H2 = (TGraph*)rootfile_neg_H2_sim->Get("xs_z_neg_inc_rad");
-              g_xs_z_neg_H2->SetTitle(z_string.c_str());
-              mg_xs_H2_neg->Add(g_xs_z_neg_H2,"P");
+              TH2D *h_xs_z_neg_H2 = new TH2D();
+              h_xs_z_neg_H2 = (TH2D*)rootfile_neg_H2_sim->Get("xs_z_neg_inc_norad");
+              h_xs_z_neg_H2->SetTitle(z_string.c_str());
+              h_xs_z_neg_H2->RebinX(5);
+              h_xs_z_neg_H2->RebinY(5);
+              auto xs_z_neg_H2 = h_xs_z_neg_H2->ProfileX("xs_z_neg_H2",1,-1,"d");
               h_z_neg_H2_sim->Add(h_z_neg_H2_sim_incrad,1);
               //h_z_neg_H2_sim->Add(h_z_neg_H2_sim_excrad,1);
               //h_z_neg_H2_sim->Add(h_z_neg_H2_sim_rho,1);
@@ -200,14 +206,56 @@ int plot_H2_D2(){
               h_z_pos_H2_sim_rho = (TH1D*)rootfile_pos_H2_sim->Get("z_pos_rho");
               TH1D *h_z_pos_H2_sim_delta = new TH1D("","pi+ sim delta",100,0,1);
               h_z_pos_H2_sim_delta = (TH1D*)rootfile_pos_H2_sim->Get("z_pos_delta");
-              TGraph *g_xs_z_pos_H2 = new TGraph();
-              g_xs_z_pos_H2 = (TGraph*)rootfile_pos_H2_sim->Get("xs_z_pos_inc_rad");
-              g_xs_z_pos_H2->SetTitle(z_string.c_str());
-              mg_xs_H2_pos->Add(g_xs_z_pos_H2,"P");
+              TH2D *h_xs_z_pos_H2 = new TH2D();
+              h_xs_z_pos_H2 = (TH2D*)rootfile_pos_H2_sim->Get("xs_z_pos_inc_norad");
+              h_xs_z_pos_H2->SetTitle(z_string.c_str());
+              h_xs_z_pos_H2->RebinX(5);
+              h_xs_z_pos_H2->RebinY(5);
+              auto xs_z_pos_H2 = h_xs_z_pos_H2->ProfileX("xs_z_pos_H2",1,-1,"d");
               h_z_pos_H2_sim->Add(h_z_pos_H2_sim_incrad,1);
               h_z_pos_H2_sim->Add(h_z_pos_H2_sim_excrad,1);
               //h_z_pos_H2_sim->Add(h_z_pos_H2_sim_rho,1);
               h_z_pos_H2_sim->Add(h_z_pos_H2_sim_delta,1);
+          TCanvas *c_xs_H2_neg = new TCanvas();
+          xs_z_neg_H2->GetYaxis()->SetTitle("H2 neg xs");
+          xs_z_neg_H2->GetXaxis()->SetTitle("z");
+          xs_z_neg_H2->SetTitle((canvas_name+";z;H2 neg xs").c_str());
+          xs_z_neg_H2->Draw();
+          c_xs_H2_neg->BuildLegend();
+          gPad->Modified();
+          gPad->Update();
+          std::string c_xs_H2_neg_name = "results/yield/statistics_H2/"+canvas_filename+"_H2_neg_xs.pdf";
+          c_xs_H2_neg->SaveAs(c_xs_H2_neg_name.c_str());
+          TCanvas *c_xs_H2_pos = new TCanvas();
+          xs_z_pos_H2->GetYaxis()->SetTitle("H2 pos xs");
+          xs_z_pos_H2->GetXaxis()->SetTitle("z");
+          xs_z_pos_H2->SetTitle((canvas_name+";z;H2 pos xs").c_str());
+          xs_z_pos_H2->Draw();
+          c_xs_H2_pos->BuildLegend();
+          gPad->Modified();
+          gPad->Update();
+          std::string c_xs_H2_pos_name = "results/yield/statistics_H2/"+canvas_filename+"_H2_pos_xs.pdf";
+          c_xs_H2_pos->SaveAs(c_xs_H2_pos_name.c_str());
+          TCanvas *c_xs_D2_neg = new TCanvas();
+          xs_z_neg_D2->GetYaxis()->SetTitle("D2 neg xs");
+          xs_z_neg_D2->GetXaxis()->SetTitle("z");
+          xs_z_neg_D2->SetTitle((canvas_name+";z;D2 neg xs").c_str());
+          xs_z_neg_D2->Draw();
+          c_xs_D2_neg->BuildLegend();
+          gPad->Modified();
+          gPad->Update();
+          std::string c_xs_D2_neg_name = "results/yield/statistics_H2/"+canvas_filename+"_D2_neg_xs.pdf";
+          c_xs_D2_neg->SaveAs(c_xs_D2_neg_name.c_str());
+          TCanvas *c_xs_D2_pos = new TCanvas();
+          xs_z_pos_D2->GetYaxis()->SetTitle("D2 pos xs");
+          xs_z_pos_D2->GetXaxis()->SetTitle("z");
+          xs_z_pos_D2->SetTitle((canvas_name+";z;D2 pos xs").c_str());
+          xs_z_pos_D2->Draw();
+          c_xs_D2_pos->BuildLegend();
+          gPad->Modified();
+          gPad->Update();
+          std::string c_xs_D2_pos_name = "results/yield/statistics_H2/"+canvas_filename+"_D2_pos_xs.pdf";
+          c_xs_D2_pos->SaveAs(c_xs_D2_pos_name.c_str());
 
               for(auto it = neg_D2_runs.begin();it!=neg_D2_runs.end();++it){
                 int RunNumber = *it;
@@ -410,26 +458,6 @@ int plot_H2_D2(){
               h_z_pos_H2_sim_incnorad->Rebin(5);
               h_z_pos_H2_sim_incrad->Rebin(5);
 
-              //TCanvas* c_xs_neg_D2 = new TCanvas();
-              //g_xs_z_neg_D2->SetMarkerStyle(4);
-              //g_xs_z_neg_D2->Draw("AP");
-              //std::string c_xs_neg_D2_name = "results/yield/statistics_H2/xs_neg_"+q2xz_str_filename+"_D2.pdf";
-              //c_xs_neg_D2->SaveAs(c_xs_neg_D2_name.c_str());
-              //TCanvas* c_xs_neg_H2 = new TCanvas();
-              //g_xs_z_neg_H2->SetMarkerStyle(4);
-              //g_xs_z_neg_H2->Draw("AP");
-              //std::string c_xs_neg_H2_name = "results/yield/statistics_H2/xs_neg_"+q2xz_str_filename+"_H2.pdf";
-              //c_xs_neg_H2->SaveAs(c_xs_neg_H2_name.c_str());
-              //TCanvas* c_xs_pos_D2 = new TCanvas();
-              //g_xs_z_pos_D2->SetMarkerStyle(4);
-              //g_xs_z_pos_D2->Draw("AP");
-              //std::string c_xs_pos_D2_name = "results/yield/statistics_H2/xs_pos_"+q2xz_str_filename+"_D2.pdf";
-              //c_xs_pos_D2->SaveAs(c_xs_pos_D2_name.c_str());
-              //TCanvas* c_xs_pos_H2 = new TCanvas();
-              //g_xs_z_pos_H2->SetMarkerStyle(4);
-              //g_xs_z_pos_H2->Draw("AP");
-              //std::string c_xs_pos_H2_name = "results/yield/statistics_H2/xs_pos_"+q2xz_str_filename+"_H2.pdf";
-              //c_xs_pos_H2->SaveAs(c_xs_pos_H2_name.c_str());
 
               TH1D* h_z_neg_H2_yield = (TH1D*)h_z_neg_H2_all->Clone();
               TH1D* h_z_pos_H2_yield = (TH1D*)h_z_pos_H2_all->Clone();
@@ -551,15 +579,14 @@ int plot_H2_D2(){
                 error_D2_neg = std::sqrt(error_D2_neg*error_D2_neg+0.245*0.245*error_Dummy_neg*error_Dummy_neg);
 
 
-                double H2_xs_z_neg,H2_xs_z_pos,D2_xs_z_neg,D2_xs_z_pos;
-                //g_xs_z_neg_sim->GetPoint(i,x_center,D2_xs_z_neg);
-                //g_xs_z_pos_sim->GetPoint(i,x_center,D2_xs_z_pos);
+                double H2_xs_z_neg,H2_xs_z_pos,D2_xs_z_neg,D2_xs_z_pos,D2_xs_z_neg_2;
                 //g_xs_z_neg_H2_sim->GetPoint(i,x_center,H2_xs_z_neg);
                 //g_xs_z_pos_H2_sim->GetPoint(i,x_center,H2_xs_z_pos);
-                D2_xs_z_neg = 1;
-                D2_xs_z_pos = 1;
-                H2_xs_z_neg = 1;
-                H2_xs_z_pos = 1;
+                D2_xs_z_neg = xs_z_neg_D2->GetBinContent(i);
+                //D2_xs_z_neg_2 = xs_z_neg_D2->GetBinContent(xs_z_neg_D2->GetXaxis()->FindBin(x_center));
+                D2_xs_z_pos = xs_z_pos_D2->GetBinContent(xs_z_pos_D2->GetXaxis()->FindBin(x_center));
+                H2_xs_z_neg = xs_z_neg_H2->GetBinContent(xs_z_neg_H2->GetXaxis()->FindBin(x_center));
+                H2_xs_z_pos = xs_z_pos_H2->GetBinContent(xs_z_pos_H2->GetXaxis()->FindBin(x_center));
 
                 std::cout<<"H2 xs pos "<<H2_xs_z_pos<<"H2 xs neg "<<H2_xs_z_neg<<" D2 xs pos "<<D2_xs_z_pos<<" D2 xs neg "<<D2_xs_z_neg<<std::endl;
                 double H2_neg_yield_incrad = h_z_neg_H2_sim_incrad->GetBinContent(i);
@@ -581,14 +608,14 @@ int plot_H2_D2(){
                 //std::cout<<"yield H2 pos neg sim "<<yield_H2_pos<<" "<<yield_H2_neg<<" "<<H2_pos_yield_incrad<<" "<<H2_neg_yield_incrad<<std::endl;
                 //std::cout<<"yield D2 pos neg sim "<<yield_D2_pos<<" "<<yield_D2_neg<<" "<<D2_pos_yield_incrad<<" "<<D2_neg_yield_incrad<<std::endl;
                 }
-                //y_H2_pos = y_H2_pos*H2_xs_z_pos/(H2_pos_yield_incrad);
-                //y_H2_neg = y_H2_neg*H2_xs_z_neg/(H2_neg_yield_incrad);
-                //y_D2_pos = y_D2_pos*D2_xs_z_pos/(D2_pos_yield_incrad);
-                //y_D2_neg = y_D2_neg*D2_xs_z_neg/(D2_neg_yield_incrad);
-                //error_H2_pos = error_H2_pos*H2_xs_z_pos/(H2_pos_yield_incrad);
-                //error_H2_neg = error_H2_neg*H2_xs_z_neg/(H2_neg_yield_incrad);
-                //error_D2_pos = error_D2_pos*D2_xs_z_pos/(D2_pos_yield_incrad);
-                //error_D2_neg = error_D2_neg*D2_xs_z_neg/(D2_neg_yield_incrad);
+                y_H2_pos = y_H2_pos*H2_xs_z_pos/(H2_pos_yield_incrad);
+                y_H2_neg = y_H2_neg*H2_xs_z_neg/(H2_neg_yield_incrad);
+                y_D2_pos = y_D2_pos*D2_xs_z_pos/(D2_pos_yield_incrad);
+                y_D2_neg = y_D2_neg*D2_xs_z_neg/(D2_neg_yield_incrad);
+                error_H2_pos = error_H2_pos*H2_xs_z_pos/(H2_pos_yield_incrad);
+                error_H2_neg = error_H2_neg*H2_xs_z_neg/(H2_neg_yield_incrad);
+                error_D2_pos = error_D2_pos*D2_xs_z_pos/(D2_pos_yield_incrad);
+                error_D2_neg = error_D2_neg*D2_xs_z_neg/(D2_neg_yield_incrad);
 
                 //xs for the yield, no radia corr required. 
                 
@@ -924,46 +951,6 @@ int plot_H2_D2(){
           c_datasimratio_D2->BuildLegend(0.6,0.6,1,1);
           c_datasimratio_D2->SaveAs(c_datasimratio_D2_name.c_str());
           
-          TCanvas *c_xs_H2_neg = new TCanvas();
-          mg_xs_H2_neg->GetYaxis()->SetTitle("H2 neg xs");
-          mg_xs_H2_neg->GetXaxis()->SetTitle("z");
-          mg_xs_H2_neg->SetTitle((canvas_name+";z;H2 neg xs").c_str());
-          mg_xs_H2_neg->Draw("A");
-          c_xs_H2_neg->BuildLegend();
-          gPad->Modified();
-          gPad->Update();
-          std::string c_xs_H2_neg_name = "results/yield/statistics_H2/"+canvas_filename+"_H2_neg_xs.pdf";
-          c_xs_H2_neg->SaveAs(c_xs_H2_neg_name.c_str());
-          TCanvas *c_xs_H2_pos = new TCanvas();
-          mg_xs_H2_pos->GetYaxis()->SetTitle("H2 pos xs");
-          mg_xs_H2_pos->GetXaxis()->SetTitle("z");
-          mg_xs_H2_pos->SetTitle((canvas_name+";z;H2 pos xs").c_str());
-          mg_xs_H2_pos->Draw("A");
-          c_xs_H2_pos->BuildLegend();
-          gPad->Modified();
-          gPad->Update();
-          std::string c_xs_H2_pos_name = "results/yield/statistics_H2/"+canvas_filename+"_H2_pos_xs.pdf";
-          c_xs_H2_pos->SaveAs(c_xs_H2_pos_name.c_str());
-          TCanvas *c_xs_D2_neg = new TCanvas();
-          mg_xs_D2_neg->GetYaxis()->SetTitle("D2 neg xs");
-          mg_xs_D2_neg->GetXaxis()->SetTitle("z");
-          mg_xs_D2_neg->SetTitle((canvas_name+";z;D2 neg xs").c_str());
-          mg_xs_D2_neg->Draw("A");
-          c_xs_D2_neg->BuildLegend();
-          gPad->Modified();
-          gPad->Update();
-          std::string c_xs_D2_neg_name = "results/yield/statistics_D2/"+canvas_filename+"_D2_neg_xs.pdf";
-          c_xs_D2_neg->SaveAs(c_xs_D2_neg_name.c_str());
-          TCanvas *c_xs_D2_pos = new TCanvas();
-          mg_xs_D2_pos->GetYaxis()->SetTitle("D2 pos xs");
-          mg_xs_D2_pos->GetXaxis()->SetTitle("z");
-          mg_xs_D2_pos->SetTitle((canvas_name+";z;D2 pos xs").c_str());
-          mg_xs_D2_pos->Draw("A");
-          c_xs_D2_pos->BuildLegend();
-          gPad->Modified();
-          gPad->Update();
-          std::string c_xs_D2_pos_name = "results/yield/statistics_D2/"+canvas_filename+"_D2_pos_xs.pdf";
-          c_xs_D2_pos->SaveAs(c_xs_D2_pos_name.c_str());
         }//if H2 runs exist, then ploting
       }//if x,Q2 not 0
     }//loop over Q2
