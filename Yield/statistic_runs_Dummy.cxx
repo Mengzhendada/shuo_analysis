@@ -51,6 +51,11 @@ void statistic_runs_Dummy(int RunGroup=0){
     std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
   }
+  json jout;
+  {
+    std::ifstream ifs("results/yield/runs_info.json");
+    ifs>>jout;
+  }
 
   std::vector<int> neg_Dummy,pos_Dummy;
   neg_Dummy = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["Dummy"].get<std::vector<int>>();
@@ -66,10 +71,14 @@ void statistic_runs_Dummy(int RunGroup=0){
       std::string rootfile_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
       ROOT::RDataFrame d_pos_pi("T",rootfile_name);
 
+      int pion_n = *d_pos_pi.Count();
+      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
 
       // for bg
       ROOT::RDataFrame d_pos_bg("T_bg",rootfile_name);
 
+      int bg_n = *d_pos_bg.Count();
+      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
@@ -102,9 +111,15 @@ void statistic_runs_Dummy(int RunGroup=0){
       std::string rootfile_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
       ROOT::RDataFrame d_neg_pi("T",rootfile_name);
 
+      int pion_n = *d_neg_pi.Count();
+      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
+
 
       // for bg
       ROOT::RDataFrame d_neg_bg("T_bg",rootfile_name);
+      
+      int bg_n = *d_neg_bg.Count();
+      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
 
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
@@ -134,4 +149,6 @@ void statistic_runs_Dummy(int RunGroup=0){
 
 
   }
+  std::ofstream ofs("results/yield/runs_info.json");
+  ofs<<jout.dump(4)<<std::endl;
 }

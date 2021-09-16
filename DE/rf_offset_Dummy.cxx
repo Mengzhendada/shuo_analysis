@@ -291,7 +291,6 @@ void rf_offset_Dummy(int RunGroup=0){
         .Define("pmiss","P.kin.secondary.pmiss")
         ;
       int pion_counts = *d_pos_pi.Count();
-      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_counts;
 
       auto h_hms_dp_after_pos = d_pos_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_after_pos = d_pos_pi.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
@@ -368,7 +367,6 @@ void rf_offset_Dummy(int RunGroup=0){
 
 
       int bg_counts = *d_pos_bg.Count()/6;
-      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_counts;
       std::cout<<"bg counts "<<bg_counts<<std::endl;
 
     }
@@ -495,7 +493,6 @@ void rf_offset_Dummy(int RunGroup=0){
         .Define("pmiss","P.kin.secondary.pmiss")
         ;
       int pion_counts = *d_neg_pi.Count();
-      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_counts;
 
       auto h_hms_dp_after_neg = d_neg_pi.Histo1D({"","HMS dp",100,-15,15},"H.gtr.dp"); 
       auto h_shms_dp_after_neg = d_neg_pi.Histo1D({"","SHMS dp",100,-25,25},"P.gtr.dp"); 
@@ -571,7 +568,6 @@ void rf_offset_Dummy(int RunGroup=0){
 
 
       int bg_counts = *d_neg_bg.Count()/6;
-      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_counts;
       std::cout<<"bg counts "<<bg_counts<<std::endl;
     }
 

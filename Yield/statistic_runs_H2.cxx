@@ -51,9 +51,22 @@ void statistic_runs_H2(int RunGroup=0){
     std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
   }
+  json jout;
+  {
+    std::string if_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+    std::ifstream ifs(if_name.c_str());
+    ifs>>jout;
+  }
+  json j_cuts;
+  {
+    std::ifstream ifs("db2/all_cut.json");
+    ifs>>j_cuts;
+  }
 
   auto pt = [](double p,double th){return p*std::sin(th);};
-  
+  double pt_cut_num = j_cuts["pt_cut"].get<double>();
+  std::string pt_cut = "pt<"+std::to_string(pt_cut_num);
+
   std::vector<int> neg_H2,pos_H2;
   neg_H2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["H2"].get<std::vector<int>>();
   pos_H2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["H2"].get<std::vector<int>>();
@@ -70,12 +83,20 @@ void statistic_runs_H2(int RunGroup=0){
       ROOT::RDataFrame d_pos_raw("T",rootfile_name);
 
       auto d_pos_pi = d_pos_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        .Filter("pt<0.12");
+        .Filter(pt_cut)
+      ;
 
+      int pion_n = *d_pos_pi.Count();
+      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
+      
       // for bg
       ROOT::RDataFrame d_pos_bgraw("T_bg",rootfile_name);
       auto d_pos_bg = d_pos_bgraw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        .Filter("pt<0.12");
+        .Filter(pt_cut)
+      ;
+      
+      int bg_n = *d_pos_bg.Count();
+      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
@@ -108,12 +129,20 @@ void statistic_runs_H2(int RunGroup=0){
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
 
       auto d_neg_pi = d_neg_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        .Filter("pt<0.12");
+        .Filter(pt_cut)
+      ;
+      
+      int pion_n = *d_neg_pi.Count();
+      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
 
       // for bg
       ROOT::RDataFrame d_neg_bgraw("T_bg",rootfile_name);
       auto d_neg_bg = d_neg_bgraw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
-        .Filter("pt<0.12");
+        .Filter(pt_cut)
+      ;
+      
+      int bg_n = *d_neg_bg.Count();
+      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
@@ -140,4 +169,7 @@ void statistic_runs_H2(int RunGroup=0){
 
 
   }
+    std::string of_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+  std::ofstream ofs(of_name.c_str());
+  ofs<<jout.dump(4)<<std::endl;
 }
