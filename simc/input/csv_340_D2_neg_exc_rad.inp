@@ -112,7 +112,7 @@ begin parm simulate
  using_Coulomb = 1
  dE_edge_test = 0
  use_offshell_rad = 1
- Egamma_gen_max = 0
+ Egamma_gen_max = 8000
  using_tgt_field= 0
  tgt_field_file = trg_field_map.dat
  drift_to_cal = 320.0
