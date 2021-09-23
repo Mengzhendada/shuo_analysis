@@ -10,6 +10,7 @@
 #include "TMultiGraph.h"
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
+#include "Get_all_eff.h"
 
 #include <iostream>
 #include <fstream>
@@ -18,10 +19,10 @@ using json = nlohmann::json;
 #include <vector>
 #include <map>
 
-int Get_Q2_xz_ratio(){
+int Q2_xz_ratio_combined(){
   json j_Q2x;
   {
-    std::ifstream runs("db2/kin_group_Q2xz.json");
+    std::ifstream runs("db2/kin_group_q2xz_combined.json");
     runs>>j_Q2x;
   }
   json j_info;
@@ -37,16 +38,24 @@ int Get_Q2_xz_ratio(){
   int i_whichx = 0; 
   json jout;
   json jout_sthwrong;
+  //TH2D* h_Q2_1_neg =new TH2D("","3.95",100,0,1,100,0,1);
+  //TH2D* h_Q2_1_pos =new TH2D("","3.95",100,0,1,100,0,1);
+  //TH2D* h_Q2_2_neg =new TH2D("","4.75",100,0,1,100,0,1);
+  //TH2D* h_Q2_2_pos =new TH2D("","4.75",100,0,1,100,0,1);
+  //TH2D* h_Q2_3_neg =new TH2D("","5",100,0,1,100,0,1);
+  //TH2D* h_Q2_3_pos =new TH2D("","5",100,0,1,100,0,1);
+  //TH2D* h_Q2_4_neg =new TH2D("","5.5",100,0,1,100,0,1);
+  //TH2D* h_Q2_4_pos =new TH2D("","5.5",100,0,1,100,0,1);
   for(json::iterator it = j_Q2x.begin();it!=j_Q2x.end();++it){
     double Q2 = std::stod(it.key());
     auto j_xz = it.value();
     TMultiGraph* mg_RY;
     TMultiGraph* mg_frag;
     TMultiGraph* mg_RDmeas;
-      std::string canvas_name = "Q2:"+std::to_string(Q2).substr(0,5);
-      std::string canvas_filename = "Q2_"+std::to_string(1000*Q2).substr(0,4);
-      std::string q2_name = "Q2:"+std::to_string(Q2).substr(0,5)+"_yieldratio";
-      std::string q2_filename = "Q2_"+std::to_string(1000*Q2).substr(0,4)+"_yieldratio";
+    std::string canvas_name = "Q2:"+std::to_string(Q2).substr(0,5);
+    std::string canvas_filename = "Q2_"+std::to_string(1000*Q2).substr(0,4);
+    std::string q2_name = "Q2:"+std::to_string(Q2).substr(0,5)+"_yieldratio";
+    std::string q2_filename = "Q2_"+std::to_string(1000*Q2).substr(0,4)+"_yieldratio";
     TCanvas* c_RY = new TCanvas();
     TCanvas* c_frag = new TCanvas();
     TCanvas* c_RDmeas = new TCanvas();
@@ -135,94 +144,57 @@ int Get_Q2_xz_ratio(){
               //std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_neg_all += charge;
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-              //double TE = 1;
-              //std::cout<<"neg TE check "<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = 1; 
-              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              //std::cout<<"neg DE check "<<std::endl;
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH2D *h_xz_neg = new TH2D("","",100,0,1,100,0,1);
               h_xz_neg = (TH2D*)root_file_neg->Get("x_z");
               TH2D *h_xz_neg_bg = new TH2D("","",100,0,1,100,0,1);
               h_xz_neg_bg = (TH2D*)root_file_neg->Get("x_z_bg");
-              h_xz_neg_bg_all->Add(h_xz_neg_bg,1/(6*TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_xz_neg_all->Add(h_xz_neg,1/(TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              double EFF = Get_all_eff(RunNumber);
+              h_xz_neg_bg_all->Add(h_xz_neg_bg,1/(6*EFF));
+              h_xz_neg_all->Add(h_xz_neg,1/EFF);
             }//loop over neg runs
             for(auto it = pos_D2_runs.begin();it!=pos_D2_runs.end();++it){
               int RunNumber = *it;
               //std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_all+=charge;
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              //std::cout<<"pos TE check"<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = 1;
-              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"pos DE check"<<std::endl;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH2D *h_xz_pos = new TH2D("","",100,0,1,100,0,1);
               h_xz_pos = (TH2D*)root_file_pos->Get("x_z");
               TH2D *h_xz_pos_bg = new TH2D("","",100,0,1,100,0,1);
               h_xz_pos_bg = (TH2D*)root_file_pos->Get("x_z_bg");
-              h_xz_pos_bg_all->Add(h_xz_pos_bg,1/(6*TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_xz_pos_all->Add(h_xz_pos,1/(TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              double EFF = Get_all_eff(RunNumber);
+              h_xz_pos_bg_all->Add(h_xz_pos_bg,1/(6*EFF));
+              h_xz_pos_all->Add(h_xz_pos,1/EFF);
             }//loop over pos runs
             for(auto it = neg_Dummy_runs.begin();it!=neg_Dummy_runs.end();++it){
               int RunNumber = *it;
               //std::cout<<"Dummy"<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_neg_Dummy_all += charge;
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-              //double TE = 1;
-              //std::cout<<"neg Dummy TE check "<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = 1; 
-              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              //std::cout<<"neg Dummy DE check "<<std::endl;
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH2D *h_xz_neg = new TH2D("","",100,0,1,100,0,1);
               h_xz_neg = (TH2D*)root_file_neg->Get("x_z");
               TH2D *h_xz_neg_bg = new TH2D("","",100,0,1,100,0,1);
               h_xz_neg_bg = (TH2D*)root_file_neg->Get("x_z_bg");
-              h_xz_neg_bg_Dummy_all->Add(h_xz_neg_bg,1/(6*TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_xz_neg_Dummy_all->Add(h_xz_neg,1/(TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              double EFF = Get_all_eff(RunNumber);
+              h_xz_neg_bg_Dummy_all->Add(h_xz_neg_bg,1/(6*EFF));
+              h_xz_neg_Dummy_all->Add(h_xz_neg,1/EFF);
             }//loop over neg runs
             for(auto it = pos_Dummy_runs.begin();it!=pos_Dummy_runs.end();++it){
               int RunNumber = *it;
               //std::cout<<"Dummy "<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_Dummy_all+=charge;
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              //std::cout<<"pos TE check"<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = 1; 
-              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              //std::cout<<"pos DE check"<<std::endl;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH2D *h_xz_pos = new TH2D("","",100,0,1,100,0,1);
               h_xz_pos = (TH2D*)root_file_pos->Get("x_z");
               TH2D *h_xz_pos_bg = new TH2D("","",100,0,1,100,0,1);
               h_xz_pos_bg = (TH2D*)root_file_pos->Get("x_z_bg");
-              h_xz_pos_bg_Dummy_all->Add(h_xz_pos_bg,1/(6*TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_xz_pos_Dummy_all->Add(h_xz_pos,1/(TLT*TEHMS*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              double EFF = Get_all_eff(RunNumber);
+              h_xz_pos_bg_Dummy_all->Add(h_xz_pos_bg,1/(6*EFF));
+              h_xz_pos_Dummy_all->Add(h_xz_pos,1/EFF);
             }//loop over pos runs
           }//if z not 0
 
@@ -318,7 +290,7 @@ int Get_Q2_xz_ratio(){
               double error_pos_D2 = h_xz_pos_all->GetBinError(i,j)/charge_pos_all;
               double error_pos_Dummy = h_xz_pos_Dummy_all->GetBinError(i,j)/charge_pos_Dummy_all;
               double error_pos = std::sqrt(error_pos_D2*error_pos_D2+0.245*0.245*error_pos_Dummy*error_pos_Dummy);
-              
+
               //for yield
               double radia_corr_neg = rp_radia_corr_neg->GetBinContent(i,j);
               double radia_corr_pos = rp_radia_corr_pos->GetBinContent(i,j);
@@ -351,25 +323,25 @@ int Get_Q2_xz_ratio(){
                 ii++;
                 std::string z_str = std::to_string(x); 
                 std::string xbj_str = std::to_string(y); 
-                
+
                 if(y_RD>0 && y_RD<10 && error_RD<2 && error_RD>0){
-                jout[std::to_string(Q2)][xbj_str][z_str]["value"] = y_RD;
-                jout[std::to_string(Q2)][xbj_str][z_str]["error"] = error_RD;
-                jout[std::to_string(Q2)][xbj_str][z_str]["yield_neg"] = yield_neg;
-                jout[std::to_string(Q2)][xbj_str][z_str]["yield_pos"] = yield_pos;
-                jout[std::to_string(Q2)][xbj_str][z_str]["charge_neg"] = charge_neg_all;
-                jout[std::to_string(Q2)][xbj_str][z_str]["charge_pos"] = charge_pos_all;
+                  jout[std::to_string(Q2)][xbj_str][z_str]["value"].push_back(y_RD);
+                  jout[std::to_string(Q2)][xbj_str][z_str]["error"].push_back(error_RD);
+                  jout[std::to_string(Q2)][xbj_str][z_str]["yield_neg"].push_back(yield_neg);
+                  jout[std::to_string(Q2)][xbj_str][z_str]["yield_pos"].push_back(yield_pos);
+                  jout[std::to_string(Q2)][xbj_str][z_str]["charge_neg"].push_back(charge_neg_all);
+                  jout[std::to_string(Q2)][xbj_str][z_str]["charge_pos"].push_back(charge_pos_all);
 
                 }
                 else{
-                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["value"] = y_RD;
-                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["error"] = error_RD;
-                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["yield_neg"] = yield_neg;
-                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["yield_pos"] = yield_pos;
-                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["charge_neg"] = charge_neg_all;
-                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["charge_pos"] = charge_pos_all;
-                jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["rungroup"] = RunGroup;
-                
+                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["value"] = y_RD;
+                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["error"] = error_RD;
+                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["yield_neg"] = yield_neg;
+                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["yield_pos"] = yield_pos;
+                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["charge_neg"] = charge_neg_all;
+                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["charge_pos"] = charge_pos_all;
+                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str]["rungroup"] = RunGroup;
+
                 }
               }
             }
@@ -416,11 +388,11 @@ int Get_Q2_xz_ratio(){
     c_RDmeas->SaveAs(c_RDmeas_name.c_str());
   }//loop over Q2 
 
-  std::string jout_name = "results/yield_ratio_xz.json";
+  std::string jout_name = "results/yield_ratio_xz_combined.json";
   std::ofstream ofs_jout(jout_name.c_str());
   ofs_jout<<jout.dump(4)<<std::endl;
-  
-  std::string jout_sthwrong_name = "results/yield_ratio_xz_sthwrong.json";
+
+  std::string jout_sthwrong_name = "results/yield_ratio_xz_combined_sthwrong.json";
   std::ofstream ofs_jout_sthwrong(jout_sthwrong_name.c_str());
   ofs_jout_sthwrong<<jout_sthwrong.dump(4)<<std::endl;
 

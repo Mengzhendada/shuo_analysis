@@ -9,7 +9,7 @@
 #include "TMultiGraph.h"
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
-
+#include "Get_all_eff.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -80,7 +80,7 @@ void plot_data_simc_ratio(){
             pos_D2_runs = runjs["pos"]["D2"].get<std::vector<int>>();
             neg_Dummy_runs = runjs["neg"]["Dummy"].get<std::vector<int>>();
             pos_Dummy_runs = runjs["pos"]["Dummy"].get<std::vector<int>>();
-            
+
 
             double charge_pos_Dummy=0,charge_neg_Dummy=0,Dummy_pions_neg=0,Dummy_pions_pos=0;
             for(auto it = pos_Dummy_runs.begin();it!=pos_Dummy_runs.end();++it){
@@ -88,21 +88,12 @@ void plot_data_simc_ratio(){
               std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_Dummy += charge;
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-              //double TE = 1;
-              //std::cout<<"pos TE check "<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = 1;
-              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
               //std::cout<<"pos DE check "<<std::endl;
 
               int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
               int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
-              double pions_pos = (pion_n-bg_n/6.0)/(TE*TLT*TEHMS*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff);
+              double EFF = Get_all_eff(RunNumber);
+              double pions_pos = (pion_n-bg_n/6.0)/EFF;
               Dummy_pions_pos+= pions_pos;
             }//loop over Dummy runs
             for(auto it = neg_Dummy_runs.begin();it!=neg_Dummy_runs.end();++it){
@@ -110,21 +101,11 @@ void plot_data_simc_ratio(){
               std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_neg_Dummy += charge;
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-              //double TE = 1;
-              //std::cout<<"neg TE check "<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = 1;
-              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              //std::cout<<"neg DE check "<<std::endl;
 
               int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
               int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
-              double pions_neg = (pion_n-bg_n/6.0)/(TE*TLT*TEHMS*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff);
+              double EFF = Get_all_eff(RunNumber);
+              double pions_neg = (pion_n-bg_n/6.0)/EFF;
               Dummy_pions_neg+= pions_neg;
 
             }//loop over Dummy runs
@@ -136,21 +117,11 @@ void plot_data_simc_ratio(){
               int RunNumber = *it;
               std::cout<<"neg D2"<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-              //double TE = 1;
-              //std::cout<<"neg TE check "<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = 1;
-              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              // std::cout<<"neg DE check "<<std::endl;
 
               int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
               int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
-              double pions_neg = (pion_n-bg_n/6.0)/(TE*TLT*TEHMS*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff);
+              double EFF = Get_all_eff(RunNumber);
+              double pions_neg = (pion_n-bg_n/6.0)/EFF;
               double pions_data_yield = pions_neg/charge;
               double pion_yield_inc_norad = j_simc[(std::to_string(RunGroup)).c_str()]["D2"]["neg"]["inc_norad"].get<int>();
               double pion_yield_inc_rad = j_simc[(std::to_string(RunGroup)).c_str()]["D2"]["neg"]["inc_rad"].get<int>();
@@ -170,21 +141,11 @@ void plot_data_simc_ratio(){
               int RunNumber = *it;
               std::cout<<"pos D2"<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-              //double TE = 1;
-              //std::cout<<"pos TE check "<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = 1;
-              //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              //std::cout<<"pos DE check "<<std::endl;
 
               int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
               int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
-              double pions_pos = (pion_n-bg_n/6.0)/(TE*TLT*TEHMS*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff);
+              double EFF = Get_all_eff(RunNumber);
+              double pions_pos = (pion_n-bg_n/6.0)/EFF;
               double pions_data_yield = pions_pos/charge;
               double pion_yield_inc_norad = j_simc[(std::to_string(RunGroup)).c_str()]["D2"]["pos"]["inc_norad"].get<int>();
               double pion_yield_inc_rad = j_simc[(std::to_string(RunGroup)).c_str()]["D2"]["pos"]["inc_rad"].get<int>();
@@ -209,21 +170,12 @@ void plot_data_simc_ratio(){
                 int RunNumber = *it;
                 std::cout<<"neg H2"<<RunNumber<<std::endl;
                 double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-                double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-                double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-                double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-                //double TE = 1;
-                //std::cout<<"neg TE check "<<std::endl;
-                double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-                double HMS_cer_eff = 1;
-                //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-                double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-                double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
                 // std::cout<<"neg DE check "<<std::endl;
 
                 int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
                 int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
-                double pions_neg = (pion_n-bg_n/6.0)/(TE*TLT*TEHMS*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff);
+                double EFF = Get_all_eff(RunNumber);
+                double pions_neg = (pion_n-bg_n/6.0)/EFF;
                 double pions_data_yield = pions_neg/charge;
                 double pion_yield_inc_norad = j_simc[(std::to_string(RunGroup)).c_str()]["H2"]["neg"]["inc_norad"].get<int>();
                 double pion_yield_inc_rad = j_simc[(std::to_string(RunGroup)).c_str()]["H2"]["neg"]["inc_rad"].get<int>();
@@ -243,21 +195,12 @@ void plot_data_simc_ratio(){
                 int RunNumber = *it;
                 std::cout<<"pos H2"<<RunNumber<<std::endl;
                 double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-                double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-                double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-                double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
-                //double TE = 1;
-                //std::cout<<"pos TE check "<<std::endl;
-                double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-                double HMS_cer_eff = 1;
-                //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-                double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-                double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
                 //std::cout<<"pos DE check "<<std::endl;
 
                 int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
                 int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
-                double pions_pos = (pion_n-bg_n/6.0)/(TE*TLT*TEHMS*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff);
+                double EFF = Get_all_eff(RunNumber);
+                double pions_pos = (pion_n-bg_n/6.0)/EFF;
                 double pions_data_yield = pions_pos/charge;
                 double pion_yield_inc_norad = j_simc[(std::to_string(RunGroup)).c_str()]["H2"]["pos"]["inc_norad"].get<int>();
                 double pion_yield_inc_rad = j_simc[(std::to_string(RunGroup)).c_str()]["H2"]["pos"]["inc_rad"].get<int>();

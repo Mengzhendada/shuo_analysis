@@ -40,24 +40,48 @@ int arrange_H2_diff_sum(){
         double z = std::stod(it.key());
         std::cout<<"z "<<z;
         auto j_value = it.value();
-        std::vector<double> error_diff,error_sum,value_diff,value_sum;
+        std::vector<double> error_diff,error_sum,value_diff,value_sum,value_diff_data,value_diff_datadeltaexc,value_diff_datadelta,value_diff_dataexc,value_sum_data,value_sum_datadeltaexc,value_sum_datadelta,value_sum_dataexc;
         if(!j_value["error_diff"].empty()){
           error_diff = j_value["error_diff"].get<std::vector<double>>();
           value_diff = j_value["value_diff"].get<std::vector<double>>();
+          value_diff_data = j_value["value_diff_data"].get<std::vector<double>>();
+          value_diff_datadeltaexc = j_value["value_diff_datadeltaexc"].get<std::vector<double>>();
+          value_diff_datadelta = j_value["value_diff_datadelta"].get<std::vector<double>>();
+          value_diff_dataexc = j_value["value_diff_dataexc"].get<std::vector<double>>();
             for(auto it_errordiff = error_diff.begin();it_errordiff<error_diff.end();++it_errordiff){
             jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["error_diff"].push_back(*it_errordiff);}
             for(auto it_valuediff = value_diff.begin();it_valuediff<value_diff.end();++it_valuediff){
             jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_diff"].push_back(*it_valuediff);}
+            for(auto it_valuediff_data = value_diff_data.begin();it_valuediff_data<value_diff_data.end();++it_valuediff_data){
+            jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_diff_data"].push_back(*it_valuediff_data);}
+            for(auto it_valuediff_datadeltaexc = value_diff_datadeltaexc.begin();it_valuediff_datadeltaexc<value_diff_datadeltaexc.end();++it_valuediff_datadeltaexc){
+            jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_diff_datadeltaexc"].push_back(*it_valuediff_datadeltaexc);}
+            for(auto it_valuediff_datadelta = value_diff_datadelta.begin();it_valuediff_datadelta<value_diff_datadelta.end();++it_valuediff_datadelta){
+            jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_diff_datadelta"].push_back(*it_valuediff_datadelta);}
+            for(auto it_valuediff_dataexc = value_diff_dataexc.begin();it_valuediff_dataexc<value_diff_dataexc.end();++it_valuediff_dataexc){
+            jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_diff_dataexc"].push_back(*it_valuediff_dataexc);}
         }//if diff exist
         if(!j_value["error_sum"].empty()){
           error_sum = j_value["error_sum"].get<std::vector<double>>();
           value_sum = j_value["value_sum"].get<std::vector<double>>();
+          value_sum_data = j_value["value_sum_data"].get<std::vector<double>>();
+          value_sum_datadeltaexc = j_value["value_sum_datadeltaexc"].get<std::vector<double>>();
+          value_sum_datadelta = j_value["value_sum_datadelta"].get<std::vector<double>>();
+          value_sum_dataexc = j_value["value_sum_dataexc"].get<std::vector<double>>();
             for(auto it_errorsum = error_sum.begin();it_errorsum<error_sum.end();++it_errorsum){
             jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["error_sum"].push_back(*it_errorsum);}
             for(auto it_valuesum = value_sum.begin();it_valuesum<value_sum.end();++it_valuesum){
             jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_sum"].push_back(*it_valuesum);
             jcheck["value_sum"].push_back(*it_valuesum);
             }
+            for(auto it_valuesum_data = value_sum_data.begin();it_valuesum_data<value_sum_data.end();++it_valuesum_data){
+            jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_sum_data"].push_back(*it_valuesum_data);}
+            for(auto it_valuesum_datadeltaexc = value_sum_datadeltaexc.begin();it_valuesum_datadeltaexc<value_sum_datadeltaexc.end();++it_valuesum_datadeltaexc){
+            jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_sum_datadeltaexc"].push_back(*it_valuesum_datadeltaexc);}
+            for(auto it_valuesum_datadelta = value_sum_datadelta.begin();it_valuesum_datadelta<value_sum_datadelta.end();++it_valuesum_datadelta){
+            jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_sum_datadelta"].push_back(*it_valuesum_datadelta);}
+            for(auto it_valuesum_dataexc = value_sum_dataexc.begin();it_valuesum_dataexc<value_sum_dataexc.end();++it_valuesum_dataexc){
+            jout[Q2_str.c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_sum_dataexc"].push_back(*it_valuesum_dataexc);}
         }//if sum exist
       }//loop over z
       std::cout<<std::endl;
