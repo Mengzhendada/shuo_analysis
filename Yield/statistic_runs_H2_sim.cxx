@@ -189,7 +189,7 @@ void statistic_runs_H2_sim(int RunGroup = 0){
 
   double normfac_H2_pos_exc_rad = j_simc[std::to_string(RunGroup).c_str()]["H2"]["pos"]["exc"]["rad"]["normfac"].get<double>();
 
-  //neg exc rad
+  //pos exc rad
   auto d_H2_pos_exc_rad_1 = d_H2_pos_exc_rad_raw
     .Filter(Good_Track_SHMS_sim)
     .Filter(Good_Track_HMS_sim)
@@ -376,10 +376,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   auto h_xbj_H2_pos_inc_norad = d_H2_pos_inc_norad.Histo1D({"xbj_pos_inc_norad","xbj_pos_inc_norad",100,0,1},"xbj","weight_new");
   auto h_z_H2_neg_inc_norad = d_H2_neg_inc_norad.Histo1D({"z_neg_inc_norad","z_neg_inc_norad",100,0,1},"z","weight_new");
   auto h_z_H2_pos_inc_norad = d_H2_pos_inc_norad.Histo1D({"z_pos_inc_norad","z_pos_inc_norad",100,0,1},"z","weight_new");
-  auto h_xs_z_neg_inc_norad = d_H2_neg_inc_norad.Histo2D({"xs_z_neg_inc_rad","xs_z_neg_inc_rad",100,0,1,100,0,1},"z","sighad","weight_new");
-  auto h_xs_z_pos_inc_norad = d_H2_pos_inc_norad.Histo2D({"xs_z_pos_inc_rad","xs_z_pos_inc_rad",100,0,1,100,0,1},"z","sighad","weight_new");
-  auto h_xs_xbj_neg_inc_norad = d_H2_neg_inc_norad.Histo2D({"xs_xbj_neg_inc_rad","xs_xbj_neg_inc_rad",100,0,1,100,0,1},"xbj","sighad","weight_new");
-  auto h_xs_xbj_pos_inc_norad = d_H2_pos_inc_norad.Histo2D({"xs_xbj_pos_inc_rad","xs_xbj_pos_inc_rad",100,0,1,100,0,1},"xbj","sighad","weight_new");
+  auto h_xs_z_neg_inc_norad = d_H2_neg_inc_norad.Histo2D({"xs_z_neg_inc_rad","xs_z_neg_inc_rad",100,0,1,100,0,1},"z","siglab","weight_new");
+  auto h_xs_z_pos_inc_norad = d_H2_pos_inc_norad.Histo2D({"xs_z_pos_inc_rad","xs_z_pos_inc_rad",100,0,1,100,0,1},"z","siglab","weight_new");
+  auto h_xs_xbj_neg_inc_norad = d_H2_neg_inc_norad.Histo2D({"xs_xbj_neg_inc_rad","xs_xbj_neg_inc_rad",100,0,1,100,0,1},"xbj","siglab","weight_new");
+  auto h_xs_xbj_pos_inc_norad = d_H2_pos_inc_norad.Histo2D({"xs_xbj_pos_inc_rad","xs_xbj_pos_inc_rad",100,0,1,100,0,1},"xbj","siglab","weight_new");
   std::cout<<"inc norad check"<<std::endl;  
   auto h_Q2_H2_pos_exc_rad = d_H2_pos_exc_rad.Histo1D({"Q2_pos_exc_rad","Q2_pos_exc_rad",100,0,10},"Q2","weight_new");
   auto h_xbj_H2_pos_exc_rad = d_H2_pos_exc_rad.Histo1D({"xbj_pos_exc_rad","xbj_pos_exc_rad",100,0,1},"xbj","weight_new");
@@ -391,7 +391,7 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   auto h_xbj_H2_pos_inc_rad = d_H2_pos_inc_rad.Histo1D({"xbj_pos_inc_rad","xbj_pos_inc_rad",100,0,1},"xbj","weight_new");
   auto h_z_H2_neg_inc_rad = d_H2_neg_inc_rad.Histo1D({"z_neg_inc_rad","z_neg_inc_rad",100,0,1},"z","weight_new");
   auto h_z_H2_pos_inc_rad = d_H2_pos_inc_rad.Histo1D({"z_pos_inc_rad","z_pos_inc_rad",100,0,1},"z","weight_new");
-  //auto xs_neg_inc_rad_list = d_H2_neg_inc_rad.Take<float>("sighad");
+  //auto xs_neg_inc_rad_list = d_H2_neg_inc_rad.Take<float>("siglab");
   //auto z_neg_inc_rad_list = d_H2_neg_inc_rad.Take<float>("z");
   //auto xbj_neg_inc_rad_list = d_H2_neg_inc_rad.Take<float>("xbj");
   //int nentries_neg = *d_H2_neg_inc_rad.Count();
@@ -401,7 +401,7 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   //g_xs_z_neg_inc_rad->SetPoint(i,z_neg_inc_rad_list->at(i),xs_neg_inc_rad_list->at(i));
   //g_xs_xbj_neg_inc_rad->SetPoint(i,xbj_neg_inc_rad_list->at(i),xs_neg_inc_rad_list->at(i));
   //}
-  //auto xs_pos_inc_rad_list = d_H2_pos_inc_rad.Take<float>("sighad");
+  //auto xs_pos_inc_rad_list = d_H2_pos_inc_rad.Take<float>("siglab");
   //auto z_pos_inc_rad_list = d_H2_pos_inc_rad.Take<float>("z");
   //auto xbj_pos_inc_rad_list = d_H2_pos_inc_rad.Take<float>("xbj");
   //int nentries_pos = *d_H2_pos_inc_rad.Count();

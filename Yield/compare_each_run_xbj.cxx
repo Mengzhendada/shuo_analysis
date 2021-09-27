@@ -9,6 +9,7 @@
 #include "TMultiGraph.h"
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
+#include "Get_all_eff.h"
 
 #include <iostream>
 #include <fstream>
@@ -95,22 +96,14 @@ int compare_each_run_xbj(){
               std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_neg_all += charge;
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              //double TE = 1;
-              std::cout<<"neg TE check "<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              std::cout<<"neg DE check "<<std::endl;
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_xbj_neg = new TH1D("","",100,0,1);
               h_xbj_neg = (TH1D*)root_file_neg->Get("xbj");
               TH1D *h_xbj_neg_bg = new TH1D("","",100,0,1);
               h_xbj_neg_bg = (TH1D*)root_file_neg->Get("xbj_bg");
-              h_xbj_neg->Scale(1/(charge*TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_xbj_neg->Add(h_xbj_neg_bg,-1/(charge*6*TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              double EFF = Get_all_eff(RunNumber);
+              h_xbj_neg->Scale(1/(charge*EFF));
+              h_xbj_neg->Add(h_xbj_neg_bg,-1/(charge*6*EFF));
               
               TGraphErrors* g_negrun = new TGraphErrors(h_xbj_neg);
               g_negrun->SetMarkerColor(coolcolor[i_color]);
@@ -138,21 +131,14 @@ int compare_each_run_xbj(){
               std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_all+=charge;
-              double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
-              double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
-              std::cout<<"pos TE check"<<std::endl;
-              double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-              double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
-              double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
-              double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
-              std::cout<<"pos DE check"<<std::endl;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_xbj_pos = new TH1D("","",100,0,1);
               h_xbj_pos = (TH1D*)root_file_pos->Get("xbj");
               TH1D *h_xbj_pos_bg = new TH1D("","",100,0,1);
               h_xbj_pos_bg = (TH1D*)root_file_pos->Get("xbj_bg");
-              h_xbj_pos->Scale(1/(charge*TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
-              h_xbj_pos->Add(h_xbj_pos_bg,-1/(6*charge*TLT*TE*HMS_cal_eff*HMS_cer_eff*SHMS_cal_eff*SHMS_aero_eff));
+              double EFF = Get_all_eff(RunNumber);
+              h_xbj_pos->Scale(1/(charge*EFF));
+              h_xbj_pos->Add(h_xbj_pos_bg,-1/(6*charge*EFF));
             
               TGraphErrors* g_posrun = new TGraphErrors(h_xbj_pos);
               g_posrun->SetMarkerColor(warmcolor[i_color]);

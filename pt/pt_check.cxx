@@ -36,7 +36,6 @@ using Pvec3D = ROOT::Math::XYZVector;
 using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 
-bool shms_momentum_high = true;
 
 void pt_check(int RunGroup=0){
 
