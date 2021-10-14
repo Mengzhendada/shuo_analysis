@@ -92,6 +92,7 @@ void statistic_runs_D2_scaler(int RunGroup=0){
       std::cout<<"charge after current cut"<<tot_charge_cut_neg<<std::endl;
       std::cout<<"charge in scaler "<<*d_neg_scaler.Max("P.BCM1.scalerChargeCut")<<std::endl;;
       jout[(std::to_string(RunNumber)).c_str()]["charge"] = tot_charge_cut_neg/1000;
+      jout[(std::to_string(RunNumber)).c_str()]["current"] = set_cur_neg;
       jout[(std::to_string(RunNumber)).c_str()]["time"] = tot_time_cut_neg;
 
     }
@@ -133,6 +134,7 @@ void statistic_runs_D2_scaler(int RunGroup=0){
       ////std::cout<<charge<<std::endl;
       jout[(std::to_string(RunNumber)).c_str()]["charge"] = tot_charge_cut/1000;
       jout[(std::to_string(RunNumber)).c_str()]["time"] = tot_time_cut;
+      jout[(std::to_string(RunNumber)).c_str()]["current"] = set_cur;
       //jout[(std::to_string(RunNumber)).c_str()]["scaler_n"] = scaler_events;
       //jout[(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
     }

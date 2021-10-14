@@ -41,7 +41,7 @@ void make_simc_input(int RunGroup = 0){
     int RunNumber = neg_D2[0];
     std::cout<<"Using infos for Run "<<RunNumber<<std::endl;
   //variables to change
-  int ngen = 100000; 
+  int ngen = 200000; 
   //inclusive rad 100k, inclusive norad 50k, exclusive rad 30k
   double charge = 1.0;
   double Ebeam;
@@ -187,19 +187,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_neg_inc_norad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_neg_inc_norad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" targ%Bphi = 270"<<std::endl;
-  ofs_D2_neg_inc_norad<<" targ%pol = 1.0"<<std::endl;
   ofs_D2_neg_inc_norad<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_neg_inc_norad<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_neg_inc_norad<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_neg_inc_norad<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_neg_inc_norad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_neg_inc_norad<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_neg_inc_norad<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_neg_inc_norad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_inc_norad<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_neg_inc_norad<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_neg_inc_norad<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_neg_inc_norad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_neg_inc_norad<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_neg_inc_norad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_neg_inc_norad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_inc_norad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -228,15 +225,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_neg_inc_norad<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_neg_inc_norad<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_neg_inc_norad<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" using_tgt_field= 0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_D2_neg_inc_norad<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_neg_inc_norad<<" do_fermi = 0"<<std::endl;
   ofs_D2_neg_inc_norad<<" sigc_flag = 1"<<std::endl;
-  ofs_D2_neg_inc_norad<<" sigc_nbin = 10"<<std::endl;
-  ofs_D2_neg_inc_norad<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_D2_neg_inc_norad<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_D2_neg_inc_norad<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_neg_inc_norad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" sigc_kin_max = 1"<<std::endl;
   ofs_D2_neg_inc_norad<<" sigc_kin_ind = 0.550"<<std::endl;
   
   ofs_D2_neg_inc_norad<<"end parm simulate\n"<<std::endl;
@@ -318,19 +312,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_neg_inc_rad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_neg_inc_rad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" targ%Bphi = 270"<<std::endl;
-  ofs_D2_neg_inc_rad<<" targ%pol = 1.0"<<std::endl;
   ofs_D2_neg_inc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_neg_inc_rad<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_neg_inc_rad<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_neg_inc_rad<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_neg_inc_rad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_neg_inc_rad<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_neg_inc_rad<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_neg_inc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_inc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_neg_inc_rad<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_neg_inc_rad<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_neg_inc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_neg_inc_rad<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_neg_inc_rad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_neg_inc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_inc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -359,15 +350,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_neg_inc_rad<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_neg_inc_rad<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_neg_inc_rad<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" using_tgt_field= 0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_D2_neg_inc_rad<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_neg_inc_rad<<" do_fermi = 0"<<std::endl;
   ofs_D2_neg_inc_rad<<" sigc_flag = 1"<<std::endl;
-  ofs_D2_neg_inc_rad<<" sigc_nbin = 10"<<std::endl;
-  ofs_D2_neg_inc_rad<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_D2_neg_inc_rad<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_D2_neg_inc_rad<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_neg_inc_rad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" sigc_kin_max = 1.00"<<std::endl;
   ofs_D2_neg_inc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
   
   ofs_D2_neg_inc_rad<<"end parm simulate\n"<<std::endl;
@@ -377,7 +365,7 @@ void make_simc_input(int RunGroup = 0){
   //for exclusive
   ofs_D2_neg_exc_rad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
   ofs_D2_neg_exc_rad<<"begin parm experiment"<<std::endl;
-  ofs_D2_neg_exc_rad<<" ngen = "<<ngen<<std::endl;
+  ofs_D2_neg_exc_rad<<" ngen = "<<ngen/40<<std::endl;
   ofs_D2_neg_exc_rad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_neg_exc_rad<<" doing_phsp = 0"<<std::endl;
   ofs_D2_neg_exc_rad<<" doing_kaon = 0"<<std::endl;
@@ -449,19 +437,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_rad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_neg_exc_rad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_neg_exc_rad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" targ%Bphi = 270"<<std::endl;
-  ofs_D2_neg_exc_rad<<" targ%pol = 1.0"<<std::endl;
   ofs_D2_neg_exc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_neg_exc_rad<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_neg_exc_rad<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_neg_exc_rad<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_neg_exc_rad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_neg_exc_rad<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_neg_exc_rad<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_neg_exc_rad<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_neg_exc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_neg_exc_rad<<" spec%p%offset%y = 0.06"<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -490,15 +475,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_rad<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_neg_exc_rad<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_neg_exc_rad<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_neg_exc_rad<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" using_tgt_field= 0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_D2_neg_exc_rad<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_neg_exc_rad<<" do_fermi = 0"<<std::endl;
   ofs_D2_neg_exc_rad<<" sigc_flag = 1"<<std::endl;
-  ofs_D2_neg_exc_rad<<" sigc_nbin = 10"<<std::endl;
-  ofs_D2_neg_exc_rad<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_D2_neg_exc_rad<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_D2_neg_exc_rad<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_neg_exc_rad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" sigc_kin_max = 1"<<std::endl;
   ofs_D2_neg_exc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
   
   ofs_D2_neg_exc_rad<<"end parm simulate\n"<<std::endl;
@@ -580,19 +562,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_rho<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_neg_rho<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_neg_rho<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_neg_rho<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_D2_neg_rho<<" targ%Bphi = 270"<<std::endl;
-  ofs_D2_neg_rho<<" targ%pol = 1.0"<<std::endl;
   ofs_D2_neg_rho<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_neg_rho<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_neg_rho<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_neg_rho<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_neg_rho<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_neg_rho<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_neg_rho<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_neg_rho<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_rho<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_neg_rho<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_neg_rho<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_neg_rho<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_neg_rho<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_neg_rho<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_neg_rho<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_rho<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -621,15 +600,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_rho<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_neg_rho<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_neg_rho<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_neg_rho<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_D2_neg_rho<<" using_tgt_field= 0"<<std::endl;
-  ofs_D2_neg_rho<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_D2_neg_rho<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_D2_neg_rho<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_neg_rho<<" do_fermi = 0"<<std::endl;
   ofs_D2_neg_rho<<" sigc_flag = 1"<<std::endl;
-  ofs_D2_neg_rho<<" sigc_nbin = 10"<<std::endl;
-  ofs_D2_neg_rho<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_D2_neg_rho<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_D2_neg_rho<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_neg_rho<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_neg_rho<<" sigc_kin_max = 1"<<std::endl;
   ofs_D2_neg_rho<<" sigc_kin_ind = 0.550"<<std::endl;
   ofs_D2_neg_rho<<" random_seed = 1236221"<<std::endl;
   
@@ -712,19 +688,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" targ%Bphi = 270"<<std::endl;
-  ofs_D2_pos_inc_norad<<" targ%pol = 1.0"<<std::endl;
   ofs_D2_pos_inc_norad<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_pos_inc_norad<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_pos_inc_norad<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_pos_inc_norad<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_pos_inc_norad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_pos_inc_norad<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_pos_inc_norad<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_pos_inc_norad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_inc_norad<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_pos_inc_norad<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_pos_inc_norad<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_pos_inc_norad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_pos_inc_norad<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_pos_inc_norad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_pos_inc_norad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_inc_norad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -753,15 +726,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_pos_inc_norad<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_pos_inc_norad<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_pos_inc_norad<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" using_tgt_field= 0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_D2_pos_inc_norad<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_pos_inc_norad<<" do_fermi = 0"<<std::endl;
   ofs_D2_pos_inc_norad<<" sigc_flag = 1"<<std::endl;
-  ofs_D2_pos_inc_norad<<" sigc_nbin = 10"<<std::endl;
-  ofs_D2_pos_inc_norad<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_D2_pos_inc_norad<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_D2_pos_inc_norad<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_pos_inc_norad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" sigc_kin_ind = 0.550"<<std::endl;
   
   ofs_D2_pos_inc_norad<<"end parm simulate\n"<<std::endl;
@@ -843,19 +813,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" targ%Bphi = 270"<<std::endl;
-  ofs_D2_pos_inc_rad<<" targ%pol = 1.0"<<std::endl;
   ofs_D2_pos_inc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_pos_inc_rad<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_pos_inc_rad<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_pos_inc_rad<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_pos_inc_rad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_pos_inc_rad<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_pos_inc_rad<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_pos_inc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_inc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_pos_inc_rad<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_pos_inc_rad<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_pos_inc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_pos_inc_rad<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_pos_inc_rad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_pos_inc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_inc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -884,15 +851,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_pos_inc_rad<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_pos_inc_rad<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_pos_inc_rad<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" using_tgt_field= 0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_D2_pos_inc_rad<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_pos_inc_rad<<" do_fermi = 0"<<std::endl;
   ofs_D2_pos_inc_rad<<" sigc_flag = 1"<<std::endl;
-  ofs_D2_pos_inc_rad<<" sigc_nbin = 10"<<std::endl;
-  ofs_D2_pos_inc_rad<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_D2_pos_inc_rad<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_D2_pos_inc_rad<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_pos_inc_rad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
   
   ofs_D2_pos_inc_rad<<"end parm simulate\n"<<std::endl;
@@ -902,7 +866,7 @@ void make_simc_input(int RunGroup = 0){
   //for exclusive
   ofs_D2_pos_exc_rad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
   ofs_D2_pos_exc_rad<<"begin parm experiment"<<std::endl;
-  ofs_D2_pos_exc_rad<<" ngen = "<<ngen<<std::endl;
+  ofs_D2_pos_exc_rad<<" ngen = "<<ngen/40<<std::endl;
   ofs_D2_pos_exc_rad<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_pos_exc_rad<<" doing_phsp = 0"<<std::endl;
   ofs_D2_pos_exc_rad<<" doing_kaon = 0"<<std::endl;
@@ -974,19 +938,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_rad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" targ%Bphi = 270"<<std::endl;
-  ofs_D2_pos_exc_rad<<" targ%pol = 1.0"<<std::endl;
   ofs_D2_pos_exc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_pos_exc_rad<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_pos_exc_rad<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_pos_exc_rad<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_pos_exc_rad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_pos_exc_rad<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_pos_exc_rad<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_pos_exc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_exc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_pos_exc_rad<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_pos_exc_rad<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_pos_exc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_pos_exc_rad<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_pos_exc_rad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_pos_exc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_exc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -1015,15 +976,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_rad<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_pos_exc_rad<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_pos_exc_rad<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_pos_exc_rad<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" using_tgt_field= 0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_D2_pos_exc_rad<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_pos_exc_rad<<" do_fermi = 0"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_flag = 1"<<std::endl;
-  ofs_D2_pos_exc_rad<<" sigc_nbin = 10"<<std::endl;
-  ofs_D2_pos_exc_rad<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_D2_pos_exc_rad<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_D2_pos_exc_rad<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_pos_exc_rad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
   
   ofs_D2_pos_exc_rad<<"end parm simulate\n"<<std::endl;
@@ -1105,19 +1063,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_rho<<" targ%xoffset = 0.0"<<std::endl;
   ofs_D2_pos_rho<<" targ%yoffset = 0.0"<<std::endl;
   ofs_D2_pos_rho<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_D2_pos_rho<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_D2_pos_rho<<" targ%Bphi = 270"<<std::endl;
-  ofs_D2_pos_rho<<" targ%pol = 1.0"<<std::endl;
   ofs_D2_pos_rho<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_pos_rho<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_pos_rho<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_pos_rho<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_pos_rho<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_pos_rho<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_pos_rho<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_pos_rho<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_rho<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_pos_rho<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_pos_rho<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_pos_rho<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_pos_rho<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_pos_rho<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_pos_rho<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_rho<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -1146,15 +1101,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_rho<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_pos_rho<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_pos_rho<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_pos_rho<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_D2_pos_rho<<" using_tgt_field= 0"<<std::endl;
-  ofs_D2_pos_rho<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_D2_pos_rho<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_D2_pos_rho<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_pos_rho<<" do_fermi = 0"<<std::endl;
   ofs_D2_pos_rho<<" sigc_flag = 1"<<std::endl;
-  ofs_D2_pos_rho<<" sigc_nbin = 10"<<std::endl;
-  ofs_D2_pos_rho<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_D2_pos_rho<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_D2_pos_rho<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_pos_rho<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_pos_rho<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_pos_rho<<" sigc_kin_ind = 0.550"<<std::endl;
   ofs_D2_pos_rho<<" random_seed = 1236221"<<std::endl;
   
@@ -1165,7 +1117,7 @@ void make_simc_input(int RunGroup = 0){
   //for delta 
   ofs_D2_neg_delta<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
   ofs_D2_neg_delta<<"begin parm experiment"<<std::endl;
-  ofs_D2_neg_delta<<" ngen = "<<10000<<std::endl;
+  ofs_D2_neg_delta<<" ngen = "<<ngen/40<<std::endl;
   ofs_D2_neg_delta<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_neg_delta<<" doing_phsp = 0"<<std::endl;
   ofs_D2_neg_delta<<" doing_kaon = 0"<<std::endl;
@@ -1237,13 +1189,13 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_delta<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_neg_delta<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_neg_delta<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_neg_delta<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_neg_delta<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_neg_delta<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_neg_delta<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_neg_delta<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_delta<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_neg_delta<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_neg_delta<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_neg_delta<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_neg_delta<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_neg_delta<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_neg_delta<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_delta<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -1272,7 +1224,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_delta<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_neg_delta<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_neg_delta<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_neg_delta<<" Egamma_gen_max = 0"<<std::endl;
+  ofs_D2_neg_delta<<" Egamma_gen_max = 8000"<<std::endl;
   
   ofs_D2_neg_delta<<"end parm simulate\n"<<std::endl;
 
@@ -1282,7 +1234,7 @@ void make_simc_input(int RunGroup = 0){
   //for delta 
   ofs_D2_pos_delta<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
   ofs_D2_pos_delta<<"begin parm experiment"<<std::endl;
-  ofs_D2_pos_delta<<" ngen = "<<10000<<std::endl;
+  ofs_D2_pos_delta<<" ngen = "<<ngen/40<<std::endl;
   ofs_D2_pos_delta<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_pos_delta<<" doing_phsp = 0"<<std::endl;
   ofs_D2_pos_delta<<" doing_kaon = 0"<<std::endl;
@@ -1354,13 +1306,13 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_delta<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_D2_pos_delta<<"begin parm spect_offset"<<std::endl;
-  ofs_D2_pos_delta<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_D2_pos_delta<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_D2_pos_delta<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_pos_delta<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_D2_pos_delta<<" spec%e%offset%z = 0."<<std::endl;
   ofs_D2_pos_delta<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_delta<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_D2_pos_delta<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_D2_pos_delta<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_D2_pos_delta<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_pos_delta<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_pos_delta<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_pos_delta<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_pos_delta<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -1389,7 +1341,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_delta<<" using_Coulomb = 1"<<std::endl;
   ofs_D2_pos_delta<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_pos_delta<<" use_offshell_rad = 1"<<std::endl;
-  ofs_D2_pos_delta<<" Egamma_gen_max = 0"<<std::endl;
+  ofs_D2_pos_delta<<" Egamma_gen_max = 8000"<<std::endl;
   
   ofs_D2_pos_delta<<"end parm simulate\n"<<std::endl;
 
@@ -1471,19 +1423,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_Dummy_neg_inc_rad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" targ%Bphi = 270"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" targ%pol = 1.0"<<std::endl;
   ofs_Dummy_neg_inc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_Dummy_neg_inc_rad<<"begin parm spect_offset"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_Dummy_neg_inc_rad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_Dummy_neg_inc_rad<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" spec%e%offset%z = 0."<<std::endl;
   ofs_Dummy_neg_inc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_Dummy_neg_inc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_Dummy_neg_inc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_Dummy_neg_inc_rad<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_Dummy_neg_inc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_Dummy_neg_inc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -1513,15 +1462,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_Dummy_neg_inc_rad<<" using_Coulomb = 1"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" dE_edge_test = 0"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" use_offshell_rad = 1"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" using_tgt_field= 0"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_Dummy_neg_inc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" do_fermi = 0"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" sigc_flag = 1"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" sigc_nbin = 10"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_Dummy_neg_inc_rad<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_Dummy_neg_inc_rad<<" sigc_nbin = 100"<<std::endl;
+  ofs_Dummy_neg_inc_rad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_Dummy_neg_inc_rad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_Dummy_neg_inc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
   
   ofs_Dummy_neg_inc_rad<<"end parm simulate\n"<<std::endl;
@@ -1604,19 +1550,16 @@ void make_simc_input(int RunGroup = 0){
   ofs_Dummy_pos_inc_rad<<" targ%xoffset = 0.0"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" targ%yoffset = 0.0"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" targ%zoffset = 0.0"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" targ%Bangle = 80.0"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" targ%Bphi = 270"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" targ%pol = 1.0"<<std::endl;
   ofs_Dummy_pos_inc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
   
   ofs_Dummy_pos_inc_rad<<"begin parm spect_offset"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" spec%e%offset%x = 0."<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" spec%e%offset%y = 0."<<std::endl;
+  ofs_Dummy_pos_inc_rad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_Dummy_pos_inc_rad<<" spec%e%offset%y = 0.09"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" spec%e%offset%z = 0."<<std::endl;
   ofs_Dummy_pos_inc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_Dummy_pos_inc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" spec%p%offset%x = 0."<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" spec%p%offset%y = 0."<<std::endl;
+  ofs_Dummy_pos_inc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_Dummy_pos_inc_rad<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_Dummy_pos_inc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_Dummy_pos_inc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -1646,15 +1589,12 @@ void make_simc_input(int RunGroup = 0){
   ofs_Dummy_pos_inc_rad<<" using_Coulomb = 1"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" dE_edge_test = 0"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" use_offshell_rad = 1"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" Egamma_gen_max = 0"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" using_tgt_field= 0"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" tgt_field_file = trg_field_map.dat"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" drift_to_cal = 320.0"<<std::endl;
+  ofs_Dummy_pos_inc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" do_fermi = 0"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" sigc_flag = 1"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" sigc_nbin = 10"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" sigc_kin_min = 0.035"<<std::endl;
-  ofs_Dummy_pos_inc_rad<<" sigc_kin_max = 0.150"<<std::endl;
+  ofs_Dummy_pos_inc_rad<<" sigc_nbin = 100"<<std::endl;
+  ofs_Dummy_pos_inc_rad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_Dummy_pos_inc_rad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_Dummy_pos_inc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
   
   ofs_Dummy_pos_inc_rad<<"end parm simulate\n"<<std::endl;
