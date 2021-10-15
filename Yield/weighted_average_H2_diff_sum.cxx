@@ -38,7 +38,7 @@ int weighted_average_H2_diff_sum(){
       auto j_z = it.value();
       std::cout<<"xbj "<<xbj;    
       //std::string canvas_name = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5);
-      std::string canvas_name = "#LT x #GT = "+std::to_string(xbj).substr(0,4)+", Q^{2} = "+std::to_string(Q2).substr(0,5)+" [Gev^2]";
+      std::string canvas_name = "#LT x #GT = "+std::to_string(xbj).substr(0,4)+", Q^{2} = "+std::to_string(Q2).substr(0,5)+" GeV^{2}";
       std::string canvas_filename = "x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4);
       std::string diff_canvas_name = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5)+",diff";
       std::string sum_canvas_name = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5)+"sum";
@@ -161,6 +161,13 @@ int weighted_average_H2_diff_sum(){
   mg_diff->SetMinimum(0);
   mg_diff->SetMaximum(3);
   mg_diff->GetXaxis()->SetLimits(0.35,0.8);
+  mg_diff->GetXaxis()->SetLimits(0.35,0.8);
+  mg_diff->GetXaxis()->SetTickLength(0.04);
+  mg_diff->GetXaxis()->SetLabelSize(0.06);
+  mg_diff->GetXaxis()->SetTitleSize(0.05);
+  mg_diff->GetYaxis()->SetTickLength(0.04);
+  mg_diff->GetYaxis()->SetLabelSize(0.06);
+  mg_diff->GetYaxis()->SetTitleSize(0.05);
   mg_diff->Fit("pol0","F");
   TF1 *Fit_1 = mg_diff->GetFunction("pol0");
   double p0 = Fit_1->GetParameter(0);
@@ -199,10 +206,17 @@ int weighted_average_H2_diff_sum(){
   mg_sum->GetXaxis()->SetTitle("z");
   mg_sum->GetYaxis()->SetTitle(sum_ratio.c_str());
   mg_sum->Draw("A");
-  mg_sum->SetMinimum(0);
-  mg_sum->SetMaximum(2);
+  mg_sum->SetMinimum(0.2);
+  mg_sum->SetMaximum(1);
   mg_sum->GetXaxis()->SetLimits(0.35,0.8);
-  c_sum_ratio->BuildLegend(0.7,0.7,0.95,0.95);
+  c_sum_ratio->BuildLegend(0.5,0.6,0.95,0.95);
+  mg_sum->GetXaxis()->SetLimits(0.35,0.8);
+  mg_sum->GetXaxis()->SetTickLength(0.04);
+  mg_sum->GetXaxis()->SetLabelSize(0.06);
+  mg_sum->GetXaxis()->SetTitleSize(0.05);
+  mg_sum->GetYaxis()->SetTickLength(0.04);
+  mg_sum->GetYaxis()->SetLabelSize(0.06);
+  mg_sum->GetYaxis()->SetTitleSize(0.05);
  // sum_legend->Draw();
   c_sum_ratio->SaveAs("results/yield/statistics_H2/sum_ratio.pdf");
 

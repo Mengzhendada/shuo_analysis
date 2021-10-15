@@ -111,7 +111,7 @@ int Q2_xz_ratio(){
           TH2D *h_xz_neg_sim_excrad = new TH2D("","pi- sim exc",100,0,1,100,0,1);
           h_xz_neg_sim_excrad = (TH2D*)rootfile_neg_sim->Get("x_z_neg_exc_rad");
           TH2D *h_xz_neg_sim_rho = new TH2D("","pi- sim rho",100,0,1,100,0,1);
-          h_xz_neg_sim_rho = (TH2D*)rootfile_neg_sim->Get("x_z_neg_rho");
+          //h_xz_neg_sim_rho = (TH2D*)rootfile_neg_sim->Get("x_z_neg_rho");
           TH2D *h_xz_neg_sim_delta = new TH2D("","pi- sim delta",100,0,1,100,0,1);
           h_xz_neg_sim_delta = (TH2D*)rootfile_neg_sim->Get("x_z_neg_delta");
           TFile *rootfile_pos_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
@@ -122,7 +122,7 @@ int Q2_xz_ratio(){
           TH2D *h_xz_pos_sim_excrad = new TH2D("","pi+ sim exc",100,0,1,100,0,1);
           h_xz_pos_sim_excrad = (TH2D*)rootfile_pos_sim->Get("x_z_pos_exc_rad");
           TH2D *h_xz_pos_sim_rho = new TH2D("","pi+ sim rho",100,0,1,100,0,1);
-          h_xz_pos_sim_rho = (TH2D*)rootfile_pos_sim->Get("x_z_pos_rho");
+          //h_xz_pos_sim_rho = (TH2D*)rootfile_pos_sim->Get("x_z_pos_rho");
           TH2D *h_xz_pos_sim_delta = new TH2D("","pi+ sim delta",100,0,1,100,0,1);
           h_xz_pos_sim_delta = (TH2D*)rootfile_pos_sim->Get("x_z_pos_delta");
           if(z!=0){

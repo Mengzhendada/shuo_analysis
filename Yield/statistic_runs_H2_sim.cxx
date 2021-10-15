@@ -57,7 +57,8 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     auto pt = [](float p,float th){return p*std::sin(th);};
     json j_rungroup;
   {
-    std::ifstream ifs("db2/ratio_run_group_updated.json");
+  //  std::ifstream ifs("db2/ratio_run_group_updated.json");
+    std::ifstream ifs("db2/ratio_run_group_all.json");
     ifs>>j_rungroup;
   }
 
@@ -175,7 +176,7 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     .Define("pt",pt,{"ppi","thetapq"})
     .Filter(pt_cut)
     ;
-  std::cout<<"sim counts "<<nentries_H2_pos_inc_norad<<std::endl;
+  std::cout<<"inc norad neg sim counts "<<nentries_H2_pos_inc_norad<<std::endl;
   double wfac_H2_pos_inc_norad = (normfac_H2_pos_inc_norad/nentries_H2_pos_inc_norad);
   //pos inc norad
   auto d_H2_pos_inc_norad = d_H2_pos_inc_norad_1.Define("weight_new",[wfac_H2_pos_inc_norad](float weight){return wfac_H2_pos_inc_norad*weight;},{"Weight"})
@@ -208,7 +209,7 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     //.Filter(pt_cut)
     ;
   double nentries_H2_pos_exc_rad = *d_H2_pos_exc_rad_raw.Count();
-  std::cout<<"sim counts "<<nentries_H2_pos_exc_rad<<std::endl;
+  std::cout<<"exc rad sim counts "<<nentries_H2_pos_exc_rad<<std::endl;
   double wfac_H2_pos_exc_rad = (normfac_H2_pos_exc_rad/nentries_H2_pos_exc_rad);
   //pos exc rad
   auto d_H2_pos_exc_rad = d_H2_pos_exc_rad_1.Define("weight_new",[wfac_H2_pos_exc_rad](float weight){return wfac_H2_pos_exc_rad*weight;},{"Weight"});
@@ -259,7 +260,7 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     .Filter(pt_cut)
     ;
   double nentries_H2_pos_inc_rad = *d_H2_pos_inc_rad_raw.Count();
-  std::cout<<"sim counts "<<nentries_H2_pos_inc_rad<<std::endl;
+  std::cout<<"inc rad pos sim counts "<<nentries_H2_pos_inc_rad<<std::endl;
   double wfac_H2_pos_inc_rad = (normfac_H2_pos_inc_rad/nentries_H2_pos_inc_rad);
   //pos inc rad
   auto d_H2_pos_inc_rad = d_H2_pos_inc_rad_1.Define("weight_new",[wfac_H2_pos_inc_rad](float weight){return wfac_H2_pos_inc_rad*weight;},{"Weight"});
@@ -314,7 +315,7 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     //.Filter(pt_cut)
     ;
   double nentries_H2_pos_delta = *d_H2_pos_delta_raw.Count();
-  std::cout<<"sim counts "<<nentries_H2_pos_delta<<std::endl;
+  std::cout<<"delta pos sim counts "<<nentries_H2_pos_delta<<std::endl;
   double wfac_H2_pos_delta = (normfac_H2_pos_delta/nentries_H2_pos_delta);
   auto d_H2_pos_delta = d_H2_pos_delta_1.Define("weight_new",[wfac_H2_pos_delta](float weight){return wfac_H2_pos_delta*weight;},{"Weight"});
   d_H2_pos_delta.Snapshot("T_pos_delta",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);

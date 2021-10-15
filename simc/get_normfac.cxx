@@ -15,28 +15,30 @@ void get_normfac(int RunGroup = 0){
       return;
 
   }
-  std::string hist_D2_neg_inc_norad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.hist";
-  std::string hist_D2_neg_inc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.hist";
-  std::string hist_D2_neg_exc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.hist";
-  std::string hist_D2_neg_rho_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_rho.hist";
-  std::string hist_D2_neg_delta_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_delta.hist";
-  std::string hist_Dummy_neg_inc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_Dummy_neg_inc_rad.hist";
-  std::string hist_D2_pos_inc_norad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.hist";
-  std::string hist_D2_pos_inc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.hist";
-  std::string hist_D2_pos_exc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_rad.hist";
-  std::string hist_D2_pos_rho_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_rho.hist";
-  std::string hist_D2_pos_delta_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_delta.hist";
-  std::string hist_Dummy_pos_inc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_Dummy_pos_inc_rad.hist";
-  std::string hist_H2_neg_inc_norad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_inc_norad.hist";
-  std::string hist_H2_neg_inc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_inc_rad.hist";
-  std::string hist_H2_neg_exc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_exc_rad.hist";
-  std::string hist_H2_neg_rho_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_rho.hist";
-  std::string hist_H2_neg_delta_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_delta.hist";
-  std::string hist_H2_pos_inc_norad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_inc_norad.hist";
-  std::string hist_H2_pos_inc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_inc_rad.hist";
-  std::string hist_H2_pos_exc_rad_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_exc_rad.hist";
-  std::string hist_H2_pos_rho_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_rho.hist";
-  std::string hist_H2_pos_delta_name = "/group/c-csv/shuo/simc_gfortran/outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_delta.hist";
+  //std::string path = "/group/c-csv/shuo/simc_gfortran/";
+  std::string path = "/home/jias/simc_gfortran/";
+  std::string hist_D2_neg_inc_norad_name  = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.hist";
+  std::string hist_D2_neg_inc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.hist";
+  std::string hist_D2_neg_exc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.hist";
+  std::string hist_D2_neg_rho_name        = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_rho.hist";
+  std::string hist_D2_neg_delta_name      = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_neg_delta.hist";
+  std::string hist_Dummy_neg_inc_rad_name = path+"outfiles/csv_"+std::to_string(RunGroup)+"_Dummy_neg_inc_rad.hist";
+  std::string hist_D2_pos_inc_norad_name  = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.hist";
+  std::string hist_D2_pos_inc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.hist";
+  std::string hist_D2_pos_exc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_rad.hist";
+  std::string hist_D2_pos_rho_name        = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_rho.hist";
+  std::string hist_D2_pos_delta_name      = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_delta.hist";
+  std::string hist_Dummy_pos_inc_rad_name = path+"outfiles/csv_"+std::to_string(RunGroup)+"_Dummy_pos_inc_rad.hist";
+  std::string hist_H2_neg_inc_norad_name  = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_inc_norad.hist";
+  std::string hist_H2_neg_inc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_inc_rad.hist";
+  std::string hist_H2_neg_exc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_exc_rad.hist";
+  std::string hist_H2_neg_rho_name        = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_rho.hist";
+  std::string hist_H2_neg_delta_name      = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_delta.hist";
+  std::string hist_H2_pos_inc_norad_name  = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_inc_norad.hist";
+  std::string hist_H2_pos_inc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_inc_rad.hist";
+  std::string hist_H2_pos_exc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_exc_rad.hist";
+  std::string hist_H2_pos_rho_name        = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_rho.hist";
+  std::string hist_H2_pos_delta_name      = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_delta.hist";
 
   std::ifstream D2_neg_inc_norad;
   std::ifstream D2_neg_inc_rad;
@@ -329,7 +331,8 @@ void get_normfac(int RunGroup = 0){
       j_simc[(std::to_string(RunGroup)).c_str()]["pos"]["H2"]["delta"]["normfac"] = normfac_num;
     }
   }
-  std::string of_name = "/group/c-csv/shuo/shuo_analysis/simc/outfiles/"+std::to_string(RunGroup)+".json";
+  std::string of_name = "/lcrc/project/jlab/csv/offline/online_csv/shuo_analysis/simc/outfiles/"+std::to_string(RunGroup)+".json";
+  //  std::string of_name = "/group/c-csv/shuo/shuo_analysis/simc/outfiles/"+std::to_string(RunGroup)+".json";
   std::ofstream of(of_name.c_str());
   of<<j_simc.dump(4)<<std::endl;
 

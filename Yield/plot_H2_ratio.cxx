@@ -601,7 +601,7 @@ int plot_H2_ratio(){
         mg->GetYaxis()->SetTitleSize(0.053);
         mg->GetXaxis()->SetLabelSize(0.05);
         mg->GetYaxis()->SetLabelSize(0.05);
-        mg->SetMinimum(0);
+        mg->SetMinimum(0.3);
         mg->SetMaximum(0.9);
         std::string mg_title = canvas_name+",z";
         mg->SetTitle(mg_title.c_str());
@@ -615,7 +615,7 @@ int plot_H2_ratio(){
         //TF1 *fit = new TF1("HERMES","(1.0-x)**0.083583/(1.0+x)**1.9838",0,1);
         //fit->Draw("same");
         std::string ratiopdfname = "results/yield/statistics_H2/"+canvas_filename+"_H2_ratio.pdf";
-        c_Q2x_ratio->BuildLegend(0.7,0.7,0.9,0.9);
+        //c_Q2x_ratio->BuildLegend(0.6,0.6,0.95,0.95);
         c_Q2x_ratio->SaveAs(ratiopdfname.c_str());
       }//if x,Q2 not 0
 

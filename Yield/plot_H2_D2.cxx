@@ -30,10 +30,9 @@ int plot_H2_D2(){
     ifs>>j_info;
   }
   json jout;
+  json jout_H2D2;
   double length_D2 = 10;//in cm ,check unit!
   double length_H2 = 10;
-  double rho_D2 = 0.1668;
-  double rho_H2 = 0.07231;
   int coolcolor[11] = {4,3,7,39,38,37,36,35,34,33,32};
   int warmcolor[11] = {2,6,46,45,44,43,42,41,40,47,48};
   for(json::iterator it = j_Q2x.begin();it!=j_Q2x.end();++it){
@@ -131,8 +130,6 @@ int plot_H2_D2(){
           h_z_neg_D2_sim_incrad = (TH1D*)rootfile_neg_sim->Get("z_neg_inc_rad");
           TH1D *h_z_neg_D2_sim_incnorad = new TH1D("","pi- sim SIDIS",100,0,1);
           h_z_neg_D2_sim_incnorad = (TH1D*)rootfile_neg_sim->Get("z_neg_inc_norad");
-          TH1D *h_z_neg_D2_sim_rho = new TH1D("","pi- sim rho",100,0,1);
-          h_z_neg_D2_sim_rho = (TH1D*)rootfile_neg_sim->Get("z_neg_rho");
           TH1D *h_z_neg_D2_sim_excrad = new TH1D("","pi- sim exc",100,0,1);
           h_z_neg_D2_sim_excrad = (TH1D*)rootfile_neg_sim->Get("z_neg_exc_rad");
           TH1D *h_z_neg_D2_sim_delta = new TH1D("","pi- sim delta",100,0,1);
@@ -145,7 +142,6 @@ int plot_H2_D2(){
           h_xs_z_neg_D2->SetTitle(z_string.c_str());
           h_z_neg_D2_sim->Add(h_z_neg_D2_sim_incrad,1);
           h_z_neg_D2_sim->Add(h_z_neg_D2_sim_excrad,1);
-          //h_z_neg_D2_sim->Add(h_z_neg_D2_sim_rho,1);
           h_z_neg_D2_sim->Add(h_z_neg_D2_sim_delta,1);
           TFile *rootfile_pos_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
           TH1D *h_z_pos_D2_sim = new TH1D("","pi+ sim sum",100,0,1);
@@ -155,8 +151,6 @@ int plot_H2_D2(){
           h_z_pos_D2_sim_incnorad = (TH1D*)rootfile_pos_sim->Get("z_pos_inc_norad");
           TH1D *h_z_pos_D2_sim_excrad = new TH1D("","pi+ sim exc",100,0,1);
           h_z_pos_D2_sim_excrad = (TH1D*)rootfile_pos_sim->Get("z_pos_exc_rad");
-          TH1D *h_z_pos_D2_sim_rho = new TH1D("","pi+ sim rho",100,0,1);
-          h_z_pos_D2_sim_rho = (TH1D*)rootfile_pos_sim->Get("z_pos_rho");
           TH1D *h_z_pos_D2_sim_delta = new TH1D("","pi+ sim delta",100,0,1);
           h_z_pos_D2_sim_delta = (TH1D*)rootfile_pos_sim->Get("z_pos_delta");
           TH2D *h_xs_z_pos_D2 = new TH2D();
@@ -167,7 +161,6 @@ int plot_H2_D2(){
           auto xs_z_pos_D2 = h_xs_z_pos_D2->ProfileX("xs_z_pos_D2",1,-1,"d");
           h_z_pos_D2_sim->Add(h_z_pos_D2_sim_incrad,1);
           h_z_pos_D2_sim->Add(h_z_pos_D2_sim_excrad,1);
-          //h_z_pos_D2_sim->Add(h_z_pos_D2_sim_rho,1);
           h_z_pos_D2_sim->Add(h_z_pos_D2_sim_delta,1);
 
           double charge_neg_all = 0,charge_pos_all=0;
@@ -189,8 +182,6 @@ int plot_H2_D2(){
               h_z_neg_H2_sim_incnorad = (TH1D*)rootfile_neg_H2_sim->Get("z_neg_inc_norad");
               //TH1D *h_z_neg_H2_sim_excrad = new TH1D("","pi- sim exc",100,0,1);
               //h_z_neg_H2_sim_excrad = (TH1D*)rootfile_neg_H2_sim->Get("z_neg_exc_rad");
-              TH1D *h_z_neg_H2_sim_rho = new TH1D("","pi- sim rho",100,0,1);
-              h_z_neg_H2_sim_rho = (TH1D*)rootfile_neg_H2_sim->Get("z_neg_rho");
               TH1D *h_z_neg_H2_sim_delta = new TH1D("","pi- sim delta",100,0,1);
               h_z_neg_H2_sim_delta = (TH1D*)rootfile_neg_H2_sim->Get("z_neg_delta");
               TH2D *h_xs_z_neg_H2 = new TH2D();
@@ -201,7 +192,6 @@ int plot_H2_D2(){
               auto xs_z_neg_H2 = h_xs_z_neg_H2->ProfileX("xs_z_neg_H2",1,-1,"d");
               h_z_neg_H2_sim->Add(h_z_neg_H2_sim_incrad,1);
               //h_z_neg_H2_sim->Add(h_z_neg_H2_sim_excrad,1);
-              //h_z_neg_H2_sim->Add(h_z_neg_H2_sim_rho,1);
               h_z_neg_H2_sim->Add(h_z_neg_H2_sim_delta,1);
               TFile *rootfile_pos_H2_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_H2_simc.root").c_str());
               TH1D *h_z_pos_H2_sim = new TH1D("","pi+ sim sum",100,0,1);
@@ -211,8 +201,6 @@ int plot_H2_D2(){
               h_z_pos_H2_sim_incnorad = (TH1D*)rootfile_pos_H2_sim->Get("z_pos_inc_norad");
               TH1D *h_z_pos_H2_sim_excrad = new TH1D("","pi+ sim exc",100,0,1);
               h_z_pos_H2_sim_excrad = (TH1D*)rootfile_pos_H2_sim->Get("z_pos_exc_rad");
-              TH1D *h_z_pos_H2_sim_rho = new TH1D("","pi+ sim rho",100,0,1);
-              h_z_pos_H2_sim_rho = (TH1D*)rootfile_pos_H2_sim->Get("z_pos_rho");
               TH1D *h_z_pos_H2_sim_delta = new TH1D("","pi+ sim delta",100,0,1);
               h_z_pos_H2_sim_delta = (TH1D*)rootfile_pos_H2_sim->Get("z_pos_delta");
               TH2D *h_xs_z_pos_H2 = new TH2D();
@@ -223,7 +211,6 @@ int plot_H2_D2(){
               auto xs_z_pos_H2 = h_xs_z_pos_H2->ProfileX("xs_z_pos_H2",1,-1,"d");
               h_z_pos_H2_sim->Add(h_z_pos_H2_sim_incrad,1);
               h_z_pos_H2_sim->Add(h_z_pos_H2_sim_excrad,1);
-              //h_z_pos_H2_sim->Add(h_z_pos_H2_sim_rho,1);
               h_z_pos_H2_sim->Add(h_z_pos_H2_sim_delta,1);
               TCanvas *c_xs_H2_neg = new TCanvas();
               xs_z_neg_H2->GetYaxis()->SetTitle("H2 neg xs");
@@ -382,13 +369,11 @@ int plot_H2_D2(){
               h_z_neg_D2_incrad->Rebin(5);
               h_z_neg_D2_sim_excrad->Rebin(5);
               h_z_neg_D2_sim_delta->Rebin(5);
-              h_z_neg_D2_sim_rho->Rebin(5);
 
               h_z_pos_D2_incnorad->Rebin(5);
               h_z_pos_D2_incrad->Rebin(5);
               h_z_pos_D2_sim_excrad->Rebin(5);
               h_z_pos_D2_sim_delta->Rebin(5);
-              h_z_pos_D2_sim_rho->Rebin(5);
               ///auto rp_radia_corr_neg = new TRatioPlot(h_z_neg_D2_sim_incnorad,h_z_neg_D2_sim_incrad);
               ///auto rp_radia_corr_pos = new TRatioPlot(h_z_pos_D2_sim_incnorad,h_z_pos_D2_sim_incrad);
               TH1* rp_radia_corr_neg = (TH1*)h_z_neg_D2_incnorad->Clone("rp_radia_corr");
@@ -571,7 +556,7 @@ int plot_H2_D2(){
                 double y_D2_neg_dataexc = y_D2_neg_raw-0.245*y_Dummy_neg-y_D2_neg_exc;
                 //D2_neg_yield_incrad = D2_neg_yield_incrad;
 
-                //data
+                //what actually used
                 double y_H2_pos = y_H2_pos_datadeltaexc;
                 double y_H2_neg = y_H2_neg_datadeltaexc;
                 double y_D2_pos = y_D2_pos_datadeltaexc;
@@ -715,8 +700,10 @@ int plot_H2_D2(){
                 //for pos neg h2/d2 ratio
                 double y_pos = y_H2_pos/y_D2_pos;
                 double y_neg = y_H2_neg/y_D2_neg;
-                double y_pos_sim = H2_xs_z_pos/D2_xs_z_pos;
-                double y_neg_sim = H2_xs_z_neg/D2_xs_z_neg;
+                double y_pos_sim = y_H2_pos_sim/y_D2_pos_sim; 
+                  //H2_xs_z_pos/D2_xs_z_pos;
+                double y_neg_sim = y_H2_neg_sim/y_D2_neg_sim;
+                  //H2_xs_z_neg/D2_xs_z_neg;
                 double error_pos = y_pos*std::sqrt((error_H2_pos*error_H2_pos)/(y_H2_pos*y_H2_pos)+(error_D2_pos*error_D2_pos)/(y_D2_pos*y_D2_pos));
                 double error_neg = y_neg*std::sqrt((error_H2_neg*error_H2_neg)/(y_H2_neg*y_H2_neg)+(error_D2_neg*error_D2_neg)/(y_D2_neg*y_D2_neg));
 
@@ -725,12 +712,18 @@ int plot_H2_D2(){
                   g_z_H2D2_pos_ratio->SetPointError(ii_posH2D2ratio,0,error_pos);
                   g_z_H2D2_pos_simratio->SetPoint(ii_posH2D2ratio,x,y_pos_sim);
                   ii_posH2D2ratio++; 
+                  jout_H2D2[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(x)).c_str()]["H2D2_pos"].push_back(y_pos);
+                  jout_H2D2[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(x)).c_str()]["H2D2_pos_sim"].push_back(y_pos_sim);
+                  jout_H2D2[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(x)).c_str()]["H2D2_pos_err"].push_back(error_pos);
                 }
                 if(y_neg>0 && error_neg< 0.2){
                   g_z_H2D2_neg_ratio->SetPoint(ii_negH2D2ratio,x,y_neg);
                   g_z_H2D2_neg_ratio->SetPointError(ii_negH2D2ratio,0,error_neg);
                   g_z_H2D2_neg_simratio->SetPoint(ii_negH2D2ratio,x,y_neg_sim);
                   ii_negH2D2ratio++; 
+                  jout_H2D2[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(x)).c_str()]["H2D2_neg"].push_back(y_neg);
+                  jout_H2D2[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(x)).c_str()]["H2D2_neg_sim"].push_back(y_neg_sim);
+                  jout_H2D2[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(x)).c_str()]["H2D2_neg_err"].push_back(error_neg);
                 }
 
                 double y_pos_H2_datasimratio = yield_H2_pos/H2_pos_yield_incrad;
@@ -822,8 +815,8 @@ int plot_H2_D2(){
                 g_z_H2D2_neg_ratio->SetMarkerStyle(4);
                 mg_z_H2D2_pos_ratio->Add(g_z_H2D2_pos_ratio,"P");
                 mg_z_H2D2_neg_ratio->Add(g_z_H2D2_neg_ratio,"P");
-                mg_z_H2D2_pos_ratio->Add(g_z_H2D2_pos_simratio,"L");
-                mg_z_H2D2_neg_ratio->Add(g_z_H2D2_neg_simratio,"L");
+                //mg_z_H2D2_pos_ratio->Add(g_z_H2D2_pos_simratio,"L");
+                //mg_z_H2D2_neg_ratio->Add(g_z_H2D2_neg_simratio,"L");
 
                 g_z_pos_H2_datasimratio->SetMarkerColor(i_color);
                 g_z_pos_H2_datasimratio->SetMarkerStyle(4);
@@ -1034,8 +1027,8 @@ int plot_H2_D2(){
             mg_z_H2D2_pos_ratio->GetXaxis()->SetTitle(H2D2_pos_name.c_str());
             mg_z_H2D2_pos_ratio->Draw("A");
             mg_z_H2D2_pos_ratio->GetXaxis()->SetLimits(0.25,1);
-            //mg_z_H2D2_pos_ratio->SetMinimum(0.2);
-            //mg_z_H2D2_pos_ratio->SetMaximum(1.2);
+            mg_z_H2D2_pos_ratio->SetMinimum(0.3);
+            mg_z_H2D2_pos_ratio->SetMaximum(0.9);
             c_z_H2D2_pos_ratio->BuildLegend(0.7,0.7,0.9,0.9);
             std::string c_z_H2D2_pos_ratio_name = "results/yield/statistics_H2/"+canvas_filename+"_H2D2_pos_ratio.pdf";
             c_z_H2D2_pos_ratio->SaveAs(c_z_H2D2_pos_ratio_name.c_str());
@@ -1046,8 +1039,8 @@ int plot_H2_D2(){
             mg_z_H2D2_neg_ratio->GetXaxis()->SetTitle(H2D2_neg_name.c_str());
             mg_z_H2D2_neg_ratio->Draw("A");
             mg_z_H2D2_neg_ratio->GetXaxis()->SetLimits(0.25,1);
-            //mg_z_H2D2_neg_ratio->SetMinimum(0.2);
-            //mg_z_H2D2_neg_ratio->SetMaximum(1.2);
+            mg_z_H2D2_neg_ratio->SetMinimum(0.3);
+            mg_z_H2D2_neg_ratio->SetMaximum(0.9);
             c_z_H2D2_neg_ratio->BuildLegend(0.7,0.7,0.9,0.9);
             std::string c_z_H2D2_neg_ratio_name = "results/yield/statistics_H2/"+canvas_filename+"_H2D2_neg_ratio.pdf";
             c_z_H2D2_neg_ratio->SaveAs(c_z_H2D2_neg_ratio_name.c_str());
@@ -1131,6 +1124,7 @@ int plot_H2_D2(){
     }//loop over x
     std::ofstream ofs("results/yield/H2_diff_sum.json");
     ofs<<jout.dump(4)<<std::endl;
-
+    std::ofstream ofs_H2D2("results/yield/H2D2_ratio.json");
+    ofs_H2D2<<jout_H2D2.dump(4)<<std::endl;
     return 0;
   }
