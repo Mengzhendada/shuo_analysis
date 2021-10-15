@@ -112,8 +112,8 @@ int plot_Q2x_ratio_corr(){
           h_z_neg_sim_incnorad = (TH1D*)rootfile_neg_sim->Get("z_neg_inc_norad");
           TH1D *h_z_neg_sim_excrad = new TH1D("","pi- sim exc",100,0,1);
           h_z_neg_sim_excrad = (TH1D*)rootfile_neg_sim->Get("z_neg_exc_rad");
-          TH1D *h_z_neg_sim_rho = new TH1D("","pi- sim rho",100,0,1);
-          h_z_neg_sim_rho = (TH1D*)rootfile_neg_sim->Get("z_neg_rho");
+          //TH1D *h_z_neg_sim_rho = new TH1D("","pi- sim rho",100,0,1);
+          //h_z_neg_sim_rho = (TH1D*)rootfile_neg_sim->Get("z_neg_rho");
           TH1D *h_z_neg_sim_delta = new TH1D("","pi- sim delta",100,0,1);
           h_z_neg_sim_delta = (TH1D*)rootfile_neg_sim->Get("z_neg_delta");
           //TH2D *h_xs_z_neg_sim = new TH2D("","pi- sim xs",100,0,1,100,0,1);
@@ -130,8 +130,8 @@ int plot_Q2x_ratio_corr(){
           h_z_pos_sim_incnorad = (TH1D*)rootfile_pos_sim->Get("z_pos_inc_norad");
           TH1D *h_z_pos_sim_excrad = new TH1D("","pi+ sim exc",100,0,1);
           h_z_pos_sim_excrad = (TH1D*)rootfile_pos_sim->Get("z_pos_exc_rad");
-          TH1D *h_z_pos_sim_rho = new TH1D("","pi+ sim rho",100,0,1);
-          h_z_pos_sim_rho = (TH1D*)rootfile_pos_sim->Get("z_pos_rho");
+          //TH1D *h_z_pos_sim_rho = new TH1D("","pi+ sim rho",100,0,1);
+          //h_z_pos_sim_rho = (TH1D*)rootfile_pos_sim->Get("z_pos_rho");
           TH1D *h_z_pos_sim_delta = new TH1D("","pi+ sim delta",100,0,1);
           h_z_pos_sim_delta = (TH1D*)rootfile_pos_sim->Get("z_pos_delta");
           //TH2D *h_xs_z_pos_sim = new TH2D("","pi- sim xs",100,0,1,100,0,1);
@@ -299,12 +299,12 @@ int plot_Q2x_ratio_corr(){
           h_z_neg_incrad->Rebin(5);
           h_z_neg_sim_excrad->Rebin(5);
           h_z_neg_sim_delta->Rebin(5);
-          h_z_neg_sim_rho->Rebin(5);
+          //h_z_neg_sim_rho->Rebin(5);
           h_z_pos_incnorad->Rebin(5);
           h_z_pos_incrad->Rebin(5);
           h_z_pos_sim_excrad->Rebin(5);
           h_z_pos_sim_delta->Rebin(5);
-          h_z_pos_sim_rho->Rebin(5);
+          //h_z_pos_sim_rho->Rebin(5);
           //h_xs_z_neg_sim->RebinX(5);
           //h_xs_z_neg_sim->RebinY(5);
           //h_xs_z_pos_sim->RebinX(5);
@@ -386,7 +386,7 @@ int plot_Q2x_ratio_corr(){
           TGraph* g_z_pos_sim_incrad = new TGraph(h_z_pos_sim_incrad);
           TGraph* g_z_pos_sim_incnorad = new TGraph(h_z_pos_sim_incnorad);
           TGraph* g_z_pos_sim_excrad = new TGraph(h_z_pos_sim_excrad);
-          TGraph* g_z_pos_sim_rho = new TGraph(h_z_pos_sim_rho);
+          //TGraph* g_z_pos_sim_rho = new TGraph(h_z_pos_sim_rho);
           TGraph* g_z_pos_sim_delta = new TGraph(h_z_pos_sim_delta);
           mg_z_yield_pos->Add(g_z_pos_sim); 
           g_z_pos_sim_incrad->SetLineColor(kOrange);
@@ -395,9 +395,9 @@ int plot_Q2x_ratio_corr(){
           g_z_pos_sim_excrad->SetLineColor(kBlue);
           g_z_pos_sim_excrad->SetTitle("pi+ sim exc");
           mg_z_yield_pos->Add(g_z_pos_sim_excrad); 
-          g_z_pos_sim_rho->SetLineColor(kRed);
-          g_z_pos_sim_rho->SetTitle("pi+ sim rho");
-          mg_z_yield_pos->Add(g_z_pos_sim_rho); 
+          //g_z_pos_sim_rho->SetLineColor(kRed);
+          //g_z_pos_sim_rho->SetTitle("pi+ sim rho");
+          //mg_z_yield_pos->Add(g_z_pos_sim_rho); 
           g_z_pos_sim_delta->SetLineColor(46);
           g_z_pos_sim_delta->SetTitle("pi+ sim delta");
           mg_z_yield_pos->Add(g_z_pos_sim_delta); 
@@ -452,7 +452,7 @@ int plot_Q2x_ratio_corr(){
           TGraph* g_z_neg_sim_incrad = new TGraph(h_z_neg_sim_incrad);
           TGraph* g_z_neg_sim_incnorad = new TGraph(h_z_neg_sim_incnorad);
           TGraph* g_z_neg_sim_excrad = new TGraph(h_z_neg_sim_excrad);
-          TGraph* g_z_neg_sim_rho = new TGraph(h_z_neg_sim_rho);
+          //TGraph* g_z_neg_sim_rho = new TGraph(h_z_neg_sim_rho);
           TGraph* g_z_neg_sim_delta = new TGraph(h_z_neg_sim_delta);
           mg_z_yield_neg->Add(g_z_neg_sim,"L"); 
           g_z_neg_sim_incrad->SetLineColor(kOrange);
@@ -461,9 +461,9 @@ int plot_Q2x_ratio_corr(){
           g_z_neg_sim_excrad->SetLineColor(kBlue);
           g_z_neg_sim_excrad->SetTitle("pi- sim exc");
           mg_z_yield_neg->Add(g_z_neg_sim_excrad,"L"); 
-          g_z_neg_sim_rho->SetLineColor(kRed);
-          g_z_neg_sim_rho->SetTitle("pi- sim rho");
-          mg_z_yield_neg->Add(g_z_neg_sim_rho,"L"); 
+          //g_z_neg_sim_rho->SetLineColor(kRed);
+          //g_z_neg_sim_rho->SetTitle("pi- sim rho");
+          //mg_z_yield_neg->Add(g_z_neg_sim_rho,"L"); 
           g_z_neg_sim_delta->SetLineColor(46);
           g_z_neg_sim_delta->SetTitle("pi- sim delta");
           mg_z_yield_neg->Add(g_z_neg_sim_delta,"L"); 
@@ -560,7 +560,7 @@ int plot_Q2x_ratio_corr(){
           int ii = 0;
           for(int i = 0;i<nbins;i++){
             //std::cout<<i<<std::endl;
-            double x = h_z_neg_all->GetBinCenter(i)+0.001*i_color;
+            double x = h_z_neg_all->GetBinCenter(i);//+0.001*i_color;
             double y_neg_D2 = h_z_neg_all->GetBinContent(i)/charge_neg_all;
             double y_neg_Dummy = h_z_neg_Dummy_all->GetBinContent(i)/charge_neg_Dummy_all;
             double y_neg_delta = h_z_neg_sim_delta->GetBinContent(i);
@@ -630,7 +630,7 @@ int plot_Q2x_ratio_corr(){
           int ii_sim = 0;
           for(int i = 0;i<nbins_sim;i++){
             //std::cout<<i<<std::endl;
-            double x = h_z_neg_sim_incnorad->GetBinCenter(i)+0.001*i_color;
+            double x = h_z_neg_sim_incnorad->GetBinCenter(i);//+0.001*i_color;
             double y = h_z_neg_sim_incnorad->GetBinContent(i);
             double error = h_z_neg_sim_incnorad->GetBinError(i);
             //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
@@ -740,13 +740,13 @@ int plot_Q2x_ratio_corr(){
       mg->GetYaxis()->SetTitleSize(0.053);
       mg->GetXaxis()->SetLabelSize(0.05);
       mg->GetYaxis()->SetLabelSize(0.05);
-      mg->SetMinimum(0.4);
+      mg->SetMinimum(0.3);
       mg->SetMaximum(0.9);
       std::string mg_title = canvas_name+",z";
       mg->SetTitle(mg_title.c_str());
-      TPaveText *pt_mg = new TPaveText(0.5,0.8,0.8,1);
-      pt_mg->AddText(canvas_name.c_str());
-      pt_mg->Draw("same");
+      //TPaveText *pt_mg = new TPaveText(0.5,0.8,0.8,1);
+      //pt_mg->AddText(canvas_name.c_str());
+      //pt_mg->Draw("same");
       mg->Draw("APL");
       //f_RD->Draw("same");
       mg->GetHistogram()->SetTitle(canvas_name.c_str());
@@ -757,7 +757,7 @@ int plot_Q2x_ratio_corr(){
       //fit->Draw("same");
       //      std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_RDratio.pdf";
       std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_ratio.pdf";
-      c_Q2x_ratio->BuildLegend(0.7,0.7,0.9,0.9);
+      //c_Q2x_ratio->BuildLegend(0.6,0.6,0.95,0.95);
       c_Q2x_ratio->SaveAs(ratiopdfname.c_str());
       TCanvas* c_frag_ratio = new TCanvas("","",1900,1000);
       mg_frag->GetXaxis()->SetTitleSize(0.053);
