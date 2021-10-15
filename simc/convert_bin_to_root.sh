@@ -9,8 +9,6 @@ do
   echo csv_${i}_D2_pos_exc_rad | ./make_root_tree
   echo csv_${i}_D2_neg_delta | ./make_root_tree
   echo csv_${i}_D2_pos_delta | ./make_root_tree
-  echo csv_${i}_D2_neg_rho | ./make_root_tree
-  echo csv_${i}_D2_pos_rho | ./make_root_tree
   echo csv_${i}_H2_neg_inc_rad | ./make_root_tree
   echo csv_${i}_H2_pos_inc_rad | ./make_root_tree
   echo csv_${i}_H2_neg_inc_norad | ./make_root_tree
@@ -19,6 +17,4 @@ do
   echo csv_${i}_H2_pos_exc_rad | ./make_root_tree
   echo csv_${i}_H2_neg_delta | ./make_root_tree
   echo csv_${i}_H2_pos_delta | ./make_root_tree
-  echo csv_${i}_H2_neg_rho | ./make_root_tree
-  echo csv_${i}_H2_pos_rho | ./make_root_tree
 done
