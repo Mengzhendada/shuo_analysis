@@ -64,6 +64,8 @@ void statistic_runs_D2(int RunGroup=0){
     ifs>>j_cuts;
   }
 
+  int Rebin_n = j_cuts["rebin"].get<int>();
+
   std::vector<int> neg_D2,pos_D2;
   neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
   pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
@@ -100,22 +102,67 @@ void statistic_runs_D2(int RunGroup=0){
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
       auto h_Q2_x_pos = d_pos_pi.Histo2D({"Q2_x","Q2_x",100,0,1,100,0,10},"xbj","Q2");
+      h_Q2_x_pos->RebinX(Rebin_n);
+      h_Q2_x_pos->RebinY(Rebin_n);
       h_Q2_x_pos->Write();
       auto h_xbj = d_pos_pi.Histo1D({"xbj","xbj",100,0,1},"xbj","weight");
+      h_xbj->Rebin(Rebin_n);
       h_xbj->Write();
       auto h_z = d_pos_pi.Histo1D({"z","z",100,0,1},"z","weight");
+      h_z->Rebin(Rebin_n);
       h_z->Write();
       auto h_xbj_bg = d_pos_bg.Histo1D({"xbj_bg","xbj_bg",100,0,1},"xbj","weight");
+      h_xbj_bg->Rebin(Rebin_n);
       h_xbj_bg->Write();
       auto h_z_bg = d_pos_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
+      h_z_bg->Rebin(Rebin_n);
       h_z_bg->Write();
       auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj","weight");
+      h_x_z_pos->RebinX(Rebin_n);
+      h_x_z_pos->RebinY(Rebin_n);
       h_x_z_pos->Write();
       auto h_x_z_bg = d_pos_bg.Histo2D({"x_z_bg","x_z_bg",100,0,1,100,0,1},"z","xbj","weight");
+      h_x_z_bg->RebinX(Rebin_n);
+      h_x_z_bg->RebinY(Rebin_n);
       h_x_z_bg->Write();
 
       auto h_Q2_z_pos = d_pos_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
+      h_Q2_z_pos->RebinX(Rebin_n);
+      h_Q2_z_pos->RebinY(Rebin_n);
       h_Q2_z_pos->Write();
+      
+      auto get_x_weight_posxz = [&](double x,double z){
+      
+        int x_bin_number = h_x_z_pos->GetYaxis()->FindBin(x);
+        int z_bin_number = h_x_z_pos->GetXaxis()->FindBin(z);
+        double x_bincenter = h_x_z_pos->GetYaxis()->GetBinCenter(x_bin_number);
+        double all = h_x_z_pos->GetBinContent(z_bin_number,x_bin_number);
+        return x/(all*x_bincenter);
+        //return x/all;
+      };
+      auto get_z_weight_posxz = [&](double x,double z){
+      
+        int x_bin_number = h_x_z_pos->GetYaxis()->FindBin(x);
+        int z_bin_number = h_x_z_pos->GetXaxis()->FindBin(z);
+        double z_bincenter = h_x_z_pos->GetXaxis()->GetBinCenter(z_bin_number);
+        double all = h_x_z_pos->GetBinContent(z_bin_number,x_bin_number);
+        return z/(all*z_bincenter);
+        //return z/all;
+      };
+      auto d_pos_pi_after = d_pos_pi
+        .Define("weighted_xbj",get_x_weight_posxz,{"xbj","z"})
+        .Define("weighted_z",get_z_weight_posxz,{"xbj","z"})
+        ;
+      auto h_weight_xbj = d_pos_pi_after.Histo2D({"weighted_xbj","weighted_xbj",100,0,1,100,0,1},"z","xbj","weighted_xbj");
+      auto h_weight_z = d_pos_pi_after.Histo2D({"weighted_z","weighted_z",100,0,1,100,0,1},"z","xbj","weighted_z");
+      
+      h_weight_xbj->RebinX(Rebin_n);
+      h_weight_xbj->RebinY(Rebin_n);
+      h_weight_xbj->Write();
+      h_weight_z->RebinX(Rebin_n);
+      h_weight_z->RebinY(Rebin_n);
+      h_weight_z->Write();
+      
       rootfile_out->Close();
 
     }
@@ -148,22 +195,66 @@ void statistic_runs_D2(int RunGroup=0){
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
       auto h_Q2_x_neg = d_neg_pi.Histo2D({"Q2_x","Q2_x",100,0,1,100,0,10},"xbj","Q2");
+      h_Q2_x_neg->RebinX(Rebin_n);
+      h_Q2_x_neg->RebinY(Rebin_n);
       h_Q2_x_neg->Write();
       auto h_xbj = d_neg_pi.Histo1D({"xbj","xbj",100,0,1},"xbj","weight");
+      h_xbj->Rebin(Rebin_n);
       h_xbj->Write();
       auto h_z = d_neg_pi.Histo1D({"z","z",100,0,1},"z","weight");
+      h_z->Rebin(Rebin_n);
       h_z->Write();
       auto h_xbj_bg = d_neg_bg.Histo1D({"xbj_bg","xbj_bg",100,0,1},"xbj","weight");
+      h_xbj_bg->Rebin(Rebin_n);
       h_xbj_bg->Write();
       auto h_z_bg = d_neg_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
+      h_z_bg->Rebin(Rebin_n);
       h_z_bg->Write();
       auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj","weight");
+      h_x_z_neg->RebinX(Rebin_n);
+      h_x_z_neg->RebinY(Rebin_n);
       h_x_z_neg->Write();
       auto h_x_z_bg = d_neg_bg.Histo2D({"x_z_bg","x_z_bg",100,0,1,100,0,1},"z","xbj","weight");
+      h_x_z_bg->RebinX(Rebin_n);
+      h_x_z_bg->RebinY(Rebin_n);
       h_x_z_bg->Write();
 
       auto h_Q2_z_neg = d_neg_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
+      h_Q2_z_neg->RebinX(Rebin_n);
+      h_Q2_z_neg->RebinY(Rebin_n);
       h_Q2_z_neg->Write();
+      
+      auto get_x_weight_negxz = [&](double x,double z){
+      
+        int x_bin_number = h_x_z_neg->GetYaxis()->FindBin(x);
+        int z_bin_number = h_x_z_neg->GetXaxis()->FindBin(z);
+        double x_bincenter = h_x_z_neg->GetYaxis()->GetBinCenter(x_bin_number);
+        double all = h_x_z_neg->GetBinContent(z_bin_number,x_bin_number);
+        return x/(all*x_bincenter);
+        //return x/all;
+      };
+      auto get_z_weight_negxz = [&](double x,double z){
+      
+        int x_bin_number = h_x_z_neg->GetYaxis()->FindBin(x);
+        int z_bin_number = h_x_z_neg->GetXaxis()->FindBin(z);
+        double z_bincenter = h_x_z_neg->GetXaxis()->GetBinCenter(z_bin_number);
+        double all = h_x_z_neg->GetBinContent(z_bin_number,x_bin_number);
+        return z/(all*z_bincenter);
+        //return z/all;
+      };
+      auto d_neg_pi_after = d_neg_pi
+        .Define("weighted_xbj",get_x_weight_negxz,{"xbj","z"})
+        .Define("weighted_z",get_z_weight_negxz,{"xbj","z"})
+        ;
+      auto h_weight_xbj = d_neg_pi_after.Histo2D({"weighted_xbj","weighted_xbj",100,0,1,100,0,1},"z","xbj","weighted_xbj");
+      auto h_weight_z = d_neg_pi_after.Histo2D({"weighted_z","weighted_z",100,0,1,100,0,1},"z","xbj","weighted_z");
+      h_weight_xbj->RebinX(Rebin_n);
+      h_weight_xbj->RebinY(Rebin_n);
+      h_weight_xbj->Write();
+      h_weight_z->RebinX(Rebin_n);
+      h_weight_z->RebinY(Rebin_n);
+      h_weight_z->Write();
+      
       rootfile_out->Close();
 
     }//neg runs
