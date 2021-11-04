@@ -394,8 +394,8 @@ void HMS_DE(int RunGroup=0){
       h_cal_pos_e->Add(h_cal_pos_e_bg.GetPtr(),-1.0/6);
       h_cal_pos_pi->Add(h_cal_pos_pi_bg.GetPtr(),-1.0/6);
 
-      int n_pos_e_cercut = h_cal_pos_e->GetEntries();
-       // *d_pos_eall.Count() - *d_pos_eall_bg.Count()/6.0;
+      int n_pos_e_cercut = *d_pos_eall.Count() - *d_pos_eall_bg.Count()/6.0;
+        //h_cal_pos_e->GetEntries();
       jout[std::to_string(RunNumber)]["cercut"]["e_all"] = n_pos_e_cercut;
       //all the cer cuts
       jout[std::to_string(RunNumber)]["cercut"]["e_cernpeSum"] = pos_cal_e_cercut;
@@ -483,8 +483,9 @@ void HMS_DE(int RunGroup=0){
       h_cer_pos_pi->Add(h_cer_pos_pi_bg.GetPtr(),-1.0/6);
       
 
-      int n_pos_e_calcut = h_cer_pos_e->GetEntries();
+      int n_pos_e_calcut = *d_pos_eall_calcut.Count()-*d_pos_eall_calcut_bg.Count()/6.0; 
       //int n_pos_e_calcut = *d_pos_eall_calcut.Count();
+        //h_cer_pos_e->GetEntries();
       jout[std::to_string(RunNumber)]["calcut"]["e_all"] = n_pos_e_calcut;
       jout[std::to_string(RunNumber)]["calcut"]["e_calcut"] = pos_cer_e_calcut;
       int n_pos_pi_calcut = h_cer_pos_pi->GetEntries();
@@ -747,7 +748,8 @@ void HMS_DE(int RunGroup=0){
       h_cal_neg_pi->Add(h_cal_neg_pi_bg.GetPtr(),-1/6);
 
       int n_neg_e_cercut = h_cal_neg_e->GetEntries();
-       // *d_neg_eall.Count() - *d_neg_eall_bg.Count()/6.0;
+      std::cout<<"check dataframe count "<<*d_neg_eall.Count()<<" and the bgs "<<*d_neg_eall_bg.Count()<<std::endl;
+      //*d_neg_eall.Count() - *d_neg_eall_bg.Count()/6.0;
       jout[std::to_string(RunNumber)]["cercut"]["e_all"] = n_neg_e_cercut;
       //all the cer cuts
       jout[std::to_string(RunNumber)]["cercut"]["e_cernpeSum"] = neg_cal_e_cercut;
@@ -835,7 +837,8 @@ void HMS_DE(int RunGroup=0){
       h_cer_neg_pi->Add(h_cer_neg_pi_bg.GetPtr(),-1.0/6);
       
 
-      int n_neg_e_calcut = h_cer_neg_e->GetEntries();
+      int n_neg_e_calcut = *d_neg_eall_calcut.Count()-*d_neg_eall_calcut_bg.Count(); 
+        //h_cer_neg_e->GetEntries();
       //int n_neg_e_calcut = *d_neg_eall_calcut.Count();
       jout[std::to_string(RunNumber)]["calcut"]["e_all"] = n_neg_e_calcut;
       jout[std::to_string(RunNumber)]["calcut"]["e_calcut"] = neg_cer_e_calcut;

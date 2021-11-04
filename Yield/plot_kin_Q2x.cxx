@@ -84,6 +84,8 @@ int plot_kin_Q2x(){
   }//loop over x
   gStyle->SetOptTitle(0);
   
+  TF1* W2_1 = new TF1("W2","(4-0.938272*0.938272)*(x/(1-x))",0.2,0.8);
+  W2_1->Draw("L same");
   c_kin_neg->BuildLegend(0.85,0.1,1,0.5);
   c_kin_neg->SaveAs("results/yield/kin_x_Q2_neg.png");
   return 0;
