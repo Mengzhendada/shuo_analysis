@@ -78,6 +78,7 @@ void SHMS_rf_DE_choose(){
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi_purity"] = 1;
               j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["rf_cut_low"] = rf_cuts_low_pos[i_rf_pos]; 
               j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["rf_cut_high"] = rf_cuts_high_pos[i_rf_pos]; 
+              j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["which_percentage"] = i_rf_pos; 
               break; 
 
             }
@@ -100,6 +101,7 @@ void SHMS_rf_DE_choose(){
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["pi_purity"] = 1;
               j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["rf_cut_low"] = rf_cuts_low_neg[i_rf_neg]; 
               j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["rf_cut_high"] = rf_cuts_high_neg[i_rf_neg]; 
+              j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["which_percentage"] = i_rf_neg; 
               break; 
 
             }
@@ -128,6 +130,7 @@ void SHMS_rf_DE_choose(){
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi_purity"] = 1-K_con_Ns_pos[i_rf_pos]/(K_con_Ns_pos[i_rf_pos]+pi_eff_N_pos);
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["rf_cut_low"] = rf_cuts_low_pos[i_rf_pos]; 
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["rf_cut_high"] = rf_cuts_high_pos[i_rf_pos]; 
+                j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["which_percentage"] = i_rf_pos; 
                 break; 
 
               }
@@ -153,6 +156,7 @@ void SHMS_rf_DE_choose(){
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["pi_purity"] = 1-K_con_Ns_neg[i_rf_neg]/(K_con_Ns_neg[i_rf_neg]+pi_eff_N_neg);
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["rf_cut_low"] = rf_cuts_low_neg[i_rf_neg]; 
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["rf_cut_high"] = rf_cuts_high_neg[i_rf_neg]; 
+                j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["neg"]["which_percentage"] = i_rf_neg; 
                 break; 
 
               }
@@ -180,6 +184,7 @@ void SHMS_rf_DE_choose(){
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["pi_purity"] = 1-K_con_Ns_pos[i_rf_pos]/(K_con_Ns_pos[i_rf_pos]+pi_eff_N_pos);
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["rf_cut_low"] = rf_cuts_low_pos[i_rf_pos]; 
                 j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["rf_cut_high"] = rf_cuts_high_pos[i_rf_pos]; 
+                j_out[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pos"]["which_percentage"] = i_rf_pos; 
                 break; 
 
               }

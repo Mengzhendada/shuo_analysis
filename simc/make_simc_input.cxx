@@ -163,17 +163,17 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<"begin parm e_arm_accept"<<std::endl;
   ofs_D2_neg_inc_norad<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_D2_neg_inc_norad<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_D2_neg_inc_norad<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_neg_inc_norad<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_neg_inc_norad<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_inc_norad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_D2_neg_inc_norad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_neg_inc_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_inc_norad<<"end parm p_arm_accept\n"<<std::endl;
@@ -227,11 +227,13 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_norad<<" use_offshell_rad = 1"<<std::endl;
   ofs_D2_neg_inc_norad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_neg_inc_norad<<" do_fermi = 0"<<std::endl;
+  ofs_D2_neg_inc_norad<<" pt_b_param = 3.8"<<std::endl;
   ofs_D2_neg_inc_norad<<" sigc_flag = 1"<<std::endl;
   ofs_D2_neg_inc_norad<<" sigc_nbin = 100"<<std::endl;
   ofs_D2_neg_inc_norad<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_D2_neg_inc_norad<<" sigc_kin_max = 1"<<std::endl;
   ofs_D2_neg_inc_norad<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_neg_inc_norad<<" random_seed = 377468"<<std::endl;
   
   ofs_D2_neg_inc_norad<<"end parm simulate\n"<<std::endl;
 
@@ -288,17 +290,17 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<"begin parm e_arm_accept"<<std::endl;
   ofs_D2_neg_inc_rad<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_D2_neg_inc_rad<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_D2_neg_inc_rad<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_neg_inc_rad<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_neg_inc_rad<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_inc_rad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_D2_neg_inc_rad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_neg_inc_rad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_inc_rad<<"end parm p_arm_accept\n"<<std::endl;
@@ -352,11 +354,13 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<" use_offshell_rad = 1"<<std::endl;
   ofs_D2_neg_inc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_neg_inc_rad<<" do_fermi = 0"<<std::endl;
+  ofs_D2_neg_inc_rad<<" pt_b_param = 3.8"<<std::endl;
   ofs_D2_neg_inc_rad<<" sigc_flag = 1"<<std::endl;
   ofs_D2_neg_inc_rad<<" sigc_nbin = 100"<<std::endl;
   ofs_D2_neg_inc_rad<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_D2_neg_inc_rad<<" sigc_kin_max = 1.00"<<std::endl;
   ofs_D2_neg_inc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_neg_inc_rad<<" random_seed = 377468"<<std::endl;
   
   ofs_D2_neg_inc_rad<<"end parm simulate\n"<<std::endl;
 
@@ -413,17 +417,17 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_rad<<"begin parm e_arm_accept"<<std::endl;
   ofs_D2_neg_exc_rad<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_D2_neg_exc_rad<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_D2_neg_exc_rad<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_neg_exc_rad<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_neg_exc_rad<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_exc_rad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_D2_neg_exc_rad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_neg_exc_rad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_exc_rad<<"end parm p_arm_accept\n"<<std::endl;
@@ -477,11 +481,13 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_rad<<" use_offshell_rad = 1"<<std::endl;
   ofs_D2_neg_exc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_neg_exc_rad<<" do_fermi = 0"<<std::endl;
+  ofs_D2_neg_exc_rad<<" pt_b_param = 3.8"<<std::endl;
   ofs_D2_neg_exc_rad<<" sigc_flag = 1"<<std::endl;
   ofs_D2_neg_exc_rad<<" sigc_nbin = 100"<<std::endl;
   ofs_D2_neg_exc_rad<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_D2_neg_exc_rad<<" sigc_kin_max = 1"<<std::endl;
   ofs_D2_neg_exc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_neg_exc_rad<<" random_seed = 377468"<<std::endl;
   
   ofs_D2_neg_exc_rad<<"end parm simulate\n"<<std::endl;
 
@@ -664,17 +670,17 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<"begin parm e_arm_accept"<<std::endl;
   ofs_D2_pos_inc_norad<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_D2_pos_inc_norad<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_pos_inc_norad<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_pos_inc_norad<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_inc_norad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_pos_inc_norad<<"end parm p_arm_accept\n"<<std::endl;
@@ -728,11 +734,13 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_norad<<" use_offshell_rad = 1"<<std::endl;
   ofs_D2_pos_inc_norad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_pos_inc_norad<<" do_fermi = 0"<<std::endl;
+  ofs_D2_pos_inc_norad<<" pt_b_param = 3.8"<<std::endl;
   ofs_D2_pos_inc_norad<<" sigc_flag = 1"<<std::endl;
   ofs_D2_pos_inc_norad<<" sigc_nbin = 100"<<std::endl;
   ofs_D2_pos_inc_norad<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_pos_inc_norad<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_pos_inc_norad<<" random_seed = 377468"<<std::endl;
   
   ofs_D2_pos_inc_norad<<"end parm simulate\n"<<std::endl;
 
@@ -789,17 +797,17 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<"begin parm e_arm_accept"<<std::endl;
   ofs_D2_pos_inc_rad<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_D2_pos_inc_rad<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_pos_inc_rad<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_pos_inc_rad<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_inc_rad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_pos_inc_rad<<"end parm p_arm_accept\n"<<std::endl;
@@ -853,11 +861,13 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<" use_offshell_rad = 1"<<std::endl;
   ofs_D2_pos_inc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_pos_inc_rad<<" do_fermi = 0"<<std::endl;
+  ofs_D2_pos_inc_rad<<" pt_b_param = 3.8"<<std::endl;
   ofs_D2_pos_inc_rad<<" sigc_flag = 1"<<std::endl;
   ofs_D2_pos_inc_rad<<" sigc_nbin = 100"<<std::endl;
   ofs_D2_pos_inc_rad<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_pos_inc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_pos_inc_rad<<" random_seed = 224323"<<std::endl;
   
   ofs_D2_pos_inc_rad<<"end parm simulate\n"<<std::endl;
 
@@ -914,17 +924,17 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_rad<<"begin parm e_arm_accept"<<std::endl;
   ofs_D2_pos_exc_rad<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_D2_pos_exc_rad<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_pos_exc_rad<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_pos_exc_rad<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_exc_rad<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_pos_exc_rad<<"end parm p_arm_accept\n"<<std::endl;
@@ -978,11 +988,13 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_rad<<" use_offshell_rad = 1"<<std::endl;
   ofs_D2_pos_exc_rad<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_D2_pos_exc_rad<<" do_fermi = 0"<<std::endl;
+  ofs_D2_pos_exc_rad<<" pt_b_param = 3.8"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_flag = 1"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_nbin = 100"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_pos_exc_rad<<" 377468"<<std::endl;
   
   ofs_D2_pos_exc_rad<<"end parm simulate\n"<<std::endl;
 
@@ -1162,17 +1174,17 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_delta<<"begin parm e_arm_accept"<<std::endl;
   ofs_D2_neg_delta<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_D2_neg_delta<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_neg_delta<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_delta<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_neg_delta<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_delta<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_delta<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_delta<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_neg_delta<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_neg_delta<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_D2_neg_delta<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_neg_delta<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_neg_delta<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_neg_delta<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_neg_delta<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_neg_delta<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_delta<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_neg_delta<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_neg_delta<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_delta<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_D2_neg_delta<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_neg_delta<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_neg_delta<<"end parm p_arm_accept\n"<<std::endl;
@@ -1225,6 +1237,14 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_delta<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_neg_delta<<" use_offshell_rad = 1"<<std::endl;
   ofs_D2_neg_delta<<" Egamma_gen_max = 8000"<<std::endl;
+  ofs_D2_neg_delta<<" do_fermi = 0"<<std::endl;
+  ofs_D2_neg_delta<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_neg_delta<<" sigc_flag = 1"<<std::endl;
+  ofs_D2_neg_delta<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_neg_delta<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_neg_delta<<" sigc_kin_max = 1.0"<<std::endl;
+  ofs_D2_neg_delta<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_neg_delta<<" 377468"<<std::endl;
   
   ofs_D2_neg_delta<<"end parm simulate\n"<<std::endl;
 
@@ -1279,17 +1299,17 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_delta<<"begin parm e_arm_accept"<<std::endl;
   ofs_D2_pos_delta<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_D2_pos_delta<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_D2_pos_delta<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_delta<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_D2_pos_delta<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_delta<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_delta<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_delta<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_pos_delta<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_pos_delta<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_D2_pos_delta<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_D2_pos_delta<<"begin parm p_arm_accept"<<std::endl;
-  ofs_D2_pos_delta<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_D2_pos_delta<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_D2_pos_delta<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_D2_pos_delta<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_delta<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_pos_delta<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_pos_delta<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_delta<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_D2_pos_delta<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_D2_pos_delta<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_D2_pos_delta<<"end parm p_arm_accept\n"<<std::endl;
@@ -1342,6 +1362,14 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_delta<<" dE_edge_test = 0"<<std::endl;
   ofs_D2_pos_delta<<" use_offshell_rad = 1"<<std::endl;
   ofs_D2_pos_delta<<" Egamma_gen_max = 8000"<<std::endl;
+  ofs_D2_pos_delta<<" do_fermi = 0"<<std::endl;
+  ofs_D2_pos_delta<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_pos_delta<<" sigc_flag = 1"<<std::endl;
+  ofs_D2_pos_delta<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_pos_delta<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_pos_delta<<" sigc_kin_max = 1.0"<<std::endl;
+  ofs_D2_pos_delta<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_pos_delta<<" 377468"<<std::endl;
   
   ofs_D2_pos_delta<<"end parm simulate\n"<<std::endl;
 

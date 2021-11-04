@@ -37,6 +37,7 @@ int Q2_xz_ratio_combined(){
   std::vector<int> i_which_Q2= {0,0,0,1,0,1,2,1,2,2,1,2};
   int i_whichx = 0; 
   json jout;
+  json jout_2;
   json jout_sthwrong;
   //TH2D* h_Q2_1_neg =new TH2D("","3.95",100,0,1,100,0,1);
   //TH2D* h_Q2_1_pos =new TH2D("","3.95",100,0,1,100,0,1);
@@ -120,7 +121,7 @@ int Q2_xz_ratio_combined(){
           TH2D *h_xz_neg_sim_excrad = new TH2D("","pi- sim exc",100,0,1,100,0,1);
           h_xz_neg_sim_excrad = (TH2D*)rootfile_neg_sim->Get("x_z_neg_exc_rad");
           TH2D *h_xz_neg_sim_rho = new TH2D("","pi- sim rho",100,0,1,100,0,1);
-          h_xz_neg_sim_rho = (TH2D*)rootfile_neg_sim->Get("x_z_neg_rho");
+          //h_xz_neg_sim_rho = (TH2D*)rootfile_neg_sim->Get("x_z_neg_rho");
           TH2D *h_xz_neg_sim_delta = new TH2D("","pi- sim delta",100,0,1,100,0,1);
           h_xz_neg_sim_delta = (TH2D*)rootfile_neg_sim->Get("x_z_neg_delta");
           TFile *rootfile_pos_sim = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunGroup)+"_simc.root").c_str());
@@ -131,7 +132,7 @@ int Q2_xz_ratio_combined(){
           TH2D *h_xz_pos_sim_excrad = new TH2D("","pi+ sim exc",100,0,1,100,0,1);
           h_xz_pos_sim_excrad = (TH2D*)rootfile_pos_sim->Get("x_z_pos_exc_rad");
           TH2D *h_xz_pos_sim_rho = new TH2D("","pi+ sim rho",100,0,1,100,0,1);
-          h_xz_pos_sim_rho = (TH2D*)rootfile_pos_sim->Get("x_z_pos_rho");
+          //h_xz_pos_sim_rho = (TH2D*)rootfile_pos_sim->Get("x_z_pos_rho");
           TH2D *h_xz_pos_sim_delta = new TH2D("","pi+ sim delta",100,0,1,100,0,1);
           h_xz_pos_sim_delta = (TH2D*)rootfile_pos_sim->Get("x_z_pos_delta");
           if(z!=0){
@@ -200,8 +201,8 @@ int Q2_xz_ratio_combined(){
 
           //std::cout<<"check"<<std::endl;
           //bg subtracted
-          h_xz_neg_all->Add(h_xz_neg_bg_all,-1.0);
-          h_xz_pos_all->Add(h_xz_pos_bg_all,-1.0);
+          //h_xz_neg_all->Add(h_xz_neg_bg_all,-1.0);
+          //h_xz_pos_all->Add(h_xz_pos_bg_all,-1.0);
 
           //Dummy bg subtract
           h_xz_neg_Dummy_all->Add(h_xz_neg_bg_Dummy_all,-1.0);
@@ -215,24 +216,28 @@ int Q2_xz_ratio_combined(){
 
           //std::cout<<"rebin before check"<<std::endl;
           h_xz_neg_all->RebinX(5);
+          h_xz_neg_bg_all->RebinX(5);
           h_xz_neg_incnorad->RebinX(5);
           h_xz_neg_incrad->RebinX(5);
           h_xz_neg_sim_excrad->RebinX(5);
           h_xz_neg_sim_delta->RebinX(5);
           //          h_xz_neg_sim_rho->RebinX(5);
           h_xz_pos_all->RebinX(5);
+          h_xz_pos_bg_all->RebinX(5);
           h_xz_pos_incnorad->RebinX(5);
           h_xz_pos_incrad->RebinX(5);
           h_xz_pos_sim_excrad->RebinX(5);
           h_xz_pos_sim_delta->RebinX(5);
           //          h_xz_pos_sim_rho->RebinX(5);
           h_xz_neg_all->RebinY(5);
+          h_xz_neg_bg_all->RebinY(5);
           h_xz_neg_incnorad->RebinY(5);
           h_xz_neg_incrad->RebinY(5);
           h_xz_neg_sim_excrad->RebinY(5);
           h_xz_neg_sim_delta->RebinY(5);
           //          h_xz_neg_sim_rho->RebinY(5);
           h_xz_pos_all->RebinY(5);
+          h_xz_pos_bg_all->RebinY(5);
           h_xz_pos_incnorad->RebinY(5);
           h_xz_pos_incrad->RebinY(5);
           h_xz_pos_sim_excrad->RebinY(5);
@@ -275,21 +280,25 @@ int Q2_xz_ratio_combined(){
               double x = h_xz_neg_all->GetXaxis()->GetBinCenter(i);
               double y = h_xz_neg_all->GetYaxis()->GetBinCenter(j);
               double yield_neg_D2 = h_xz_neg_all->GetBinContent(i,j)/charge_neg_all;
+              double yield_neg_bg_D2 = h_xz_neg_bg_all->GetBinContent(i,j)/charge_neg_all;
               double yield_neg_Dummy = h_xz_neg_Dummy_all->GetBinContent(i,j)/charge_neg_Dummy_all;
               double yield_neg_delta = h_xz_neg_sim_delta->GetBinContent(i,j);
               double yield_neg_exc = h_xz_neg_sim_excrad->GetBinContent(i,j);
-              double yield_neg = yield_neg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc;
+              double yield_neg = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc;
               double error_neg_D2 = h_xz_neg_all->GetBinError(i,j)/charge_neg_all;
+              double error_neg_bg_D2 = h_xz_neg_bg_all->GetBinError(i,j)/charge_neg_all;
               double error_neg_Dummy = h_xz_neg_Dummy_all->GetBinError(i,j)/charge_neg_Dummy_all;
-              double error_neg = std::sqrt(error_neg_D2*error_neg_D2+0.245*0.245*error_neg_Dummy*error_neg_Dummy);
+              double error_neg = std::sqrt(error_neg_D2*error_neg_D2+error_neg_bg_D2*error_neg_bg_D2+0.245*0.245*error_neg_Dummy*error_neg_Dummy);
               double yield_pos_D2 = h_xz_pos_all->GetBinContent(i,j)/charge_pos_all;
+              double yield_pos_bg_D2 = h_xz_pos_bg_all->GetBinContent(i,j)/charge_pos_all;
               double yield_pos_Dummy = h_xz_pos_Dummy_all->GetBinContent(i,j)/charge_pos_Dummy_all;
               double yield_pos_delta = h_xz_pos_sim_delta->GetBinContent(i,j);
               double yield_pos_exc = h_xz_pos_sim_excrad->GetBinContent(i,j);
-              double yield_pos = yield_pos_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc;
+              double yield_pos = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc;
               double error_pos_D2 = h_xz_pos_all->GetBinError(i,j)/charge_pos_all;
+              double error_pos_bg_D2 = h_xz_pos_bg_all->GetBinError(i,j)/charge_pos_all;
               double error_pos_Dummy = h_xz_pos_Dummy_all->GetBinError(i,j)/charge_pos_Dummy_all;
-              double error_pos = std::sqrt(error_pos_D2*error_pos_D2+0.245*0.245*error_pos_Dummy*error_pos_Dummy);
+              double error_pos = std::sqrt(error_pos_D2*error_pos_D2+error_pos_bg_D2*error_pos_bg_D2+0.245*0.245*error_pos_Dummy*error_pos_Dummy);
 
               //for yield
               double radia_corr_neg = rp_radia_corr_neg->GetBinContent(i,j);
@@ -331,6 +340,12 @@ int Q2_xz_ratio_combined(){
                   jout[std::to_string(Q2)][xbj_str][z_str]["yield_pos"].push_back(yield_pos);
                   jout[std::to_string(Q2)][xbj_str][z_str]["charge_neg"].push_back(charge_neg_all);
                   jout[std::to_string(Q2)][xbj_str][z_str]["charge_pos"].push_back(charge_pos_all);
+                  jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["value"] = y_RD;
+                  jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["error"] = error_RD;
+                  jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["yield_neg"] = yield_neg;
+                  jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["yield_pos"] = yield_pos;
+                  jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["charge_neg"] = charge_neg_all;
+                  jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["charge_pos"] = charge_pos_all;
 
                 }
                 else{
@@ -391,6 +406,10 @@ int Q2_xz_ratio_combined(){
   std::string jout_name = "results/yield_ratio_xz_combined.json";
   std::ofstream ofs_jout(jout_name.c_str());
   ofs_jout<<jout.dump(4)<<std::endl;
+  
+  std::string jout_2_name = "results/yield_ratio_xz_combined_withRungroups.json";
+  std::ofstream ofs_jout_2(jout_2_name.c_str());
+  ofs_jout_2<<jout_2.dump(4)<<std::endl;
 
   std::string jout_sthwrong_name = "results/yield_ratio_xz_combined_sthwrong.json";
   std::ofstream ofs_jout_sthwrong(jout_sthwrong_name.c_str());

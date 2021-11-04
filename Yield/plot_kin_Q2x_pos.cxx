@@ -12,6 +12,14 @@ using json = nlohmann::json;
 #include "TCollection.h"
 #include "TLegend.h"
 
+double Get_Wprime_line(double *x, double *par)
+{
+  float xx = x[0];
+  double Wprime2 = 2.6;
+  double f = (Wprime2-0.938272*0.938272-0.139*0.139)*0.938272*xx/(0.98272*(1-xx)-0.139*(par[0]+1));
+  return f;
+}
+
 int plot_kin_Q2x_pos(){
   json j_Q2x;
   {
@@ -83,6 +91,19 @@ int plot_kin_Q2x_pos(){
     }// loop over Q2
   }//loop over x
   gStyle->SetOptTitle(0);
+  
+  TF1* W2_1 = new TF1("W2","(4-0.938272*0.938272)*(x/(1-x))",0.2,0.8);
+  W2_1->Draw("L same");
+  TF1* Wprime2_1 = new TF1("Wprime2",Get_Wprime_line,0.2,0.8,1);
+  Wprime2_1->SetParameter(0,0.4);
+  Wprime2_1->SetLineColor(kBlue);
+  Wprime2_1->SetTitle("z = 0.4");
+  Wprime2_1->Draw("L same");
+  TF1* Wprime2_2 = new TF1("Wprime2",Get_Wprime_line,0.2,0.8,1);
+  Wprime2_2->SetParameter(0,0.8);
+  Wprime2_2->SetLineColor(8);
+  Wprime2_2->SetTitle("z = 0.8");
+  Wprime2_2->Draw("L same");
   legend->Draw();  
 //  c_kin_pos->BuildLegend(0.15,0.5,0.35,0.95);
   c_kin_pos->SaveAs("results/yield/kin_x_Q2_pos.png");

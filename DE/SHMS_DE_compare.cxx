@@ -37,6 +37,7 @@ void SHMS_DE_compare(){
     std::ifstream infile("db2/runs_info.json");
     infile>>j_runsinfo;
   }
+  json jout;
   //int rf_e_n = 10;
   double cal_pi_n = 0.8;
   double aero_pi_n = 2;
@@ -141,7 +142,8 @@ void SHMS_DE_compare(){
           g_DE_cal_RunGroup_pos_fall->SetPointError(i_de_pos_fall,0,cal_DE_error);
           g_DE_cal_RunNumber_pos_fall->SetPoint(i_de_pos_fall,RunNumber,cal_DE);
           g_DE_cal_RunNumber_pos_fall->SetPointError(i_de_pos_fall,0,cal_DE_error);
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_cal_DE"] = cal_DE;
+          jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()]["SHMS_cal_DE_pos"] = cal_DE;
+          jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()]["SHMS_cal_DE_pos_err"] = cal_DE_error;
           
           g_DE_aero_momentum_pos_fall->SetPoint(i_de_pos_fall,hms_p,aero_DE);
           g_DE_aero_momentum_pos_fall->SetPointError(i_de_pos_fall,0,aero_DE_error);
@@ -149,7 +151,6 @@ void SHMS_DE_compare(){
           g_DE_aero_RunGroup_pos_fall->SetPointError(i_de_pos_fall,0,aero_DE_error);
           g_DE_aero_RunNumber_pos_fall->SetPoint(i_de_pos_fall,RunNumber,aero_DE);
           g_DE_aero_RunNumber_pos_fall->SetPointError(i_de_pos_fall,0,aero_DE_error);
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_aero_DE"] = aero_DE;
           i_de_pos_fall++;
           }
           else
@@ -160,7 +161,8 @@ void SHMS_DE_compare(){
           g_DE_cal_RunGroup_pos_spring->SetPointError(i_de_pos_spring,0,cal_DE_error);
           g_DE_cal_RunNumber_pos_spring->SetPoint(i_de_pos_spring,RunNumber,cal_DE);
           g_DE_cal_RunNumber_pos_spring->SetPointError(i_de_pos_spring,0,cal_DE_error);
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_cal_DE"] = cal_DE;
+          jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()]["SHMS_cal_DE_pos"] = cal_DE;
+          jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()]["SHMS_cal_DE_pos_err"] = cal_DE_error;
           
           g_DE_aero_momentum_pos_spring->SetPoint(i_de_pos_spring,hms_p,aero_DE);
           g_DE_aero_momentum_pos_spring->SetPointError(i_de_pos_spring,0,aero_DE_error);
@@ -168,7 +170,6 @@ void SHMS_DE_compare(){
           g_DE_aero_RunGroup_pos_spring->SetPointError(i_de_pos_spring,0,aero_DE_error);
           g_DE_aero_RunNumber_pos_spring->SetPoint(i_de_pos_spring,RunNumber,aero_DE);
           g_DE_aero_RunNumber_pos_spring->SetPointError(i_de_pos_spring,0,aero_DE_error);
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_aero_DE"] = aero_DE;
           i_de_pos_spring++;
           }
         }
@@ -215,7 +216,6 @@ void SHMS_DE_compare(){
           g_DE_cal_RunGroup_neg_fall->SetPointError(i_de_neg_fall,0,cal_DE_error);
           g_DE_cal_RunNumber_neg_fall->SetPoint(i_de_neg_fall,RunNumber,cal_DE);
           g_DE_cal_RunNumber_neg_fall->SetPointError(i_de_neg_fall,0,cal_DE_error);
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_cal_DE"] = cal_DE;
           
           g_DE_aero_momentum_neg_fall->SetPoint(i_de_neg_fall,hms_p,aero_DE);
           g_DE_aero_momentum_neg_fall->SetPointError(i_de_neg_fall,0,aero_DE_error);
@@ -223,7 +223,8 @@ void SHMS_DE_compare(){
           g_DE_aero_RunGroup_neg_fall->SetPointError(i_de_neg_fall,0,aero_DE_error);
           g_DE_aero_RunNumber_neg_fall->SetPoint(i_de_neg_fall,RunNumber,aero_DE);
           g_DE_aero_RunNumber_neg_fall->SetPointError(i_de_neg_fall,0,aero_DE_error);
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_aero_DE"] = aero_DE;
+          jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()]["SHMS_aero_DE_neg"] = aero_DE;
+          jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()]["SHMS_aero_DE_neg_err"] = cal_DE_error;
           i_de_neg_fall++;
           }
           else
@@ -234,7 +235,6 @@ void SHMS_DE_compare(){
           g_DE_cal_RunGroup_neg_spring->SetPointError(i_de_neg_spring,0,cal_DE_error);
           g_DE_cal_RunNumber_neg_spring->SetPoint(i_de_neg_spring,RunNumber,cal_DE);
           g_DE_cal_RunNumber_neg_spring->SetPointError(i_de_neg_spring,0,cal_DE_error);
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_cal_DE"] = cal_DE;
           
           g_DE_aero_momentum_neg_spring->SetPoint(i_de_neg_spring,hms_p,aero_DE);
           g_DE_aero_momentum_neg_spring->SetPointError(i_de_neg_spring,0,aero_DE_error);
@@ -242,7 +242,8 @@ void SHMS_DE_compare(){
           g_DE_aero_RunGroup_neg_spring->SetPointError(i_de_neg_spring,0,aero_DE_error);
           g_DE_aero_RunNumber_neg_spring->SetPoint(i_de_neg_spring,RunNumber,aero_DE);
           g_DE_aero_RunNumber_neg_spring->SetPointError(i_de_neg_spring,0,aero_DE_error);
-          j_runsinfo[(std::to_string(RunNumber)).c_str()]["SHMS_aero_DE"] = aero_DE;
+          jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()]["SHMS_aero_DE_neg"] = aero_DE;
+          jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()]["SHMS_aero_DE_neg_err"] = cal_DE_error;
           i_de_neg_spring++;
           }
         }
@@ -253,21 +254,39 @@ void SHMS_DE_compare(){
     }//if normal production runs
   }//loop over rungroups
   std::cout<< "Done check"<<std::endl;
-  TCanvas *c_cal_DE_momentum = new TCanvas();
+  auto mg_cal = new TMultiGraph();
   g_DE_cal_momentum_pos_fall->SetMarkerStyle(8);
   g_DE_cal_momentum_pos_fall->SetMarkerColor(kRed);
   g_DE_cal_momentum_pos_fall->GetYaxis()->SetRangeUser(0.85,1.001);
-  g_DE_cal_momentum_pos_fall->Draw("AP");
+  mg_cal->Add(g_DE_cal_momentum_pos_fall,"P");
   g_DE_cal_momentum_pos_spring->SetMarkerStyle(4);
   g_DE_cal_momentum_pos_spring->SetMarkerColor(kRed);
   g_DE_cal_momentum_pos_spring->GetYaxis()->SetRangeUser(0.85,1.001);
-  g_DE_cal_momentum_pos_spring->Draw("P same");
-  g_DE_cal_momentum_neg_fall->SetMarkerStyle(8);
-  g_DE_cal_momentum_neg_fall->GetYaxis()->SetRangeUser(0.85,1.001);
-  g_DE_cal_momentum_neg_fall->Draw("P same");
-  g_DE_cal_momentum_neg_spring->SetMarkerStyle(8);
-  g_DE_cal_momentum_neg_spring->GetYaxis()->SetRangeUser(0.85,1.001);
-  g_DE_cal_momentum_neg_spring->Draw("P same");
+  mg_cal->Add(g_DE_cal_momentum_pos_spring,"P");
+  
+  TCanvas *c_cal_DE_momentum = new TCanvas();
+  //g_DE_cal_momentum_pos_fall->SetMarkerStyle(8);
+  //g_DE_cal_momentum_pos_fall->SetMarkerColor(kRed);
+  //g_DE_cal_momentum_pos_fall->GetYaxis()->SetRangeUser(0.85,1.001);
+  //g_DE_cal_momentum_pos_fall->Draw("AP");
+  //g_DE_cal_momentum_pos_spring->SetMarkerStyle(4);
+  //g_DE_cal_momentum_pos_spring->SetMarkerColor(kRed);
+  //g_DE_cal_momentum_pos_spring->GetYaxis()->SetRangeUser(0.85,1.001);
+  //g_DE_cal_momentum_pos_spring->Draw("P same");
+  //g_DE_cal_momentum_neg_fall->SetMarkerStyle(8);
+  //g_DE_cal_momentum_neg_fall->GetYaxis()->SetRangeUser(0.85,1.001);
+  //g_DE_cal_momentum_neg_fall->Draw("P same");
+  //g_DE_cal_momentum_neg_spring->SetMarkerStyle(8);
+  //g_DE_cal_momentum_neg_spring->GetYaxis()->SetRangeUser(0.85,1.001);
+  //g_DE_cal_momentum_neg_spring->Draw("P same");
+  mg_cal->Draw("AP");
+  mg_cal->Fit("pol0","F");
+  TF1 *Fit_cal = mg_cal->GetFunction("pol0");
+  Fit_cal->SetLineColor(kRed);
+  Fit_cal->Draw("L same");
+  gStyle->SetOptFit(0001);
+  mg_cal->GetXaxis()->SetTitle("Momentum");
+  mg_cal->GetYaxis()->SetTitle("cal Eff");
   c_cal_DE_momentum->SaveAs("results/pid/SHMS_cal_DE_momentum.pdf");
   TCanvas *c_cal_DE_RunGroup = new TCanvas();
   g_DE_cal_RunGroup_pos_fall->SetMarkerStyle(8);
@@ -320,21 +339,34 @@ void SHMS_DE_compare(){
   g_DE_aero_momentum_neg_spring->GetYaxis()->SetRangeUser(0.98,1.001);
   g_DE_aero_momentum_neg_spring->Draw("P same");
   c_aero_DE_momentum->SaveAs("results/pid/SHMS_aero_DE_momentum.pdf");
-  TCanvas *c_aero_DE_RunGroup = new TCanvas();
-  g_DE_aero_RunGroup_pos_fall->SetMarkerStyle(8);
-  g_DE_aero_RunGroup_pos_fall->SetMarkerColor(kRed);
-  g_DE_aero_RunGroup_pos_fall->GetYaxis()->SetRangeUser(0.98,1.001);
-  g_DE_aero_RunGroup_pos_fall->Draw("AP");
-  g_DE_aero_RunGroup_pos_spring->SetMarkerStyle(8);
-  g_DE_aero_RunGroup_pos_spring->SetMarkerColor(kRed);
-  g_DE_aero_RunGroup_pos_spring->GetYaxis()->SetRangeUser(0.98,1.001);
-  g_DE_aero_RunGroup_pos_spring->Draw("P same");
+  auto mg_aero = new TMultiGraph();
   g_DE_aero_RunGroup_neg_fall->SetMarkerStyle(8);
   g_DE_aero_RunGroup_neg_fall->GetYaxis()->SetRangeUser(0.98,1.001);
-  g_DE_aero_RunGroup_neg_fall->Draw("P same");
-  g_DE_aero_RunGroup_neg_spring->SetMarkerStyle(8);
+  mg_aero->Add(g_DE_aero_RunGroup_neg_fall,"P");
+  g_DE_aero_RunGroup_neg_spring->SetMarkerStyle(4);
   g_DE_aero_RunGroup_neg_spring->GetYaxis()->SetRangeUser(0.98,1.001);
-  g_DE_aero_RunGroup_neg_spring->Draw("P same");
+  mg_aero->Add(g_DE_aero_RunGroup_neg_spring,"P");
+  TCanvas *c_aero_DE_RunGroup = new TCanvas();
+  //g_DE_aero_RunGroup_pos_fall->SetMarkerStyle(8);
+  //g_DE_aero_RunGroup_pos_fall->SetMarkerColor(kRed);
+  //g_DE_aero_RunGroup_pos_fall->GetYaxis()->SetRangeUser(0.98,1.001);
+  //g_DE_aero_RunGroup_pos_fall->Draw("AP");
+  //g_DE_aero_RunGroup_pos_spring->SetMarkerStyle(8);
+  //g_DE_aero_RunGroup_pos_spring->SetMarkerColor(kRed);
+  //g_DE_aero_RunGroup_pos_spring->GetYaxis()->SetRangeUser(0.98,1.001);
+  //g_DE_aero_RunGroup_pos_spring->Draw("P same");
+  //g_DE_aero_RunGroup_neg_fall->Draw("P same");
+  //g_DE_aero_RunGroup_neg_spring->Draw("P same");
+  mg_aero->Draw("AP");
+  mg_aero->Fit("pol0","F");
+  TF1 *Fit_aero = mg_aero->GetFunction("pol0");
+  double p0 = Fit_aero->GetParameter(0);
+  double p0_err = Fit_aero->GetParError(0);
+  Fit_aero->SetLineColor(kRed);
+  Fit_aero->Draw("L same");
+  gStyle->SetOptFit(0001);
+  mg_aero->GetXaxis()->SetTitle("RunGroup");
+  mg_aero->GetYaxis()->SetTitle("Aero Eff");
   c_aero_DE_RunGroup->SaveAs("results/pid/SHMS_aero_DE_RunGroup.pdf");
   TCanvas *c_aero_DE_RunNumber_fall = new TCanvas();
   g_DE_aero_RunNumber_pos_fall->SetMarkerStyle(8);
@@ -355,6 +387,6 @@ void SHMS_DE_compare(){
   g_DE_aero_RunNumber_neg_spring->Draw("P same");
   c_aero_DE_RunNumber_spring->SaveAs("results/pid/SHMS_aero_DE_RunNumber_spring.pdf");
 
-  std::ofstream ofstream("runs_info.json");
-  ofstream<<j_runsinfo.dump(4)<<std::endl;
+  std::ofstream ofstream("results/pid/runs_info_rungroup.json");
+  ofstream<<jout.dump(4)<<std::endl;
 }

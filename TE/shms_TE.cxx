@@ -160,8 +160,9 @@ void shms_TE(int RunGroup = 0){
     .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
     .Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
     .Filter("P.aero.npeSum > 2")
-    .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"P.hod.betanotrack"})
-    .Filter([](double h_delta){return h_delta > -10 && h_delta < 10;},{"P.gtr.dp"})
+    .Filter([](double beta){return beta< 1.3 && beta > 0.7;},{"P.hod.betanotrack"})
+    .Filter("P.hgcer.npeSum>2")
+    //.Filter([](double h_delta){return h_delta > -10 && h_delta < 10;},{"P.gtr.dp"})
     ;  
   auto d_pos_pi_dc = d_pos_pi_hod
     .Filter("P.dc.ntrack>=1")
@@ -194,8 +195,9 @@ void shms_TE(int RunGroup = 0){
     .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
     .Filter([](double etot){return etot> 0.05 && etot< 0.8;},{"P.cal.etotnorm"})
     .Filter("P.aero.npeSum > 2")
-    .Filter([](double beta){return beta< 1.4 && beta > 0.6;},{"P.hod.betanotrack"})
-    .Filter([](double h_delta){return h_delta > -10 && h_delta < 10;},{"P.gtr.dp"})
+    .Filter([](double beta){return beta< 1.3 && beta > 0.7;},{"P.hod.betanotrack"})
+    .Filter("P.hgcer.npeSum>2")
+    //.Filter([](double h_delta){return h_delta > -10 && h_delta < 10;},{"P.gtr.dp"})
     ;  
   auto d_neg_pi_dc = d_neg_pi_hod
     .Filter("P.dc.ntrack>=1")

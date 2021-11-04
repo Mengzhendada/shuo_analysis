@@ -30,7 +30,7 @@ void statistic_runs_D2_scaler(int RunGroup=0){
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
     std::cin>>RunGroup;
-    if(RunGroup<=0)
+    if(RunGroup==0)
       return;
   }
 
@@ -51,11 +51,11 @@ void statistic_runs_D2_scaler(int RunGroup=0){
   };
   double current_diff = j_cuts["current_diff"].get<double>();
   json jout;
-  {
-    std::string if_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
-    std::ifstream ifs(if_name.c_str());
-    ifs>>jout;
-  }
+  //{
+  //  std::string if_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+  //  std::ifstream ifs(if_name.c_str());
+  //  ifs>>jout;
+  //}
 
   if(!neg_D2.empty() && !pos_D2.empty()){
     std::vector<std::string> files_neg,files_pos;

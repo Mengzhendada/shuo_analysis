@@ -386,10 +386,12 @@ void SHMS_DE_Dummy(int RunGroup=0){
       auto h_aero_pos_pi_bg = d_pos_bg_cal_rf.Histo1D({"","pos,aero,pi_rfcut",200,0,50},"P.aero.npeSum");
       h_aero_pos_pi->Add(h_aero_pos_pi_bg.GetPtr(),-1.0/6);
 
-      int n_pos_pi_rfcut = h_cal_pos_pi->GetEntries();
+      //int n_pos_pi_rfcut = h_cal_pos_pi->GetEntries();
+      int n_pos_pi_rfcut = *d_pos_first_aero_rf.Count()-*d_pos_bg_aero_rf.Count()/6.0; 
       jout[std::to_string(RunNumber)]["SHMS"]["rfcut"]["pi_all"] = n_pos_pi_rfcut;
 
-      int n_pos_pi_rfcalcut = h_aero_pos_pi->GetEntries();
+      //int n_pos_pi_rfcalcut = h_aero_pos_pi->GetEntries();
+      int n_pos_pi_rfcalcut = *d_pos_first_cal_rf.Count()-*d_pos_bg_cal_rf.Count()/6.0;
       jout[std::to_string(RunNumber)]["SHMS"]["rfcutcalcut"]["pi_all"] = n_pos_pi_rfcalcut;
 
       std::vector<double> n_pos_pi_cal,n_pos_pi_aero;
@@ -687,10 +689,10 @@ void SHMS_DE_Dummy(int RunGroup=0){
         ;
 
       //for cal cuts
-      auto d_neg_bg_aero_rf  = d_neg_first_aero
+      auto d_neg_first_aero_rf  = d_neg_first_aero
         .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         ;
-      auto d_neg_bg_aero_rf_bg = d_neg_first_aero_bg
+      auto d_neg_first_aero_rf_bg = d_neg_first_aero_bg
         .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         ;
 
@@ -710,8 +712,8 @@ void SHMS_DE_Dummy(int RunGroup=0){
       auto h_rf_neg_nocalcut_bg = d_neg_first_aero_bg.Histo1D({"","neg,cal,norfcut;rftime,counts",100,0,4},"diff_time_mod");
       h_cal_neg_norfcut->Add(h_cal_neg_norfcut_bg.GetPtr(),-1.0/6); 
       h_rf_neg_nocalcut->Add(h_rf_neg_nocalcut_bg.GetPtr(),-1.0/6); 
-      auto h_cal_neg_pi = d_neg_bg_aero_rf.Histo1D({"","neg,cal,e_rfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
-      auto h_cal_neg_pi_bg = d_neg_bg_aero_rf_bg.Histo1D({"","neg,cal,e_rfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
+      auto h_cal_neg_pi = d_neg_first_aero_rf.Histo1D({"","neg,cal,e_rfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
+      auto h_cal_neg_pi_bg = d_neg_first_aero_rf_bg.Histo1D({"","neg,cal,e_rfcut;calorimeter;counts",100,0.001,2},"P.cal.etottracknorm");
       h_cal_neg_pi->Add(h_cal_neg_pi_bg.GetPtr(),-1.0/6);
 
       auto h_aero_neg_norfcut = d_neg_first_cal.Histo1D({"","neg,aero,norfcut;aeroNpeSum;counts",200,0,50},"P.aero.npeSum");
@@ -724,10 +726,12 @@ void SHMS_DE_Dummy(int RunGroup=0){
       auto h_aero_neg_pi_bg = d_neg_bg_cal_rf.Histo1D({"","neg,aero,pi_rfcut",200,0,50},"P.aero.npeSum");
       h_aero_neg_pi->Add(h_aero_neg_pi_bg.GetPtr(),-1.0/6);
 
-      int n_neg_pi_rfcut = h_cal_neg_pi->GetEntries();
+      //int n_neg_pi_rfcut = h_cal_neg_pi->GetEntries();
+      int n_neg_pi_rfcut = *d_neg_first_aero_rf.Count()-*d_neg_first_aero_rf_bg.Count()/6.0;
       jout[std::to_string(RunNumber)]["SHMS"]["rfcut"]["pi_all"] = n_neg_pi_rfcut;
 
-      int n_neg_pi_rfcalcut = h_aero_neg_pi->GetEntries();
+      //int n_neg_pi_rfcalcut = h_aero_neg_pi->GetEntries();
+      int n_neg_pi_rfcalcut = *d_neg_first_cal_rf.Count()-*d_neg_bg_cal_rf.Count()/6.0; 
       jout[std::to_string(RunNumber)]["SHMS"]["rfcutcalcut"]["pi_all"] = n_neg_pi_rfcalcut;
 
       std::vector<double> n_neg_pi_cal,n_neg_pi_aero;
@@ -798,8 +802,8 @@ void SHMS_DE_Dummy(int RunGroup=0){
 
 
       //for cal de vs z
-      auto h_cal_should_z = d_neg_bg_aero_rf.Histo1D({"cal_eff","calorimeter_eff;z;cal eff",100,0,1},"z");
-      auto h_cal_should_z_bg = d_neg_bg_aero_rf.Histo1D({"cal_eff","calorimeter_eff;z;cal eff",100,0,1},"z");
+      auto h_cal_should_z = d_neg_first_aero_rf.Histo1D({"cal_eff","calorimeter_eff;z;cal eff",100,0,1},"z");
+      auto h_cal_should_z_bg = d_neg_first_aero_rf.Histo1D({"cal_eff","calorimeter_eff;z;cal eff",100,0,1},"z");
       //for(int bin = 0;bin < h_cal_should_z->GetXaxis()->GetNbins();++bin){
       //  double should_content = h_cal_should_z->GetBinContent(bin);
       //  double should_bg_content = h_cal_should_z_bg->GetBinContent(bin);
@@ -813,8 +817,8 @@ void SHMS_DE_Dummy(int RunGroup=0){
       double SHMS_cal_low_use = j_cuts["P_cal_pi_low"].get<double>();
       double SHMS_cal_high_use = j_cuts["P_cal_pi_high"].get<double>();
       std::string piCutSHMS_use = (" P.cal.etottracknorm > "+std::to_string(SHMS_cal_low_use)+" && P.cal.etottracknorm < " + std::to_string(SHMS_cal_high_use)).c_str();
-      auto h_cal_did_z = d_neg_bg_aero_rf.Filter(piCutSHMS_use).Histo1D({"cal_eff","calorimeter_eff;z;cal eff",100,0,1},"z");
-      auto h_cal_did_z_bg = d_neg_bg_aero_rf.Filter(piCutSHMS_use).Histo1D({"cal_eff","calorimeter_eff;z;cal eff",100,0,1},"z");
+      auto h_cal_did_z = d_neg_first_aero_rf.Filter(piCutSHMS_use).Histo1D({"cal_eff","calorimeter_eff;z;cal eff",100,0,1},"z");
+      auto h_cal_did_z_bg = d_neg_first_aero_rf.Filter(piCutSHMS_use).Histo1D({"cal_eff","calorimeter_eff;z;cal eff",100,0,1},"z");
       h_cal_did_z->Add(h_cal_did_z_bg.GetPtr(),-1.0/6);
       make_negbincont_to_zero(h_cal_did_z.GetPtr());
       change_bincontent(h_cal_did_z.GetPtr(),h_cal_should_z.GetPtr()); 

@@ -18,7 +18,7 @@ static double Get_all_eff(int RunNumber){
   double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
   double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
   double HMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cal_eff"].get<double>();
-  double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
+  //double HMS_cer_eff = j_info[(std::to_string(RunNumber)).c_str()]["HMS_cer_eff"].get<double>();
   double SHMS_cal_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_cal_eff"].get<double>();
   double SHMS_aero_eff = j_info[(std::to_string(RunNumber)).c_str()]["SHMS_aero_eff"].get<double>();
   double FADC_eff = j_info[(std::to_string(RunNumber)).c_str()]["FADC_eff"].get<double>();

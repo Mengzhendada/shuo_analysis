@@ -151,9 +151,12 @@ void write_DE_to_json(){
         double HMS_cal_cut = j_cuts["H_cal_low"].get<double>();
         double HMS_cer_cut = j_cuts["H_cer"].get<double>();
 
-        double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
-        double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
-        double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        double SHMS_cal_eff = 0.94;//Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        double SHMS_aero_eff = 0.9937;//Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        double HMS_cal_eff = 0.9928;//Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        //double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        //double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        //double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
         double HMS_cer_eff = Get_HMS_cer_Eff(RunNumber,HMS_cer_cut);            
 
 
@@ -187,9 +190,12 @@ void write_DE_to_json(){
         double HMS_cal_cut = j_cuts["H_cal_low"].get<double>();
         double HMS_cer_cut = j_cuts["H_cer"].get<double>();
 
-        double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
-        double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
-        double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        double SHMS_cal_eff = 0.94;//Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        double SHMS_aero_eff = 0.9937;//Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        double HMS_cal_eff = 0.9928;//Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        //double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        //double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        //double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
         double HMS_cer_eff = Get_HMS_cer_Eff(RunNumber,HMS_cer_cut);            
 
         if(SHMS_cal_eff>0 && SHMS_cal_eff<1 && SHMS_aero_eff>0 && SHMS_aero_eff<1)
@@ -229,9 +235,12 @@ void write_DE_to_json(){
         double HMS_cal_cut = j_cuts["H_cal_low"].get<double>();
         double HMS_cer_cut = j_cuts["H_cer"].get<double>();
 
-        double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
-        double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
-        double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        double SHMS_cal_eff = 0.94;//Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        double SHMS_aero_eff = 0.9937;//Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        double HMS_cal_eff = 0.9928;//Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        //double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        //double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        //double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
         double HMS_cer_eff = Get_HMS_cer_Eff(RunNumber,HMS_cer_cut);            
 
 
@@ -265,9 +274,12 @@ void write_DE_to_json(){
         double HMS_cal_cut = j_cuts["H_cal_low"].get<double>();
         double HMS_cer_cut = j_cuts["H_cer"].get<double>();
 
-        double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
-        double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
-        double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        double SHMS_cal_eff = 0.94;//Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        double SHMS_aero_eff = 0.9937;//Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        double HMS_cal_eff = 0.9928;//Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        //double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        //double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        //double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
         double HMS_cer_eff = Get_HMS_cer_Eff(RunNumber,HMS_cer_cut);            
 
         if(SHMS_cal_eff>0 && SHMS_cal_eff<1 && SHMS_aero_eff>0 && SHMS_aero_eff<1)
@@ -307,9 +319,9 @@ void write_DE_to_json(){
         double HMS_cal_cut = j_cuts["H_cal_low"].get<double>();
         double HMS_cer_cut = j_cuts["H_cer"].get<double>();
 
-        double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
-        double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
-        double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        double SHMS_cal_eff = 0.94;//Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        double SHMS_aero_eff = 0.9937;//Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        double HMS_cal_eff = 0.9928;//Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
         double HMS_cer_eff = Get_HMS_cer_Eff(RunNumber,HMS_cer_cut);            
 
 
@@ -343,9 +355,12 @@ void write_DE_to_json(){
         double HMS_cal_cut = j_cuts["H_cal_low"].get<double>();
         double HMS_cer_cut = j_cuts["H_cer"].get<double>();
 
-        double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
-        double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
-        double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        double SHMS_cal_eff = 0.94;//Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        double SHMS_aero_eff = 0.9937;//Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        double HMS_cal_eff = 0.9928;//Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
+        //double SHMS_cal_eff = Get_SHMS_Cal_Eff(RunNumber,SHMS_cal_cut);            
+        //double SHMS_aero_eff = Get_SHMS_aero_Eff(RunNumber,SHMS_aero_cut);            
+        //double HMS_cal_eff = Get_HMS_Cal_Eff(RunNumber,HMS_cal_cut);            
         double HMS_cer_eff = Get_HMS_cer_Eff(RunNumber,HMS_cer_cut);            
 
         if(SHMS_cal_eff>0 && SHMS_cal_eff<1 && SHMS_aero_eff>0 && SHMS_aero_eff<1)
