@@ -30,10 +30,10 @@ void get_bin_average(){
   auto d_pos_pi = d_pos_raw.Define("xbjmean",divide_by_all,{"xbj"})
     .Define("zmean",divide_by_all,{"z"})
     ;
-  auto h_x_pos = d_pos_pi.Histo1D({"","",100,0,1},"xbj");
-  std::cout<<h_x_pos->FindBin(0.36)<<" "<<h_x_pos->GetBinContent(h_x_pos->FindBin(0.36))<<std::endl;
+  auto h_x_pos = d_pos_pi.Histo1D({"","",20,0,1},"xbj");
+  std::cout<<h_x_pos->FindBin(0.36)<<" "<<h_x_pos->GetBinContent(h_x_pos->FindBin(0.36))<<" "<<h_x_pos->GetBinCenter(h_x_pos->FindBin(0.36))<<std::endl;
 
-//  h_x_pos->Rebin(5);
+  //h_x_pos->Rebin(5);
   auto get_weight = [&](double x){
      int binNumber = h_x_pos->FindBin(x);
      double binCenter = h_x_pos->GetBinCenter(binNumber);
@@ -54,14 +54,15 @@ void get_bin_average(){
     .Define("weight_xbj",get_weight,{"xbj"})
     .Define("weight_xbj_ratio",get_ratio_weight,{"xbj"})
     ;
-  auto h_weight_xbj = d_pos_pi_after.Histo1D({"","",100,0,1},"xbj","weight_xbj");
-  auto h_weight_xbj_ratio = d_pos_pi_after.Histo1D({"","",100,0,1},"xbj","weight_xbj_ratio");
+  auto h_weight_xbj = d_pos_pi_after.Histo1D({"","",20,0,1},"xbj","weight_xbj");
+  auto h_weight_xbj_ratio = d_pos_pi_after.Histo1D({"","",20,0,1},"xbj","weight_xbj_ratio");
+  std::cout<<h_weight_xbj->FindBin(0.33)<<" "<<h_weight_xbj->GetBinContent(h_weight_xbj->FindBin(0.33))<<" "<<h_weight_xbj->GetBinCenter(h_weight_xbj->FindBin(0.33))<<" "<<h_weight_xbj_ratio->GetBinContent(h_weight_xbj_ratio->FindBin(0.33))<<std::endl;
   //h_weight_xbj->GetYaxis()->SetRangeUser(0.9,1.1);
   std::cout<<"check"<<std::endl;
-  h_x_pos->Rebin(2);
-  h_weight_xbj->Rebin(2);
+  //h_x_pos->Rebin(5);
+  //h_weight_xbj->Rebin(5);
   //h_weight_xbj->Scale(1.0/5);
-  h_weight_xbj_ratio->Rebin(2);
+  //h_weight_xbj_ratio->Rebin(5);
   //h_weight_xbj_ratio->Scale(1.0/5);
   //auto h_x_pos_mean = d_pos_pi_after.Histo1D({"","",100,0,1},"xbj","weight_xbj");
   TCanvas *c_check_1d = new TCanvas();
