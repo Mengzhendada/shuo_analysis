@@ -63,6 +63,8 @@ void statistic_runs_H2(int RunGroup=0){
     ifs>>j_cuts;
   }
 
+  int bins = j_cuts["bins"].get<int>();
+
   auto pt = [](double p,double th){return p*std::sin(th);};
   double pt_cut_num = j_cuts["pt_cut"].get<double>();
   std::string pt_cut = "pt<"+std::to_string(pt_cut_num);
@@ -100,20 +102,20 @@ void statistic_runs_H2(int RunGroup=0){
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
-      auto h_Q2_x_pos = d_pos_pi.Histo2D({"Q2_x","Q2_x",100,0,1,100,0,10},"xbj","Q2");
+      auto h_Q2_x_pos = d_pos_pi.Histo2D({"Q2_x","Q2_x",bins,0,1,bins,0,10},"xbj","Q2");
       h_Q2_x_pos->Write();
-      auto h_xbj = d_pos_pi.Histo1D({"xbj","xbj",100,0,1},"xbj","weight");
+      auto h_xbj = d_pos_pi.Histo1D({"xbj","xbj",bins,0,1},"xbj","weight");
       h_xbj->Write();
-      auto h_z = d_pos_pi.Histo1D({"z","z",100,0,1},"z","weight");
+      auto h_z = d_pos_pi.Histo1D({"z","z",bins,0,1},"z","weight");
       h_z->Write();
-      auto h_xbj_bg = d_pos_bg.Histo1D({"xbj_bg","xbj_bg",100,0,1},"xbj","weight");
+      auto h_xbj_bg = d_pos_bg.Histo1D({"xbj_bg","xbj_bg",bins,0,1},"xbj","weight");
       h_xbj_bg->Write();
-      auto h_z_bg = d_pos_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
+      auto h_z_bg = d_pos_bg.Histo1D({"z_bg","z_bg",bins,0,1},"z","weight");
       h_z_bg->Write();
-      auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj");
+      auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",bins,0,1,bins,0,1},"z","xbj");
       h_x_z_pos->Write();
       
-      auto h_Q2_z_pos = d_pos_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
+      auto h_Q2_z_pos = d_pos_pi.Histo2D({"Q2_z","Q2_z",bins,1,10,bins,0,1},"Q2","z");
       h_Q2_z_pos->Write();
       rootfile_out->Close();
     
@@ -146,20 +148,20 @@ void statistic_runs_H2(int RunGroup=0){
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
-      auto h_Q2_x_neg = d_neg_pi.Histo2D({"Q2_x","Q2_x",100,0,1,100,0,10},"xbj","Q2");
+      auto h_Q2_x_neg = d_neg_pi.Histo2D({"Q2_x","Q2_x",bins,0,1,bins,0,10},"xbj","Q2");
       h_Q2_x_neg->Write();
-      auto h_xbj = d_neg_pi.Histo1D({"xbj","xbj",100,0,1},"xbj","weight");
+      auto h_xbj = d_neg_pi.Histo1D({"xbj","xbj",bins,0,1},"xbj","weight");
       h_xbj->Write();
-      auto h_z = d_neg_pi.Histo1D({"z","z",100,0,1},"z","weight");
+      auto h_z = d_neg_pi.Histo1D({"z","z",bins,0,1},"z","weight");
       h_z->Write();
-      auto h_xbj_bg = d_neg_bg.Histo1D({"xbj_bg","xbj_bg",100,0,1},"xbj","weight");
+      auto h_xbj_bg = d_neg_bg.Histo1D({"xbj_bg","xbj_bg",bins,0,1},"xbj","weight");
       h_xbj_bg->Write();
-      auto h_z_bg = d_neg_bg.Histo1D({"z_bg","z_bg",100,0,1},"z","weight");
+      auto h_z_bg = d_neg_bg.Histo1D({"z_bg","z_bg",bins,0,1},"z","weight");
       h_z_bg->Write();
-      auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",100,0,1,100,0,1},"z","xbj");
+      auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",bins,0,1,bins,0,1},"z","xbj");
       h_x_z_neg->Write();
       
-      auto h_Q2_z_neg = d_neg_pi.Histo2D({"Q2_z","Q2_z",100,1,10,100,0,1},"Q2","z");
+      auto h_Q2_z_neg = d_neg_pi.Histo2D({"Q2_z","Q2_z",bins,1,10,bins,0,1},"Q2","z");
       h_Q2_z_neg->Write();
       rootfile_out->Close();
     
