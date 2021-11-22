@@ -221,17 +221,21 @@ void statistic_runs_D2(int RunGroup=0){
       h_x_z_pos_3->Write();
       auto h_x_z_bg_3 = d_pos_bg_3.Histo2D({"x_z_bg_3","x_z_bg_3",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg_3->Write();
-      
-      auto h_xzprime_pos_1 = d_pos_pi_1.Histo2D({"xzprime_1","xzprime_1",bins,0,1,bins,0,1},"zprime","xprime","weight");
+     
+      auto h_xzprime_pos = d_pos_pi.Histo2D({"xzprime","xzprime",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_pos->Write();
+      auto h_xzprime_bg = d_pos_bg.Histo2D({"xzprime_bg","xzprime_bg",bins,0,1,bins,0,1},"zprime","xprime","weight");
+      h_xzprime_bg->Write();
+      auto h_xzprime_pos_1 = d_pos_pi_1.Histo2D({"xzprime_1","xzprime_1",bins,0,1,bins,0,1},"zprime","xprime","weight");
+      h_xzprime_pos_1->Write();
       auto h_xzprime_bg_1 = d_pos_bg_1.Histo2D({"xzprime_bg_1","xzprime_bg_1",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_bg_1->Write();
       auto h_xzprime_pos_2 = d_pos_pi_2.Histo2D({"xzprime_2","xzprime_2",bins,0,1,bins,0,1},"zprime","xprime","weight");
-      h_xzprime_pos->Write();
+      h_xzprime_pos_1->Write();
       auto h_xzprime_bg_2 = d_pos_bg_2.Histo2D({"xzprime_bg_2","xzprime_bg_2",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_bg_2->Write();
       auto h_xzprime_pos_3 = d_pos_pi_3.Histo2D({"xzprime_3","xzprime_3",bins,0,1,bins,0,1},"zprime","xprime","weight");
-      h_xzprime_pos->Write();
+      h_xzprime_pos_1->Write();
       auto h_xzprime_bg_3 = d_pos_bg_3.Histo2D({"xzprime_bg_3","xzprime_bg_3",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_bg_3->Write();
 
@@ -263,7 +267,7 @@ void statistic_runs_D2(int RunGroup=0){
         int x_bin_number = h_xzprime_pos->GetYaxis()->FindBin(x);
         int z_bin_number = h_xzprime_pos->GetXaxis()->FindBin(z);
         double x_bincenter = h_xzprime_pos->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_pos->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent()/6.0;
+        double all = h_xzprime_pos->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
         return x/(all*x_bincenter);
         //return x/all;
       };
@@ -272,7 +276,7 @@ void statistic_runs_D2(int RunGroup=0){
         int x_bin_number = h_xzprime_pos->GetYaxis()->FindBin(x);
         int z_bin_number = h_xzprime_pos->GetXaxis()->FindBin(z);
         double z_bincenter = h_xzprime_pos->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_pos->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent()/6.0;
+        double all = h_xzprime_pos->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
         return z/(all*z_bincenter);
         //return z/all;
       };
@@ -591,16 +595,20 @@ void statistic_runs_D2(int RunGroup=0){
       auto h_x_z_bg_3 = d_neg_bg_3.Histo2D({"x_z_bg_3","x_z_bg_3",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg_3->Write();
       
-      auto h_xzprime_neg_1 = d_neg_pi_1.Histo2D({"xzprime_1","xzprime_1",bins,0,1,bins,0,1},"zprime","xprime","weight");
+      auto h_xzprime_neg = d_neg_pi.Histo2D({"xzprime","xzprime",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_neg->Write();
+      auto h_xzprime_bg = d_neg_bg.Histo2D({"xzprime_bg","xzprime_bg",bins,0,1,bins,0,1},"zprime","xprime","weight");
+      h_xzprime_bg->Write();
+      auto h_xzprime_neg_1 = d_neg_pi_1.Histo2D({"xzprime_1","xzprime_1",bins,0,1,bins,0,1},"zprime","xprime","weight");
+      h_xzprime_neg_1->Write();
       auto h_xzprime_bg_1 = d_neg_bg_1.Histo2D({"xzprime_bg_1","xzprime_bg_1",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_bg_1->Write();
       auto h_xzprime_neg_2 = d_neg_pi_2.Histo2D({"xzprime_2","xzprime_2",bins,0,1,bins,0,1},"zprime","xprime","weight");
-      h_xzprime_neg->Write();
+      h_xzprime_neg_1->Write();
       auto h_xzprime_bg_2 = d_neg_bg_2.Histo2D({"xzprime_bg_2","xzprime_bg_2",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_bg_2->Write();
       auto h_xzprime_neg_3 = d_neg_pi_3.Histo2D({"xzprime_3","xzprime_3",bins,0,1,bins,0,1},"zprime","xprime","weight");
-      h_xzprime_neg->Write();
+      h_xzprime_neg_1->Write();
       auto h_xzprime_bg_3 = d_neg_bg_3.Histo2D({"xzprime_bg_3","xzprime_bg_3",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_bg_3->Write();
 
@@ -632,7 +640,7 @@ void statistic_runs_D2(int RunGroup=0){
         int x_bin_number = h_xzprime_neg->GetYaxis()->FindBin(x);
         int z_bin_number = h_xzprime_neg->GetXaxis()->FindBin(z);
         double x_bincenter = h_xzprime_neg->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_neg->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent()/6.0;
+        double all = h_xzprime_neg->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
         return x/(all*x_bincenter);
         //return x/all;
       };
@@ -641,7 +649,7 @@ void statistic_runs_D2(int RunGroup=0){
         int x_bin_number = h_xzprime_neg->GetYaxis()->FindBin(x);
         int z_bin_number = h_xzprime_neg->GetXaxis()->FindBin(z);
         double z_bincenter = h_xzprime_neg->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_neg->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent()/6.0;
+        double all = h_xzprime_neg->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
         return z/(all*z_bincenter);
         //return z/all;
       };
