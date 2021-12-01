@@ -207,18 +207,26 @@ void statistic_runs_D2(int RunGroup=0){
       h_zprime_bg_3->Write();
       auto h_x_z_pos = d_pos_pi.Histo2D({"x_z","x_z",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_pos->Write();
+      auto h_x_z_pos_raw = d_pos_pi.Histo2D({"x_z_raw","x_z_raw",bins,0,1,bins,0,1},"z","xbj");
+      h_x_z_pos_raw->Write();
       auto h_x_z_bg = d_pos_bg.Histo2D({"x_z_bg","x_z_bg",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg->Write();
       auto h_x_z_pos_1 = d_pos_pi_1.Histo2D({"x_z_1","x_z_1",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_pos_1->Write();
+      auto h_x_z_posraw_1 = d_pos_pi_1.Histo2D({"x_z_1","x_z_1",bins,0,1,bins,0,1},"z","xbj");
+      h_x_z_posraw_1->Write();
       auto h_x_z_bg_1 = d_pos_bg_1.Histo2D({"x_z_bg_1","x_z_bg_1",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg_1->Write();
       auto h_x_z_pos_2 = d_pos_pi_2.Histo2D({"x_z_2","x_z_2",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_pos_2->Write();
+      auto h_x_z_posraw_2 = d_pos_pi_2.Histo2D({"x_z_2","x_z_2",bins,0,1,bins,0,1},"z","xbj");
+      h_x_z_posraw_2->Write();
       auto h_x_z_bg_2 = d_pos_bg_2.Histo2D({"x_z_bg_2","x_z_bg_2",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg_2->Write();
       auto h_x_z_pos_3 = d_pos_pi_3.Histo2D({"x_z_3","x_z_3",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_pos_3->Write();
+      auto h_x_z_posraw_3 = d_pos_pi_3.Histo2D({"x_z_3","x_z_3",bins,0,1,bins,0,1},"z","xbj");
+      h_x_z_posraw_3->Write();
       auto h_x_z_bg_3 = d_pos_bg_3.Histo2D({"x_z_bg_3","x_z_bg_3",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg_3->Write();
      
@@ -244,52 +252,53 @@ void statistic_runs_D2(int RunGroup=0){
       //h_Q2_z_pos->RebinY(Rebin_n);
       h_Q2_z_pos->Write();
       
-      auto get_x_weight_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_pos->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_pos->GetXaxis()->FindBin(z);
-        double x_bincenter = h_x_z_pos->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_x_z_pos->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_z_weight_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_pos->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_pos->GetXaxis()->FindBin(z);
-        double z_bincenter = h_x_z_pos->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_x_z_pos->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto get_xprime_weight_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_pos->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_pos->GetXaxis()->FindBin(z);
-        double x_bincenter = h_xzprime_pos->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_pos->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_zprime_weight_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_pos->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_pos->GetXaxis()->FindBin(z);
-        double z_bincenter = h_xzprime_pos->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_pos->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto d_pos_pi_after = d_pos_pi
-        .Define("weighted_xbj",get_x_weight_posxz,{"xbj","z"})
-        .Define("weighted_z",get_z_weight_posxz,{"xbj","z"})
-        .Define("weighted_xprime",get_xprime_weight_posxz,{"xprime","zprime"})
-        .Define("weighted_zprime",get_zprime_weight_posxz,{"xprime","zprime"})
-        ;
-      auto h_weight_xbj = d_pos_pi_after.Histo2D({"weighted_xbj","weighted_xbj",bins,0,1,bins,0,1},"z","xbj","weighted_xbj");
-      auto h_weight_z = d_pos_pi_after.Histo2D({"weighted_z","weighted_z",bins,0,1,bins,0,1},"z","xbj","weighted_z");
-      auto h_weight_xprime = d_pos_pi_after.Histo2D({"weighted_xprime","weighted_xprime",bins,0,1,bins,0,1},"z","xbj","weighted_xprime");
-      auto h_weight_zprime = d_pos_pi_after.Histo2D({"weighted_zprime","weighted_zprime",bins,0,1,bins,0,1},"z","xbj","weighted_zprime");
+      //auto get_x_weight_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_pos->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_pos->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_x_z_pos->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_x_z_pos->GetBinContent(z_bin_number,x_bin_number);
+      //  //-h_x_z_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_z_weight_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_pos->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_pos->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_x_z_pos->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_x_z_pos->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto get_xprime_weight_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_pos->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_pos->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_xzprime_pos->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_xzprime_pos->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_zprime_weight_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_pos->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_pos->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_xzprime_pos->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_xzprime_pos->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto d_pos_pi_after = d_pos_pi
+      //  .Define("weighted_xbj",get_x_weight_posxz,{"xbj","z"})
+      //  .Define("weighted_z",get_z_weight_posxz,{"xbj","z"})
+      //  .Define("weighted_xprime",get_xprime_weight_posxz,{"xprime","zprime"})
+      //  .Define("weighted_zprime",get_zprime_weight_posxz,{"xprime","zprime"})
+      //  ;
+      auto h_weight_xbj = d_pos_pi.Histo2D({"weighted_xbj","weighted_xbj",bins,0,1,bins,0,1},"z","xbj","xbj");
+      auto h_weight_z = d_pos_pi.Histo2D({"weighted_z","weighted_z",bins,0,1,bins,0,1},"z","xbj","z");
+      auto h_weight_xprime = d_pos_pi.Histo2D({"weighted_xprime","weighted_xprime",bins,0,1,bins,0,1},"zprime","xprime","xprime");
+      auto h_weight_zprime = d_pos_pi.Histo2D({"weighted_zprime","weighted_zprime",bins,0,1,bins,0,1},"zprime","xprime","zprime");
       //h_weight_xbj->RebinX(Rebin_n);
       //h_weight_xbj->RebinY(Rebin_n);
       h_weight_xbj->Write();
@@ -299,154 +308,154 @@ void statistic_runs_D2(int RunGroup=0){
       h_weight_xprime->Write();
       h_weight_zprime->Write();
       
-      auto get_x_weight_1_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_pos_1->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_pos_1->GetXaxis()->FindBin(z);
-        double x_bincenter = h_x_z_pos_1->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_x_z_pos_1->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_z_weight_1_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_pos_1->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_pos_1->GetXaxis()->FindBin(z);
-        double z_bincenter = h_x_z_pos_1->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_x_z_pos_1->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto get_xprime_weight_1_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_pos_1->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_pos_1->GetXaxis()->FindBin(z);
-        double x_bincenter = h_xzprime_pos_1->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_pos_1->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_zprime_weight_1_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_pos_1->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_pos_1->GetXaxis()->FindBin(z);
-        double z_bincenter = h_xzprime_pos_1->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_pos_1->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto d_pos_pi_1_after = d_pos_pi_1
-        .Define("weighted_xbj",get_x_weight_1_posxz,{"xbj","z"})
-        .Define("weighted_z",get_z_weight_1_posxz,{"xbj","z"})
-        .Define("weighted_xprime",get_xprime_weight_1_posxz,{"xprime","zprime"})
-        .Define("weighted_zprime",get_zprime_weight_1_posxz,{"xprime","zprime"})
-        ;
-      auto h_weight_xbj_1 = d_pos_pi_1_after.Histo2D({"weighted_xbj_1","weighted_xbj_1",bins,0,1,bins,0,1},"z","xbj","weighted_xbj");
-      auto h_weight_z_1 = d_pos_pi_1_after.Histo2D({"weighted_z_1","weighted_z_1",bins,0,1,bins,0,1},"z","xbj","weighted_z");
-      auto h_weight_xprime_1 = d_pos_pi_1_after.Histo2D({"weighted_xprime_1","weighted_xprime_1",bins,0,1,bins,0,1},"z","xbj","weighted_xprime");
-      auto h_weight_zprime_1 = d_pos_pi_1_after.Histo2D({"weighted_zprime_1","weighted_zprime_1",bins,0,1,bins,0,1},"z","xbj","weighted_zprime");
+      //auto get_x_weight_1_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_pos_1->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_pos_1->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_x_z_pos_1->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_x_z_pos_1->GetBinContent(z_bin_number,x_bin_number);//-h_x_z_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_z_weight_1_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_pos_1->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_pos_1->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_x_z_pos_1->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_x_z_pos_1->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto get_xprime_weight_1_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_pos_1->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_pos_1->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_xzprime_pos_1->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_xzprime_pos_1->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_zprime_weight_1_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_pos_1->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_pos_1->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_xzprime_pos_1->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_xzprime_pos_1->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto d_pos_pi_1_after = d_pos_pi_1
+      //  .Define("weighted_xbj",get_x_weight_1_posxz,{"xbj","z"})
+      //  .Define("weighted_z",get_z_weight_1_posxz,{"xbj","z"})
+      //  .Define("weighted_xprime",get_xprime_weight_1_posxz,{"xprime","zprime"})
+      //  .Define("weighted_zprime",get_zprime_weight_1_posxz,{"xprime","zprime"})
+      //  ;
+      auto h_weight_xbj_1 = d_pos_pi_1.Histo2D({"weighted_xbj_1","weighted_xbj_1",bins,0,1,bins,0,1},"z","xbj","xbj");
+      auto h_weight_z_1 = d_pos_pi_1.Histo2D({"weighted_z_1","weighted_z_1",bins,0,1,bins,0,1},"z","xbj","z");
+      auto h_weight_xprime_1 = d_pos_pi_1.Histo2D({"weighted_xprime_1","weighted_xprime_1",bins,0,1,bins,0,1},"zprime","xprime","xprime");
+      auto h_weight_zprime_1 = d_pos_pi_1.Histo2D({"weighted_zprime_1","weighted_zprime_1",bins,0,1,bins,0,1},"zprime","xprime","zprime");
       h_weight_xbj_1->Write();
       h_weight_z_1->Write();
       h_weight_xprime_1->Write();
       h_weight_zprime_1->Write();
       
-      auto get_x_weight_2_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_pos_2->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_pos_2->GetXaxis()->FindBin(z);
-        double x_bincenter = h_x_z_pos_2->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_x_z_pos_2->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_z_weight_2_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_pos_2->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_pos_2->GetXaxis()->FindBin(z);
-        double z_bincenter = h_x_z_pos_2->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_x_z_pos_2->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto get_xprime_weight_2_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_pos_2->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_pos_2->GetXaxis()->FindBin(z);
-        double x_bincenter = h_xzprime_pos_2->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_pos_2->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_zprime_weight_2_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_pos_2->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_pos_2->GetXaxis()->FindBin(z);
-        double z_bincenter = h_xzprime_pos_2->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_pos_2->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto d_pos_pi_2_after = d_pos_pi_2
-        .Define("weighted_xbj",get_x_weight_2_posxz,{"xbj","z"})
-        .Define("weighted_z",get_z_weight_2_posxz,{"xbj","z"})
-        .Define("weighted_xprime",get_xprime_weight_2_posxz,{"xprime","zprime"})
-        .Define("weighted_zprime",get_zprime_weight_2_posxz,{"xprime","zprime"})
-        ;
-      auto h_weight_xbj_2 = d_pos_pi_2_after.Histo2D({"weighted_xbj_2","weighted_xbj_2",bins,0,1,bins,0,1},"z","xbj","weighted_xbj");
-      auto h_weight_z_2 = d_pos_pi_2_after.Histo2D({"weighted_z_2","weighted_z_2",bins,0,1,bins,0,1},"z","xbj","weighted_z");
-      auto h_weight_xprime_2 = d_pos_pi_2_after.Histo2D({"weighted_xprime_2","weighted_xprime_2",bins,0,1,bins,0,1},"z","xbj","weighted_xprime");
-      auto h_weight_zprime_2 = d_pos_pi_2_after.Histo2D({"weighted_zprime_2","weighted_zprime_2",bins,0,1,bins,0,1},"z","xbj","weighted_zprime");
+      //auto get_x_weight_2_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_pos_2->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_pos_2->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_x_z_pos_2->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_x_z_pos_2->GetBinContent(z_bin_number,x_bin_number);//-h_x_z_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_z_weight_2_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_pos_2->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_pos_2->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_x_z_pos_2->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_x_z_pos_2->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto get_xprime_weight_2_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_pos_2->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_pos_2->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_xzprime_pos_2->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_xzprime_pos_2->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_zprime_weight_2_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_pos_2->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_pos_2->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_xzprime_pos_2->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_xzprime_pos_2->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto d_pos_pi_2_after = d_pos_pi_2
+      //  .Define("weighted_xbj",get_x_weight_2_posxz,{"xbj","z"})
+      //  .Define("weighted_z",get_z_weight_2_posxz,{"xbj","z"})
+      //  .Define("weighted_xprime",get_xprime_weight_2_posxz,{"xprime","zprime"})
+      //  .Define("weighted_zprime",get_zprime_weight_2_posxz,{"xprime","zprime"})
+      //  ;
+      auto h_weight_xbj_2 = d_pos_pi_2.Histo2D({"weighted_xbj_2","weighted_xbj_2",bins,0,1,bins,0,1},"z","xbj","xbj");
+      auto h_weight_z_2 = d_pos_pi_2.Histo2D({"weighted_z_2","weighted_z_2",bins,0,1,bins,0,1},"z","xbj","z");
+      auto h_weight_xprime_2 = d_pos_pi_2.Histo2D({"weighted_xprime_2","weighted_xprime_2",bins,0,1,bins,0,1},"zprime","xprime","xprime");
+      auto h_weight_zprime_2 = d_pos_pi_2.Histo2D({"weighted_zprime_2","weighted_zprime_2",bins,0,1,bins,0,1},"zprime","xprime","zprime");
       h_weight_xbj_2->Write();
       h_weight_z_2->Write();
       h_weight_xprime_2->Write();
       h_weight_zprime_2->Write();
       
-      auto get_x_weight_3_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_pos_3->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_pos_3->GetXaxis()->FindBin(z);
-        double x_bincenter = h_x_z_pos_3->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_x_z_pos_3->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_z_weight_3_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_pos_3->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_pos_3->GetXaxis()->FindBin(z);
-        double z_bincenter = h_x_z_pos_3->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_x_z_pos_3->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto get_xprime_weight_3_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_pos_3->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_pos_3->GetXaxis()->FindBin(z);
-        double x_bincenter = h_xzprime_pos_3->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_pos_3->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_zprime_weight_3_posxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_pos_3->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_pos_3->GetXaxis()->FindBin(z);
-        double z_bincenter = h_xzprime_pos_3->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_pos_3->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto d_pos_pi_3_after = d_pos_pi_3
-        .Define("weighted_xbj",get_x_weight_3_posxz,{"xbj","z"})
-        .Define("weighted_z",get_z_weight_3_posxz,{"xbj","z"})
-        .Define("weighted_xprime",get_xprime_weight_3_posxz,{"xprime","zprime"})
-        .Define("weighted_zprime",get_zprime_weight_3_posxz,{"xprime","zprime"})
-        ;
-      auto h_weight_xbj_3 = d_pos_pi_3_after.Histo2D({"weighted_xbj_3","weighted_xbj_3",bins,0,1,bins,0,1},"z","xbj","weighted_xbj");
-      auto h_weight_z_3 = d_pos_pi_3_after.Histo2D({"weighted_z_3","weighted_z_3",bins,0,1,bins,0,1},"z","xbj","weighted_z");
-      auto h_weight_xprime_3 = d_pos_pi_3_after.Histo2D({"weighted_xprime_3","weighted_xprime_3",bins,0,1,bins,0,1},"z","xbj","weighted_xprime");
-      auto h_weight_zprime_3 = d_pos_pi_3_after.Histo2D({"weighted_zprime_3","weighted_zprime_3",bins,0,1,bins,0,1},"z","xbj","weighted_zprime");
+      //auto get_x_weight_3_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_pos_3->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_pos_3->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_x_z_pos_3->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_x_z_pos_3->GetBinContent(z_bin_number,x_bin_number);//-h_x_z_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_z_weight_3_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_pos_3->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_pos_3->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_x_z_pos_3->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_x_z_pos_3->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto get_xprime_weight_3_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_pos_3->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_pos_3->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_xzprime_pos_3->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_xzprime_pos_3->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_zprime_weight_3_posxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_pos_3->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_pos_3->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_xzprime_pos_3->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_xzprime_pos_3->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto d_pos_pi_3_after = d_pos_pi_3
+      //  .Define("weighted_xbj",get_x_weight_3_posxz,{"xbj","z"})
+      //  .Define("weighted_z",get_z_weight_3_posxz,{"xbj","z"})
+      //  .Define("weighted_xprime",get_xprime_weight_3_posxz,{"xprime","zprime"})
+      //  .Define("weighted_zprime",get_zprime_weight_3_posxz,{"xprime","zprime"})
+      //  ;
+      auto h_weight_xbj_3 = d_pos_pi_3.Histo2D({"weighted_xbj_3","weighted_xbj_3",bins,0,1,bins,0,1},"z","xbj","xbj");
+      auto h_weight_z_3 = d_pos_pi_3.Histo2D({"weighted_z_3","weighted_z_3",bins,0,1,bins,0,1},"z","xbj","z");
+      auto h_weight_xprime_3 = d_pos_pi_3.Histo2D({"weighted_xprime_3","weighted_xprime_3",bins,0,1,bins,0,1},"zprime","xprime","xprime");
+      auto h_weight_zprime_3 = d_pos_pi_3.Histo2D({"weighted_zprime_3","weighted_zprime_3",bins,0,1,bins,0,1},"zprime","xprime","zprime");
       h_weight_xbj_3->Write();
       h_weight_z_3->Write();
       h_weight_xprime_3->Write();
@@ -454,7 +463,8 @@ void statistic_runs_D2(int RunGroup=0){
       
       rootfile_out->Close();
 
-    }
+    }//for pos
+
 
     //for neg runs
     //loop over each neg runs data
@@ -462,7 +472,6 @@ void statistic_runs_D2(int RunGroup=0){
       int RunNumber = *it;
       std::cout<<"neg data"<<RunNumber<<std::endl;
       std::string rootfile_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
-
       ROOT::RDataFrame d_neg_raw("T",rootfile_name);
 
       auto d_neg_pi = d_neg_raw.Define("pt",pt,{"P_gtr_p","P_kin_secondary_th_xq"})
@@ -470,7 +479,6 @@ void statistic_runs_D2(int RunGroup=0){
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
         ;
-
       int pion_n = *d_neg_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
       auto d_neg_pi_1 = d_neg_pi.Filter(Q2_low_cut);
@@ -488,9 +496,9 @@ void statistic_runs_D2(int RunGroup=0){
       auto d_neg_bg_2 = d_neg_bg.Filter(Q2_middle_cut);
       auto d_neg_bg_3 = d_neg_bg.Filter(Q2_high_cut);
 
-
       int bg_n = *d_neg_bg.Count();
       jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
+
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
       TFile *rootfile_out = new TFile(rootfile_out_name.c_str(),"RECREATE");
@@ -575,26 +583,30 @@ void statistic_runs_D2(int RunGroup=0){
       h_zprime_bg_2->Write();
       h_zprime_bg_3->Write();
       auto h_x_z_neg = d_neg_pi.Histo2D({"x_z","x_z",bins,0,1,bins,0,1},"z","xbj","weight");
-      //h_x_z_neg->RebinX(Rebin_n);
-      //h_x_z_neg->RebinY(Rebin_n);
+      h_x_z_neg->Write();
+      auto h_x_z_negraw = d_neg_pi.Histo2D({"x_z_raw","x_z_raw",bins,0,1,bins,0,1},"z","xbj");
       h_x_z_neg->Write();
       auto h_x_z_bg = d_neg_bg.Histo2D({"x_z_bg","x_z_bg",bins,0,1,bins,0,1},"z","xbj","weight");
-      //h_x_z_bg->RebinX(Rebin_n);
-      //h_x_z_bg->RebinY(Rebin_n);
       h_x_z_bg->Write();
       auto h_x_z_neg_1 = d_neg_pi_1.Histo2D({"x_z_1","x_z_1",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_neg_1->Write();
+      auto h_x_z_negraw_1 = d_neg_pi_1.Histo2D({"x_z_1","x_z_1",bins,0,1,bins,0,1},"z","xbj");
+      h_x_z_negraw_1->Write();
       auto h_x_z_bg_1 = d_neg_bg_1.Histo2D({"x_z_bg_1","x_z_bg_1",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg_1->Write();
       auto h_x_z_neg_2 = d_neg_pi_2.Histo2D({"x_z_2","x_z_2",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_neg_2->Write();
+      auto h_x_z_negraw_2 = d_neg_pi_2.Histo2D({"x_z_2","x_z_2",bins,0,1,bins,0,1},"z","xbj");
+      h_x_z_negraw_2->Write();
       auto h_x_z_bg_2 = d_neg_bg_2.Histo2D({"x_z_bg_2","x_z_bg_2",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg_2->Write();
       auto h_x_z_neg_3 = d_neg_pi_3.Histo2D({"x_z_3","x_z_3",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_neg_3->Write();
+      auto h_x_z_negraw_3 = d_neg_pi_3.Histo2D({"x_z_3","x_z_3",bins,0,1,bins,0,1},"z","xbj");
+      h_x_z_negraw_3->Write();
       auto h_x_z_bg_3 = d_neg_bg_3.Histo2D({"x_z_bg_3","x_z_bg_3",bins,0,1,bins,0,1},"z","xbj","weight");
       h_x_z_bg_3->Write();
-      
+     
       auto h_xzprime_neg = d_neg_pi.Histo2D({"xzprime","xzprime",bins,0,1,bins,0,1},"zprime","xprime","weight");
       h_xzprime_neg->Write();
       auto h_xzprime_bg = d_neg_bg.Histo2D({"xzprime_bg","xzprime_bg",bins,0,1,bins,0,1},"zprime","xprime","weight");
@@ -617,52 +629,53 @@ void statistic_runs_D2(int RunGroup=0){
       //h_Q2_z_neg->RebinY(Rebin_n);
       h_Q2_z_neg->Write();
       
-      auto get_x_weight_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_neg->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_neg->GetXaxis()->FindBin(z);
-        double x_bincenter = h_x_z_neg->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_x_z_neg->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_z_weight_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_neg->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_neg->GetXaxis()->FindBin(z);
-        double z_bincenter = h_x_z_neg->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_x_z_neg->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto get_xprime_weight_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_neg->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_neg->GetXaxis()->FindBin(z);
-        double x_bincenter = h_xzprime_neg->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_neg->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_zprime_weight_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_neg->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_neg->GetXaxis()->FindBin(z);
-        double z_bincenter = h_xzprime_neg->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_neg->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto d_neg_pi_after = d_neg_pi
-        .Define("weighted_xbj",get_x_weight_negxz,{"xbj","z"})
-        .Define("weighted_z",get_z_weight_negxz,{"xbj","z"})
-        .Define("weighted_xprime",get_xprime_weight_negxz,{"xprime","zprime"})
-        .Define("weighted_zprime",get_zprime_weight_negxz,{"xprime","zprime"})
-        ;
-      auto h_weight_xbj = d_neg_pi_after.Histo2D({"weighted_xbj","weighted_xbj",bins,0,1,bins,0,1},"z","xbj","weighted_xbj");
-      auto h_weight_z = d_neg_pi_after.Histo2D({"weighted_z","weighted_z",bins,0,1,bins,0,1},"z","xbj","weighted_z");
-      auto h_weight_xprime = d_neg_pi_after.Histo2D({"weighted_xprime","weighted_xprime",bins,0,1,bins,0,1},"z","xbj","weighted_xprime");
-      auto h_weight_zprime = d_neg_pi_after.Histo2D({"weighted_zprime","weighted_zprime",bins,0,1,bins,0,1},"z","xbj","weighted_zprime");
+      //auto get_x_weight_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_neg->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_neg->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_x_z_neg->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_x_z_neg->GetBinContent(z_bin_number,x_bin_number);
+      //  //-h_x_z_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_z_weight_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_neg->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_neg->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_x_z_neg->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_x_z_neg->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto get_xprime_weight_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_neg->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_neg->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_xzprime_neg->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_xzprime_neg->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_zprime_weight_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_neg->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_neg->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_xzprime_neg->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_xzprime_neg->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto d_neg_pi_after = d_neg_pi
+      //  .Define("weighted_xbj",get_x_weight_negxz,{"xbj","z"})
+      //  .Define("weighted_z",get_z_weight_negxz,{"xbj","z"})
+      //  .Define("weighted_xprime",get_xprime_weight_negxz,{"xprime","zprime"})
+      //  .Define("weighted_zprime",get_zprime_weight_negxz,{"xprime","zprime"})
+      //  ;
+      auto h_weight_xbj = d_neg_pi.Histo2D({"weighted_xbj","weighted_xbj",bins,0,1,bins,0,1},"z","xbj","xbj");
+      auto h_weight_z = d_neg_pi.Histo2D({"weighted_z","weighted_z",bins,0,1,bins,0,1},"z","xbj","z");
+      auto h_weight_xprime = d_neg_pi.Histo2D({"weighted_xprime","weighted_xprime",bins,0,1,bins,0,1},"zprime","xprime","xprime");
+      auto h_weight_zprime = d_neg_pi.Histo2D({"weighted_zprime","weighted_zprime",bins,0,1,bins,0,1},"zprime","xprime","zprime");
       //h_weight_xbj->RebinX(Rebin_n);
       //h_weight_xbj->RebinY(Rebin_n);
       h_weight_xbj->Write();
@@ -672,163 +685,162 @@ void statistic_runs_D2(int RunGroup=0){
       h_weight_xprime->Write();
       h_weight_zprime->Write();
       
-      auto get_x_weight_1_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_neg_1->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_neg_1->GetXaxis()->FindBin(z);
-        double x_bincenter = h_x_z_neg_1->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_x_z_neg_1->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_z_weight_1_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_neg_1->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_neg_1->GetXaxis()->FindBin(z);
-        double z_bincenter = h_x_z_neg_1->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_x_z_neg_1->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto get_xprime_weight_1_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_neg_1->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_neg_1->GetXaxis()->FindBin(z);
-        double x_bincenter = h_xzprime_neg_1->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_neg_1->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_zprime_weight_1_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_neg_1->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_neg_1->GetXaxis()->FindBin(z);
-        double z_bincenter = h_xzprime_neg_1->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_neg_1->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto d_neg_pi_1_after = d_neg_pi_1
-        .Define("weighted_xbj",get_x_weight_1_negxz,{"xbj","z"})
-        .Define("weighted_z",get_z_weight_1_negxz,{"xbj","z"})
-        .Define("weighted_xprime",get_xprime_weight_1_negxz,{"xprime","zprime"})
-        .Define("weighted_zprime",get_zprime_weight_1_negxz,{"xprime","zprime"})
-        ;
-      auto h_weight_xbj_1 = d_neg_pi_1_after.Histo2D({"weighted_xbj_1","weighted_xbj_1",bins,0,1,bins,0,1},"z","xbj","weighted_xbj");
-      auto h_weight_z_1 = d_neg_pi_1_after.Histo2D({"weighted_z_1","weighted_z_1",bins,0,1,bins,0,1},"z","xbj","weighted_z");
-      auto h_weight_xprime_1 = d_neg_pi_1_after.Histo2D({"weighted_xprime_1","weighted_xprime_1",bins,0,1,bins,0,1},"z","xbj","weighted_xprime");
-      auto h_weight_zprime_1 = d_neg_pi_1_after.Histo2D({"weighted_zprime_1","weighted_zprime_1",bins,0,1,bins,0,1},"z","xbj","weighted_zprime");
+      //auto get_x_weight_1_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_neg_1->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_neg_1->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_x_z_neg_1->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_x_z_neg_1->GetBinContent(z_bin_number,x_bin_number);//-h_x_z_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_z_weight_1_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_neg_1->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_neg_1->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_x_z_neg_1->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_x_z_neg_1->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto get_xprime_weight_1_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_neg_1->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_neg_1->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_xzprime_neg_1->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_xzprime_neg_1->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_zprime_weight_1_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_neg_1->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_neg_1->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_xzprime_neg_1->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_xzprime_neg_1->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_1->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto d_neg_pi_1_after = d_neg_pi_1
+      //  .Define("weighted_xbj",get_x_weight_1_negxz,{"xbj","z"})
+      //  .Define("weighted_z",get_z_weight_1_negxz,{"xbj","z"})
+      //  .Define("weighted_xprime",get_xprime_weight_1_negxz,{"xprime","zprime"})
+      //  .Define("weighted_zprime",get_zprime_weight_1_negxz,{"xprime","zprime"})
+      //  ;
+      auto h_weight_xbj_1 = d_neg_pi_1.Histo2D({"weighted_xbj_1","weighted_xbj_1",bins,0,1,bins,0,1},"z","xbj","xbj");
+      auto h_weight_z_1 = d_neg_pi_1.Histo2D({"weighted_z_1","weighted_z_1",bins,0,1,bins,0,1},"z","xbj","z");
+      auto h_weight_xprime_1 = d_neg_pi_1.Histo2D({"weighted_xprime_1","weighted_xprime_1",bins,0,1,bins,0,1},"zprime","xprime","xprime");
+      auto h_weight_zprime_1 = d_neg_pi_1.Histo2D({"weighted_zprime_1","weighted_zprime_1",bins,0,1,bins,0,1},"zprime","xprime","zprime");
       h_weight_xbj_1->Write();
       h_weight_z_1->Write();
       h_weight_xprime_1->Write();
       h_weight_zprime_1->Write();
       
-      auto get_x_weight_2_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_neg_2->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_neg_2->GetXaxis()->FindBin(z);
-        double x_bincenter = h_x_z_neg_2->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_x_z_neg_2->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_z_weight_2_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_neg_2->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_neg_2->GetXaxis()->FindBin(z);
-        double z_bincenter = h_x_z_neg_2->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_x_z_neg_2->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto get_xprime_weight_2_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_neg_2->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_neg_2->GetXaxis()->FindBin(z);
-        double x_bincenter = h_xzprime_neg_2->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_neg_2->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_zprime_weight_2_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_neg_2->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_neg_2->GetXaxis()->FindBin(z);
-        double z_bincenter = h_xzprime_neg_2->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_neg_2->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto d_neg_pi_2_after = d_neg_pi_2
-        .Define("weighted_xbj",get_x_weight_2_negxz,{"xbj","z"})
-        .Define("weighted_z",get_z_weight_2_negxz,{"xbj","z"})
-        .Define("weighted_xprime",get_xprime_weight_2_negxz,{"xprime","zprime"})
-        .Define("weighted_zprime",get_zprime_weight_2_negxz,{"xprime","zprime"})
-        ;
-      auto h_weight_xbj_2 = d_neg_pi_2_after.Histo2D({"weighted_xbj_2","weighted_xbj_2",bins,0,1,bins,0,1},"z","xbj","weighted_xbj");
-      auto h_weight_z_2 = d_neg_pi_2_after.Histo2D({"weighted_z_2","weighted_z_2",bins,0,1,bins,0,1},"z","xbj","weighted_z");
-      auto h_weight_xprime_2 = d_neg_pi_2_after.Histo2D({"weighted_xprime_2","weighted_xprime_2",bins,0,1,bins,0,1},"z","xbj","weighted_xprime");
-      auto h_weight_zprime_2 = d_neg_pi_2_after.Histo2D({"weighted_zprime_2","weighted_zprime_2",bins,0,1,bins,0,1},"z","xbj","weighted_zprime");
+      //auto get_x_weight_2_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_neg_2->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_neg_2->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_x_z_neg_2->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_x_z_neg_2->GetBinContent(z_bin_number,x_bin_number);//-h_x_z_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_z_weight_2_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_neg_2->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_neg_2->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_x_z_neg_2->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_x_z_neg_2->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto get_xprime_weight_2_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_neg_2->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_neg_2->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_xzprime_neg_2->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_xzprime_neg_2->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_zprime_weight_2_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_neg_2->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_neg_2->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_xzprime_neg_2->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_xzprime_neg_2->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_2->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto d_neg_pi_2_after = d_neg_pi_2
+      //  .Define("weighted_xbj",get_x_weight_2_negxz,{"xbj","z"})
+      //  .Define("weighted_z",get_z_weight_2_negxz,{"xbj","z"})
+      //  .Define("weighted_xprime",get_xprime_weight_2_negxz,{"xprime","zprime"})
+      //  .Define("weighted_zprime",get_zprime_weight_2_negxz,{"xprime","zprime"})
+      //  ;
+      auto h_weight_xbj_2 = d_neg_pi_2.Histo2D({"weighted_xbj_2","weighted_xbj_2",bins,0,1,bins,0,1},"z","xbj","xbj");
+      auto h_weight_z_2 = d_neg_pi_2.Histo2D({"weighted_z_2","weighted_z_2",bins,0,1,bins,0,1},"z","xbj","z");
+      auto h_weight_xprime_2 = d_neg_pi_2.Histo2D({"weighted_xprime_2","weighted_xprime_2",bins,0,1,bins,0,1},"zprime","xprime","xprime");
+      auto h_weight_zprime_2 = d_neg_pi_2.Histo2D({"weighted_zprime_2","weighted_zprime_2",bins,0,1,bins,0,1},"zprime","xprime","zprime");
       h_weight_xbj_2->Write();
       h_weight_z_2->Write();
       h_weight_xprime_2->Write();
       h_weight_zprime_2->Write();
       
-      auto get_x_weight_3_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_neg_3->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_neg_3->GetXaxis()->FindBin(z);
-        double x_bincenter = h_x_z_neg_3->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_x_z_neg_3->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_z_weight_3_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_x_z_neg_3->GetYaxis()->FindBin(x);
-        int z_bin_number = h_x_z_neg_3->GetXaxis()->FindBin(z);
-        double z_bincenter = h_x_z_neg_3->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_x_z_neg_3->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto get_xprime_weight_3_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_neg_3->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_neg_3->GetXaxis()->FindBin(z);
-        double x_bincenter = h_xzprime_neg_3->GetYaxis()->GetBinCenter(x_bin_number);
-        double all = h_xzprime_neg_3->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return x/(all*x_bincenter);
-        //return x/all;
-      };
-      auto get_zprime_weight_3_negxz = [&](double x,double z){
-      
-        int x_bin_number = h_xzprime_neg_3->GetYaxis()->FindBin(x);
-        int z_bin_number = h_xzprime_neg_3->GetXaxis()->FindBin(z);
-        double z_bincenter = h_xzprime_neg_3->GetXaxis()->GetBinCenter(z_bin_number);
-        double all = h_xzprime_neg_3->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
-        return z/(all*z_bincenter);
-        //return z/all;
-      };
-      auto d_neg_pi_3_after = d_neg_pi_3
-        .Define("weighted_xbj",get_x_weight_3_negxz,{"xbj","z"})
-        .Define("weighted_z",get_z_weight_3_negxz,{"xbj","z"})
-        .Define("weighted_xprime",get_xprime_weight_3_negxz,{"xprime","zprime"})
-        .Define("weighted_zprime",get_zprime_weight_3_negxz,{"xprime","zprime"})
-        ;
-      auto h_weight_xbj_3 = d_neg_pi_3_after.Histo2D({"weighted_xbj_3","weighted_xbj_3",bins,0,1,bins,0,1},"z","xbj","weighted_xbj");
-      auto h_weight_z_3 = d_neg_pi_3_after.Histo2D({"weighted_z_3","weighted_z_3",bins,0,1,bins,0,1},"z","xbj","weighted_z");
-      auto h_weight_xprime_3 = d_neg_pi_3_after.Histo2D({"weighted_xprime_3","weighted_xprime_3",bins,0,1,bins,0,1},"z","xbj","weighted_xprime");
-      auto h_weight_zprime_3 = d_neg_pi_3_after.Histo2D({"weighted_zprime_3","weighted_zprime_3",bins,0,1,bins,0,1},"z","xbj","weighted_zprime");
+      //auto get_x_weight_3_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_neg_3->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_neg_3->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_x_z_neg_3->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_x_z_neg_3->GetBinContent(z_bin_number,x_bin_number);//-h_x_z_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_z_weight_3_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_x_z_neg_3->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_x_z_neg_3->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_x_z_neg_3->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_x_z_neg_3->GetBinContent(z_bin_number,x_bin_number)-h_x_z_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto get_xprime_weight_3_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_neg_3->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_neg_3->GetXaxis()->FindBin(z);
+      //  double x_bincenter = h_xzprime_neg_3->GetYaxis()->GetBinCenter(x_bin_number);
+      //  double all = h_xzprime_neg_3->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return x/(all*x_bincenter);
+      //  //return x/all;
+      //};
+      //auto get_zprime_weight_3_negxz = [&](double x,double z){
+      //
+      //  int x_bin_number = h_xzprime_neg_3->GetYaxis()->FindBin(x);
+      //  int z_bin_number = h_xzprime_neg_3->GetXaxis()->FindBin(z);
+      //  double z_bincenter = h_xzprime_neg_3->GetXaxis()->GetBinCenter(z_bin_number);
+      //  double all = h_xzprime_neg_3->GetBinContent(z_bin_number,x_bin_number)-h_xzprime_bg_3->GetBinContent(z_bin_number,x_bin_number)/6.0;
+      //  return z/(all*z_bincenter);
+      //  //return z/all;
+      //};
+      //auto d_neg_pi_3_after = d_neg_pi_3
+      //  .Define("weighted_xbj",get_x_weight_3_negxz,{"xbj","z"})
+      //  .Define("weighted_z",get_z_weight_3_negxz,{"xbj","z"})
+      //  .Define("weighted_xprime",get_xprime_weight_3_negxz,{"xprime","zprime"})
+      //  .Define("weighted_zprime",get_zprime_weight_3_negxz,{"xprime","zprime"})
+      //  ;
+      auto h_weight_xbj_3 = d_neg_pi_3.Histo2D({"weighted_xbj_3","weighted_xbj_3",bins,0,1,bins,0,1},"z","xbj","xbj");
+      auto h_weight_z_3 = d_neg_pi_3.Histo2D({"weighted_z_3","weighted_z_3",bins,0,1,bins,0,1},"z","xbj","z");
+      auto h_weight_xprime_3 = d_neg_pi_3.Histo2D({"weighted_xprime_3","weighted_xprime_3",bins,0,1,bins,0,1},"zprime","xprime","xprime");
+      auto h_weight_zprime_3 = d_neg_pi_3.Histo2D({"weighted_zprime_3","weighted_zprime_3",bins,0,1,bins,0,1},"zprime","xprime","zprime");
       h_weight_xbj_3->Write();
       h_weight_z_3->Write();
       h_weight_xprime_3->Write();
       h_weight_zprime_3->Write();
-
+      
       rootfile_out->Close();
 
-    }//neg runs
-
+    }//for neg
 
 
 
