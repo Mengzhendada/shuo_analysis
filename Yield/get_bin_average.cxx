@@ -24,6 +24,7 @@ void get_bin_average(){
   //std::string rootfile_name = "results/skim_root/"+std::to_string(RunNumber)+".root";
   std::string rootfile_name = "ROOTfiles/"+std::to_string(RunNumber)+".root";
   ROOT::RDataFrame d_pos_raw("T",rootfile_name);
+  ROOT::RDataFrame d_pos_bg_raw("T",rootfile_name);
   double all = *d_pos_raw.Count();
   std::cout<<"all "<<all<<std::endl;
   auto divide_by_all = [&](double value){return value/all;};
@@ -32,22 +33,36 @@ void get_bin_average(){
     ;
   auto h_x_pos = d_pos_pi.Histo1D({"","",20,0,1},"xbj");
   std::cout<<h_x_pos->FindBin(0.36)<<" "<<h_x_pos->GetBinContent(h_x_pos->FindBin(0.36))<<" "<<h_x_pos->GetBinCenter(h_x_pos->FindBin(0.36))<<std::endl;
-
+  auto h_x_pos_bg = d_pos_bg_raw.Histo1D({"","",20,0,1},"xbj");
   //h_x_pos->Rebin(5);
   auto get_weight = [&](double x){
      int binNumber = h_x_pos->FindBin(x);
      double binCenter = h_x_pos->GetBinCenter(binNumber);
-     double all = h_x_pos->GetBinContent(binNumber);
-     //return x/(all*binCenter);
-     return x/(all);
-  
+     double pi_bincontent = h_x_pos->GetBinContent(binNumber);
+     double bg_bincontent = h_x_pos_bg->GetBinContent(binNumber);
+     double bincontent = h_x_pos->GetBinContent(binNumber)-h_x_pos_bg->GetBinContent(binNumber)/6.0;
+     double all = h_x_pos->GetEntries()-h_x_pos_bg->GetEntries()/6.0;
+     //return x*(bincontent/pi_bincontent)/all;
+     //return x/(bincontent*pi_bincontent*all);
+     //return x*bincontent/(pi_bincontent*pi_bincontent);//*all);
+     //return bincontent*x/(all);
+     //*pi_bincontent);
+     return x*bincontent/(all*pi_bincontent);
+     //return x/(bincontent*pi_bincontent);
   };
   auto get_ratio_weight = [&](double x){
      int binNumber = h_x_pos->FindBin(x);
      double binCenter = h_x_pos->GetBinCenter(binNumber);
-     double all = h_x_pos->GetBinContent(binNumber);
-     return x/(all*binCenter);
-     //return x/(all);
+     double pi_bincontent = h_x_pos->GetBinContent(binNumber);
+     double bg_bincontent = h_x_pos_bg->GetBinContent(binNumber);
+     double bincontent = h_x_pos->GetBinContent(binNumber)-h_x_pos_bg->GetBinContent(binNumber)/6.0;
+     double all = h_x_pos->GetEntries()-h_x_pos_bg->GetEntries()/6.0;
+     return x*bincontent/(all*pi_bincontent*binCenter);
+     //return x/(bincontent*pi_bincontent*binCenter);
+     //return x/(bincontent*pi_bincontent*binCenter*all);
+     //return x*bincontent/(pi_bincontent*pi_bincontent*binCenter);
+     //return x*bincontent/(pi_bincontent*pi_bincontent*all*binCenter);
+     //return x/(pi_bincontent*binCenter);
   
   };
   auto d_pos_pi_after = d_pos_pi
@@ -75,6 +90,9 @@ void get_bin_average(){
   h_x_pos->GetXaxis()->SetTitle("x_{bj}");
   h_x_pos->GetXaxis()->SetTitleSize(0.05);
   h_x_pos->Draw();
+  h_x_pos_bg->SetLineColor(kRed);
+  h_x_pos_bg->Scale(1/6.0);
+  h_x_pos_bg->Draw("same");
   c_check_1d->SaveAs("6194_xbj.pdf");
   TCanvas *c_check_1d_2 = new TCanvas();
   h_weight_xbj->SetBit(TH1::kNoStats);
