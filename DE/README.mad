@@ -43,3 +43,9 @@ mainly for rftime cut
 #######important outfile: runs_info.json
 #
 After this, should go to shuo_analysis/check/skim_root.cxx, this one uses pieff and pi purity infos to skim the rootfile
+
+2021 Oct update
+rewrite every DE script.
+SHMS_DE_clean.cxx,HMS_DE_clean.cxx, these two are in slurm/DE.sh, submit jobs to run for all rungroups, the results would be in pid/DE/(S)HMS_RunNumber_DE.json;
+SHMS_cal_DE.cxx, SHMS_aero_DE.cxx,HMS_cal_DE.cxx, These plots the eff vs momentum,RunNumber,RunGroup  and fit momentum 
+write_DE_to_json_updated.cxx, this one write the efficiencies in runs_info.json

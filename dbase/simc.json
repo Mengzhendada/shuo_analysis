@@ -1,0 +1,123 @@
+{
+    "6009": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 6.358,
+        "htheta_lab": 21.06,
+        "normfac": 8120890.0,
+        "ppcentral": 5.414,
+        "ptheta_lab": 23.63,
+        "shmsTE": 1
+    },
+    "6010": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 6.358,
+        "htheta_lab": 19.78,
+        "normfac": 7083030.0,
+        "ppcentral": 5.09,
+        "ptheta_lab": 25.01,
+        "shmsTE": 1
+    },
+    "6012": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 6.358,
+        "htheta_lab": 18.56,
+        "normfac": 5850540.0,
+        "ppcentral": 4.769,
+        "ptheta_lab": 26.445,
+        "shmsTE": 1
+    },
+    "6013": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 5.983,
+        "htheta_lab": 21.29,
+        "normfac": 8823670.0,
+        "ppcentral": 5.471,
+        "ptheta_lab": 23.39,
+        "shmsTE": 1
+    },
+    "6016": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 5.714,
+        "htheta_lab": 22.43,
+        "normfac": 10110600.0,
+        "ppcentral": 5.744,
+        "ptheta_lab": 22.29,
+        "shmsTE": 1
+    },
+    "6017": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 5.27,
+        "htheta_lab": 24.42,
+        "normfac": 12429300.0,
+        "ppcentral": 6.193,
+        "ptheta_lab": 20.580000000000002,
+        "shmsTE": 1
+    },
+    "7822": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 5.714,
+        "htheta_lab": 23.22,
+        "normfac": 10071400.0,
+        "ppcentral": 5.65,
+        "ptheta_lab": 22.25,
+        "shmsTE": 1
+    },
+    "7823": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 5.714,
+        "htheta_lab": 23.22,
+        "normfac": 10071400.0,
+        "ppcentral": 5.65,
+        "ptheta_lab": 22.25,
+        "shmsTE": 1
+    },
+    "7826": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 5.714,
+        "htheta_lab": 21.93,
+        "normfac": 9126720.0,
+        "ppcentral": 5.36,
+        "ptheta_lab": 23.45,
+        "shmsTE": 1
+    },
+    "7827": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 5.714,
+        "htheta_lab": 21.93,
+        "normfac": 9126720.0,
+        "ppcentral": 5.36,
+        "ptheta_lab": 23.45,
+        "shmsTE": 1
+    },
+    "7830": {
+        "ComputerLT": 1,
+        "charge_simc": 1,
+        "hmsTE": 1,
+        "hpcentral": 5.714,
+        "htheta_lab": 20.71,
+        "normfac": 7811420.0,
+        "ppcentral": 5.07,
+        "ptheta_lab": 24.71,
+        "shmsTE": 1
+    }
+}

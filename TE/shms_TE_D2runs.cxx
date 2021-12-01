@@ -139,25 +139,31 @@ R__LOAD_LIBRARY(libGenVector.so)
         .Filter([](double h_delta){return h_delta > -10 && h_delta < 10;},{"H.gtr.dp"})
         ;  
         auto h_cointime_neg = d_neg_pi.Histo1D({"","cointime",800,25,55},"cointime_raw");
+        TCanvas* c_coin = new TCanvas();
+        h_cointime_neg->Draw("hist");
+        c_coin->SaveAs(("results/TE/cointime"+std::to_string(RunNumber)+".pdf").c_str());
         int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
         double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
         std::cout<<"coin peak "<<coin_peak_center_neg<<std::endl;
+       
         double cointime_low,cointime_high;
-        if(RunNumber < 7000){
+        //if(RunNumber < 7000){
           cointime_low = coin_peak_center_neg+j_cuts["cointime_low_fall"].get<double>();
           cointime_high = coin_peak_center_neg+j_cuts["cointime_high_fall"].get<double>();
-        }
-        else{
-          cointime_low = coin_peak_center_neg+j_cuts["cointime_low_spring"].get<double>();
-          cointime_high = coin_peak_center_neg+j_cuts["cointime_high_spring"].get<double>();
-        }
+        //}
+        //else{
+        //  cointime_low = coin_peak_center_neg+j_cuts["cointime_low_spring"].get<double>();
+        //  cointime_high = coin_peak_center_neg+j_cuts["cointime_high_spring"].get<double>();
+        //}
         auto d_neg_pi_hod = d_neg_pi
         .Filter("P.hod.goodscinhit==1")
+        .Filter("P.hod.goodstarttime==1")
+        .Filter("T.coin.pT2_tdcMultiplicity<5")
         .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
         ;
         auto d_neg_pi_dc = d_neg_pi_hod
         .Filter("P.dc.ntrack>=1")
-        .Filter("P.dc.InsideDipoleExit == 1")
+        //.Filter("P.dc.InsideDipoleExit == 1")
         .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"P.gtr.dp"})
         ;
         double  neg_pi_expected = *d_neg_pi_hod.Count();
@@ -206,21 +212,23 @@ R__LOAD_LIBRARY(libGenVector.so)
         double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
         std::cout<<"coin peak "<<coin_peak_center_pos<<std::endl;
         double cointime_low,cointime_high;
-        if(RunNumber < 7000){
+        //if(RunNumber < 7000){
           cointime_low = coin_peak_center_pos+j_cuts["cointime_low_fall"].get<double>();
           cointime_high = coin_peak_center_pos+j_cuts["cointime_high_fall"].get<double>();
-        }
-        else{
-          cointime_low = coin_peak_center_pos+j_cuts["cointime_low_spring"].get<double>();
-          cointime_high = coin_peak_center_pos+j_cuts["cointime_high_spring"].get<double>();
-        }
+       // }
+       // else{
+       //   cointime_low = coin_peak_center_pos+j_cuts["cointime_low_spring"].get<double>();
+       //   cointime_high = coin_peak_center_pos+j_cuts["cointime_high_spring"].get<double>();
+       // }
         auto d_pos_pi_hod = d_pos_pi
         .Filter("P.hod.goodscinhit==1")
+        .Filter("P.hod.goodstarttime==1")
+        .Filter("T.coin.pT2_tdcMultiplicity<5")
         .Filter([cointime_low,cointime_high](double cointime){return cointime>cointime_low && cointime< cointime_high;},{"cointime_raw"})
         ;
         auto d_pos_pi_dc = d_pos_pi_hod
         .Filter("P.dc.ntrack>=1")
-        .Filter("P.dc.InsideDipoleExit == 1")
+        //.Filter("P.dc.InsideDipoleExit == 1")
         .Filter([](double p_delta){return p_delta>-25 && p_delta<50;},{"P.gtr.dp"})
         ;
         double pos_pi_expected = *d_pos_pi_hod.Count();

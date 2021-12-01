@@ -181,14 +181,23 @@ void HMS_DE_compare(){
     }//if normal production runs
   }//loop over rungroups
   std::cout<< "Done check"<<std::endl;
-  TCanvas *c_cal_DE_momentum = new TCanvas();
+  auto mg_cal = new TMultiGraph();
   g_DE_cal_momentum_pos->SetMarkerStyle(8);
   g_DE_cal_momentum_pos->SetMarkerColor(kRed);
   g_DE_cal_momentum_pos->GetYaxis()->SetRangeUser(0.98,1.001);
-  g_DE_cal_momentum_pos->Draw("AP");
-  g_DE_cal_momentum_neg->SetMarkerStyle(8);
-  g_DE_cal_momentum_neg->GetYaxis()->SetRangeUser(0.98,1.001);
-  g_DE_cal_momentum_neg->Draw("P same");
+  mg_cal->Add(g_DE_cal_momentum_pos,"P");
+  //g_DE_cal_momentum_neg->SetMarkerStyle(8);
+  //g_DE_cal_momentum_neg->GetYaxis()->SetRangeUser(0.98,1.001);
+  //mg_cal->Add(g_DE_cal_momentum_neg,"P");
+  TCanvas *c_cal_DE_momentum = new TCanvas();
+  mg_cal->Draw("AP");
+  mg_cal->Fit("pol0","F");
+  TF1 *Fit_cal = mg_cal->GetFunction("pol0");
+  Fit_cal->SetLineColor(kRed);
+  Fit_cal->Draw("L same");
+  gStyle->SetOptFit(0001);
+  mg_cal->GetXaxis()->SetTitle("Momentum");
+  mg_cal->GetYaxis()->SetTitle("cal Eff");
   c_cal_DE_momentum->SaveAs("results/pid/HMS_cal_DE_momentum.pdf");
   TCanvas *c_cal_DE_RunGroup = new TCanvas();
   g_DE_cal_RunGroup_pos->SetMarkerStyle(8);

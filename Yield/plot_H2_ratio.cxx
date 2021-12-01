@@ -269,6 +269,8 @@ int plot_H2_ratio(){
 
             h_z_neg_all->Rebin(5);
             h_z_pos_all->Rebin(5);
+            h_z_neg_bg_all->Rebin(5);
+            h_z_pos_bg_all->Rebin(5);
             h_z_neg_sim->Rebin(5);
             h_z_pos_sim->Rebin(5);
             h_z_neg_incnorad->Rebin(5);
@@ -309,18 +311,24 @@ int plot_H2_ratio(){
 
             TGraphErrors* g_z_pos_yield = new TGraphErrors();
             g_z_pos_yield->SetTitle("pi+ data yield");
+            TGraphErrors* g_z_pos_bg_yield = new TGraphErrors();
+            g_z_pos_bg_yield->SetTitle("pi+ acc bg yield");
             int nbins_yield_pos = h_z_pos_all->GetXaxis()->GetNbins();
             int ii_yield_pos = 0;
             for(int i = 0;i<nbins_yield_pos;i++){
               //std::cout<<i<<std::endl;
               double x = h_z_pos_all->GetBinCenter(i);
               double y = h_z_pos_all->GetBinContent(i)/charge_pos_all;
+              double y_bg = h_z_pos_bg_all->GetBinContent(i)/charge_pos_all;
               //double error = h_z_pos_yield->GetBinError(i);
               double error = h_z_pos_all->GetBinError(i)/charge_pos_all;
+              double error_bg = h_z_pos_bg_all->GetBinError(i)/charge_pos_all;
               //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
               if(y!=0){
                 g_z_pos_yield->SetPoint(ii_yield_pos,x,y);
                 g_z_pos_yield->SetPointError(ii_yield_pos,0,error);
+                g_z_pos_bg_yield->SetPoint(ii_yield_pos,x,y_bg);
+                g_z_pos_bg_yield->SetPointError(ii_yield_pos,0,error_bg);
                 ii_yield_pos++;
               }
             }
@@ -354,6 +362,7 @@ int plot_H2_ratio(){
             g_z_pos_yield->GetXaxis()->SetRangeUser(0.3,1);
             g_z_pos_yield->SetMarkerStyle(4);
             mg_z_yield_pos->Add(g_z_pos_yield,"P");
+            mg_z_yield_pos->Add(g_z_pos_bg_yield,"P");
             TGraph* g_z_pos_sim = new TGraph(h_z_pos_sim);
             TGraph* g_z_pos_sim_incrad = new TGraph(h_z_pos_sim_incrad);
             TGraph* g_z_pos_sim_incnorad = new TGraph(h_z_pos_sim_incnorad);
@@ -388,18 +397,24 @@ int plot_H2_ratio(){
             //h_z_pos_all->Rebin(2);
             TGraphErrors* g_z_neg_yield = new TGraphErrors();
             g_z_neg_yield->SetTitle("pi- data yield");
+            TGraphErrors* g_z_neg_bg_yield = new TGraphErrors();
+            g_z_neg_bg_yield->SetTitle("pi- acc bg yield");
             int nbins_yield_neg = h_z_neg_all->GetXaxis()->GetNbins();
             int ii_yield_neg = 0;
             for(int i = 0;i<nbins_yield_neg;i++){
               //std::cout<<i<<std::endl;
               double x = h_z_neg_all->GetBinCenter(i);
               double y = h_z_neg_all->GetBinContent(i)/charge_neg_all;
+              double y_bg = h_z_neg_bg_all->GetBinContent(i)/charge_neg_all;
               //double error = h_z_neg_yield->GetBinError(i);
               double error = h_z_neg_all->GetBinError(i)/charge_neg_all;
+              double error_bg = h_z_neg_bg_all->GetBinError(i)/charge_neg_all;
               //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
               if(y!=0){
                 g_z_neg_yield->SetPoint(ii_yield_neg,x,y);
                 g_z_neg_yield->SetPointError(ii_yield_neg,0,error);
+                g_z_neg_bg_yield->SetPoint(ii_yield_neg,x,y_bg);
+                g_z_neg_bg_yield->SetPointError(ii_yield_neg,0,error_bg);
                 ii_yield_neg++;
               }
             }
@@ -416,6 +431,7 @@ int plot_H2_ratio(){
             g_z_neg_yield->GetXaxis()->SetRangeUser(0.3,1);
             g_z_neg_yield->SetMarkerStyle(4);
             mg_z_yield_neg->Add(g_z_neg_yield,"P");
+            mg_z_yield_neg->Add(g_z_neg_bg_yield,"P");
             TGraph* g_z_neg_sim = new TGraph(h_z_neg_sim);
             TGraph* g_z_neg_sim_incrad = new TGraph(h_z_neg_sim_incrad);
             TGraph* g_z_neg_sim_incnorad = new TGraph(h_z_neg_sim_incnorad);
@@ -485,14 +501,16 @@ int plot_H2_ratio(){
               //std::cout<<i<<std::endl;
               double x = h_z_neg_all->GetBinCenter(i)+0.001*i_color;
               double y_neg_H2 = h_z_neg_all->GetBinContent(i)/charge_neg_all;
+              double y_neg_bg_H2 = h_z_neg_bg_all->GetBinContent(i)/charge_neg_all;
               double y_neg_Dummy = h_z_neg_Dummy_all->GetBinContent(i)/charge_neg_Dummy_all;
               double y_neg_delta = h_z_neg_sim_delta->GetBinContent(i);
               //double y_neg_exc = h_z_neg_sim_excrad->GetBinContent(i);
-              double y_neg = y_neg_H2-0.262*y_neg_Dummy-y_neg_delta;
+              double y_neg = y_neg_H2-y_neg_bg_H2-0.262*y_neg_Dummy-y_neg_delta;
               //-y_neg_exc;
               double error_neg_H2 = h_z_neg_all->GetBinError(i)/charge_neg_all;
+              double error_neg_bg_H2 = h_z_neg_bg_all->GetBinError(i)/charge_neg_all;
               double error_neg_Dummy = h_z_neg_Dummy_all->GetBinError(i)/charge_neg_Dummy_all;
-              double error_neg = std::sqrt(error_neg_H2*error_neg_H2+0.262*0.262*error_neg_Dummy*error_neg_Dummy);
+              double error_neg = std::sqrt(error_neg_H2*error_neg_H2+error_neg_bg_H2*error_neg_bg_H2+0.262*0.262*error_neg_Dummy*error_neg_Dummy);
               double y_pos_H2 = h_z_pos_all->GetBinContent(i)/charge_pos_all;
               double y_pos_Dummy = h_z_pos_Dummy_all->GetBinContent(i)/charge_pos_Dummy_all;
               double y_pos_delta = h_z_pos_sim_delta->GetBinContent(i);

@@ -281,7 +281,6 @@ void skim_check_Dummy(int RunGroup=0){
       //rftime cut
       //offset
       double offset_pos = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
-      std::cout<<"Offset for rf time "<<offset_pos<<std::endl;
       auto rf_cut = [=](double SHMS_dp,double SHMS_rftime){
        double rf_pi_low,rf_pi_high; 
         int i_order = 0,i_which;
@@ -390,7 +389,7 @@ void skim_check_Dummy(int RunGroup=0){
       bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
     }
     bg_cut = bg_cut.substr(0,bg_cut.size()-2);
-    std::cout<<bg_cut<<std::endl;
+    //std::cout<<bg_cut<<std::endl;
       // for bg
       auto d_pos_forbg = d_pos_run
         .Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
@@ -625,8 +624,7 @@ void skim_check_Dummy(int RunGroup=0){
         for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
           if(SHMS_dp>*it){
             i_which = i_order;
-            //pi_eff = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_eff"].get<double>();
-            pi_eff = 1;
+            pi_eff = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_eff"].get<double>();
           }
           i_order++;
         }
@@ -638,8 +636,7 @@ void skim_check_Dummy(int RunGroup=0){
         for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
           if(SHMS_dp>*it){
             i_which = i_order;
-            pi_purity = 1;
-            //pi_purity = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_purity"].get<double>();
+            pi_purity = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_purity"].get<double>();
           }
           i_order++;
         }
@@ -717,7 +714,7 @@ void skim_check_Dummy(int RunGroup=0){
       bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
     }
     bg_cut = bg_cut.substr(0,bg_cut.size()-2);
-    //std::cout<<bg_cut<<std::endl;
+    std::cout<<bg_cut<<std::endl;
       // for bg
       auto d_neg_forbg = d_neg_run
         .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
@@ -844,9 +841,6 @@ void skim_check_Dummy(int RunGroup=0){
     }
 
 
-    //std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
-    //std::ofstream outfile(of.c_str());
-    //outfile<<jout.dump(4)<<std::endl;
 
 
   }

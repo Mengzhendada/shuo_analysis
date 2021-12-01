@@ -42,7 +42,7 @@ void rf_offset(int RunGroup=0){
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
     std::cin>>RunGroup;
-    if(RunGroup<=0)
+    if(RunGroup==-1)
       return;
   }
 

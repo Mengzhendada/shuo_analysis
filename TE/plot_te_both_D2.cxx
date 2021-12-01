@@ -49,11 +49,6 @@ R__LOAD_LIBRARY(libGenVector.so)
       std::ifstream ifs("results/TE/trackingeff_info.json");
       ifs>>j_te;
     }
-    json j_rate;
-    {
-      std::ifstream ifs("results/TE/trackingeff_info_old.json");
-      ifs>>j_rate;
-    }
     int i = 0;
     int i_neg = 0;
     int i_pos = 0;
@@ -190,15 +185,15 @@ R__LOAD_LIBRARY(libGenVector.so)
                 double neg_fit_value;
                 double te_corr;
                 double te_err = (1/pi_expected)*sqrt(pi_found*(1-te));
-                if(RunNumber<7000)
-                { 
-                  neg_fit_value = -2.396e-5*rate+0.98;
-                  te_corr = te*(0.98/neg_fit_value);
-                }
-                else{
-                  neg_fit_value = -2.134e-5*rate+0.974;
-                  te_corr = te*(0.974/neg_fit_value);
-                }
+                //if(RunNumber<7000)
+                //{ 
+                //  neg_fit_value = -2.396e-5*rate+0.98;
+                //  te_corr = te*(0.98/neg_fit_value);
+                //}
+                //else{
+                //  neg_fit_value = -2.134e-5*rate+0.974;
+                //  te_corr = te*(0.974/neg_fit_value);
+                //}
 
                 if(rate < 0){std::cout<< "Alert "<<it_neg.key()<<std::endl;}
                 double yieldrate = pi_expected/(charge*time);
@@ -264,14 +259,14 @@ R__LOAD_LIBRARY(libGenVector.so)
                   double rate = counts/(1000*time);
                   double pos_fit_value;
                   double te_corr;
-                  if(RunNumber < 7000){
-                    pos_fit_value = -5.219e-5*rate+0.997;
-                    te_corr = te*(0.997/pos_fit_value);
-                  }
-                  else{
-                    pos_fit_value = -2.601e-5*rate+0.977;
-                    te_corr = te*(0.977/pos_fit_value);
-                  }
+                  //if(RunNumber < 7000){
+                  //  pos_fit_value = -5.219e-5*rate+0.997;
+                  //  te_corr = te*(0.997/pos_fit_value);
+                  //}
+                  //else{
+                  //  pos_fit_value = -2.601e-5*rate+0.977;
+                  //  te_corr = te*(0.977/pos_fit_value);
+                  //}
                   if(rate<0){std::cout<<"Alert "<<it_pos.key()<<std::endl;}
                   double yieldrate = pi_expected/(charge*time);
                   double yield_te = yield/te;
@@ -338,7 +333,7 @@ R__LOAD_LIBRARY(libGenVector.so)
     c_te_all_rate->SetGrid();
     G_te_all_pos_vs_rate->SetMarkerColor(kRed);
     G_te_all_pos_vs_rate->SetMarkerStyle(8);
-    G_te_all_pos_vs_rate->GetYaxis()->SetRangeUser(0.95,1.01);
+    G_te_all_pos_vs_rate->GetYaxis()->SetRangeUser(0.9,0.96);
     //TF1 *pos_fit = new TF1("pol1","pol1",0,500);
   ////  pos_fit->FixParameter(0,1);
     //G_te_all_pos_vs_rate->Fit(pos_fit);
@@ -350,7 +345,7 @@ R__LOAD_LIBRARY(libGenVector.so)
     gStyle->SetOptFit(1);
     G_te_all_neg_vs_rate->SetMarkerColor(kBlack);
     G_te_all_neg_vs_rate->SetMarkerStyle(8);
-    G_te_all_neg_vs_rate->GetYaxis()->SetRangeUser(0.95,1.01);
+    G_te_all_neg_vs_rate->GetYaxis()->SetRangeUser(0.9,0.96);
     //TF1 *neg_fit = new TF1("pol1","pol1",0,500);
   ////  neg_fit->FixParameter(0,1);
     //G_te_all_neg_vs_rate->Fit(neg_fit);

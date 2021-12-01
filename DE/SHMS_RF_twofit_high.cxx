@@ -79,7 +79,8 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
     std::ifstream ifs("db2/PID_test.json");
     ifs>>j_DE;
   }
-  std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_cuts"].get<std::vector<double>>();
+  //std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_cuts"].get<std::vector<double>>();
+  std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_right_cuts"].get<std::vector<double>>();
 
   double H_dp_low = j_cuts["H_dp_low"].get<double>();
   double H_dp_high = j_cuts["H_dp_high"].get<double>();
@@ -93,7 +94,8 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   double SHMS_high = j_cuts["P_cal_pi_high"].get<double>();
   std::string piCutSHMS = (" P.cal.etottracknorm > "+std::to_string(SHMS_low)+" && P.cal.etottracknorm < " + std::to_string(SHMS_high)).c_str();
   std::cout<<"picutSHMS "<<piCutSHMS<<std::endl;
-  double P_aero = j_cuts["P_aero"].get<double>();
+  //double P_aero = j_cuts["P_aero"].get<double>();
+  double P_aero = j_DE["SHMS"]["aero_n"].get<double>();
   std::string aeroCutSHMS = (" P.aero.npeSum > "+std::to_string(P_aero)).c_str();
   std::cout<<"P_aerocut "<<aeroCutSHMS<<std::endl;
   double H_cal_low = j_cuts["H_cal_low"].get<double>();
@@ -158,7 +160,9 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       std::cout<<"delta cut is "<<dp_cut<<std::endl;
       double shms_p_lowend = shms_p_central*(100+delta_lowend)/100;
       if(shms_p_lowend > 3){
-        SHMS_hgc_aero = aeroCutSHMS+" && "+hgcCutSHMS;}
+        SHMS_hgc_aero = aeroCutSHMS;
+        //+" && "+hgcCutSHMS;
+        }
         //SHMS_hgc_aero = aeroCutSHMS;}
       else{SHMS_hgc_aero = aeroCutSHMS;}
       std::cout<<"momentum lowend is "<<shms_p_lowend<<" ,cut is "<<SHMS_hgc_aero<<std::endl;
@@ -266,6 +270,8 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           //.Filter("P.aero.npeSum<10")
           .Filter("P.hgcer.npeSum<2")
           .Filter(dp_cut.c_str())
+          .Filter(aeroCutSHMS)
+          
           //.Filter(piCutSHMS)
           ;
         auto d_pos_piall_bg = d_pos_bg_norfcut
@@ -278,6 +284,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
           .Filter("P.hgcer.npeSum<2")
           .Filter(dp_cut.c_str())
           //.Filter(piCutSHMS)
+          .Filter(aeroCutSHMS)
           ;
 
         
@@ -411,6 +418,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       std::cout<<"Bin width "<<width_pos<<std::endl;
       double pos_pi_all_pifit = pi_pos_piall->Integral(0,4,width_pos);
       j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]["pi_eff_all"] = pos_pi_all_pifit;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["shms_p"] = shms_p;
       TPaveText* pt_pos_pi = new TPaveText(0.75,0.5,1,0.95,"brNDC");
       pt_pos_pi->AddText(("RunGroup pos pi "+std::to_string(RunGroup)).c_str());
       pt_pos_pi->AddText(("shms p "+std::to_string(shms_p)).c_str());
@@ -430,10 +438,14 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       std::vector<double> n_pos_pi_rf,n_pos_K_rf;
       std::vector<double> rf_pos_cuts,rf_pos_cuts_low;
       for(int i = 0;i<rf_cuts.size();++i){
-        double rf_cut_percent = rf_cuts[i];
+        //double rf_cut_percent = rf_cuts[i];
         //double rf_pi_low = 0.5;
-        double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
-        double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+        //double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
+        //double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+        
+        double rf_pi_low = 1-(rf_cuts[i]-1);
+        double rf_pi_high = rf_cuts[i];
+
         rf_pos_cuts.push_back(rf_pi_high);
         rf_pos_cuts_low.push_back(rf_pi_low);
         double pos_pi_N = pi_pos_piall->Integral(rf_pi_low,rf_pi_high,width_pos);
@@ -589,6 +601,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       .Filter("P.hgcer.npeSum<2")
       .Filter(dp_cut.c_str())
       //.Filter(piCutSHMS)
+      //.Filter(aeroCutSHMS)
       ;
     auto d_neg_piall_bg = d_neg_bg_norfcut
       .Filter(dp_cut.c_str())
@@ -600,6 +613,7 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
       .Filter("P.hgcer.npeSum<2")
       .Filter(dp_cut.c_str())
       //.Filter(piCutSHMS)
+      //.Filter(aeroCutSHMS)
       ;
 
     //statistics for DE efficiency
@@ -746,10 +760,14 @@ void SHMS_RF_twofit_high(int RunGroup = 0){
   std::vector<double> n_neg_pi_rf,n_neg_K_rf;
   std::vector<double> rf_neg_cuts,rf_neg_cuts_low;
   for(int i = 0;i<rf_cuts.size();++i){
-    double rf_cut_percent = rf_cuts[i];
-    //double rf_pi_low = 0.5;
-    double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
-    double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+    //double rf_cut_percent = rf_cuts[i];
+    ////double rf_pi_low = 0.5;
+    //double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
+    //double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+    
+    double rf_pi_low = 1-(rf_cuts[i]-1);
+    double rf_pi_high = rf_cuts[i];
+
     rf_neg_cuts.push_back(rf_pi_high);
     rf_neg_cuts_low.push_back(rf_pi_low);
     double neg_pi_N = pi_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);

@@ -45,7 +45,6 @@ R__LOAD_LIBRARY(libGenVector.so)
 #include <vector>
 #include <string>
 
-  void shms_rate_H2(){
     //void shms_rate_H2(int RunGroup){
     //  if(RunGroup == 0){
     //    std::cout<<"Enter RunGroup Number(-1 to exit) ";
@@ -53,6 +52,7 @@ R__LOAD_LIBRARY(libGenVector.so)
     //    if(RunGroup < 0)
     //      return;
     //  }
+  void shms_rate_H2(){
     for(int i = 1;i<56;i++){
       int RunGroup = 10*i;
       json j_rungroup;
