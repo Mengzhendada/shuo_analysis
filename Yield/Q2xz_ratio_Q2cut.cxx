@@ -48,17 +48,27 @@ int Q2xz_ratio_Q2cut(){
   for(json::iterator it = j_RunGroup.begin();it!=j_RunGroup.end();++it){
     int RunGroup = std::stoi(it.key());
     TH2D* h_xz_neg_all_1 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_neg_allraw_1 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     h_xz_neg_all_1->GetXaxis()->SetTitle("z");
     h_xz_neg_all_1->GetYaxis()->SetTitle("x");
     TH2D* h_xz_xbjmean_neg_all_1 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_zmean_neg_all_1 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     h_xz_xbjmean_neg_all_1->Sumw2();
     h_xz_zmean_neg_all_1->Sumw2();
+    TH2D* h_xz_xbjmean2_neg_all_1 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_zmean2_neg_all_1 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    h_xz_xbjmean2_neg_all_1->Sumw2();
+    h_xz_zmean2_neg_all_1->Sumw2();
     TH2D* h_xz_pos_all_1 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_pos_allraw_1 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_xbjmean_pos_all_1 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_zmean_pos_all_1 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     h_xz_xbjmean_pos_all_1->Sumw2();
     h_xz_zmean_pos_all_1->Sumw2();
+    TH2D* h_xz_xbjmean2_pos_all_1 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_zmean2_pos_all_1 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    h_xz_xbjmean2_pos_all_1->Sumw2();
+    h_xz_zmean2_pos_all_1->Sumw2();
     h_xz_pos_all_1->GetXaxis()->SetTitle("z");
     h_xz_pos_all_1->GetYaxis()->SetTitle("x");
     h_xz_neg_all_1->Sumw2();
@@ -89,17 +99,27 @@ int Q2xz_ratio_Q2cut(){
     h_xz_pos_bg_Dummy_all_1->Sumw2();
 
     TH2D* h_xz_neg_all_2 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_neg_allraw_2 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     h_xz_neg_all_2->GetXaxis()->SetTitle("z");
     h_xz_neg_all_2->GetYaxis()->SetTitle("x");
     TH2D* h_xz_xbjmean_neg_all_2 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_zmean_neg_all_2 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     h_xz_xbjmean_neg_all_2->Sumw2();
     h_xz_zmean_neg_all_2->Sumw2();
+    TH2D* h_xz_xbjmean2_neg_all_2 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_zmean2_neg_all_2 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    h_xz_xbjmean2_neg_all_2->Sumw2();
+    h_xz_zmean2_neg_all_2->Sumw2();
     TH2D* h_xz_pos_all_2 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_pos_allraw_2 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_xbjmean_pos_all_2 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_zmean_pos_all_2 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     h_xz_xbjmean_pos_all_2->Sumw2();
     h_xz_zmean_pos_all_2->Sumw2();
+    TH2D* h_xz_xbjmean2_pos_all_2 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_zmean2_pos_all_2 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    h_xz_xbjmean2_pos_all_2->Sumw2();
+    h_xz_zmean2_pos_all_2->Sumw2();
     h_xz_pos_all_2->GetXaxis()->SetTitle("z");
     h_xz_pos_all_2->GetYaxis()->SetTitle("x");
     h_xz_neg_all_2->Sumw2();
@@ -130,17 +150,27 @@ int Q2xz_ratio_Q2cut(){
     h_xz_pos_bg_Dummy_all_2->Sumw2();
 
     TH2D* h_xz_neg_all_3 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_neg_allraw_3 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     h_xz_neg_all_3->GetXaxis()->SetTitle("z");
     h_xz_neg_all_3->GetYaxis()->SetTitle("x");
     TH2D* h_xz_xbjmean_neg_all_3 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_zmean_neg_all_3 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
     h_xz_xbjmean_neg_all_3->Sumw2();
     h_xz_zmean_neg_all_3->Sumw2();
+    TH2D* h_xz_xbjmean2_neg_all_3 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_zmean2_neg_all_3 = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+    h_xz_xbjmean2_neg_all_3->Sumw2();
+    h_xz_zmean2_neg_all_3->Sumw2();
     TH2D* h_xz_pos_all_3 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_pos_allraw_3 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_xbjmean_pos_all_3 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     TH2D* h_xz_zmean_pos_all_3 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
     h_xz_xbjmean_pos_all_3->Sumw2();
     h_xz_zmean_pos_all_3->Sumw2();
+    TH2D* h_xz_xbjmean2_pos_all_3 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    TH2D* h_xz_zmean2_pos_all_3 = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+    h_xz_xbjmean2_pos_all_3->Sumw2();
+    h_xz_zmean2_pos_all_3->Sumw2();
     h_xz_pos_all_3->GetXaxis()->SetTitle("z");
     h_xz_pos_all_3->GetYaxis()->SetTitle("x");
     h_xz_neg_all_3->Sumw2();
@@ -248,12 +278,21 @@ int Q2xz_ratio_Q2cut(){
         h_xz_neg_bg_all_1->Add(h_xz_neg_bg_1,1/(6*EFF));
         h_xz_neg_all_1->Add(h_xz_neg_1,1/EFF);
 
+        TH2D *h_xz_negraw_1 = (TH2D*)root_file_neg->Get("x_z_raw1");
+        h_xz_neg_allraw_1->Add(h_xz_negraw_1);
+
         TH2D* h_xz_xbjmean_neg_1 = new TH2D("","",20,0,1,20,0,1);
         h_xz_xbjmean_neg_1 = (TH2D*)root_file_neg->Get("weighted_xbj_1");
         TH2D* h_xz_zmean_neg_1 = new TH2D("","",20,0,1,20,0,1);
         h_xz_zmean_neg_1 = (TH2D*)root_file_neg->Get("weighted_z_1");
-        h_xz_xbjmean_neg_all_1->Add(h_xz_xbjmean_neg_1,1.0/N_neg_D2);
-        h_xz_zmean_neg_all_1->Add(h_xz_zmean_neg_1,1.0/N_neg_D2);
+        h_xz_xbjmean_neg_all_1->Add(h_xz_xbjmean_neg_1);
+        h_xz_zmean_neg_all_1->Add(h_xz_zmean_neg_1);
+        TH2D* h_xz_xbjmean2_neg_1 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_xbjmean2_neg_1 = (TH2D*)root_file_neg->Get("weighted_xbj2_1");
+        TH2D* h_xz_zmean2_neg_1 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_zmean2_neg_1 = (TH2D*)root_file_neg->Get("weighted_z2_1");
+        h_xz_xbjmean2_neg_all_1->Add(h_xz_xbjmean2_neg_1);
+        h_xz_zmean2_neg_all_1->Add(h_xz_zmean2_neg_1);
 
         TH2D *h_xz_neg_2 = new TH2D("","",20,0,1,20,0,1);
         h_xz_neg_2 = (TH2D*)root_file_neg->Get("x_z_2");
@@ -261,13 +300,22 @@ int Q2xz_ratio_Q2cut(){
         h_xz_neg_bg_2 = (TH2D*)root_file_neg->Get("x_z_bg_2");
         h_xz_neg_bg_all_2->Add(h_xz_neg_bg_2,1/(6*EFF));
         h_xz_neg_all_2->Add(h_xz_neg_2,1/EFF);
+        
+        TH2D *h_xz_negraw_2 = (TH2D*)root_file_neg->Get("x_z_raw2");
+        h_xz_neg_allraw_2->Add(h_xz_negraw_2);
 
         TH2D* h_xz_xbjmean_neg_2 = new TH2D("","",20,0,1,20,0,1);
         h_xz_xbjmean_neg_2 = (TH2D*)root_file_neg->Get("weighted_xbj_2");
         TH2D* h_xz_zmean_neg_2 = new TH2D("","",20,0,1,20,0,1);
         h_xz_zmean_neg_2 = (TH2D*)root_file_neg->Get("weighted_z_2");
-        h_xz_xbjmean_neg_all_2->Add(h_xz_xbjmean_neg_2,1.0/N_neg_D2);
-        h_xz_zmean_neg_all_2->Add(h_xz_zmean_neg_2,1.0/N_neg_D2);
+        h_xz_xbjmean_neg_all_2->Add(h_xz_xbjmean_neg_2);
+        h_xz_zmean_neg_all_2->Add(h_xz_zmean_neg_2);
+        TH2D* h_xz_xbjmean2_neg_2 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_xbjmean2_neg_2 = (TH2D*)root_file_neg->Get("weighted_xbj2_2");
+        TH2D* h_xz_zmean2_neg_2 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_zmean2_neg_2 = (TH2D*)root_file_neg->Get("weighted_z2_2");
+        h_xz_xbjmean2_neg_all_2->Add(h_xz_xbjmean2_neg_2);
+        h_xz_zmean2_neg_all_2->Add(h_xz_zmean2_neg_2);
 
         TH2D *h_xz_neg_3 = new TH2D("","",20,0,1,20,0,1);
         h_xz_neg_3 = (TH2D*)root_file_neg->Get("x_z_3");
@@ -275,17 +323,39 @@ int Q2xz_ratio_Q2cut(){
         h_xz_neg_bg_3 = (TH2D*)root_file_neg->Get("x_z_bg_3");
         h_xz_neg_bg_all_3->Add(h_xz_neg_bg_3,1/(6*EFF));
         h_xz_neg_all_3->Add(h_xz_neg_3,1/EFF);
+        
+        TH2D *h_xz_negraw_3 = (TH2D*)root_file_neg->Get("x_z_raw3");
+        h_xz_neg_allraw_3->Add(h_xz_negraw_3);
 
         TH2D* h_xz_xbjmean_neg_3 = new TH2D("","",20,0,1,20,0,1);
         h_xz_xbjmean_neg_3 = (TH2D*)root_file_neg->Get("weighted_xbj_3");
         TH2D* h_xz_zmean_neg_3 = new TH2D("","",20,0,1,20,0,1);
         h_xz_zmean_neg_3 = (TH2D*)root_file_neg->Get("weighted_z_3");
-        h_xz_xbjmean_neg_all_3->Add(h_xz_xbjmean_neg_3,1.0/N_neg_D2);
-        h_xz_zmean_neg_all_3->Add(h_xz_zmean_neg_3,1.0/N_neg_D2);
+        h_xz_xbjmean_neg_all_3->Add(h_xz_xbjmean_neg_3);
+        h_xz_zmean_neg_all_3->Add(h_xz_zmean_neg_3);
+        TH2D* h_xz_xbjmean2_neg_3 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_xbjmean2_neg_3 = (TH2D*)root_file_neg->Get("weighted_xbj2_3");
+        TH2D* h_xz_zmean2_neg_3 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_zmean2_neg_3 = (TH2D*)root_file_neg->Get("weighted_z2_3");
+        h_xz_xbjmean2_neg_all_3->Add(h_xz_xbjmean2_neg_3);
+        h_xz_zmean2_neg_all_3->Add(h_xz_zmean2_neg_3);
       }//loop over neg runs
+      h_xz_xbjmean_neg_all_1->Divide(h_xz_neg_allraw_1);
+      h_xz_zmean_neg_all_1->Divide(h_xz_neg_allraw_1);
+      h_xz_xbjmean2_neg_all_1->Divide(h_xz_neg_allraw_1);
+      h_xz_zmean2_neg_all_1->Divide(h_xz_neg_allraw_1);
+      h_xz_xbjmean_neg_all_2->Divide(h_xz_neg_allraw_2);
+      h_xz_zmean_neg_all_2->Divide(h_xz_neg_allraw_2);
+      h_xz_xbjmean2_neg_all_2->Divide(h_xz_neg_allraw_2);
+      h_xz_zmean2_neg_all_2->Divide(h_xz_neg_allraw_2);
+      h_xz_xbjmean_neg_all_3->Divide(h_xz_neg_allraw_3);
+      h_xz_zmean_neg_all_3->Divide(h_xz_neg_allraw_3);
+      h_xz_xbjmean2_neg_all_3->Divide(h_xz_neg_allraw_3);
+      h_xz_zmean2_neg_all_3->Divide(h_xz_neg_allraw_3);
+
       for(auto it = pos_D2_runs.begin();it!=pos_D2_runs.end();++it){
         int RunNumber = *it;
-        //std::cout<<RunNumber<<std::endl;
+        std::cout<<RunNumber<<std::endl;
         double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
         charge_pos_all+=charge;
         //std::cout<<"pos DE check"<<std::endl;
@@ -297,13 +367,21 @@ int Q2xz_ratio_Q2cut(){
         double EFF = Get_all_eff(RunNumber);
         h_xz_pos_bg_all_1->Add(h_xz_pos_bg_1,1/(6*EFF));
         h_xz_pos_all_1->Add(h_xz_pos_1,1/EFF);
+        TH2D *h_xz_posraw_1 = (TH2D*)root_file_pos->Get("x_z_raw1");
+        h_xz_pos_allraw_1->Add(h_xz_posraw_1);
 
         TH2D* h_xz_xbjmean_pos_1 = new TH2D("","",20,0,1,20,0,1);
         h_xz_xbjmean_pos_1 = (TH2D*)root_file_pos->Get("weighted_xbj_1");
         TH2D* h_xz_zmean_pos_1 = new TH2D("","",20,0,1,20,0,1);
         h_xz_zmean_pos_1 = (TH2D*)root_file_pos->Get("weighted_z_1");
-        h_xz_xbjmean_pos_all_1->Add(h_xz_xbjmean_pos_1,1.0/N_pos_D2);
-        h_xz_zmean_pos_all_1->Add(h_xz_zmean_pos_1,1.0/N_pos_D2);
+        h_xz_xbjmean_pos_all_1->Add(h_xz_xbjmean_pos_1);
+        h_xz_zmean_pos_all_1->Add(h_xz_zmean_pos_1);
+        TH2D* h_xz_xbjmean2_pos_1 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_xbjmean2_pos_1 = (TH2D*)root_file_pos->Get("weighted_xbj2_1");
+        TH2D* h_xz_zmean2_pos_1 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_zmean2_pos_1 = (TH2D*)root_file_pos->Get("weighted_z2_1");
+        h_xz_xbjmean2_pos_all_1->Add(h_xz_xbjmean2_pos_1);
+        h_xz_zmean2_pos_all_1->Add(h_xz_zmean2_pos_1);
 
         TH2D *h_xz_pos_2 = new TH2D("","",20,0,1,20,0,1);
         h_xz_pos_2 = (TH2D*)root_file_pos->Get("x_z_2");
@@ -311,13 +389,21 @@ int Q2xz_ratio_Q2cut(){
         h_xz_pos_bg_2 = (TH2D*)root_file_pos->Get("x_z_bg_2");
         h_xz_pos_bg_all_2->Add(h_xz_pos_bg_2,1/(6*EFF));
         h_xz_pos_all_2->Add(h_xz_pos_2,1/EFF);
+        TH2D *h_xz_posraw_2 = (TH2D*)root_file_pos->Get("x_z_raw2");
+        h_xz_pos_allraw_2->Add(h_xz_posraw_2);
 
         TH2D* h_xz_xbjmean_pos_2 = new TH2D("","",20,0,1,20,0,1);
         h_xz_xbjmean_pos_2 = (TH2D*)root_file_pos->Get("weighted_xbj_2");
         TH2D* h_xz_zmean_pos_2 = new TH2D("","",20,0,1,20,0,1);
         h_xz_zmean_pos_2 = (TH2D*)root_file_pos->Get("weighted_z_2");
-        h_xz_xbjmean_pos_all_2->Add(h_xz_xbjmean_pos_2,1.0/N_pos_D2);
-        h_xz_zmean_pos_all_2->Add(h_xz_zmean_pos_2,1.0/N_pos_D2);
+        h_xz_xbjmean_pos_all_2->Add(h_xz_xbjmean_pos_2);
+        h_xz_zmean_pos_all_2->Add(h_xz_zmean_pos_2);
+        TH2D* h_xz_xbjmean2_pos_2 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_xbjmean2_pos_2 = (TH2D*)root_file_pos->Get("weighted_xbj2_2");
+        TH2D* h_xz_zmean2_pos_2 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_zmean2_pos_2 = (TH2D*)root_file_pos->Get("weighted_z2_2");
+        h_xz_xbjmean2_pos_all_2->Add(h_xz_xbjmean2_pos_2);
+        h_xz_zmean2_pos_all_2->Add(h_xz_zmean2_pos_2);
 
         TH2D *h_xz_pos_3 = new TH2D("","",20,0,1,20,0,1);
         h_xz_pos_3 = (TH2D*)root_file_pos->Get("x_z_3");
@@ -325,14 +411,37 @@ int Q2xz_ratio_Q2cut(){
         h_xz_pos_bg_3 = (TH2D*)root_file_pos->Get("x_z_bg_3");
         h_xz_pos_bg_all_3->Add(h_xz_pos_bg_3,1/(6*EFF));
         h_xz_pos_all_3->Add(h_xz_pos_3,1/EFF);
+        
+        TH2D *h_xz_posraw_3 = (TH2D*)root_file_pos->Get("x_z_raw3");
+        h_xz_pos_allraw_3->Add(h_xz_posraw_3);
 
         TH2D* h_xz_xbjmean_pos_3 = new TH2D("","",20,0,1,20,0,1);
         h_xz_xbjmean_pos_3 = (TH2D*)root_file_pos->Get("weighted_xbj_3");
         TH2D* h_xz_zmean_pos_3 = new TH2D("","",20,0,1,20,0,1);
         h_xz_zmean_pos_3 = (TH2D*)root_file_pos->Get("weighted_z_3");
-        h_xz_xbjmean_pos_all_3->Add(h_xz_xbjmean_pos_3,1.0/N_pos_D2);
-        h_xz_zmean_pos_all_3->Add(h_xz_zmean_pos_3,1.0/N_pos_D2);
+        h_xz_xbjmean_pos_all_3->Add(h_xz_xbjmean_pos_3);
+        h_xz_zmean_pos_all_3->Add(h_xz_zmean_pos_3);
+        TH2D* h_xz_xbjmean2_pos_3 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_xbjmean2_pos_3 = (TH2D*)root_file_pos->Get("weighted_xbj2_3");
+        TH2D* h_xz_zmean2_pos_3 = new TH2D("","",20,0,1,20,0,1);
+        h_xz_zmean2_pos_3 = (TH2D*)root_file_pos->Get("weighted_z2_3");
+        h_xz_xbjmean2_pos_all_3->Add(h_xz_xbjmean2_pos_3);
+        h_xz_zmean2_pos_all_3->Add(h_xz_zmean2_pos_3);
+
       }//loop over pos runs
+      h_xz_xbjmean_pos_all_1->Divide(h_xz_pos_allraw_1);
+      h_xz_zmean_pos_all_1->Divide(h_xz_pos_allraw_1);
+      h_xz_xbjmean2_pos_all_1->Divide(h_xz_pos_allraw_1);
+      h_xz_zmean2_pos_all_1->Divide(h_xz_pos_allraw_1);
+      h_xz_xbjmean_pos_all_2->Divide(h_xz_pos_allraw_2);
+      h_xz_zmean_pos_all_2->Divide(h_xz_pos_allraw_2);
+      h_xz_xbjmean2_pos_all_2->Divide(h_xz_pos_allraw_2);
+      h_xz_zmean2_pos_all_2->Divide(h_xz_pos_allraw_2);
+      h_xz_xbjmean_pos_all_3->Divide(h_xz_pos_allraw_3);
+      h_xz_zmean_pos_all_3->Divide(h_xz_pos_allraw_3);
+      h_xz_xbjmean2_pos_all_3->Divide(h_xz_pos_allraw_3);
+      h_xz_zmean2_pos_all_3->Divide(h_xz_pos_allraw_3);
+
       for(auto it = neg_Dummy_runs.begin();it!=neg_Dummy_runs.end();++it){
         int RunNumber = *it;
         //std::cout<<"Dummy"<<RunNumber<<std::endl;
@@ -494,17 +603,20 @@ int Q2xz_ratio_Q2cut(){
           double xbj_pos_corr_1 = h_xz_xbjmean_pos_all_1->GetBinContent(i+1,j+1);
           double z_pos_corr_1 = h_xz_zmean_pos_all_1->GetBinContent(i+1,j+1);
 
-          double xbj_neg_corr_err_1 = h_xz_xbjmean_neg_all_1->GetBinError(i+1,j+1);
-          double z_neg_corr_err_1 = h_xz_zmean_neg_all_1->GetBinError(i+1,j+1);
-          double xbj_pos_corr_err_1 = h_xz_xbjmean_pos_all_1->GetBinError(i+1,j+1);
-          double z_pos_corr_err_1 = h_xz_zmean_pos_all_1->GetBinError(i+1,j+1);
+          double xbj_neg_corr_err2_1 = h_xz_xbjmean2_neg_all_1->GetBinContent(i+1,j+1)-xbj_neg_corr_1*xbj_neg_corr_1;
+          double z_neg_corr_err2_1 = h_xz_zmean2_neg_all_1->GetBinContent(i+1,j+1)-z_neg_corr_1*z_neg_corr_1;
+          double xbj_pos_corr_err2_1 = h_xz_xbjmean2_pos_all_1->GetBinContent(i+1,j+1)-xbj_pos_corr_1*xbj_pos_corr_1;
+          double z_pos_corr_err2_1 = h_xz_zmean2_pos_all_1->GetBinContent(i+1,j+1)-z_pos_corr_1*z_pos_corr_1;
 
-          double xbj_neg_corr_err2_1 = xbj_neg_corr_err_1*xbj_neg_corr_err_1;
-          double xbj_pos_corr_err2_1 = xbj_pos_corr_err_1*xbj_pos_corr_err_1;
-          double z_neg_corr_err2_1 = z_neg_corr_err_1*z_neg_corr_err_1;
-          double z_pos_corr_err2_1 = z_pos_corr_err_1*z_pos_corr_err_1;
+          double xbj_neg_corr_err_1 = sqrt(xbj_neg_corr_err2_1);
+          double xbj_pos_corr_err_1 = sqrt(xbj_pos_corr_err2_1);
+          double z_neg_corr_err_1 = sqrt(z_neg_corr_err2_1);
+          double z_pos_corr_err_1 = sqrt(z_pos_corr_err2_1);
 
           double xbj_corr_1 = (xbj_neg_corr_1/xbj_neg_corr_err2_1+xbj_pos_corr_1/xbj_pos_corr_err2_1)/(1/xbj_neg_corr_err2_1+1/xbj_pos_corr_err2_1);
+          if(abs(xbj_corr_1-y_1)>0.025){
+            std::cout<<"1 xbj center "<<y_1<<", xbj corr "<<xbj_corr_1<<", pi+ "<<xbj_pos_corr_1<<" +- "<<xbj_pos_corr_err_1<<", pi- "<<xbj_neg_corr_1<<" +- "<<xbj_neg_corr_err_1<<std::endl;
+          }
           double xbj_corr_err_1 = 1/(1/xbj_neg_corr_err2_1+1/xbj_pos_corr_err2_1);
           double z_corr_1 = (z_neg_corr_1/z_neg_corr_err2_1+z_pos_corr_1/z_pos_corr_err2_1)/(1/z_neg_corr_err2_1+1/z_pos_corr_err2_1);
           double z_corr_err_1 = 1/(1/z_neg_corr_err2_1+1/z_pos_corr_err2_1);
@@ -645,22 +757,25 @@ int Q2xz_ratio_Q2cut(){
           double xbj_pos_corr_2 = h_xz_xbjmean_pos_all_2->GetBinContent(i+1,j+1);
           double z_pos_corr_2 = h_xz_zmean_pos_all_2->GetBinContent(i+1,j+1);
 
-          double xbj_neg_corr_err_2 = h_xz_xbjmean_neg_all_2->GetBinError(i+1,j+1);
-          double z_neg_corr_err_2 = h_xz_zmean_neg_all_2->GetBinError(i+1,j+1);
-          double xbj_pos_corr_err_2 = h_xz_xbjmean_pos_all_2->GetBinError(i+1,j+1);
-          double z_pos_corr_err_2 = h_xz_zmean_pos_all_2->GetBinError(i+1,j+1);
+          double xbj_neg_corr_err2_2 = h_xz_xbjmean2_neg_all_2->GetBinContent(i+1,j+1)-xbj_neg_corr_2*xbj_neg_corr_2;
+          double z_neg_corr_err2_2 = h_xz_zmean2_neg_all_2->GetBinContent(i+1,j+1)-z_neg_corr_2*z_neg_corr_2;
+          double xbj_pos_corr_err2_2 = h_xz_xbjmean2_pos_all_2->GetBinContent(i+1,j+1)-xbj_pos_corr_2*xbj_pos_corr_2;
+          double z_pos_corr_err2_2 = h_xz_zmean2_pos_all_2->GetBinContent(i+1,j+1)-z_pos_corr_2*z_pos_corr_2;
 
-          double xbj_neg_corr_err2_2 = xbj_neg_corr_err_2*xbj_neg_corr_err_2;
-          double xbj_pos_corr_err2_2 = xbj_pos_corr_err_2*xbj_pos_corr_err_2;
-          double z_neg_corr_err2_2 = z_neg_corr_err_2*z_neg_corr_err_2;
-          double z_pos_corr_err2_2 = z_pos_corr_err_2*z_pos_corr_err_2;
+          double xbj_neg_corr_err_2 = sqrt(xbj_neg_corr_err2_2);
+          double xbj_pos_corr_err_2 = sqrt(xbj_pos_corr_err2_2);
+          double z_neg_corr_err_2 = sqrt(z_neg_corr_err2_2);
+          double z_pos_corr_err_2 = sqrt(z_pos_corr_err2_2);
 
           double xbj_corr_2 = (xbj_neg_corr_2/xbj_neg_corr_err2_2+xbj_pos_corr_2/xbj_pos_corr_err2_2)/(1/xbj_neg_corr_err2_2+1/xbj_pos_corr_err2_2);
+          if(abs(xbj_corr_2-y_2)>0.025){
+            std::cout<<"2 xbj center "<<y_2<<", xbj corr "<<xbj_corr_2<<", pi+ "<<xbj_pos_corr_2<<" +- "<<xbj_pos_corr_err_2<<", pi- "<<xbj_neg_corr_2<<" +- "<<xbj_neg_corr_err_2<<std::endl;
+          }
           double xbj_corr_err_2 = 1/(1/xbj_neg_corr_err2_2+1/xbj_pos_corr_err2_2);
           double z_corr_2 = (z_neg_corr_2/z_neg_corr_err2_2+z_pos_corr_2/z_pos_corr_err2_2)/(1/z_neg_corr_err2_2+1/z_pos_corr_err2_2);
           double z_corr_err_2 = 1/(1/z_neg_corr_err2_2+1/z_pos_corr_err2_2);
 
-          if(RY_2>0){
+          if(RY_2>0 && yield_neg_2>0.005){
             //double y_RD = (4*y-1)/(1-y);
             std::string xbj_str = std::to_string(y_2); 
             std::string z_str = std::to_string(x_2);
@@ -796,22 +911,26 @@ int Q2xz_ratio_Q2cut(){
           double xbj_pos_corr_3 = h_xz_xbjmean_pos_all_3->GetBinContent(i+1,j+1);
           double z_pos_corr_3 = h_xz_zmean_pos_all_3->GetBinContent(i+1,j+1);
 
-          double xbj_neg_corr_err_3 = h_xz_xbjmean_neg_all_3->GetBinError(i+1,j+1);
-          double z_neg_corr_err_3 = h_xz_zmean_neg_all_3->GetBinError(i+1,j+1);
-          double xbj_pos_corr_err_3 = h_xz_xbjmean_pos_all_3->GetBinError(i+1,j+1);
-          double z_pos_corr_err_3 = h_xz_zmean_pos_all_3->GetBinError(i+1,j+1);
+          double xbj_neg_corr_err2_3 = h_xz_xbjmean2_neg_all_3->GetBinContent(i+1,j+1)-xbj_neg_corr_3*xbj_neg_corr_3;
+          double z_neg_corr_err2_3 = h_xz_zmean2_neg_all_3->GetBinContent(i+1,j+1)-z_neg_corr_3*z_neg_corr_3;
+          double xbj_pos_corr_err2_3 = h_xz_xbjmean2_pos_all_3->GetBinContent(i+1,j+1)-xbj_pos_corr_3*xbj_pos_corr_3;
+          double z_pos_corr_err2_3 = h_xz_zmean2_pos_all_3->GetBinContent(i+1,j+1)-z_pos_corr_3*z_pos_corr_3;
 
-          double xbj_neg_corr_err2_3 = xbj_neg_corr_err_3*xbj_neg_corr_err_3;
-          double xbj_pos_corr_err2_3 = xbj_pos_corr_err_3*xbj_pos_corr_err_3;
-          double z_neg_corr_err2_3 = z_neg_corr_err_3*z_neg_corr_err_3;
-          double z_pos_corr_err2_3 = z_pos_corr_err_3*z_pos_corr_err_3;
+          double xbj_neg_corr_err_3 = sqrt(xbj_neg_corr_err2_3);
+          double xbj_pos_corr_err_3 = sqrt(xbj_pos_corr_err2_3);
+          double z_neg_corr_err_3 = sqrt(z_neg_corr_err2_3);
+          double z_pos_corr_err_3 = sqrt(z_pos_corr_err2_3);
 
           double xbj_corr_3 = (xbj_neg_corr_3/xbj_neg_corr_err2_3+xbj_pos_corr_3/xbj_pos_corr_err2_3)/(1/xbj_neg_corr_err2_3+1/xbj_pos_corr_err2_3);
+          if(abs(xbj_corr_3-y_3)>0.025){
+            std::cout<<"3 xbj center "<<y_3<<", xbj corr "<<xbj_corr_3<<", pi+ "<<xbj_pos_corr_3<<" +- "<<xbj_pos_corr_err_3<<", pi- "<<xbj_neg_corr_3<<" +- "<<xbj_neg_corr_err_3<<std::endl;
+            std::cout<<"neg bin content "<<h_xz_xbjmean2_neg_all_3->GetBinContent(i+1,j+1)<<" neg err2 "<<xbj_neg_corr_err2_3<<std::endl;
+          }
           double xbj_corr_err_3 = 1/(1/xbj_neg_corr_err2_3+1/xbj_pos_corr_err2_3);
           double z_corr_3 = (z_neg_corr_3/z_neg_corr_err2_3+z_pos_corr_3/z_pos_corr_err2_3)/(1/z_neg_corr_err2_3+1/z_pos_corr_err2_3);
           double z_corr_err_3 = 1/(1/z_neg_corr_err2_3+1/z_pos_corr_err2_3);
 
-          if(RY_3>0){
+          if(RY_3>0 && yield_neg_3>0.005){
             //double y_RD = (4*y-1)/(1-y);
             std::string xbj_str = std::to_string(y_3); 
             std::string z_str = std::to_string(x_3);
