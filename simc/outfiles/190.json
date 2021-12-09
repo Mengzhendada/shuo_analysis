@@ -3,19 +3,19 @@
         "neg": {
             "D2": {
                 "delta": {
-                    "normfac": 48040100.0
+                    "normfac": 47846700.0
                 },
                 "exc": {
                     "rad": {
-                        "normfac": 46204300.0
+                        "normfac": 44843300.0
                     }
                 },
                 "inc": {
                     "norad": {
-                        "normfac": 112671000000.0
+                        "normfac": 120247000000.0
                     },
                     "rad": {
-                        "normfac": 80154400000.0
+                        "normfac": 86287300000.0
                     }
                 },
                 "rho": {
@@ -24,14 +24,14 @@
             },
             "H2": {
                 "delta": {
-                    "normfac": 43126200.0
+                    "normfac": 24213300.0
                 },
                 "inc": {
                     "norad": {
-                        "normfac": 97005800000.0
+                        "normfac": 27840500000.0
                     },
                     "rad": {
-                        "normfac": 69494800000.0
+                        "normfac": 17767900000.0
                     }
                 }
             }
@@ -39,19 +39,19 @@
         "pos": {
             "D2": {
                 "delta": {
-                    "normfac": 48040100.0
+                    "normfac": 47846700.0
                 },
                 "exc": {
                     "rad": {
-                        "normfac": 45831800.0
+                        "normfac": 45462100.0
                     }
                 },
                 "inc": {
                     "norad": {
-                        "normfac": 112671000000.0
+                        "normfac": 120247000000.0
                     },
                     "rad": {
-                        "normfac": 79729500000.0
+                        "normfac": 85775600000.0
                     }
                 },
                 "rho": {
@@ -60,19 +60,19 @@
             },
             "H2": {
                 "delta": {
-                    "normfac": 137536000.0
+                    "normfac": 91644600.0
                 },
                 "exc": {
                     "rad": {
-                        "normfac": 40965400.0
+                        "normfac": 34675500.0
                     }
                 },
                 "inc": {
                     "norad": {
-                        "normfac": 97005800000.0
+                        "normfac": 27840500000.0
                     },
                     "rad": {
-                        "normfac": 69410400000.0
+                        "normfac": 17820200000.0
                     }
                 }
             }
