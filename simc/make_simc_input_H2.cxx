@@ -5,6 +5,12 @@ using json = nlohmann::json;
 #include <fstream>
 #include <vector>
 #include <string>
+double Get_HMS_P_corr(double hmsp){
+  return -0.000276*hmsp*hmsp*hmsp+0.002585*hmsp*hmsp-0.008697*hmsp+1.006440;
+}
+double Get_SHMS_P_corr(double shmsp){
+  return 0.998;
+} 
 
 void make_simc_input_H2(int RunGroup = 0){
 
@@ -51,18 +57,31 @@ void make_simc_input_H2(int RunGroup = 0){
 
   double e_momentum,e_theta,p_momentum,p_theta;
   if(RunNumber < 7000){
-    e_momentum = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>())*1000;
+    double HMS_P = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>());
+    double HMS_P_corr = Get_HMS_P_corr(HMS_P)*HMS_P;
+    e_momentum = HMS_P_corr*1000; 
+    //e_momentum = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>())*1000;
     e_theta = j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_angle"].get<double>();
-    p_momentum = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>())*1000;
-    p_theta = j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_angle"].get<double>();
+    double SHMS_P = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>());
+    double SHMS_P_corr = Get_SHMS_P_corr(SHMS_P)*SHMS_P;
+    p_momentum = SHMS_P_corr*1000; 
+    
+    //e_momentum = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>())*1000;
+    //e_theta = j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_angle"].get<double>();
+    //p_momentum = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>())*1000;
+    //p_theta = j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_angle"].get<double>();
     Ebeam = 10597.825;
     dEbeam = 0.00415;
   }
   else{
-    e_momentum = std::abs(j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>())*1000;
-    e_theta = j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_angle"].get<double>();
-    p_momentum = std::abs(j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>())*1000;
-    p_theta = j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_angle"].get<double>();
+    double HMS_P = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>());
+    double HMS_P_corr = Get_HMS_P_corr(HMS_P)*HMS_P;
+    e_momentum = HMS_P_corr*1000; 
+    //e_momentum = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>())*1000;
+    e_theta = j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_angle"].get<double>();
+    double SHMS_P = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>());
+    double SHMS_P_corr = Get_SHMS_P_corr(SHMS_P)*SHMS_P;
+    p_momentum = SHMS_P_corr*1000; 
     Ebeam = 10212.715;
     dEbeam = 0.00404;
   }
