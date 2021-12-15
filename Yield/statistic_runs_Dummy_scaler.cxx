@@ -24,13 +24,27 @@ using namespace std;
 #include "ROOT/RVec.hxx"
 #include "TVector3.h"
 
+double BCM_Current_Corr(double current){
+  double curr_corr = 1;
+  if(current>2){
+    if(current<=60){
+      curr_corr = 1.0+0.045*(log(60.)-log(current))/(log(60.)-log(2.));
+    }
+    else{
+      curr_corr = 1.0+0.010*(current-60)/25;
+    }
+  }
+
+  return current*curr_corr;
+}
+
 
 void statistic_runs_Dummy_scaler(int RunGroup=0){
 
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
     std::cin>>RunGroup;
-    if(RunGroup<=0)
+    if(RunGroup==0)
       return;
   }
 
@@ -78,11 +92,12 @@ void statistic_runs_Dummy_scaler(int RunGroup=0){
       double tot_time_neg,pre_time_neg = 0, tot_time_cut_neg = 0;
       int scaler_entries_neg = neg_scaler_event_list->size();
       for(int i = 0; i<scaler_entries_neg;i++){
-          tot_charge_neg = neg_scaler_charge_list->at(i);
+          //tot_charge_neg = neg_scaler_charge_list->at(i);
           tot_time_neg = neg_scaler_time_list->at(i);
-        if(neg_scaler_current_list->at(i)>current_diff){
+        if(BCM_Current_Corr(neg_scaler_current_list->at(i))>current_diff){
         //if(abs(neg_scaler_current_list->at(i)-set_cur_neg)<current_diff){
-          tot_charge_cut_neg = tot_charge_cut_neg+(tot_charge_neg-pre_charge_neg);
+          tot_charge_cut_neg = tot_charge_cut_neg+BCM_Current_Corr(neg_scaler_current_list->at(i))*(tot_time_neg-pre_time_neg);
+            //tot_charge_cut_neg+(tot_charge_neg-pre_charge_neg);
           tot_time_cut_neg = tot_time_cut_neg +(tot_time_neg - pre_time_neg);
           
         }
@@ -91,9 +106,13 @@ void statistic_runs_Dummy_scaler(int RunGroup=0){
       }
       std::cout<<"charge after current cut"<<tot_charge_cut_neg<<std::endl;
       std::cout<<"charge in scaler "<<*d_neg_scaler.Max("P.BCM1.scalerChargeCut")<<std::endl;;
+      int scaler_events  = *d_neg_scaler.Count();
+      long int datacounts = *d_neg_scaler.Max("P.pTRIG1.scaler");
       jout[(std::to_string(RunNumber)).c_str()]["charge"] = tot_charge_cut_neg/1000;
       jout[(std::to_string(RunNumber)).c_str()]["current"] = set_cur_neg;
       jout[(std::to_string(RunNumber)).c_str()]["time"] = tot_time_cut_neg;
+      jout[(std::to_string(RunNumber)).c_str()]["scaler_n"] = scaler_events;
+      jout[(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
 
     }
 
@@ -114,14 +133,20 @@ void statistic_runs_Dummy_scaler(int RunGroup=0){
       double tot_time,pre_time = 0, tot_time_cut = 0;
       int scaler_entries = scaler_event_list->size();
       for(int i = 0; i<scaler_entries;i++){
-          tot_charge = scaler_charge_list->at(i);
+          //tot_charge = scaler_charge_list->at(i);
           tot_time = scaler_time_list->at(i);
-        if(scaler_current_list->at(i)>current_diff){
-        //if(abs(scaler_current_list->at(i)-set_cur)<current_diff){
-          tot_charge_cut = tot_charge_cut+(tot_charge-pre_charge);
+        if(BCM_Current_Corr(scaler_current_list->at(i))>current_diff){
+        //if(abs(neg_scaler_current_list->at(i)-set_cur_neg)<current_diff){
+          tot_charge_cut = tot_charge_cut+BCM_Current_Corr(scaler_current_list->at(i))*(tot_time-pre_time);
           tot_time_cut = tot_time_cut +(tot_time - pre_time);
           
         }
+        //if(scaler_current_list->at(i)>current_diff){
+        ////if(abs(scaler_current_list->at(i)-set_cur)<current_diff){
+        //  tot_charge_cut = tot_charge_cut+(tot_charge-pre_charge);
+        //  tot_time_cut = tot_time_cut +(tot_time - pre_time);
+        //  
+        //}
         pre_time = tot_time; 
         pre_charge = tot_charge;
       }
@@ -129,14 +154,14 @@ void statistic_runs_Dummy_scaler(int RunGroup=0){
       std::cout<<"charge in scaler "<<*d_pos_scaler.Max("P.BCM1.scalerChargeCut")<<std::endl;;
       //double charge = *d_pos_scale.Max("P.BCM1.scalerChargeCut")/1000.0;
       //double time_1MHz_cut = *d_pos_scale.Max("P.1MHz.scalerTimeCut");
-      //int scaler_events  = *d_pos_scale.Count();
-      //long int datacounts = *d_pos_scale.Max("P.pTRIG1.scaler");
+      int scaler_events  = *d_pos_scaler.Count();
+      long int datacounts = *d_pos_scaler.Max("P.pTRIG1.scaler");
       ////std::cout<<charge<<std::endl;
       jout[(std::to_string(RunNumber)).c_str()]["charge"] = tot_charge_cut/1000;
-      jout[(std::to_string(RunNumber)).c_str()]["current"] = set_cur;
       jout[(std::to_string(RunNumber)).c_str()]["time"] = tot_time_cut;
-      //jout[(std::to_string(RunNumber)).c_str()]["scaler_n"] = scaler_events;
-      //jout[(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
+      jout[(std::to_string(RunNumber)).c_str()]["current"] = set_cur;
+      jout[(std::to_string(RunNumber)).c_str()]["scaler_n"] = scaler_events;
+      jout[(std::to_string(RunNumber)).c_str()]["data_n"] = datacounts;
     }
     
     std::string of = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
