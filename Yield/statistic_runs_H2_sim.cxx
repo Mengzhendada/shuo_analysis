@@ -86,11 +86,11 @@ void statistic_runs_H2_sim(int RunGroup = 0){
 
   int bins = j_cuts["bins"].get<int>();
   json jout;
-  //{
-  //  std::string if_name = "results/yield/run_info/simc_"+std::to_string(RunGroup)+"_info.json";
-  //  std::ifstream ifs(if_name.c_str());
-  //  ifs>>jout;
-  //}
+  {
+    std::string if_name = "results/yield/run_info/simc_"+std::to_string(RunGroup)+"_info.json";
+    std::ifstream ifs(if_name.c_str());
+    ifs>>jout;
+  }
   double Q2_low = j_cuts["Q2_low"].get<double>();
   double Q2_high = j_cuts["Q2_high"].get<double>();
   std::string Q2_low_cut = "Q2<"+std::to_string(Q2_low);
@@ -674,19 +674,19 @@ void statistic_runs_H2_sim(int RunGroup = 0){
 
   rootfile_out->Close();
 
-  int pos_inc_norad = h_z_H2_pos_inc_norad->Integral();
-  int neg_inc_norad = h_z_H2_neg_inc_norad->Integral();
+  double pos_inc_norad = h_z_H2_pos_inc_norad->Integral();
+  double neg_inc_norad = h_z_H2_neg_inc_norad->Integral();
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["pos"]["inc_norad"] = pos_inc_norad;
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["neg"]["inc_norad"] = neg_inc_norad;
-  int pos_inc_rad = h_z_H2_pos_inc_rad->Integral();
-  int neg_inc_rad = h_z_H2_neg_inc_rad->Integral();
+  double pos_inc_rad = h_z_H2_pos_inc_rad->Integral();
+  double neg_inc_rad = h_z_H2_neg_inc_rad->Integral();
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["pos"]["inc_rad"] = pos_inc_rad;
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["neg"]["inc_rad"] = neg_inc_rad;
-  int pos_exc_rad = h_z_H2_pos_exc_rad->Integral();
+  double pos_exc_rad = h_z_H2_pos_exc_rad->Integral();
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["pos"]["exc_rad"] = pos_exc_rad;
 //  jout[(std::to_string(RunGroup)).c_str()]["H2"]["neg"]["exc_rad"] = neg_exc_rad;
-  int pos_delta = h_z_H2_pos_delta->Integral();
-  int neg_delta = h_z_H2_neg_delta->Integral();
+  double pos_delta = h_z_H2_pos_delta->Integral();
+  double neg_delta = h_z_H2_neg_delta->Integral();
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["pos"]["delta"] = pos_delta;
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["neg"]["delta"] = neg_delta;
     std::string of_name = "results/yield/run_info/simc_"+std::to_string(RunGroup)+"_info.json";

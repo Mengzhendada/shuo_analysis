@@ -107,7 +107,17 @@ int Q2_xz_ratio_combined(){
           h_xz_pos_all->GetYaxis()->SetTitle("x");
           h_xz_neg_all->Sumw2();
           h_xz_pos_all->Sumw2();
+          //for Q2 mean
+          TH2D* h_xz_Q2mean_pos_all = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+          h_xz_Q2mean_pos_all->Sumw2();
+          TH2D* h_xz_Q2mean2_pos_all = new TH2D("","pos;z;x",bins,0,1,bins,0,1);
+          h_xz_Q2mean2_pos_all->Sumw2();
+          TH2D* h_xz_Q2mean_neg_all = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+          h_xz_Q2mean_neg_all->Sumw2();
+          TH2D* h_xz_Q2mean2_neg_all = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
+          h_xz_Q2mean2_neg_all->Sumw2();
           
+
           TH2D* h_xz_neg_bg_all = new TH2D("","neg bg;z;x",bins,0,1,bins,0,1);
           h_xz_neg_bg_all->GetXaxis()->SetTitle("z");
           h_xz_neg_bg_all->GetYaxis()->SetTitle("x");
@@ -204,11 +214,21 @@ int Q2_xz_ratio_combined(){
               //h_xz_zmean_neg->Divide(h_xz_neg);
               h_xz_xbjmean2_neg_all->Add(h_xz_xbjmean2_neg);
               h_xz_zmean2_neg_all->Add(h_xz_zmean2_neg);
+              //for Q2 mean
+              TH2D* h_xz_Q2mean_neg = new TH2D("","",bins,0,1,bins,0,1);
+              h_xz_Q2mean_neg = (TH2D*)root_file_neg->Get("weighted_Q2");
+              h_xz_Q2mean_neg_all->Add(h_xz_Q2mean_neg);
+              TH2D* h_xz_Q2mean2_neg = new TH2D("","",bins,0,1,bins,0,1);
+              h_xz_Q2mean2_neg = (TH2D*)root_file_neg->Get("weighted_Q22");
+              h_xz_Q2mean2_neg_all->Add(h_xz_Q2mean2_neg);
+
             }//loop over neg runs
             h_xz_xbjmean_neg_all->Divide(h_xz_neg_allraw);
             h_xz_zmean_neg_all->Divide(h_xz_neg_allraw);
             h_xz_xbjmean2_neg_all->Divide(h_xz_neg_allraw);
             h_xz_zmean2_neg_all->Divide(h_xz_neg_allraw);
+            h_xz_Q2mean_neg_all->Divide(h_xz_neg_allraw);
+            h_xz_Q2mean2_neg_all->Divide(h_xz_neg_allraw);
             for(auto it = pos_D2_runs.begin();it!=pos_D2_runs.end();++it){
               int RunNumber = *it;
               //std::cout<<RunNumber<<std::endl;
@@ -241,11 +261,20 @@ int Q2_xz_ratio_combined(){
               //h_xz_zmean_pos->Divide(h_xz_pos);
               h_xz_xbjmean2_pos_all->Add(h_xz_xbjmean2_pos);
               h_xz_zmean2_pos_all->Add(h_xz_zmean2_pos);
+              //for Q2 mean
+              TH2D* h_xz_Q2mean_pos = new TH2D("","",bins,0,1,bins,0,1);
+              h_xz_Q2mean_pos = (TH2D*)root_file_pos->Get("weighted_Q2");
+              h_xz_Q2mean_pos_all->Add(h_xz_Q2mean_pos);
+              TH2D* h_xz_Q2mean2_pos = new TH2D("","",bins,0,1,bins,0,1);
+              h_xz_Q2mean2_pos = (TH2D*)root_file_pos->Get("weighted_Q22");
+              h_xz_Q2mean2_pos_all->Add(h_xz_Q2mean2_pos);
             }//loop over pos runs
             h_xz_xbjmean_pos_all->Divide(h_xz_pos_allraw);
             h_xz_zmean_pos_all->Divide(h_xz_pos_allraw);
             h_xz_xbjmean2_pos_all->Divide(h_xz_pos_allraw);
             h_xz_zmean2_pos_all->Divide(h_xz_pos_allraw);
+            h_xz_Q2mean_pos_all->Divide(h_xz_pos_allraw);
+            h_xz_Q2mean2_pos_all->Divide(h_xz_pos_allraw);
             for(auto it = neg_Dummy_runs.begin();it!=neg_Dummy_runs.end();++it){
               int RunNumber = *it;
               //std::cout<<"Dummy"<<RunNumber<<std::endl;
@@ -418,20 +447,15 @@ int Q2_xz_ratio_combined(){
               //double z_neg_corr_err = h_xz_zmean_neg_all->GetBinError(i+1,j+1);
               //double xbj_pos_corr_err = h_xz_xbjmean_pos_all->GetBinError(i+1,j+1);
               //double z_pos_corr_err = h_xz_zmean_pos_all->GetBinError(i+1,j+1);
-              double xbj_neg_corr_err2 = h_xz_xbjmean2_neg_all->GetBinError(i+1,j+1)-xbj_neg_corr*xbj_neg_corr;
-              double xbj_pos_corr_err2 = h_xz_xbjmean2_pos_all->GetBinError(i+1,j+1)-xbj_pos_corr*xbj_pos_corr;
-              double z_neg_corr_err2 = h_xz_zmean2_neg_all->GetBinError(i+1,j+1)-z_neg_corr*z_neg_corr;
-              double z_pos_corr_err2 = h_xz_zmean2_pos_all->GetBinError(i+1,j+1)-z_pos_corr*z_pos_corr;
+              double xbj_neg_corr_err2 = h_xz_xbjmean2_neg_all->GetBinContent(i+1,j+1)-xbj_neg_corr*xbj_neg_corr;
+              double xbj_pos_corr_err2 = h_xz_xbjmean2_pos_all->GetBinContent(i+1,j+1)-xbj_pos_corr*xbj_pos_corr;
+              double z_neg_corr_err2 = h_xz_zmean2_neg_all->GetBinContent(i+1,j+1)-z_neg_corr*z_neg_corr;
+              double z_pos_corr_err2 = h_xz_zmean2_pos_all->GetBinContent(i+1,j+1)-z_pos_corr*z_pos_corr;
 
               double xbj_neg_corr_err = sqrt(xbj_neg_corr_err2);
               double xbj_pos_corr_err = sqrt(xbj_pos_corr_err2);
               double z_neg_corr_err = sqrt(z_neg_corr_err2);
               double z_pos_corr_err = sqrt(z_pos_corr_err2);
-
-              //double xbj_neg_corr_err2 = xbj_neg_corr_err*xbj_neg_corr_err;
-              //double xbj_pos_corr_err2 = xbj_pos_corr_err*xbj_pos_corr_err;
-              //double z_neg_corr_err2 = z_neg_corr_err*z_neg_corr_err;
-              //double z_pos_corr_err2 = z_pos_corr_err*z_pos_corr_err;
 
               double xbj_corr = (xbj_neg_corr/xbj_neg_corr_err2+xbj_pos_corr/xbj_pos_corr_err2)/(1/xbj_neg_corr_err2+1/xbj_pos_corr_err2);
               double xbj_corr_err = 1/(1/xbj_neg_corr_err2+1/xbj_pos_corr_err2);
@@ -445,9 +469,18 @@ int Q2_xz_ratio_combined(){
               if(abs(z_corr-x)>0.025){
                 std::cout<<"z center "<<x<<",z corr "<<z_corr<<", pi+ "<<z_pos_corr<<" +- "<<z_pos_corr_err<<", pi- "<<z_neg_corr<<" +- "<<z_neg_corr_err<<std::endl;
               } 
-              //if(xbj_neg_corr>0){
-              //std::cout<<"xbj neg corr "<<xbj_neg_corr<<" xbj pos corr "<<xbj_pos_corr<<std::endl;
-              //}
+              //for Q2mean
+              double Q2_neg_corr = h_xz_Q2mean_neg_all->GetBinContent(i+1,j+1);
+              double Q2_pos_corr = h_xz_Q2mean_pos_all->GetBinContent(i+1,j+1);
+              double Q2_neg_corr_err2 = h_xz_Q2mean2_neg_all->GetBinContent(i+1,j+1)-Q2_neg_corr*Q2_neg_corr;
+              double Q2_pos_corr_err2 = h_xz_Q2mean2_pos_all->GetBinContent(i+1,j+1)-Q2_pos_corr*Q2_pos_corr;
+              double Q2_corr = (Q2_neg_corr/Q2_neg_corr_err2+Q2_pos_corr/Q2_pos_corr_err2)/(1/Q2_neg_corr_err2+1/Q2_pos_corr_err2);
+              double Q2_corr_err = 1/(1/Q2_neg_corr_err2+1/Q2_pos_corr_err2);
+             
+              if(Q2_corr_err<0){
+                std::cout<<"Q22 pos "<<h_xz_Q2mean2_pos_all->GetBinContent(i+1,j+1)<<" neg "<<h_xz_Q2mean2_neg_all->GetBinContent(i+1,j+1)<<std::endl;
+                std::cout<<"Q2 corr err pos "<<Q2_pos_corr_err2<<" neg "<<Q2_neg_corr_err2<<std::endl;
+              }
               if(RY>0 && error< 0.1){
                 //double y_RD = (4*y-1)/(1-y);
                 g_yield_ratio->SetPoint(ii,x,y,RY);
@@ -480,6 +513,8 @@ int Q2_xz_ratio_combined(){
                   jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["z_pos_corr"] = z_pos_corr;
                   jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["xbj_corr"] = xbj_corr;
                   jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["xbj_corr_err"] = xbj_corr_err;
+                  jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["Q2_corr"] = Q2_corr;
+                  jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["Q2_corr_err"] = Q2_corr_err;
                   if(xbj_corr_flag>0.025){
                     jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["xbj_corr_flag"] = "outofrange";
                     //std::cout<<"outofrange alert"<<std::endl;
@@ -497,6 +532,8 @@ int Q2_xz_ratio_combined(){
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["z_pos_corr"] = z_pos_corr;
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["xbj_corr"] = xbj_corr;
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["xbj_corr_err"] = xbj_corr_err;
+                  jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["Q2_corr"] = Q2_corr;
+                  jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["Q2_corr_err"] = Q2_corr_err;
                   if(xbj_corr_flag>0.025){
                     jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["xbj_corr_flag"] = "outofrange";
                   }
@@ -514,6 +551,8 @@ int Q2_xz_ratio_combined(){
                   jout_4[std::to_string(Q2)][z_str][xbj_str][(std::to_string(RunGroup)).c_str()]["z_pos_corr"] = z_pos_corr;
                   jout_4[std::to_string(Q2)][z_str][xbj_str][(std::to_string(RunGroup)).c_str()]["xbj_corr"] = xbj_corr;
                   jout_4[std::to_string(Q2)][z_str][xbj_str][(std::to_string(RunGroup)).c_str()]["xbj_corr_err"] = xbj_corr_err;
+                  jout_4[std::to_string(Q2)][z_str][xbj_str][(std::to_string(RunGroup)).c_str()]["Q2_corr"] = Q2_corr;
+                  jout_4[std::to_string(Q2)][z_str][xbj_str][(std::to_string(RunGroup)).c_str()]["Q2_corr_err"] = Q2_corr_err;
                   jout_4[std::to_string(Q2)][z_str][xbj_str][(std::to_string(RunGroup)).c_str()]["z_corr"] = z_corr;
                   jout_4[std::to_string(Q2)][z_str][xbj_str][(std::to_string(RunGroup)).c_str()]["z_corr_err"] = z_corr_err;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["value"] = y_RD;
@@ -528,6 +567,8 @@ int Q2_xz_ratio_combined(){
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["z_pos_corr"] = z_pos_corr;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["xbj_corr"] = xbj_corr;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["xbj_corr_err"] = xbj_corr_err;
+                  jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["Q2_corr"] = Q2_corr;
+                  jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["Q2_corr_err"] = Q2_corr_err;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["z_corr"] = z_corr;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["z_corr_err"] = z_corr_err;
                  

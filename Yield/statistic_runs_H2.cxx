@@ -104,8 +104,8 @@ void statistic_runs_H2(int RunGroup=0){
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
         ;
-      int pion_n = *d_pos_pi.Count();
-      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
+      //int pion_n = *d_pos_pi.Count();
+      //jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
       auto d_pos_pi_1 = d_pos_pi.Filter(Q2_low_cut);
       auto d_pos_pi_2 = d_pos_pi.Filter(Q2_middle_cut);
       auto d_pos_pi_3 = d_pos_pi.Filter(Q2_high_cut);
@@ -121,8 +121,8 @@ void statistic_runs_H2(int RunGroup=0){
       auto d_pos_bg_2 = d_pos_bg.Filter(Q2_middle_cut);
       auto d_pos_bg_3 = d_pos_bg.Filter(Q2_high_cut);
 
-      int bg_n = *d_pos_bg.Count();
-      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
+      //int bg_n = *d_pos_bg.Count();
+      //jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
 
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
@@ -140,6 +140,8 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_2->Write();
       h_Q2_3->Write();
       auto h_xbj = d_pos_pi.Histo1D({"xbj","xbj",bins,0,1},"xbj","weight");
+      double pion_n = h_xbj->Integral();
+      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
       //h_xbj->Rebin(Rebin_n);
       h_xbj->Write();
       auto h_xbj_1 = d_pos_pi_1.Histo1D({"xbj_1","xbj_1",bins,0,1},"xbj","weight");
@@ -178,6 +180,8 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_bg_2->Write();
       h_Q2_bg_3->Write();
       auto h_xbj_bg = d_pos_bg.Histo1D({"xbj_bg","xbj_bg",bins,0,1},"xbj","weight");
+      double bg_n = h_xbj_bg->Integral();
+      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
       //h_xbj_bg->Rebin(Rebin_n);
       h_xbj_bg->Write();
       auto h_xbj_bg_1 = d_pos_bg_1.Histo1D({"xbj_1","xbj_1",bins,0,1},"xbj","weight");
@@ -499,8 +503,8 @@ void statistic_runs_H2(int RunGroup=0){
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
         ;
-      int pion_n = *d_neg_pi.Count();
-      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
+      //int pion_n = *d_neg_pi.Count();
+      //jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
       auto d_neg_pi_1 = d_neg_pi.Filter(Q2_low_cut);
       auto d_neg_pi_2 = d_neg_pi.Filter(Q2_middle_cut);
       auto d_neg_pi_3 = d_neg_pi.Filter(Q2_high_cut);
@@ -516,8 +520,8 @@ void statistic_runs_H2(int RunGroup=0){
       auto d_neg_bg_2 = d_neg_bg.Filter(Q2_middle_cut);
       auto d_neg_bg_3 = d_neg_bg.Filter(Q2_high_cut);
 
-      int bg_n = *d_neg_bg.Count();
-      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
+      //int bg_n = *d_neg_bg.Count();
+      //jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
 
 
       std::string rootfile_out_name = "results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root";
@@ -535,6 +539,8 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_2->Write();
       h_Q2_3->Write();
       auto h_xbj = d_neg_pi.Histo1D({"xbj","xbj",bins,0,1},"xbj","weight");
+      double pion_n = h_xbj->Integral();
+      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
       //h_xbj->Rebin(Rebin_n);
       h_xbj->Write();
       auto h_xbj_1 = d_neg_pi_1.Histo1D({"xbj_1","xbj_1",bins,0,1},"xbj","weight");
@@ -573,6 +579,8 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_bg_2->Write();
       h_Q2_bg_3->Write();
       auto h_xbj_bg = d_neg_bg.Histo1D({"xbj_bg","xbj_bg",bins,0,1},"xbj","weight");
+      double bg_n = h_xbj_bg->Integral();
+      jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
       //h_xbj_bg->Rebin(Rebin_n);
       h_xbj_bg->Write();
       auto h_xbj_bg_1 = d_neg_bg_1.Histo1D({"xbj_1","xbj_1",bins,0,1},"xbj","weight");

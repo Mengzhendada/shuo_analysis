@@ -23,7 +23,7 @@ double Get_Wprime_line(double *x, double *par)
 int plot_kin_Q2x_pos(){
   json j_Q2x;
   {
-    std::ifstream runs("db2/kin_group_xq2.json");
+    std::ifstream runs("db2/kin_group_xq2_combined.json");
     runs>>j_Q2x;
   }
   json j_allcuts;
@@ -33,9 +33,13 @@ int plot_kin_Q2x_pos(){
   }
   int bins = j_allcuts["bins"].get<int>();
   //int coolcolor[14] = {46,47,40,48,30,49,31,41,32,33,43,44,45};
-  int coolcolor[14] = {1,2,3,4,6,7,8,9,30,42,35,28,38,46};
+  //int coolcolor[14] = {44,45,46,2,3,29,30,31,32,8,7,38,36,37};
+  //int coolcolor[14] = {44,45,46,2,3,29,30,31,32,8,7,38,36,37};
+  //int coolcolor[14] = {1,2,3,4,6,7,8,9,30,42,35,28,38,46};
+  int coolcolor[14] = {2,2,2,6,2,9,9,6,9,6,9,9,9,9};
+  //int coolcolor[3] = {2,6,9};
   TCanvas* c_kin_pos = new TCanvas("","CSV",1900,1000);
-  TLegend* legend = new TLegend(0.15,0.5,0.35,0.95);
+  TLegend* legend = new TLegend(0.75,0.15,0.95,0.75);
   legend->SetHeader("CSV kinematic settings","C");
   legend->AddEntry((TObject*)0,"  x,   Q2","");
   int i_color = 0;
@@ -112,14 +116,15 @@ int plot_kin_Q2x_pos(){
   Wprime2_2->SetLineColor(8);
   Wprime2_2->SetTitle("Wpi^2,z:0.8");
   Wprime2_2->Draw("L same");
-  legend->AddEntry(W2_1,"W2","l");
+  legend->AddEntry(W2_1,"W^2","l");
   legend->AddEntry(Wprime2_1,"","l");
   legend->AddEntry(Wprime2_2,"","l");
-
-  TLine* Q2_1 = new TLine(0.2,4,0.8,4);
-  TLine* Q2_2 = new TLine(0.2,4.5,0.8,4.5);
-  Q2_1->Draw("same");
-  Q2_2->Draw("same");
+  double Q2_low = j_allcuts["Q2_low"].get<double>();
+  double Q2_high = j_allcuts["Q2_high"].get<double>();
+  TLine* Q2_1 = new TLine(0.2,Q2_low,0.8,Q2_low);
+  TLine* Q2_2 = new TLine(0.2,Q2_high,0.8,Q2_high);
+  //Q2_1->Draw("same");
+  //Q2_2->Draw("same");
   int bin_Q2_low = h_pos_all_xQ2->GetYaxis()->FindBin(4);
   int bin_Q2_high = h_pos_all_xQ2->GetYaxis()->FindBin(4.5);
   h_pos_all_xQ2->GetYaxis()->SetRange(0,bin_Q2_low);
@@ -130,7 +135,7 @@ int plot_kin_Q2x_pos(){
   double Q2mean_high = h_pos_all_xQ2->GetMean(2);
   std::cout<<"Q2 mean low "<<Q2mean_low<<", middle "<<Q2mean_middle<<", high "<<Q2mean_high<<std::endl;
   std::string Q2_mean_str = "Q2mean : "+std::to_string(Q2mean_low)+","+std::to_string(Q2mean_middle)+","+std::to_string(Q2mean_high);
-  legend->AddEntry((TObject*)0,Q2_mean_str.c_str(),"");
+  //legend->AddEntry((TObject*)0,Q2_mean_str.c_str(),"");
   legend->Draw(); 
   //  c_kin_pos->BuildLegend(0.15,0.5,0.35,0.95);
   c_kin_pos->SaveAs("results/yield/kin_x_Q2_pos.png");
