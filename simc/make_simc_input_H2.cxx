@@ -557,17 +557,17 @@ void make_simc_input_H2(int RunGroup = 0){
   ofs_H2_neg_rho<<"begin parm e_arm_accept"<<std::endl;
   ofs_H2_neg_rho<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_H2_neg_rho<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_H2_neg_rho<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_H2_neg_rho<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_H2_neg_rho<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_H2_neg_rho<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_H2_neg_rho<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_H2_neg_rho<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_H2_neg_rho<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_H2_neg_rho<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_H2_neg_rho<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_H2_neg_rho<<"begin parm p_arm_accept"<<std::endl;
-  ofs_H2_neg_rho<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_H2_neg_rho<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_H2_neg_rho<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_H2_neg_rho<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_H2_neg_rho<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_H2_neg_rho<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_H2_neg_rho<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_H2_neg_rho<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_H2_neg_rho<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_H2_neg_rho<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_H2_neg_rho<<"end parm p_arm_accept\n"<<std::endl;
@@ -621,12 +621,13 @@ void make_simc_input_H2(int RunGroup = 0){
   ofs_H2_neg_rho<<" use_offshell_rad = 1"<<std::endl;
   ofs_H2_neg_rho<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_H2_neg_rho<<" do_fermi = 0"<<std::endl;
+  ofs_H2_neg_rho<<" pt_b_param = 3.8"<<std::endl;
   ofs_H2_neg_rho<<" sigc_flag = 1"<<std::endl;
   ofs_H2_neg_rho<<" sigc_nbin = 100"<<std::endl;
   ofs_H2_neg_rho<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_H2_neg_rho<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_H2_neg_rho<<" sigc_kin_ind = 0.550"<<std::endl;
-  ofs_H2_neg_rho<<" random_seed = 1236221"<<std::endl;
+  ofs_H2_neg_rho<<" random_seed = 377468"<<std::endl;
   
   ofs_H2_neg_rho<<"end parm simulate\n"<<std::endl;
 
@@ -1063,17 +1064,17 @@ void make_simc_input_H2(int RunGroup = 0){
   ofs_H2_pos_rho<<"begin parm e_arm_accept"<<std::endl;
   ofs_H2_pos_rho<<" SPedge%e%delta%min = -15.0"<<std::endl;
   ofs_H2_pos_rho<<" SPedge%e%delta%max = 15.0"<<std::endl;
-  ofs_H2_pos_rho<<" SPedge%e%yptar%min = -100.0"<<std::endl;
-  ofs_H2_pos_rho<<" SPedge%e%yptar%max = 100.0"<<std::endl;
-  ofs_H2_pos_rho<<" SPedge%e%xptar%min = -100.0"<<std::endl;
-  ofs_H2_pos_rho<<" SPedge%e%xptar%max = 100.0"<<std::endl;
+  ofs_H2_pos_rho<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_H2_pos_rho<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_H2_pos_rho<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_H2_pos_rho<<" SPedge%e%xptar%max = 120.0"<<std::endl;
   ofs_H2_pos_rho<<"end parm e_arm_accept\n"<<std::endl;
 
   ofs_H2_pos_rho<<"begin parm p_arm_accept"<<std::endl;
-  ofs_H2_pos_rho<<" SPedge%p%delta%min = -15.0"<<std::endl;
-  ofs_H2_pos_rho<<" SPedge%p%delta%max = 30.0"<<std::endl;
-  ofs_H2_pos_rho<<" SPedge%p%yptar%min = -100.0"<<std::endl;
-  ofs_H2_pos_rho<<" SPedge%p%yptar%max = 100.0"<<std::endl;
+  ofs_H2_pos_rho<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_H2_pos_rho<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_H2_pos_rho<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_H2_pos_rho<<" SPedge%p%yptar%max = 90.0"<<std::endl;
   ofs_H2_pos_rho<<" SPedge%p%xptar%min = -100.0"<<std::endl;
   ofs_H2_pos_rho<<" SPedge%p%xptar%max = 100.0"<<std::endl;
   ofs_H2_pos_rho<<"end parm p_arm_accept\n"<<std::endl;
@@ -1127,6 +1128,7 @@ void make_simc_input_H2(int RunGroup = 0){
   ofs_H2_pos_rho<<" use_offshell_rad = 1"<<std::endl;
   ofs_H2_pos_rho<<" Egamma_gen_max = 8000"<<std::endl;
   ofs_H2_pos_rho<<" do_fermi = 0"<<std::endl;
+  ofs_H2_pos_rho<<" pt_b_param = 3.8"<<std::endl;
   ofs_H2_pos_rho<<" sigc_flag = 1"<<std::endl;
   ofs_H2_pos_rho<<" sigc_nbin = 100"<<std::endl;
   ofs_H2_pos_rho<<" sigc_kin_min = 0.0"<<std::endl;
