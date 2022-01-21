@@ -56,24 +56,24 @@ void statistic_runs_D2_sim(int RunGroup = 0){
      return phi-high_than_pi*M_PI;
     };
     auto pt = [](float p,float th){return p*std::sin(th);};
-    auto Dipole_Exit_HMS = [](double x_fp,double xp_fp,double y_fp,double yp_fp){
+    auto Dipole_Exit_HMS = [](float x_fp,float xp_fp,float y_fp,float yp_fp){
 
-      double DipoleExitWindowZpos = -147.48;
-      double xdip = x_fp+xp_fp*DipoleExitWindowZpos;
-      double ydip = y_fp+yp_fp*DipoleExitWindowZpos;
-      double xpipe_offset = 2.8;
-      double ypip_offset = 0.0;
-      double pip_rad = 46.507;
+      float DipoleExitWindowZpos = -147.48;
+      float xdip = x_fp+xp_fp*DipoleExitWindowZpos;
+      float ydip = y_fp+yp_fp*DipoleExitWindowZpos;
+      float xpipe_offset = 2.8;
+      float ypipe_offset = 0.0;
+      float pipe_rad = 46.507;
       if( ((xdip-xpipe_offset)*(xdip-xpipe_offset)+(ydip-ypipe_offset)*(ydip-ypipe_offset)) > pipe_rad*pipe_rad) return 0;
       else return 1;
     };
-    auto Dipole_Exit_SHMS = [](double x_fp,double xp_fp,double y_fp,double yp_fp){
-      double DipoleExitWindowZpos = -307.;
-      double xdip = x_fp+xp_fp*DipoleExitWindowZpos;
-      double ydip = y_fp+yp_fp*DipoleExitWindowZpos;
-      double crad = 23.81;
-      double voffset = crad-24.035;
-      double hwid = 11.549/2;
+    auto Dipole_Exit_SHMS = [](float x_fp,float xp_fp,float y_fp,float yp_fp){
+      float DipoleExitWindowZpos = -307.;
+      float xdip = x_fp+xp_fp*DipoleExitWindowZpos;
+      float ydip = y_fp+yp_fp*DipoleExitWindowZpos;
+      float crad = 23.81;
+      float voffset = crad-24.035;
+      float hwid = 11.549/2;
       if(abs(ydip)<hwid){
         if(abs(xdip)>(crad+voffset)) return 0;
       } else {
@@ -85,7 +85,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
         }
       }
       return 1;
-    }
+    };
     json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
