@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /group/c-csv/shuo/simc_gfortran/util/root_tree
+cd /group/c-csv/shuo/simc_gfortran/util/root_tree 
 for i in {10..590..10}
 do
   echo csv_${i}_D2_neg_inc_rad | ./make_root_tree
