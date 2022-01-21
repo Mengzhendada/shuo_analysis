@@ -142,7 +142,8 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_Q2_2->Write();
       h_Q2_3->Write();
       auto h_xbj = d_pos_pi.Histo1D({"xbj","xbj",bins,0,1},"xbj","weight");
-      double pion_n = h_xbj->Integral();
+      //double pion_n = h_xbj->Integral();
+      double pion_n = *d_pos_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
       //h_xbj->Rebin(Rebin_n);
       h_xbj->Write();
@@ -559,7 +560,8 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_Q2_2->Write();
       h_Q2_3->Write();
       auto h_xbj = d_neg_pi.Histo1D({"xbj","xbj",bins,0,1},"xbj","weight");
-      double pion_n = h_xbj->Integral();
+      //double pion_n = h_xbj->Integral();
+      double pion_n = *d_neg_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
       //h_xbj->Rebin(Rebin_n);
       h_xbj->Write();
