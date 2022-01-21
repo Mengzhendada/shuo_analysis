@@ -56,6 +56,36 @@ void statistic_runs_H2_sim(int RunGroup = 0){
      return phi-high_than_pi*M_PI;
     };
     auto pt = [](float p,float th){return p*std::sin(th);};
+    auto Dipole_Exit_HMS = [](double x_fp,double xp_fp,double y_fp,double yp_fp){
+
+      double DipoleExitWindowZpos = -147.48;
+      double xdip = x_fp+xp_fp*DipoleExitWindowZpos;
+      double ydip = y_fp+yp_fp*DipoleExitWindowZpos;
+      double xpipe_offset = 2.8;
+      double ypip_offset = 0.0;
+      double pip_rad = 46.507;
+      if( ((xdip-xpipe_offset)*(xdip-xpipe_offset)+(ydip-ypipe_offset)*(ydip-ypipe_offset)) > pipe_rad*pipe_rad) return 0;
+      else return 1;
+    };
+    auto Dipole_Exit_SHMS = [](double x_fp,double xp_fp,double y_fp,double yp_fp){
+      double DipoleExitWindowZpos = -307.;
+      double xdip = x_fp+xp_fp*DipoleExitWindowZpos;
+      double ydip = y_fp+yp_fp*DipoleExitWindowZpos;
+      double crad = 23.81;
+      double voffset = crad-24.035;
+      double hwid = 11.549/2;
+      if(abs(ydip)<hwid){
+        if(abs(xdip)>(crad+voffset)) return 0;
+      } else {
+        if (ydip >=hwid){
+          if ( ((xdip-voffset)*(xdip-voffset)+(ydip-hwid)*(ydip-hwid))>crad*crad) return 0;
+        }
+        if ( ydip <=-hwid){
+          if( ((xdip-voffset)*(xdip-voffset)+(ydip+hwid)*(ydip+hwid)) > crad*crad) return 0;
+        }
+      }
+      return 1;
+    }
     json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -163,6 +193,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     .Define("phi_2pi",phi_2pi,{"phipq"})
     .Define("pt",pt,{"ppi","thetapq"})
     .Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
     ;
   double wfac_H2_neg_inc_norad = (normfac_H2_neg_inc_norad/nentries_H2_neg_inc_norad);
   //auto weight_calculate = [&](float weight){return wfac_H2_neg_inc_norad*weight;}
@@ -184,6 +218,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     .Define("phi_2pi",phi_2pi,{"phipq"})
     .Define("pt",pt,{"ppi","thetapq"})
     .Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
     ;
   std::cout<<"sim counts "<<nentries_H2_pos_inc_norad<<std::endl;
   double wfac_H2_pos_inc_norad = (normfac_H2_pos_inc_norad/nentries_H2_pos_inc_norad);
@@ -240,6 +278,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     //.Define("phi_2pi",phi_2pi,{"phipq"})
     //.Define("pt",pt,{"ppi","thetapq"})
     //.Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
     ;
   double nentries_H2_pos_exc_rad = *d_H2_pos_exc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_H2_pos_exc_rad<<std::endl;
@@ -265,6 +307,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     .Define("phi_2pi",phi_2pi,{"phipq"})
     .Define("pt",pt,{"ppi","thetapq"})
     .Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
     ;
   double nentries_H2_neg_inc_rad = *d_H2_neg_inc_rad_raw.Count();
 
@@ -291,6 +337,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     .Define("phi_2pi",phi_2pi,{"phipq"})
     .Define("pt",pt,{"ppi","thetapq"})
     .Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
     ;
   double nentries_H2_pos_inc_rad = *d_H2_pos_inc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_H2_pos_inc_rad<<std::endl;
@@ -300,51 +350,59 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   d_H2_pos_inc_rad.Snapshot("T_pos_inc_rad",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
   
   //For rho 
-  //ROOT::RDataFrame d_H2_neg_rho_raw("h10",H2_neg_rho_rootfile_name.c_str()); 
-  //auto d_H2_neg_rho_1 = d_H2_neg_rho_raw
-  //  .Filter(Good_Track_SHMS_sim)
-  //  .Filter(Good_Track_HMS_sim)
-  //  .Filter(Normal_xptar_SHMS_sim)
-  //  .Filter(Normal_xptar_HMS_sim)
-  //  .Filter(Normal_yptar_SHMS_sim)
-  //  .Filter(Normal_yptar_HMS_sim)
-  //  .Define("Mx2",Mx2,{"nu","z","Pm"})
-  //  .Filter(Mx2_cut)
-  //  .Define("W2",W2,{"W"})
-  //  .Filter(W2_cut)
-  //  //.Define("phi_2pi",phi_2pi,{"phipq"})
-  //  //.Define("pt",pt,{"ppi","thetapq"})
-  //  //.Filter(pt_cut)
-  //  ;
-  //double nentries_H2_neg_rho = *d_H2_neg_rho_raw.Count();
+  ROOT::RDataFrame d_H2_neg_rho_raw("h10",H2_neg_rho_rootfile_name.c_str()); 
+  auto d_H2_neg_rho_1 = d_H2_neg_rho_raw
+    .Filter(Good_Track_SHMS_sim)
+    .Filter(Good_Track_HMS_sim)
+    .Filter(Normal_xptar_SHMS_sim)
+    .Filter(Normal_xptar_HMS_sim)
+    .Filter(Normal_yptar_SHMS_sim)
+    .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
+    //.Define("phi_2pi",phi_2pi,{"phipq"})
+    //.Define("pt",pt,{"ppi","thetapq"})
+    //.Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
+    ;
+  double nentries_H2_neg_rho = *d_H2_neg_rho_raw.Count();
 
-  //double normfac_H2_neg_rho = j_simc[std::to_string(RunGroup).c_str()]["H2"]["neg"]["rho"]["normfac"].get<double>();
+  double normfac_H2_neg_rho = j_simc[std::to_string(RunGroup).c_str()]["H2"]["neg"]["rho"]["normfac"].get<double>();
 
-  //double wfac_H2_neg_rho = (normfac_H2_neg_rho/nentries_H2_neg_rho);
-  //auto d_H2_neg_rho = d_H2_neg_rho_1.Define("weight_new",[wfac_H2_neg_rho](float weight){return wfac_H2_neg_rho*weight;},{"Weight"});
-  //d_H2_neg_rho.Snapshot("T_neg_rho",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
-  ////pos rho 
-  //ROOT::RDataFrame d_H2_pos_rho_raw("h10",H2_pos_rho_rootfile_name.c_str()); 
-  //double normfac_H2_pos_rho = j_simc[std::to_string(RunGroup).c_str()]["H2"]["pos"]["rho"]["normfac"].get<double>();
-  //auto d_H2_pos_rho_1 = d_H2_pos_rho_raw
-  //  .Filter(Good_Track_SHMS_sim)
-  //  .Filter(Good_Track_HMS_sim)
-  //  .Filter(Normal_xptar_SHMS_sim)
-  //  .Filter(Normal_xptar_HMS_sim)
-  //  .Filter(Normal_yptar_SHMS_sim)
-  //  .Filter(Normal_yptar_HMS_sim)
-  //  .Define("Mx2",Mx2,{"nu","z","Pm"})
-  //  .Filter(Mx2_cut)
-  //  .Define("W2",W2,{"W"})
-  //  .Filter(W2_cut)
-  //  //.Define("phi_2pi",phi_2pi,{"phipq"})
-  //  //.Define("pt",pt,{"ppi","thetapq"})
-  //  //.Filter(pt_cut)
-  //  ;
-  //double nentries_H2_pos_rho = *d_H2_pos_rho_raw.Count();
-  //double wfac_H2_pos_rho = (normfac_H2_pos_rho/nentries_H2_pos_rho);
-  //auto d_H2_pos_rho = d_H2_pos_rho_1.Define("weight_new",[wfac_H2_pos_rho](float weight){return wfac_H2_pos_rho*weight;},{"Weight"});
-  //d_H2_pos_rho.Snapshot("T_pos_rho",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
+  double wfac_H2_neg_rho = (normfac_H2_neg_rho/nentries_H2_neg_rho);
+  auto d_H2_neg_rho = d_H2_neg_rho_1.Define("weight_new",[wfac_H2_neg_rho](float weight){return wfac_H2_neg_rho*weight;},{"Weight"});
+  d_H2_neg_rho.Snapshot("T_neg_rho",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
+  //pos rho 
+  ROOT::RDataFrame d_H2_pos_rho_raw("h10",H2_pos_rho_rootfile_name.c_str()); 
+  double normfac_H2_pos_rho = j_simc[std::to_string(RunGroup).c_str()]["H2"]["pos"]["rho"]["normfac"].get<double>();
+  auto d_H2_pos_rho_1 = d_H2_pos_rho_raw
+    .Filter(Good_Track_SHMS_sim)
+    .Filter(Good_Track_HMS_sim)
+    .Filter(Normal_xptar_SHMS_sim)
+    .Filter(Normal_xptar_HMS_sim)
+    .Filter(Normal_yptar_SHMS_sim)
+    .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
+    //.Define("phi_2pi",phi_2pi,{"phipq"})
+    //.Define("pt",pt,{"ppi","thetapq"})
+    //.Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
+    ;
+  double nentries_H2_pos_rho = *d_H2_pos_rho_raw.Count();
+  double wfac_H2_pos_rho = (normfac_H2_pos_rho/nentries_H2_pos_rho);
+  auto d_H2_pos_rho = d_H2_pos_rho_1.Define("weight_new",[wfac_H2_pos_rho](float weight){return wfac_H2_pos_rho*weight;},{"Weight"});
+  d_H2_pos_rho.Snapshot("T_pos_rho",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
   
   //For delta 
   ROOT::RDataFrame d_H2_neg_delta_raw("h10",H2_neg_delta_rootfile_name.c_str()); 
@@ -364,6 +422,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     //.Define("phi_2pi",phi_2pi,{"phipq"})
     //.Define("pt",pt,{"ppi","thetapq"})
     //.Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
     ;
   double nentries_H2_neg_delta = *d_H2_neg_delta_raw.Count();
   std::cout<<"sim counts neg delta "<<nentries_H2_neg_delta<<std::endl;
@@ -390,6 +452,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     //.Define("phi_2pi",phi_2pi,{"phipq"})
     //.Define("pt",pt,{"ppi","thetapq"})
     //.Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
     ;
   double nentries_H2_pos_delta = *d_H2_pos_delta_raw.Count();
   std::cout<<"sim counts pos delta "<<nentries_H2_pos_delta<<std::endl;
@@ -559,15 +625,15 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   //}
   std::cout<<"inc rad check"<<std::endl;  
 
-  //auto h_Q2_H2_neg_rho = d_H2_neg_rho.Histo1D({"Q2_neg_rho","Q2_neg_rho",bins,0,10},"Q2","weight_new");
-  //auto h_Q2_H2_pos_rho = d_H2_pos_rho.Histo1D({"Q2_pos_rho","Q2_pos_rho",bins,0,10},"Q2","weight_new");
-  //auto h_xbj_H2_neg_rho = d_H2_neg_rho.Histo1D({"xbj_neg_rho","xbj_neg_rho",bins,0,1},"xbj","weight_new");
-  //auto h_xbj_H2_pos_rho = d_H2_pos_rho.Histo1D({"xbj_pos_rho","xbj_pos_rho",bins,0,1},"xbj","weight_new");
-  //auto h_z_H2_neg_rho = d_H2_neg_rho.Histo1D({"z_neg_rho","z_neg_rho",bins,0,1},"z","weight_new");
-  //auto h_z_H2_pos_rho = d_H2_pos_rho.Histo1D({"z_pos_rho","z_pos_rho",bins,0,1},"z","weight_new");
-  //auto h_x_z_neg_rho = d_H2_neg_rho.Histo2D({"x_z_neg_rho","x_z_neg_rho",bins,0,1,bins,0,1},"z","xbj","weight_new");
-  //auto h_x_z_pos_rho = d_H2_pos_rho.Histo2D({"x_z_pos_rho","x_z_pos_rho",bins,0,1,bins,0,1},"z","xbj","weight_new");
-  //std::cout<<"rho check"<<std::endl;  
+  auto h_Q2_H2_neg_rho = d_H2_neg_rho.Histo1D({"Q2_neg_rho","Q2_neg_rho",bins,0,10},"Q2","weight_new");
+  auto h_Q2_H2_pos_rho = d_H2_pos_rho.Histo1D({"Q2_pos_rho","Q2_pos_rho",bins,0,10},"Q2","weight_new");
+  auto h_xbj_H2_neg_rho = d_H2_neg_rho.Histo1D({"xbj_neg_rho","xbj_neg_rho",bins,0,1},"xbj","weight_new");
+  auto h_xbj_H2_pos_rho = d_H2_pos_rho.Histo1D({"xbj_pos_rho","xbj_pos_rho",bins,0,1},"xbj","weight_new");
+  auto h_z_H2_neg_rho = d_H2_neg_rho.Histo1D({"z_neg_rho","z_neg_rho",bins,0,1},"z","weight_new");
+  auto h_z_H2_pos_rho = d_H2_pos_rho.Histo1D({"z_pos_rho","z_pos_rho",bins,0,1},"z","weight_new");
+  auto h_x_z_neg_rho = d_H2_neg_rho.Histo2D({"x_z_neg_rho","x_z_neg_rho",bins,0,1,bins,0,1},"z","xbj","weight_new");
+  auto h_x_z_pos_rho = d_H2_pos_rho.Histo2D({"x_z_pos_rho","x_z_pos_rho",bins,0,1,bins,0,1},"z","xbj","weight_new");
+  std::cout<<"rho check"<<std::endl;  
   
   auto h_Q2_H2_neg_delta = d_H2_neg_delta.Histo1D({"Q2_neg_delta","Q2_neg_delta",bins,0,10},"Q2","weight_new");
   auto h_Q2_H2_pos_delta = d_H2_pos_delta.Histo1D({"Q2_pos_delta","Q2_pos_delta",bins,0,10},"Q2","weight_new");
@@ -649,14 +715,14 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   h_xs_z_pos_inc_norad->Write("xs_z_pos_inc_norad");
   h_xs_xbj_neg_inc_norad->Write("xs_xbj_neg_inc_norad");
   h_xs_xbj_pos_inc_norad->Write("xs_xbj_pos_inc_norad");
-  //h_Q2_H2_neg_rho->Write();
-  //h_Q2_H2_pos_rho->Write();
-  //h_xbj_H2_neg_rho->Write();
-  //h_xbj_H2_pos_rho->Write();
-  //h_z_H2_neg_rho->Write();
-  //h_z_H2_pos_rho->Write();
-  //h_x_z_neg_rho->Write();
-  //h_x_z_pos_rho->Write();
+  h_Q2_H2_neg_rho->Write();
+  h_Q2_H2_pos_rho->Write();
+  h_xbj_H2_neg_rho->Write();
+  h_xbj_H2_pos_rho->Write();
+  h_z_H2_neg_rho->Write();
+  h_z_H2_pos_rho->Write();
+  h_x_z_neg_rho->Write();
+  h_x_z_pos_rho->Write();
   h_Q2_H2_neg_delta->Write();
   h_Q2_H2_pos_delta->Write();
   h_xbj_H2_neg_delta->Write();
@@ -689,6 +755,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   double neg_delta = h_z_H2_neg_delta->Integral();
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["pos"]["delta"] = pos_delta;
   jout[(std::to_string(RunGroup)).c_str()]["H2"]["neg"]["delta"] = neg_delta;
+  double pos_rho = h_z_H2_pos_rho->Integral();
+  double neg_rho = h_z_H2_neg_rho->Integral();
+  jout[(std::to_string(RunGroup)).c_str()]["H2"]["pos"]["rho"] = pos_rho;
+  jout[(std::to_string(RunGroup)).c_str()]["H2"]["neg"]["rho"] = neg_rho;
     std::string of_name = "results/yield/run_info/simc_"+std::to_string(RunGroup)+"_info.json";
   std::ofstream ofs(of_name.c_str());
   ofs<<jout.dump(4)<<std::endl;

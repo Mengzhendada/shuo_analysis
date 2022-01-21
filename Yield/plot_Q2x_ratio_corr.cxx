@@ -119,8 +119,8 @@ int plot_Q2x_ratio_corr(){
           h_z_neg_sim_incnorad = (TH1D*)rootfile_neg_sim->Get("z_neg_inc_norad");
           TH1D *h_z_neg_sim_excrad = new TH1D("","pi- sim exc",bins,0,1);
           h_z_neg_sim_excrad = (TH1D*)rootfile_neg_sim->Get("z_neg_exc_rad");
-          //TH1D *h_z_neg_sim_rho = new TH1D("","pi- sim rho",bins,0,1);
-          //h_z_neg_sim_rho = (TH1D*)rootfile_neg_sim->Get("z_neg_rho");
+          TH1D *h_z_neg_sim_rho = new TH1D("","pi- sim rho",bins,0,1);
+          h_z_neg_sim_rho = (TH1D*)rootfile_neg_sim->Get("z_neg_rho");
           TH1D *h_z_neg_sim_delta = new TH1D("","pi- sim delta",bins,0,1);
           h_z_neg_sim_delta = (TH1D*)rootfile_neg_sim->Get("z_neg_delta");
           //TH2D *h_xs_z_neg_sim = new TH2D("","pi- sim xs",bins,0,1,bins,0,1);
@@ -137,8 +137,8 @@ int plot_Q2x_ratio_corr(){
           h_z_pos_sim_incnorad = (TH1D*)rootfile_pos_sim->Get("z_pos_inc_norad");
           TH1D *h_z_pos_sim_excrad = new TH1D("","pi+ sim exc",bins,0,1);
           h_z_pos_sim_excrad = (TH1D*)rootfile_pos_sim->Get("z_pos_exc_rad");
-          //TH1D *h_z_pos_sim_rho = new TH1D("","pi+ sim rho",bins,0,1);
-          //h_z_pos_sim_rho = (TH1D*)rootfile_pos_sim->Get("z_pos_rho");
+          TH1D *h_z_pos_sim_rho = new TH1D("","pi+ sim rho",bins,0,1);
+          h_z_pos_sim_rho = (TH1D*)rootfile_pos_sim->Get("z_pos_rho");
           TH1D *h_z_pos_sim_delta = new TH1D("","pi+ sim delta",bins,0,1);
           h_z_pos_sim_delta = (TH1D*)rootfile_pos_sim->Get("z_pos_delta");
           //TH2D *h_xs_z_pos_sim = new TH2D("","pi- sim xs",bins,0,1,bins,0,1);
@@ -420,7 +420,7 @@ int plot_Q2x_ratio_corr(){
           TGraph* g_z_pos_sim_incrad = new TGraph(h_z_pos_sim_incrad);
           TGraph* g_z_pos_sim_incnorad = new TGraph(h_z_pos_sim_incnorad);
           TGraph* g_z_pos_sim_excrad = new TGraph(h_z_pos_sim_excrad);
-          //TGraph* g_z_pos_sim_rho = new TGraph(h_z_pos_sim_rho);
+          TGraph* g_z_pos_sim_rho = new TGraph(h_z_pos_sim_rho);
           TGraph* g_z_pos_sim_delta = new TGraph(h_z_pos_sim_delta);
           mg_z_yield_pos->Add(g_z_pos_sim); 
           g_z_pos_sim_incrad->SetLineColor(kOrange);
@@ -429,9 +429,9 @@ int plot_Q2x_ratio_corr(){
           g_z_pos_sim_excrad->SetLineColor(kBlue);
           g_z_pos_sim_excrad->SetTitle("pi+ sim exc");
           mg_z_yield_pos->Add(g_z_pos_sim_excrad); 
-          //g_z_pos_sim_rho->SetLineColor(kRed);
-          //g_z_pos_sim_rho->SetTitle("pi+ sim rho");
-          //mg_z_yield_pos->Add(g_z_pos_sim_rho); 
+          g_z_pos_sim_rho->SetLineColor(kRed);
+          g_z_pos_sim_rho->SetTitle("pi+ sim rho");
+          mg_z_yield_pos->Add(g_z_pos_sim_rho); 
           g_z_pos_sim_delta->SetLineColor(46);
           g_z_pos_sim_delta->SetTitle("pi+ sim delta");
           mg_z_yield_pos->Add(g_z_pos_sim_delta); 
@@ -509,7 +509,7 @@ int plot_Q2x_ratio_corr(){
           TGraph* g_z_neg_sim_incrad = new TGraph(h_z_neg_sim_incrad);
           TGraph* g_z_neg_sim_incnorad = new TGraph(h_z_neg_sim_incnorad);
           TGraph* g_z_neg_sim_excrad = new TGraph(h_z_neg_sim_excrad);
-          //TGraph* g_z_neg_sim_rho = new TGraph(h_z_neg_sim_rho);
+          TGraph* g_z_neg_sim_rho = new TGraph(h_z_neg_sim_rho);
           TGraph* g_z_neg_sim_delta = new TGraph(h_z_neg_sim_delta);
           mg_z_yield_neg->Add(g_z_neg_sim,"L"); 
           g_z_neg_sim_incrad->SetLineColor(kOrange);
@@ -518,9 +518,9 @@ int plot_Q2x_ratio_corr(){
           g_z_neg_sim_excrad->SetLineColor(kBlue);
           g_z_neg_sim_excrad->SetTitle("pi- sim exc");
           mg_z_yield_neg->Add(g_z_neg_sim_excrad,"L"); 
-          //g_z_neg_sim_rho->SetLineColor(kRed);
-          //g_z_neg_sim_rho->SetTitle("pi- sim rho");
-          //mg_z_yield_neg->Add(g_z_neg_sim_rho,"L"); 
+          g_z_neg_sim_rho->SetLineColor(kRed);
+          g_z_neg_sim_rho->SetTitle("pi- sim rho");
+          mg_z_yield_neg->Add(g_z_neg_sim_rho,"L"); 
           g_z_neg_sim_delta->SetLineColor(46);
           g_z_neg_sim_delta->SetTitle("pi- sim delta");
           mg_z_yield_neg->Add(g_z_neg_sim_delta,"L"); 
