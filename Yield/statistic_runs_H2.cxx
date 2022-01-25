@@ -140,9 +140,10 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_2->Write();
       h_Q2_3->Write();
       auto h_xbj = d_pos_pi.Histo1D({"xbj","xbj",bins,0,1},"xbj","weight");
-      //double pion_n = h_xbj->Integral();
+      double pion_n_integ = h_xbj->Integral();
       double pion_n = *d_pos_pi.Count();
       jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
+      jout[(std::to_string(RunNumber)).c_str()]["pion_n_integ"] = pion_n_integ;
       //h_xbj->Rebin(Rebin_n);
       h_xbj->Write();
       auto h_xbj_1 = d_pos_pi_1.Histo1D({"xbj_1","xbj_1",bins,0,1},"xbj","weight");
@@ -181,8 +182,10 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_bg_2->Write();
       h_Q2_bg_3->Write();
       auto h_xbj_bg = d_pos_bg.Histo1D({"xbj_bg","xbj_bg",bins,0,1},"xbj","weight");
-      double bg_n = h_xbj_bg->Integral();
+      double bg_n_integ = h_xbj_bg->Integral();
+      double bg_n = *d_pos_bg.Count();
       jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
+      jout[(std::to_string(RunNumber)).c_str()]["bg_n_integ"] = bg_n_integ;
       //h_xbj_bg->Rebin(Rebin_n);
       h_xbj_bg->Write();
       auto h_xbj_bg_1 = d_pos_bg_1.Histo1D({"xbj_1","xbj_1",bins,0,1},"xbj","weight");
@@ -540,9 +543,9 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_2->Write();
       h_Q2_3->Write();
       auto h_xbj = d_neg_pi.Histo1D({"xbj","xbj",bins,0,1},"xbj","weight");
-      //double pion_n = h_xbj->Integral();
+      double pion_n_integ = h_xbj->Integral();
       double pion_n = *d_neg_pi.Count();
-      jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
+      jout[(std::to_string(RunNumber)).c_str()]["pion_n_integ"] = pion_n_integ;
       //h_xbj->Rebin(Rebin_n);
       h_xbj->Write();
       auto h_xbj_1 = d_neg_pi_1.Histo1D({"xbj_1","xbj_1",bins,0,1},"xbj","weight");
@@ -581,8 +584,10 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_bg_2->Write();
       h_Q2_bg_3->Write();
       auto h_xbj_bg = d_neg_bg.Histo1D({"xbj_bg","xbj_bg",bins,0,1},"xbj","weight");
-      double bg_n = h_xbj_bg->Integral();
+      double bg_n_integ = h_xbj_bg->Integral();
+      double bg_n = *d_neg_bg.Count();
       jout[(std::to_string(RunNumber)).c_str()]["bg_n"] = bg_n;
+      jout[(std::to_string(RunNumber)).c_str()]["bg_n_integ"] = bg_n_integ;
       //h_xbj_bg->Rebin(Rebin_n);
       h_xbj_bg->Write();
       auto h_xbj_bg_1 = d_neg_bg_1.Histo1D({"xbj_1","xbj_1",bins,0,1},"xbj","weight");
