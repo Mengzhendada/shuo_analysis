@@ -90,8 +90,8 @@ void plot_data_simc_ratio(){
               charge_pos_Dummy += charge;
               //std::cout<<"pos DE check "<<std::endl;
 
-              int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
-              int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
+              double pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n_integ"].get<double>();
+              double bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n_integ"].get<double>();
               double EFF = Get_all_eff(RunNumber);
               double pions_pos = (pion_n-bg_n/6.0)/EFF;
               Dummy_pions_pos+= pions_pos;
@@ -102,8 +102,8 @@ void plot_data_simc_ratio(){
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_neg_Dummy += charge;
 
-              int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
-              int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
+              double pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n_integ"].get<double>();
+              double bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n_integ"].get<double>();
               double EFF = Get_all_eff(RunNumber);
               double pions_neg = (pion_n-bg_n/6.0)/EFF;
               Dummy_pions_neg+= pions_neg;
@@ -118,8 +118,8 @@ void plot_data_simc_ratio(){
               std::cout<<"neg D2"<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
 
-              int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
-              int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
+              double pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n_integ"].get<double>();
+              double bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n_integ"].get<double>();
               double EFF = Get_all_eff(RunNumber);
               double pions_neg = (pion_n-bg_n/6.0)/EFF;
               double pions_data_yield = pions_neg/charge;
@@ -142,8 +142,8 @@ void plot_data_simc_ratio(){
               std::cout<<"pos D2"<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
 
-              int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
-              int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
+              double pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n_integ"].get<double>();
+              int bg_n_integ = j_info[(std::to_string(RunNumber)).c_str()]["bg_n_integ"].get<double>();
               double EFF = Get_all_eff(RunNumber);
               double pions_pos = (pion_n-bg_n/6.0)/EFF;
               double pions_data_yield = pions_pos/charge;
@@ -172,8 +172,8 @@ void plot_data_simc_ratio(){
                 double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
                 // std::cout<<"neg DE check "<<std::endl;
 
-                int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
-                int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
+                double pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n_integ"].get<double>();
+                double bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n_integ"].get<double>();
                 double EFF = Get_all_eff(RunNumber);
                 double pions_neg = (pion_n-bg_n/6.0)/EFF;
                 double pions_data_yield = pions_neg/charge;
@@ -197,8 +197,8 @@ void plot_data_simc_ratio(){
                 double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
                 //std::cout<<"pos DE check "<<std::endl;
 
-                int pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n"].get<int>();
-                int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n"].get<int>();
+                double pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n_integ"].get<double>();
+                double bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n_integ"].get<double>();
                 double EFF = Get_all_eff(RunNumber);
                 double pions_pos = (pion_n-bg_n/6.0)/EFF;
                 double pions_data_yield = pions_pos/charge;

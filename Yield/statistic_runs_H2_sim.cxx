@@ -62,8 +62,8 @@ void statistic_runs_H2_sim(int RunGroup = 0){
       float xdip = x_fp+xp_fp*DipoleExitWindowZpos;
       float ydip = y_fp+yp_fp*DipoleExitWindowZpos;
       float xpipe_offset = 2.8;
-      float ypip_offset = 0.0;
-      float pip_rad = 46.507;
+      float ypipe_offset = 0.0;
+      float pipe_rad = 46.507;
       if( ((xdip-xpipe_offset)*(xdip-xpipe_offset)+(ydip-ypipe_offset)*(ydip-ypipe_offset)) > pipe_rad*pipe_rad) return 0;
       else return 1;
     };

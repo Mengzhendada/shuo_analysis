@@ -18,6 +18,7 @@ using json = nlohmann::json;
 #include <vector>
 #include <map>
 
+
 int plot_Q2x_ratio_corr(){
   json j_Q2x;
   {
@@ -187,7 +188,7 @@ int plot_Q2x_ratio_corr(){
             }//loop over neg runs
             for(auto it = pos_D2_runs.begin();it!=pos_D2_runs.end();++it){
               int RunNumber = *it;
-              //std::cout<<RunNumber<<std::endl;
+              std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_all+=charge;
               //std::cout<<"pos DE check"<<std::endl;
@@ -202,7 +203,7 @@ int plot_Q2x_ratio_corr(){
             }//loop over pos runs
             for(auto it = neg_Dummy_runs.begin();it!=neg_Dummy_runs.end();++it){
               int RunNumber = *it;
-              //std::cout<<"Dummy"<<RunNumber<<std::endl;
+              std::cout<<"Dummy"<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_neg_Dummy_all += charge;
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
@@ -218,7 +219,7 @@ int plot_Q2x_ratio_corr(){
             }//loop over neg runs
             for(auto it = pos_Dummy_runs.begin();it!=pos_Dummy_runs.end();++it){
               int RunNumber = *it;
-              //std::cout<<"Dummy "<<RunNumber<<std::endl;
+              std::cout<<"Dummy neg "<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
               charge_pos_Dummy_all+=charge;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());

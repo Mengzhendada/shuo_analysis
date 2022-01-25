@@ -48,9 +48,9 @@ void write_DE_to_json_updated(){
   double HMS_cal_eff_D2 = 0.9928;
   double HMS_cal_eff_Dummy = 0.995;
   double HMS_cal_eff_H2 = 0.9937;
-  double SHMS_aero_eff_D2 = 0.9953;
-  double SHMS_aero_eff_H2 = 0.9955;
-  double SHMS_aero_eff_Dummy = 0.9957;
+  double SHMS_aero_eff_D2 = 0.9686;
+  double SHMS_aero_eff_H2 = 0.9667;
+  double SHMS_aero_eff_Dummy = 0.9742;
 
   for(auto it = j_rungroup.begin();it!=j_rungroup.end();it++){
     int RunGroup = std::stoi(it.key());
