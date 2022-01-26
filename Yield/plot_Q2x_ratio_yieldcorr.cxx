@@ -19,22 +19,23 @@ using json = nlohmann::json;
 #include <map>
 
 double Get_weighted_mean(std::vector<double> value,std::vector<double> err){
-  double weighted_mean;
-  double weighted_sigma;
+  double weighted_mean = 0;
+  double weighted_sigma = 0;
   for(int i = 0;i<err.size();++i){
     if(err[i]!=0){
-    weighted_mean += value[i]/(err[i]*err[i]);
-    weighted_sigma += 1/(err[i]*err[i]);
+      weighted_mean += value[i]/(err[i]*err[i]);
+      weighted_sigma += 1/(err[i]*err[i]);
     }
   }
   double mean = 0;
   if(weighted_mean!=0){
     mean = weighted_mean/weighted_sigma;
   }
+  //std::cout<<"in func "<<mean<<" "<<weighted_mean<<" "<<weighted_sigma<<std::endl;
   return mean;
 };
 double Get_weighted_sigma(std::vector<double> value,std::vector<double> err){
-  double weighted_sigma;
+  double weighted_sigma = 0;
   for(int i = 0;i<err.size();++i){
     if(err[i]!=0){
     weighted_sigma += 1/(err[i]*err[i]);
@@ -74,6 +75,7 @@ std::vector<double> Get_weighted_averages(std::vector<int> RunNumbers,int bins){
       bin_center = h_z->GetBinCenter(i);
     }
     double yield_i = Get_weighted_mean(yields,yield_errs);
+    //std::cout<<"in func yield "<<yield_i<<" "<<yields[0]<<" "<<yield_errs[0]<<std::endl;
     //double yield_err_i = Get_weighted_sigma(yields,yield_errs);
     weighted_yield.push_back(yield_i);
     //weighted_yield_err.push_back(yield_err_i);
