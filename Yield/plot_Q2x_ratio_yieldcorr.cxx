@@ -18,7 +18,7 @@ using json = nlohmann::json;
 #include <vector>
 #include <map>
 
-double Get_weighted_average(std::vector<double> value,std::vector<double> err){
+double Get_weighted_mean(std::vector<double> value,std::vector<double> err){
   double weighted_mean;
   double weighted_sigma;
   for(int i = 0;i<err.size();++i){
@@ -55,7 +55,7 @@ std::vector<double> Get_weighted_averages(std::vector<int> RunNumbers,int bins){
     ifs>>j_info;
   }
   
-  for(int i = 0;i<bins;++i){
+  for(int i = 1;i<=bins;++i){
     std::vector<double> yields;
     std::vector<double> yield_errs;
     double bin_center = 0;
@@ -73,7 +73,7 @@ std::vector<double> Get_weighted_averages(std::vector<int> RunNumbers,int bins){
       yield_errs.push_back(sqrt(h_z->GetBinContent(i))/(charge*EFF));
       bin_center = h_z->GetBinCenter(i);
     }
-    double yield_i = Get_weighted_average(yields,yield_errs);
+    double yield_i = Get_weighted_mean(yields,yield_errs);
     //double yield_err_i = Get_weighted_sigma(yields,yield_errs);
     weighted_yield.push_back(yield_i);
     //weighted_yield_err.push_back(yield_err_i);
@@ -89,7 +89,7 @@ std::vector<double> Get_weighted_errs(std::vector<int> RunNumbers,int bins){
     ifs>>j_info;
   }
   
-  for(int i = 0;i<bins;++i){
+  for(int i = 1;i<=bins;++i){
     std::vector<double> yields;
     std::vector<double> yield_errs;
     double bin_center = 0;
@@ -107,17 +107,17 @@ std::vector<double> Get_weighted_errs(std::vector<int> RunNumbers,int bins){
       yield_errs.push_back(sqrt(h_z->GetBinContent(i))/(charge*EFF));
       bin_center = h_z->GetBinCenter(i);
     }
-   // double yield_i = Get_weighted_average(yields,yield_errs);
+   // double yield_i = Get_weighted_mean(yields,yield_errs);
     double yield_err_i = Get_weighted_sigma(yields,yield_errs);
     //weighted_yield.push_back(yield_i);
     weighted_yield_err.push_back(yield_err_i);
   }
-  return weighted_yield;
+  return weighted_yield_err;
 };
 std::vector<double> Get_x_axis(std::vector<int> RunNumbers,int bins){
   std::vector<double> x_axis;
   
-  for(int i = 0;i<bins;++i){
+  for(int i = 1;i<=bins;++i){
     double bin_center = 0;
     int RunNumber = RunNumbers[0];
     TFile *root_file = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
@@ -232,16 +232,21 @@ int plot_Q2x_ratio_yieldcorr(){
             pos_D2_runs = runjs["pos"]["D2"].get<std::vector<int>>();
             neg_Dummy_runs = runjs["neg"]["Dummy"].get<std::vector<int>>();
             pos_Dummy_runs = runjs["pos"]["Dummy"].get<std::vector<int>>();
+            std::cout<<"check neg first run"<<neg_D2_runs[0]<<std::endl;
             neg_D2_yields = Get_weighted_averages(neg_D2_runs,bins);
+            std::cout<<neg_D2_yields[9]<<std::endl;
             neg_D2_errs = Get_weighted_errs(neg_D2_runs,bins);
             pos_D2_yields = Get_weighted_averages(pos_D2_runs,bins);
+            std::cout<<pos_D2_yields[9]<<std::endl;
             pos_D2_errs = Get_weighted_errs(pos_D2_runs,bins);
             neg_Dummy_yields = Get_weighted_averages(neg_Dummy_runs,bins);
             neg_Dummy_errs = Get_weighted_errs(neg_Dummy_runs,bins);
             pos_Dummy_yields = Get_weighted_averages(pos_Dummy_runs,bins);
             pos_Dummy_errs = Get_weighted_errs(pos_Dummy_runs,bins);
-
+            std::cout<<neg_Dummy_yields[9]<<std::endl;
+            std::cout<<pos_Dummy_yields[9]<<std::endl;
             x_axis = Get_x_axis(neg_D2_runs,bins);
+            std::cout<<x_axis[9]<<std::endl;
           }//if z not 0
 
 
@@ -276,11 +281,11 @@ int plot_Q2x_ratio_yieldcorr(){
             double x = x_axis[i]; 
             double y = pos_D2_yields[i];
             double y_dummy = pos_Dummy_yields[i]; 
+            std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
             double error = pos_D2_errs[i]; 
             double error_dummy = pos_Dummy_errs[i]; 
             double y_corr = y-0.245*y_dummy;
-            double error_corr = sqrt(error*error+error_dummy*error_dummy);
-            //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
+            double error_corr = sqrt(error*error+0.245*0.245*error_dummy*error_dummy);
             if(y!=0){
               g_z_pos_yield->SetPoint(ii_yield_pos,x,y);
               g_z_pos_yield->SetPointError(ii_yield_pos,0,error);
@@ -352,7 +357,7 @@ int plot_Q2x_ratio_yieldcorr(){
             double error = neg_D2_errs[i]; 
             double error_dummy = neg_Dummy_errs[i]; 
             double y_corr = y-0.245*y_dummy;
-            double error_corr = sqrt(error*error+error_dummy*error_dummy);
+            double error_corr = sqrt(error*error+0.245*0.245*error_dummy*error_dummy);
             //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
             if(y!=0){
               g_z_neg_yield->SetPoint(ii_yield_neg,x,y);
