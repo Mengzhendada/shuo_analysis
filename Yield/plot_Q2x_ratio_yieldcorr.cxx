@@ -31,7 +31,6 @@ double Get_weighted_mean(std::vector<double> value,std::vector<double> err){
   if(weighted_mean!=0){
     mean = weighted_mean/weighted_sigma;
   }
-  //std::cout<<"in func "<<mean<<" "<<weighted_mean<<" "<<weighted_sigma<<std::endl;
   return mean;
 };
 double Get_weighted_sigma(std::vector<double> value,std::vector<double> err){
@@ -43,7 +42,7 @@ double Get_weighted_sigma(std::vector<double> value,std::vector<double> err){
   }
   double sig = 0;
   if(weighted_sigma!=0){
-    double sig = std::sqrt(1/weighted_sigma);
+    sig = std::sqrt(1/weighted_sigma);
   }
   return sig;
 };
@@ -75,7 +74,6 @@ std::vector<double> Get_weighted_averages(std::vector<int> RunNumbers,int bins){
       bin_center = h_z->GetBinCenter(i);
     }
     double yield_i = Get_weighted_mean(yields,yield_errs);
-    //std::cout<<"in func yield "<<yield_i<<" "<<yields[0]<<" "<<yield_errs[0]<<std::endl;
     //double yield_err_i = Get_weighted_sigma(yields,yield_errs);
     weighted_yield.push_back(yield_i);
     //weighted_yield_err.push_back(yield_err_i);
@@ -283,11 +281,11 @@ int plot_Q2x_ratio_yieldcorr(){
             double x = x_axis[i]; 
             double y = pos_D2_yields[i];
             double y_dummy = pos_Dummy_yields[i]; 
-            std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
             double error = pos_D2_errs[i]; 
             double error_dummy = pos_Dummy_errs[i]; 
             double y_corr = y-0.245*y_dummy;
             double error_corr = sqrt(error*error+0.245*0.245*error_dummy*error_dummy);
+            std::cout<<i<<" x "<<x<<" y "<<y<<" err_corr "<<error_corr<<std::endl;
             if(y!=0){
               g_z_pos_yield->SetPoint(ii_yield_pos,x,y);
               g_z_pos_yield->SetPointError(ii_yield_pos,0,error);
