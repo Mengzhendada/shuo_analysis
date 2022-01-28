@@ -45,17 +45,40 @@ void plot_yield_Hem(){
       //yield_D2_pos->Scale(charge/Charge_RUnGroup);
       yield_D2_pos->Scale(charge);
       Q_RunGroup_D2_pos+=charge;
-      yield_D2_pos_rungroup->Add(yield_D2_pos);
+      //Add(yield_D2_pos_rungroup,yield_D2_pos)
+      yield_D2_pos_rungroup->Add(yield_D2_pos,1);//add the histogram of the runnumber in () to the rungroup histogram on the left
     }//loop over D2 pos runs
     yield_D2_pos_rungroup->Scale(Q_RunGroup_D2_pos);//charge weighted average yield for D2 pos runs in this rungroup
-    //do the same thing to get Dummy yield
-    TH1D* yield_Dummy_pos_rungroup = new TH1D();
+    
+    double Q_RunGroup_Dummy_pos = 0;
+    TH1D* yield_Dummy_pos_rungroup = new TH1D("","",100,0,1);
+    for(auto it_Dummy_pos = Dummy_pos.begin();it_Dummy_pos!=Dummy_pos.end();++it_Dummy_pos){
+      int RunNumber = *it_Dummy_pos;
+      double charge = 30;//charge for this run, read from json file
+      TFile* rootfile_Dummy_pos = new TFile(("rootfile path"+std::to_string(RunNumber)+".root").c_str());
+      TH1D* yield_Dummy_pos = new TH1D("","",100,0,1);
+      yield_Dummy_pos = (TH1D*)rootfile_Dummy_pos->Get("name of branch");
+      //yield_Dummy_pos->Scale(charge/Charge_RUnGroup);
+      yield_Dummy_pos->Scale(charge);
+      Q_RunGroup_Dummy_pos+=charge;
+      //Add(yield_Dummy_pos_rungroup,yield_Dummy_pos)
+      yield_Dummy_pos_rungroup->Add(yield_Dummy_pos,1);//add the histogram of the runnumber in () to the rungroup histogram on the left
+    }//loop over Dummy pos runs
+    yield_Dummy_pos_rungroup->Scale(Q_RunGroup_Dummy_pos);//charge weighted average yield for Dummy pos runs in this rungroup
     // now you get the charge weighted average yield for the Dummy pos runs in this rungroup
+    
+    yield_D2_pos_rungroup->Add(yield_Dummy_pos_rungroup,-0.245);//dummy subtraction
 
     //simc yield
     TFile* rootfile_simc = new TFile(("path to simc yield rootfile"+std::to_string(RunGroup)+".root").c_str());
-    TH1D* D2_pos_inc_rad = new TH1D;
+    TH1D* D2_pos_inc_rad = new TH1D("","",100,0,1);
     D2_pos_inc_rad = (TH1D*)rootfile_simc->Get("branch name");//this is yield histogram
+    TH1D* D2_pos_exc = ;
+    TH1D* D2_pos_delta = ;
+    TH1D* D2_pos_simc_sum = new TH1D();
+    D2_pos_simc_sum->Add(D2_pos_inc_rad,1);
+    D2_pos_simc_sum->Add(D2_pos_exc,1);
+    D2_pos_simc_sum->Add(D2_pos_delta,1);
     //do same thing for inc norad, exc, delta
     TMultyGraph* mg_yield = new TMultiGraph();
     mg_yield->Add(yield_D2_pos_rungroup,"P");
@@ -64,7 +87,7 @@ void plot_yield_Hem(){
     TCanvas* c_yield = new TCanvas();
     mg_yield->Draw("ap");
     c_yield->SaveAs();
-  }///loop over rungroup 
+  }//loop over rungroup 
 
 
 }
