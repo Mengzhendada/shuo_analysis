@@ -43,6 +43,11 @@ namespace fs = std::experimental::filesystem;
 #include <string>
  
 void acc_subtract(int RunGroup = 0){
+  
+  //gROOT->SetStyle("Plain");
+  //gStyle->SetPalette(1);
+  gStyle->SetOptStat(0);
+  gStyle->SetOptTitle(0);
   if(RunGroup == 0){
     std::cout<<"Enter RunGroup Number(-1 to exit) ";
     std::cin>>RunGroup;
@@ -187,7 +192,7 @@ void acc_subtract(int RunGroup = 0){
   std::string c_monitor_name = "results/acc_subtract/monitor_"+std::to_string(RunGroup)+".pdf";
   c_monitor->SaveAs(c_monitor_name.c_str());
 
-  auto h_cointime_pos_all = d_pos_pi.Histo1D({"","pion",500,-40,120},"CTime.ePiCoinTime_ROC2");
+  auto h_cointime_pos_all = d_pos_pi.Histo1D({"","pion",500,-10,110},"CTime.ePiCoinTime_ROC2");
   auto d_pos_pi_pimain = d_pos_pi 
                 .Filter(
                   [=](double cointime){return std::abs(cointime-coin_peak_center_pos)<2.004;},{"CTime.ePiCoinTime_ROC2"})
@@ -295,10 +300,10 @@ void acc_subtract(int RunGroup = 0){
   auto d_pos_pi_bg_4 = d_pos_pi
     .Filter([=](double bg_cointime){return ((bg_cointime>bg_pos_4_before_1 && bg_cointime<bg_pos_4_before_2) || (bg_cointime>bg_pos_4_after_1 && bg_cointime<bg_pos_4_after_2));},{"CTime.ePiCoinTime_ROC2"})
     .Define("bg_cointime_mod",[=](double bg_cointime){return std::fmod((bg_cointime-bg_pos_4_before_1),4.008);},{"CTime.ePiCoinTime_ROC2"});
-  auto h_cointime_pos_bg_1 = d_pos_pi_bg_1.Histo1D({"","bg1",500,-40,120},"CTime.ePiCoinTime_ROC2");
-  auto h_cointime_pos_bg_2 = d_pos_pi_bg_2.Histo1D({"","bg2",500,-40,120},"CTime.ePiCoinTime_ROC2");
-  auto h_cointime_pos_bg_3 = d_pos_pi_bg_3.Histo1D({"","bg3",500,-40,120},"CTime.ePiCoinTime_ROC2");
-  auto h_cointime_pos_bg_4 = d_pos_pi_bg_4.Histo1D({"","bg3",500,-40,120},"CTime.ePiCoinTime_ROC2");
+  auto h_cointime_pos_bg_1 = d_pos_pi_bg_1.Histo1D({"","bg1",500,-10,110},"CTime.ePiCoinTime_ROC2");
+  auto h_cointime_pos_bg_2 = d_pos_pi_bg_2.Histo1D({"","bg2",500,-10,110},"CTime.ePiCoinTime_ROC2");
+  auto h_cointime_pos_bg_3 = d_pos_pi_bg_3.Histo1D({"","bg3",500,-10,110},"CTime.ePiCoinTime_ROC2");
+  auto h_cointime_pos_bg_4 = d_pos_pi_bg_4.Histo1D({"","bg4",500,-10,110},"CTime.ePiCoinTime_ROC2");
   TCanvas *c_cointime_pos = new TCanvas();
   //c_cointime_pos->SetLogy();
   h_cointime_pos_all->DrawCopy("hist");
@@ -308,8 +313,10 @@ void acc_subtract(int RunGroup = 0){
   h_cointime_pos_bg_2->DrawCopy("hist same");
   h_cointime_pos_bg_3->SetLineColor(kOrange);
   h_cointime_pos_bg_3->DrawCopy("hist same");
-  h_cointime_pos_bg_4->SetLineColor(28);
-  h_cointime_pos_bg_4->DrawCopy("hist same");
+  //h_cointime_pos_bg_4->SetLineColor(28);
+  //h_cointime_pos_bg_4->DrawCopy("hist same");
+  h_cointime_pos_all->GetXaxis()->SetTitle("coincidence time");
+  h_cointime_pos_all->GetYaxis()->SetTitle("Counts");
   c_cointime_pos->BuildLegend(0.8,0.8,1,1);
   std::string c_cointime_pos_name = "results/acc_subtract/coin_pos_bg_"+std::to_string(RunGroup)+"_"+std::to_string(n)+".pdf";
   c_cointime_pos->SaveAs(c_cointime_pos_name.c_str());
@@ -322,19 +329,19 @@ void acc_subtract(int RunGroup = 0){
   h_cointime_pos_bg_2->DrawCopy("hist same");
   h_cointime_pos_bg_3->SetLineColor(kOrange);
   h_cointime_pos_bg_3->DrawCopy("hist same");
-  h_cointime_pos_bg_4->SetLineColor(28);
-  h_cointime_pos_bg_4->DrawCopy("hist same");
-  c_cointime_pos->BuildLegend(0.8,0.8,1,1);
+  //h_cointime_pos_bg_4->SetLineColor(28);
+  //h_cointime_pos_bg_4->DrawCopy("hist same");
+  c_cointime_pos_log->BuildLegend(0.8,0.8,1,1);
   std::string c_cointime_pos_log_name = "results/acc_subtract/coin_pos_bg_"+std::to_string(RunGroup)+"_"+std::to_string(n)+"_log.pdf";
   c_cointime_pos_log->SaveAs(c_cointime_pos_log_name.c_str());
 
   std::cout<<"check"<<std::endl;
 
   auto h_pos_mod_pimain = d_pos_pi_pimain.Histo1D({"","pion",100,0,4.008},"pi_shift");
-  auto h_pos_mod_bg_1 = d_pos_pi_bg_1.Histo1D({"","bg1",100,0,4.008},"bg_cointime_mod");
+  auto h_pos_mod_bg_1 = d_pos_pi_bg_1.Histo1D({"","bg1;Coin time;Counts",100,0,4.008},"bg_cointime_mod");
   auto h_pos_mod_bg_2 = d_pos_pi_bg_2.Histo1D({"","bg2",100,0,4.008},"bg_cointime_mod");
   auto h_pos_mod_bg_3 = d_pos_pi_bg_3.Histo1D({"","bg3",100,0,4.008},"bg_cointime_mod");
-  auto h_pos_mod_bg_4 = d_pos_pi_bg_4.Histo1D({"","bg3",100,0,4.008},"bg_cointime_mod");
+  auto h_pos_mod_bg_4 = d_pos_pi_bg_4.Histo1D({"","bg4",100,0,4.008},"bg_cointime_mod");
   double error_pos_mod_bg_1_100 = h_pos_mod_bg_1->GetBinError(100);
   double stddev_pos_mod_bg_1_100 = h_pos_mod_bg_1->GetStdDev(100);
   double error_pos_mod_bg_2_100 = h_pos_mod_bg_2->GetBinError(100);
@@ -354,21 +361,23 @@ void acc_subtract(int RunGroup = 0){
   TCanvas *c_bg_pos = new TCanvas();
   //h_pos_mod_pimain->Scale(0.05);
   //h_pos_mod_pimain->DrawCopy("hist");
-  h_pos_mod_bg_all->Scale(0.25);
-  h_pos_mod_bg_all->DrawCopy("hist e");
+  //h_pos_mod_bg_all->Scale(0.25);
+  //h_pos_mod_bg_all->DrawCopy("hist e");
   h_pos_mod_bg_1->Scale(1.0/scale_1);
   h_pos_mod_bg_1->SetLineColor(kRed);
-  h_pos_mod_bg_1->DrawCopy("hist same e");
+  h_pos_mod_bg_1->DrawCopy("hist ");
   //h_pos_mod_bg_1->DrawCopy("hist same");
   h_pos_mod_bg_2->Scale(1.0/scale_2);
   h_pos_mod_bg_2->SetLineColor(kBlue);
-  h_pos_mod_bg_2->DrawCopy("hist same e");
+  h_pos_mod_bg_2->DrawCopy("hist same ");
   h_pos_mod_bg_3->Scale(1.0/scale_3);
   h_pos_mod_bg_3->SetLineColor(kOrange);
-  h_pos_mod_bg_3->DrawCopy("hist same e");
-  h_pos_mod_bg_4->Scale(1.0/scale_4);
-  h_pos_mod_bg_4->SetLineColor(28);
-  h_pos_mod_bg_4->DrawCopy("hist same e");
+  h_pos_mod_bg_3->DrawCopy("hist same ");
+  //h_pos_mod_bg_4->Scale(1.0/scale_4);
+  //h_pos_mod_bg_4->SetLineColor(28);
+  //h_pos_mod_bg_4->DrawCopy("hist same ");
+  h_pos_mod_bg_1->GetXaxis()->SetTitle("Coin time");
+  h_pos_mod_bg_1->GetYaxis()->SetTitle("Counts");
   c_bg_pos->BuildLegend(0.75,0.75,1,1);
   std::string c_bg_pos_name = "results/acc_subtract/pos_bg_mod_"+std::to_string(RunGroup)+"_"+std::to_string(n)+".pdf";
   c_bg_pos->SaveAs(c_bg_pos_name.c_str());

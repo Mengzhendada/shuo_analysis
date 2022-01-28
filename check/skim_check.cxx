@@ -39,6 +39,11 @@ bool shms_momentum_high = true;
 
 void skim_check(int RunGroup=0){
 
+  gROOT->SetStyle("Plain");
+  gStyle->SetPalette(1);
+  gStyle->SetOptStat(0);
+  gStyle->SetOptTitle(0);
+
   if(RunGroup ==0){
     std::cout<<"Enter a RunGroup (-1 to exit):";
     std::cin>>RunGroup;
@@ -249,10 +254,14 @@ void skim_check(int RunGroup=0){
 
       auto h_current_before_pos = d_pos_run.Histo1D({"","current",100,3,100},"current");
       TCanvas* c_pos_current = new TCanvas("","coin time",2200,1450);
+      gStyle->SetOptTitle(0);
       h_current_before_pos->DrawCopy("hist");
+      h_current_before_pos->GetXaxis()->SetTitle("Current");
+      h_current_before_pos->GetYaxis()->SetTitle("Count");
+      c_pos_current->Update();
       std::string c_pos_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_current->SaveAs(c_pos_current_name.c_str());
-
+      
       //coin time cut for pos runs
       auto h_cointime_pos = d_pos_run.Histo1D({"","coin_time",800,40,55},"CTime.ePiCoinTime_ROC2");
       int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
@@ -276,7 +285,7 @@ void skim_check(int RunGroup=0){
         .Filter([cointime_low_pos,cointime_high_pos](double cointime){return cointime>cointime_low_pos && cointime<cointime_high_pos;},{"CTime.ePiCoinTime_ROC2"})
         .Define("diff_time_mod_beforeshift",[](double difftime){return std::fmod(difftime,4.008);},{"fptime_minus_rf"})
         ;
-      auto h_coin_pos = d_pos_run.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+      auto h_coin_pos = d_pos_run.Histo1D({"",";Coincidence time;Counts",800,0,100},"CTime.ePiCoinTime_ROC2");
       auto h_coin_poscut = d_pos_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
 
       //rftime cut
@@ -428,14 +437,17 @@ void skim_check(int RunGroup=0){
       auto h_coin_pos_bg = d_pos_bg.Histo1D({"","pos bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
       TCanvas* c_pos_cointime = new TCanvas("","coin time",2200,1450);
+      gStyle->SetOptTitle(0);
       h_coin_pos->DrawCopy("hist");
       h_coin_poscut->SetLineColor(kRed);
       h_coin_poscut->DrawCopy("hist same");
       h_coin_pos_bg->SetLineColor(kBlue);
       h_coin_pos_bg->DrawCopy("hist same");
+      c_pos_cointime->Update();
       std::string c_pos_cointime_name = "results/yield/check/cointime_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_cointime->SaveAs(c_pos_cointime_name.c_str());
       TCanvas* c_pos_hms_dp = new TCanvas("","HMS",2200,1450);
+      gStyle->SetOptTitle(0);
       c_pos_hms_dp->Divide(2,1);
       c_pos_hms_dp->cd(1);
       h_hms_dp_before_pos->DrawCopy("hist");
@@ -445,6 +457,7 @@ void skim_check(int RunGroup=0){
       std::string c_pos_hms_dp_name = "results/yield/check/hms_dp_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_hms_dp->SaveAs(c_pos_hms_dp_name.c_str());      
       TCanvas* c_pos_shms_dp = new TCanvas("","shms",2200,1450);
+      gStyle->SetOptTitle(0);
       c_pos_shms_dp->Divide(2,1);
       c_pos_shms_dp->cd(1);
       h_shms_dp_before_pos->DrawCopy("hist");
@@ -454,6 +467,7 @@ void skim_check(int RunGroup=0){
       std::string c_pos_shms_dp_name = "results/yield/check/shms_dp_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_shms_dp->SaveAs(c_pos_shms_dp_name.c_str());      
       TCanvas* c_pos_hms_cal = new TCanvas("","HMS",2200,1450);
+      gStyle->SetOptTitle(0);
       //c_pos_hms_cal->SetLogy();
       c_pos_hms_cal->Divide(2,1);
       c_pos_hms_cal->cd(1);
@@ -464,6 +478,7 @@ void skim_check(int RunGroup=0){
       std::string c_pos_hms_cal_name = "results/yield/check/hms_cal_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_hms_cal->SaveAs(c_pos_hms_cal_name.c_str());      
       TCanvas* c_pos_hms_cer = new TCanvas("","HMS",2200,1450);
+      gStyle->SetOptTitle(0);
       //c_pos_hms_cer->SetLogy();
       c_pos_hms_cer->Divide(2,1);
       c_pos_hms_cer->cd(1);
@@ -474,6 +489,7 @@ void skim_check(int RunGroup=0){
       std::string c_pos_hms_cer_name = "results/yield/check/hms_cer_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_hms_cer->SaveAs(c_pos_hms_cer_name.c_str());      
       TCanvas* c_pos_shms_cal = new TCanvas("","shms",2200,1450);
+      gStyle->SetOptTitle(0);
       //c_pos_shms_cal->SetLogy();
       c_pos_shms_cal->Divide(2,1);
       c_pos_shms_cal->cd(1);
@@ -484,6 +500,7 @@ void skim_check(int RunGroup=0){
       std::string c_pos_shms_cal_name = "results/yield/check/shms_cal_"+std::to_string(RunNumber)+"_pos.pdf";
       c_pos_shms_cal->SaveAs(c_pos_shms_cal_name.c_str());      
       TCanvas* c_pos_shms_aero = new TCanvas("","shms",2200,1450);
+      gStyle->SetOptTitle(0);
       //c_pos_shms_aero->SetLogy();
       c_pos_shms_aero->Divide(2,1);
       c_pos_shms_aero->cd(1);
@@ -495,6 +512,7 @@ void skim_check(int RunGroup=0){
       c_pos_shms_aero->SaveAs(c_pos_shms_aero_name.c_str());      
 
       TCanvas* c_pos_time_diff = new TCanvas("","time_diff",2200,1450);
+      gStyle->SetOptTitle(0);
       c_pos_time_diff->Divide(2,1);
       c_pos_time_diff->cd(1);
       h_diff_mod_pos->DrawCopy("hist");
@@ -505,6 +523,7 @@ void skim_check(int RunGroup=0){
       c_pos_time_diff->SaveAs(c_pos_time_diff_name.c_str());
 
       TCanvas* c_pos_mx2 = new TCanvas();
+      gStyle->SetOptTitle(0);
       auto h_Mx2_pos_before = d_mod_first.Histo1D({"","",100,0,5},"Mx2"); 
       auto h_Mx2_pos_after = d_pos_pi.Histo1D({"","",100,0,5},"Mx2"); 
       h_Mx2_pos_after->SetLineColor(kRed);
@@ -592,7 +611,10 @@ void skim_check(int RunGroup=0){
       
       auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,3,100},"current");
       TCanvas* c_neg_current = new TCanvas("","coin time",2200,1450);
+      gStyle->SetOptTitle(0);
       h_current_before_neg->DrawCopy("hist");
+      h_current_before_neg->GetXaxis()->SetTitle("Current");
+      h_current_before_neg->GetYaxis()->SetTitle("Count");
       std::string c_neg_current_name = "results/yield/check/current_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_current->SaveAs(c_neg_current_name.c_str());
 
@@ -600,7 +622,7 @@ void skim_check(int RunGroup=0){
         .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
         .Define("diff_time_mod_beforeshift",[](double difftime){return std::fmod(difftime,4.008);},{"fptime_minus_rf"})
         ;
-    auto h_coin_neg = d_neg_run.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+    auto h_coin_neg = d_neg_run.Histo1D({"",";Coincidence time;Counts",800,0,100},"CTime.ePiCoinTime_ROC2");
     auto h_coin_negcut = d_neg_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
 
       //rftime cut
@@ -754,6 +776,7 @@ void skim_check(int RunGroup=0){
       auto h_coin_neg_bg = d_neg_bg.Histo1D({"","neg bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
       TCanvas* c_neg_cointime = new TCanvas("","coin time",2200,1450);
+      gStyle->SetOptTitle(0);
       h_coin_neg->DrawCopy("hist");
       h_coin_negcut->SetLineColor(kRed);
       h_coin_negcut->DrawCopy("hist same");
@@ -762,6 +785,7 @@ void skim_check(int RunGroup=0){
       std::string c_neg_cointime_name = "results/yield/check/cointime_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_cointime->SaveAs(c_neg_cointime_name.c_str());
       TCanvas* c_neg_hms_dp = new TCanvas("","HMS",2200,1450);
+      gStyle->SetOptTitle(0);
       c_neg_hms_dp->Divide(2,1);
       c_neg_hms_dp->cd(1);
       h_hms_dp_before_neg->DrawCopy("hist");
@@ -771,6 +795,7 @@ void skim_check(int RunGroup=0){
       std::string c_neg_hms_dp_name = "results/yield/check/hms_dp_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_hms_dp->SaveAs(c_neg_hms_dp_name.c_str());      
       TCanvas* c_neg_shms_dp = new TCanvas("","shms",2200,1450);
+      gStyle->SetOptTitle(0);
       c_neg_shms_dp->Divide(2,1);
       c_neg_shms_dp->cd(1);
       h_shms_dp_before_neg->DrawCopy("hist");
@@ -780,6 +805,7 @@ void skim_check(int RunGroup=0){
       std::string c_neg_shms_dp_name = "results/yield/check/shms_dp_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_shms_dp->SaveAs(c_neg_shms_dp_name.c_str());      
       TCanvas* c_neg_hms_cal = new TCanvas("","HMS",2200,1450);
+      gStyle->SetOptTitle(0);
       //c_neg_hms_cal->SetLogy();
       c_neg_hms_cal->Divide(2,1);
       c_neg_hms_cal->cd(1);
@@ -790,6 +816,7 @@ void skim_check(int RunGroup=0){
       std::string c_neg_hms_cal_name = "results/yield/check/hms_cal_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_hms_cal->SaveAs(c_neg_hms_cal_name.c_str());      
       TCanvas* c_neg_hms_cer = new TCanvas("","HMS",2200,1450);
+      gStyle->SetOptTitle(0);
       //c_neg_hms_cer->SetLogy();
       c_neg_hms_cer->Divide(2,1);
       c_neg_hms_cer->cd(1);
@@ -800,6 +827,7 @@ void skim_check(int RunGroup=0){
       std::string c_neg_hms_cer_name = "results/yield/check/hms_cer_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_hms_cer->SaveAs(c_neg_hms_cer_name.c_str());      
       TCanvas* c_neg_shms_cal = new TCanvas("","shms",2200,1450);
+      gStyle->SetOptTitle(0);
       //c_neg_shms_cal->SetLogy();
       c_neg_shms_cal->Divide(2,1);
       c_neg_shms_cal->cd(1);
@@ -810,6 +838,7 @@ void skim_check(int RunGroup=0){
       std::string c_neg_shms_cal_name = "results/yield/check/shms_cal_"+std::to_string(RunNumber)+"_neg.pdf";
       c_neg_shms_cal->SaveAs(c_neg_shms_cal_name.c_str());      
       TCanvas* c_neg_shms_aero = new TCanvas("","shms",2200,1450);
+      gStyle->SetOptTitle(0);
       //c_neg_shms_aero->SetLogy();
       c_neg_shms_aero->Divide(2,1);
       c_neg_shms_aero->cd(1);
@@ -821,6 +850,7 @@ void skim_check(int RunGroup=0){
       c_neg_shms_aero->SaveAs(c_neg_shms_aero_name.c_str());      
 
       TCanvas* c_neg_time_diff = new TCanvas("","time_diff",2200,1450);
+      gStyle->SetOptTitle(0);
       c_neg_time_diff->Divide(2,1);
       c_neg_time_diff->cd(1);
       h_diff_mod_neg->DrawCopy("hist");
@@ -831,6 +861,7 @@ void skim_check(int RunGroup=0){
       c_neg_time_diff->SaveAs(c_neg_time_diff_name.c_str());
 
       TCanvas* c_neg_mx2 = new TCanvas();
+      gStyle->SetOptTitle(0);
       auto h_Mx2_neg_before = d_mod_first.Histo1D({"","",100,0,5},"Mx2"); 
       auto h_Mx2_neg_after = d_neg_pi.Histo1D({"","",100,0,5},"Mx2"); 
       h_Mx2_neg_after->SetLineColor(kRed);

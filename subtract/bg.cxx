@@ -43,6 +43,10 @@ namespace fs = std::experimental::filesystem;
 #include <string>
  
 void bg(int RunGroup = 0){
+  gROOT->SetStyle("Plain");
+  gStyle->SetPalette(1);
+  gStyle->SetOptStat(0);
+  gStyle->SetOptTitle(0);
   if(RunGroup == 0){
     std::cout<<"Enter RunGroup Number(-1 to exit) ";
     std::cin>>RunGroup;
