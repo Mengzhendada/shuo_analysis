@@ -80,6 +80,11 @@ void statistic_runs_H2(int RunGroup=0){
   auto pt = [](double p,double th){return p*std::sin(th);};
   double pt_cut_num = j_cuts["pt_cut"].get<double>();
   std::string pt_cut = "pt<"+std::to_string(pt_cut_num);
+  double Mx2_cut_num = j_cuts["Mx2"].get<double>();
+  std::string Mx2_cut = "Mx2>"+std::to_string(Mx2_cut_num);
+  std::string Wp2_cut = "Wp2>"+std::to_string(Mx2_cut_num);
+  double W2_cut_num = j_cuts["W2"].get<double>();
+  std::string W2_cut = "W2 > "+std::to_string(W2_cut_num);
   
   double Q2_low = j_cuts["Q2_low"].get<double>();
   double Q2_high = j_cuts["Q2_high"].get<double>();
@@ -101,8 +106,18 @@ void statistic_runs_H2(int RunGroup=0){
         .Define("xprime",xprime,{"Q2","xbj"})
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
+        .Define("Q22","Q2*Q2")
+        .Define("shms_p2","shms_p*shms_p")
+        .Define("shms_dp2","P_gtr_dp*P_gtr_dp")
+        .Define("W22","W2*W2")
+        .Define("Wp22","Wp2*Wp2")
+        .Define("xprime2","xprime*xprime")
+        .Define("zprime2","zprime*zprime")
         ;
       //int pion_n = *d_pos_pi.Count();
       //jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
@@ -116,6 +131,9 @@ void statistic_runs_H2(int RunGroup=0){
         .Define("xprime",xprime,{"Q2","xbj"})
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         ;
       auto d_pos_bg_1 = d_pos_bg.Filter(Q2_low_cut);
       auto d_pos_bg_2 = d_pos_bg.Filter(Q2_middle_cut);
@@ -133,6 +151,8 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_x_pos->Write();
       auto h_Q2 = d_pos_pi.Histo1D({"Q2","Q2",bins,0,10},"Q2","weight");
       h_Q2->Write();
+      auto h_omega = d_pos_pi.Histo1D({"omega","omega",100,0,10},"H_kin_primary_omega","weight");
+      h_omega->Write();
       auto h_Q2_1 = d_pos_pi_1.Histo1D({"Q2_1","Q2_1",bins,0,10},"Q2","weight");
       auto h_Q2_2 = d_pos_pi_2.Histo1D({"Q2_2","Q2_2",bins,0,10},"Q2","weight");
       auto h_Q2_3 = d_pos_pi_3.Histo1D({"Q2_3","Q2_3",bins,0,10},"Q2","weight");
@@ -175,6 +195,8 @@ void statistic_runs_H2(int RunGroup=0){
       h_zprime_3->Write();
       auto h_Q2_bg = d_pos_bg.Histo1D({"Q2_bg","Q2_bg",bins,0,10},"Q2","weight");
       h_Q2_bg->Write();
+      auto h_omega_bg = d_pos_bg.Histo1D({"omega_bg","omega_bg",100,0,10},"H_kin_primary_omega","weight");
+      h_omega_bg->Write();
       auto h_Q2_bg_1 = d_pos_bg_1.Histo1D({"Q2_bg_1","Q2_bg_1",bins,0,10},"Q2","weight");
       auto h_Q2_bg_2 = d_pos_bg_2.Histo1D({"Q2_bg_2","Q2_bg_2",bins,0,10},"Q2","weight");
       auto h_Q2_bg_3 = d_pos_bg_3.Histo1D({"Q2_bg_3","Q2_bg_3",bins,0,10},"Q2","weight");
@@ -305,12 +327,56 @@ void statistic_runs_H2(int RunGroup=0){
       //  .Define("weighted_xprime",get_xprime_weight_posxz,{"xprime","zprime"})
       //  .Define("weighted_zprime",get_zprime_weight_posxz,{"xprime","zprime"})
       //  ;
+      auto h_1dweight_xbj = d_pos_pi.Histo1D({"1dweighted_xbj","1dweighted_xbj",bins,0,1},"z","xbj");
+      auto h_1dweight_xbj2 = d_pos_pi.Histo1D({"1dweighted_xbj2","1dweighted_xbj2",bins,0,1},"z","xbj2");
+      auto h_1dweight_Q2 = d_pos_pi.Histo1D({"1dweighted_Q2","1dweighted_Q2",bins,0,1},"z","Q2");
+      auto h_1dweight_Q22 = d_pos_pi.Histo1D({"1dweighted_Q22","1dweighted_Q22",bins,0,1},"z","Q22");
+      auto h_1dweight_W2 = d_pos_pi.Histo1D({"1dweighted_W2","1dweighted_W2",bins,0,1},"z","W2");
+      auto h_1dweight_W22 = d_pos_pi.Histo1D({"1dweighted_W22","1dweighted_W22",bins,0,1},"z","W22");
+      auto h_1dweight_Wp2 = d_pos_pi.Histo1D({"1dweighted_Wp2","1dweighted_Wp2",bins,0,1},"z","Wp2");
+      auto h_1dweight_Wp22 = d_pos_pi.Histo1D({"1dweighted_Wp22","1dweighted_Wp22",bins,0,1},"z","Wp22");
+      auto h_1dweight_z = d_pos_pi.Histo1D({"1dweighted_z","1dweighted_z",bins,0,1},"z","z");
+      auto h_1dweight_z2 = d_pos_pi.Histo1D({"1dweighted_z2","1dweighted_z2",bins,0,1},"z","z2");
+      auto h_1dweight_xprime = d_pos_pi.Histo1D({"1dweighted_xprime","1dweighted_xprime",bins,0,1},"z","xprime");
+      auto h_1dweight_zprime = d_pos_pi.Histo1D({"1dweighted_zprime","1dweighted_zprime",bins,0,1},"z","zprime");
+      auto h_1dweight_xprime2 = d_pos_pi.Histo1D({"1dweighted_xprime2","1dweighted_xprime2",bins,0,1},"z","xprime2");
+      auto h_1dweight_zprime2 = d_pos_pi.Histo1D({"1dweighted_zprime2","1dweighted_zprime2",bins,0,1},"z","zprime2");
+      //h_1dweight_xbj->RebinX(Rebin_n);
+      //h_1dweight_xbj->RebinY(Rebin_n);
+      h_1dweight_xbj->Write();
+      h_1dweight_xbj2->Write();
+      h_1dweight_Q2->Write();
+      h_1dweight_Q22->Write();
+      //h_1dweight_z->RebinX(Rebin_n);
+      //h_1dweight_z->RebinY(Rebin_n);
+      h_1dweight_z->Write();
+      h_1dweight_z2->Write();
+      h_1dweight_xprime->Write();
+      h_1dweight_zprime->Write();
+      h_1dweight_xprime2->Write();
+      h_1dweight_zprime2->Write();
+      h_1dweight_W2->Write();
+      h_1dweight_W22->Write();
+      h_1dweight_Wp2->Write();
+      h_1dweight_Wp22->Write();
       auto h_weight_xbj = d_pos_pi.Histo2D({"weighted_xbj","weighted_xbj",bins,0,1,bins,0,1},"z","xbj","xbj");
       auto h_weight_xbj2 = d_pos_pi.Histo2D({"weighted_xbj2","weighted_xbj2",bins,0,1,bins,0,1},"z","xbj","xbj2");
       auto h_weight_z = d_pos_pi.Histo2D({"weighted_z","weighted_z",bins,0,1,bins,0,1},"z","xbj","z");
       auto h_weight_z2 = d_pos_pi.Histo2D({"weighted_z2","weighted_z2",bins,0,1,bins,0,1},"z","xbj","z2");
       auto h_weight_xprime = d_pos_pi.Histo2D({"weighted_xprime","weighted_xprime",bins,0,1,bins,0,1},"zprime","xprime","xprime");
       auto h_weight_zprime = d_pos_pi.Histo2D({"weighted_zprime","weighted_zprime",bins,0,1,bins,0,1},"zprime","xprime","zprime");
+      auto h_weight_Q2 = d_pos_pi.Histo2D({"weighted_Q2","weighted_Q2",bins,0,1,bins,0,1},"z","xbj","Q2");
+      auto h_weight_Q22 = d_pos_pi.Histo2D({"weighted_Q22","weighted_Q22",bins,0,1,bins,0,1},"z","xbj","Q22");
+      auto h_weight_W2 = d_pos_pi.Histo2D({"weighted_W2","weighted_W2",bins,0,1,bins,0,1},"z","xbj","W2");
+      auto h_weight_W22 = d_pos_pi.Histo2D({"weighted_W22","weighted_W22",bins,0,1,bins,0,1},"z","xbj","W22");
+      auto h_weight_Wp2 = d_pos_pi.Histo2D({"weighted_Wp2","weighted_Wp2",bins,0,1,bins,0,1},"z","xbj","Wp2");
+      auto h_weight_Wp22 = d_pos_pi.Histo2D({"weighted_Wp22","weighted_Wp22",bins,0,1,bins,0,1},"z","xbj","Wp22");
+      auto h_weight_xprime2 = d_pos_pi.Histo2D({"weighted_xprime2","weighted_xprime2",bins,0,1,bins,0,1},"zprime","xprime","xprime2");
+      auto h_weight_zprime2 = d_pos_pi.Histo2D({"weighted_zprime2","weighted_zprime2",bins,0,1,bins,0,1},"zprime","xprime","zprime2");
+      auto h_weight_shms_p = d_pos_pi.Histo2D({"weighted_shms_p","weighted_shms_p",bins,0,1,bins,0,1},"z","xbj","shms_p");
+      auto h_weight_shms_p2 = d_pos_pi.Histo2D({"weighted_shms_p2","weighted_shms_p2",bins,0,1,bins,0,1},"z","xbj","shms_p2");
+      auto h_weight_shms_dp = d_pos_pi.Histo2D({"weighted_shms_dp","weighted_shms_dp",bins,0,1,bins,0,1},"z","xbj","P_gtr_dp");
+      auto h_weight_shms_dp2 = d_pos_pi.Histo2D({"weighted_shms_dp2","weighted_shms_dp2",bins,0,1,bins,0,1},"z","xbj","shms_dp2");
       //h_weight_xbj->RebinX(Rebin_n);
       //h_weight_xbj->RebinY(Rebin_n);
       h_weight_xbj->Write();
@@ -321,6 +387,18 @@ void statistic_runs_H2(int RunGroup=0){
       h_weight_z2->Write();
       h_weight_xprime->Write();
       h_weight_zprime->Write();
+      h_weight_xprime2->Write();
+      h_weight_zprime2->Write();
+      h_weight_Q2->Write();
+      h_weight_Q22->Write();
+      h_weight_shms_p->Write();
+      h_weight_shms_p2->Write();
+      h_weight_shms_dp->Write();
+      h_weight_shms_dp2->Write();
+      h_weight_W2->Write();
+      h_weight_W22->Write();
+      h_weight_Wp2->Write();
+      h_weight_Wp22->Write();
       
       //auto get_x_weight_1_posxz = [&](double x,double z){
       //
@@ -504,8 +582,18 @@ void statistic_runs_H2(int RunGroup=0){
         .Define("xprime",xprime,{"Q2","xbj"})
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
+        .Define("Q22","Q2*Q2")
+        .Define("shms_p2","shms_p*shms_p")
+        .Define("shms_dp2","P_gtr_dp*P_gtr_dp")
+        .Define("W22","W2*W2")
+        .Define("Wp22","Wp2*Wp2")
+        .Define("xprime2","xprime*xprime")
+        .Define("zprime2","zprime*zprime")
         ;
       //int pion_n = *d_neg_pi.Count();
       //jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
@@ -519,6 +607,9 @@ void statistic_runs_H2(int RunGroup=0){
         .Define("xprime",xprime,{"Q2","xbj"})
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         ;
       auto d_neg_bg_1 = d_neg_bg.Filter(Q2_low_cut);
       auto d_neg_bg_2 = d_neg_bg.Filter(Q2_middle_cut);
@@ -536,6 +627,8 @@ void statistic_runs_H2(int RunGroup=0){
       h_Q2_x_neg->Write();
       auto h_Q2 = d_neg_pi.Histo1D({"Q2","Q2",bins,0,10},"Q2","weight");
       h_Q2->Write();
+      auto h_omega = d_neg_pi.Histo1D({"omega","omega",100,0,10},"H_kin_primary_omega","weight");
+      h_omega->Write();
       auto h_Q2_1 = d_neg_pi_1.Histo1D({"Q2_1","Q2_1",bins,0,10},"Q2","weight");
       auto h_Q2_2 = d_neg_pi_2.Histo1D({"Q2_2","Q2_2",bins,0,10},"Q2","weight");
       auto h_Q2_3 = d_neg_pi_3.Histo1D({"Q2_3","Q2_3",bins,0,10},"Q2","weight");
@@ -577,6 +670,8 @@ void statistic_runs_H2(int RunGroup=0){
       h_zprime_3->Write();
       auto h_Q2_bg = d_neg_bg.Histo1D({"Q2_bg","Q2_bg",bins,0,10},"Q2","weight");
       h_Q2_bg->Write();
+      auto h_omega_bg = d_neg_bg.Histo1D({"omega_bg","omega_bg",100,0,10},"H_kin_primary_omega","weight");
+      h_omega_bg->Write();
       auto h_Q2_bg_1 = d_neg_bg_1.Histo1D({"Q2_bg_1","Q2_bg_1",bins,0,10},"Q2","weight");
       auto h_Q2_bg_2 = d_neg_bg_2.Histo1D({"Q2_bg_2","Q2_bg_2",bins,0,10},"Q2","weight");
       auto h_Q2_bg_3 = d_neg_bg_3.Histo1D({"Q2_bg_3","Q2_bg_3",bins,0,10},"Q2","weight");
@@ -707,12 +802,56 @@ void statistic_runs_H2(int RunGroup=0){
       //  .Define("weighted_xprime",get_xprime_weight_negxz,{"xprime","zprime"})
       //  .Define("weighted_zprime",get_zprime_weight_negxz,{"xprime","zprime"})
       //  ;
+      auto h_1dweight_xbj = d_neg_pi.Histo1D({"1dweighted_xbj","1dweighted_xbj",bins,0,1},"z","xbj");
+      auto h_1dweight_xbj2 = d_neg_pi.Histo1D({"1dweighted_xbj2","1dweighted_xbj2",bins,0,1},"z","xbj2");
+      auto h_1dweight_Q2 = d_neg_pi.Histo1D({"1dweighted_Q2","1dweighted_Q2",bins,0,1},"z","Q2");
+      auto h_1dweight_Q22 = d_neg_pi.Histo1D({"1dweighted_Q22","1dweighted_Q22",bins,0,1},"z","Q22");
+      auto h_1dweight_W2 = d_neg_pi.Histo1D({"1dweighted_W2","1dweighted_W2",bins,0,1},"z","W2");
+      auto h_1dweight_W22 = d_neg_pi.Histo1D({"1dweighted_W22","1dweighted_W22",bins,0,1},"z","W22");
+      auto h_1dweight_Wp2 = d_neg_pi.Histo1D({"1dweighted_Wp2","1dweighted_Wp2",bins,0,1},"z","Wp2");
+      auto h_1dweight_Wp22 = d_neg_pi.Histo1D({"1dweighted_Wp22","1dweighted_Wp22",bins,0,1},"z","Wp22");
+      auto h_1dweight_z = d_neg_pi.Histo1D({"1dweighted_z","1dweighted_z",bins,0,1},"z","z");
+      auto h_1dweight_z2 = d_neg_pi.Histo1D({"1dweighted_z2","1dweighted_z2",bins,0,1},"z","z2");
+      auto h_1dweight_xprime = d_neg_pi.Histo1D({"1dweighted_xprime","1dweighted_xprime",bins,0,1},"z","xprime");
+      auto h_1dweight_zprime = d_neg_pi.Histo1D({"1dweighted_zprime","1dweighted_zprime",bins,0,1},"z","zprime");
+      auto h_1dweight_xprime2 = d_neg_pi.Histo1D({"1dweighted_xprime2","1dweighted_xprime2",bins,0,1},"z","xprime2");
+      auto h_1dweight_zprime2 = d_neg_pi.Histo1D({"1dweighted_zprime2","1dweighted_zprime2",bins,0,1},"z","zprime2");
+      //h_1dweight_xbj->RebinX(Rebin_n);
+      //h_1dweight_xbj->RebinY(Rebin_n);
+      h_1dweight_xbj->Write();
+      h_1dweight_xbj2->Write();
+      h_1dweight_Q2->Write();
+      h_1dweight_Q22->Write();
+      //h_1dweight_z->RebinX(Rebin_n);
+      //h_1dweight_z->RebinY(Rebin_n);
+      h_1dweight_z->Write();
+      h_1dweight_z2->Write();
+      h_1dweight_xprime->Write();
+      h_1dweight_zprime->Write();
+      h_1dweight_xprime2->Write();
+      h_1dweight_zprime2->Write();
+      h_1dweight_W2->Write();
+      h_1dweight_W22->Write();
+      h_1dweight_Wp2->Write();
+      h_1dweight_Wp22->Write();
       auto h_weight_xbj = d_neg_pi.Histo2D({"weighted_xbj","weighted_xbj",bins,0,1,bins,0,1},"z","xbj","xbj");
       auto h_weight_xbj2 = d_neg_pi.Histo2D({"weighted_xbj2","weighted_xbj2",bins,0,1,bins,0,1},"z","xbj","xbj2");
+      auto h_weight_Q2 = d_neg_pi.Histo2D({"weighted_Q2","weighted_Q2",bins,0,1,bins,0,1},"z","xbj","Q2");
+      auto h_weight_Q22 = d_neg_pi.Histo2D({"weighted_Q22","weighted_Q22",bins,0,1,bins,0,1},"z","xbj","Q22");
+      auto h_weight_W2 = d_neg_pi.Histo2D({"weighted_W2","weighted_W2",bins,0,1,bins,0,1},"z","xbj","W2");
+      auto h_weight_W22 = d_neg_pi.Histo2D({"weighted_W22","weighted_W22",bins,0,1,bins,0,1},"z","xbj","W22");
+      auto h_weight_Wp2 = d_neg_pi.Histo2D({"weighted_Wp2","weighted_Wp2",bins,0,1,bins,0,1},"z","xbj","Wp2");
+      auto h_weight_Wp22 = d_neg_pi.Histo2D({"weighted_Wp22","weighted_Wp22",bins,0,1,bins,0,1},"z","xbj","Wp22");
       auto h_weight_z = d_neg_pi.Histo2D({"weighted_z","weighted_z",bins,0,1,bins,0,1},"z","xbj","z");
       auto h_weight_z2 = d_neg_pi.Histo2D({"weighted_z2","weighted_z2",bins,0,1,bins,0,1},"z","xbj","z2");
       auto h_weight_xprime = d_neg_pi.Histo2D({"weighted_xprime","weighted_xprime",bins,0,1,bins,0,1},"zprime","xprime","xprime");
       auto h_weight_zprime = d_neg_pi.Histo2D({"weighted_zprime","weighted_zprime",bins,0,1,bins,0,1},"zprime","xprime","zprime");
+      auto h_weight_xprime2 = d_neg_pi.Histo2D({"weighted_xprime2","weighted_xprime2",bins,0,1,bins,0,1},"zprime","xprime","xprime2");
+      auto h_weight_zprime2 = d_neg_pi.Histo2D({"weighted_zprime2","weighted_zprime2",bins,0,1,bins,0,1},"zprime","xprime","zprime2");
+      auto h_weight_shms_p = d_neg_pi.Histo2D({"weighted_shms_p","weighted_shms_p",bins,0,1,bins,0,1},"z","xbj","shms_p");
+      auto h_weight_shms_p2 = d_neg_pi.Histo2D({"weighted_shms_p2","weighted_shms_p2",bins,0,1,bins,0,1},"z","xbj","shms_p2");
+      auto h_weight_shms_dp = d_neg_pi.Histo2D({"weighted_shms_dp","weighted_shms_dp",bins,0,1,bins,0,1},"z","xbj","P_gtr_dp");
+      auto h_weight_shms_dp2 = d_neg_pi.Histo2D({"weighted_shms_dp2","weighted_shms_dp2",bins,0,1,bins,0,1},"z","xbj","shms_dp2");
       //h_weight_xbj->RebinX(Rebin_n);
       //h_weight_xbj->RebinY(Rebin_n);
       h_weight_xbj->Write();
@@ -723,6 +862,18 @@ void statistic_runs_H2(int RunGroup=0){
       h_weight_z2->Write();
       h_weight_xprime->Write();
       h_weight_zprime->Write();
+      h_weight_xprime2->Write();
+      h_weight_zprime2->Write();
+      h_weight_Q2->Write();
+      h_weight_Q22->Write();
+      h_weight_shms_p->Write();
+      h_weight_shms_p2->Write();
+      h_weight_shms_dp->Write();
+      h_weight_shms_dp2->Write();
+      h_weight_W2->Write();
+      h_weight_W22->Write();
+      h_weight_Wp2->Write();
+      h_weight_Wp22->Write();
       
       //auto get_x_weight_1_negxz = [&](double x,double z){
       //

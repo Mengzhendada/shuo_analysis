@@ -85,12 +85,12 @@ void rftime_hgc_compare(int RunGroup =0){
     h_cointime_second->DrawCopy("hist same");
     h_cointime_first->SetLineColor(kRed);
     h_cointime_first->DrawCopy("hist same");
-    TPaveText *pt_cointime = new TPaveText(0.75,0.75,1,1,"brNDC");
+    TPaveText *pt_cointime = new TPaveText(0.75,0.75,0.95,0.95,"brNDC");
     pt_cointime->AddText(("RunGroup "+std::to_string(RunGroup)).c_str());
     pt_cointime->AddText(("momentum "+std::to_string(SHMS_P)).c_str());
     pt_cointime->AddText(("1st peak"+std::to_string(coin_peak_center_pos)).c_str());
     pt_cointime->AddText(("2nd peak"+std::to_string(coin_2ndpeak_center_pos)).c_str());
-    pt_cointime->AddText(("height ratio "+std::to_string(coin_1stpeak_content/coin_2ndpeak_content)).c_str());
+    //pt_cointime->AddText(("height ratio "+std::to_string(coin_1stpeak_content/coin_2ndpeak_content)).c_str());
     c_cointime->cd();
     pt_cointime->Draw();
     std::string c_cointime_name = "results/pid/rftime/coin_time_"+std::to_string(RunGroup)+".pdf";

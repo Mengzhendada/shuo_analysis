@@ -512,7 +512,7 @@ void make_simc_input(int RunGroup = 0){
   //for rho 
   ofs_D2_neg_rho<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
   ofs_D2_neg_rho<<"begin parm experiment"<<std::endl;
-  ofs_D2_neg_rho<<" ngen = "<<2000<<std::endl;
+  ofs_D2_neg_rho<<" ngen = "<<ngen/40<<std::endl;
   ofs_D2_neg_rho<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_neg_rho<<" doing_phsp = 0"<<std::endl;
   ofs_D2_neg_rho<<" doing_kaon = 0"<<std::endl;
@@ -1019,7 +1019,7 @@ void make_simc_input(int RunGroup = 0){
   //for rho 
   ofs_D2_pos_rho<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
   ofs_D2_pos_rho<<"begin parm experiment"<<std::endl;
-  ofs_D2_pos_rho<<" ngen = "<<2000<<std::endl;
+  ofs_D2_pos_rho<<" ngen = "<<ngen/40<<std::endl;
   ofs_D2_pos_rho<<" EXPER%charge = "<<charge<<std::endl;
   ofs_D2_pos_rho<<" doing_phsp = 0"<<std::endl;
   ofs_D2_pos_rho<<" doing_kaon = 0"<<std::endl;

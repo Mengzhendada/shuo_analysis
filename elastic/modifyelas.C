@@ -1,6 +1,6 @@
-#include <fmt/core.h>
-#include <fmt/ostream.h>
-R__LOAD_LIBRARY(libfmt.so)
+//#include <fmt/core.h>
+//#include <fmt/ostream.h>
+//R__LOAD_LIBRARY(libfmt.so)
 
 #include "nlohmann/json.hpp"
 #include <cmath>
@@ -156,6 +156,8 @@ void modifyelas(){
         fmt::format("/u/home/shuojia/simc_gfortran/worksim/csv{}.root", runnumber);
     std::string rootfile_data = fmt::format("ROOTfiles/coin_replay_production_{}_-1.root", runnumber);
 
+    //std::string rootfile_sim = 
+    //std::stirng rootfile_data = 
     std::cout << rootfile_data << std::endl;
     std::cout << rootfile_sim << std::endl;
 
@@ -427,14 +429,15 @@ void modifyelas(){
     TMultiGraph* mg = nullptr;
 
     c = new TCanvas("c_kine","ckin");
-    c->Divide(2, 2);
-    c->cd(1);
-    hs = new THStack("hs0","Q2; Q2 ");
-    hs->Add((TH1D*)h_Q2_data->Clone());
-    hs->Add((TH1D*)h_Q2_sim->Clone() );
-    hs->Draw("nostack");
+    gStyle->SetOptStat(0);
+    //c->Divide(2, 2);
+    //c->cd(1);
+    //hs = new THStack("hs0","Q2; Q2 ");
+    //hs->Add((TH1D*)h_Q2_data->Clone());
+    //hs->Add((TH1D*)h_Q2_sim->Clone() );
+    //hs->Draw("nostack");
 
-    c->cd(2);
+    //c->cd(2);
     hs = new THStack("hsW","W; W [GeV] ");
     hs->Add((TH1D*)h_W_data->Clone() );
     hs->Add((TH1D*)h_W_sim->Clone()  );
@@ -442,17 +445,17 @@ void modifyelas(){
     //L_Wmin->Draw("same");
     //L_Wmax->Draw("same");
 
-    c->cd(3);
-    //hs = new THStack("Emiss","Emiss");
-    //hs->Add((TH1D*)h_Emiss_data->Clone());
-    //hs->Add((TH1D*)h_Emiss_sim->Clone());
-    h_Emiss_data->DrawCopy();
-    h_Emiss_sim->DrawCopy("same");
-    c->cd(4);
-    h_weight->DrawCopy("");
+    //c->cd(3);
+    ////hs = new THStack("Emiss","Emiss");
+    ////hs->Add((TH1D*)h_Emiss_data->Clone());
+    ////hs->Add((TH1D*)h_Emiss_sim->Clone());
+    //h_Emiss_data->DrawCopy();
+    //h_Emiss_sim->DrawCopy("same");
+    //c->cd(4);
+    //h_weight->DrawCopy("");
 
 
-    c->SaveAs(fmt::format("csvresult/c_kin_{}.pdf",runnumber).c_str());
+    c->SaveAs(("results/elastic/c_kin_"+std::to_string(runnumber)+".pdf").c_str());
 
     /*
     //target
@@ -472,7 +475,7 @@ void modifyelas(){
     c_tarpos->cd(4);
     h_ptary_data->DrawCopy();
 
-    c_tarpos->SaveAs((std::string("csvresult/c_tarpos_")+std::to_string((int)data[0][i])+".pdf").c_str());
+    c_tarpos->SaveAs((std::string("results/c_tarpos_")+std::to_string((int)data[0][i])+".pdf").c_str());
 
 */
 
@@ -521,7 +524,7 @@ void modifyelas(){
     //c_gtr->cd(6);
     //h_ptarypd->DrawCopy();
     //h_ptaryps->DrawCopy("same");
-    c_gtr->SaveAs(fmt::format("csvresult/c_gtr_{}.pdf",runnumber).c_str());
+    c_gtr->SaveAs(fmt::format("results/c_gtr_{}.pdf",runnumber).c_str());
     */
     /*
     //focal plane data
@@ -571,7 +574,7 @@ void modifyelas(){
     c_fp->cd(8);
     h_hyp_fp_data->DrawCopy();
     h_hyp_fp_sim->DrawCopy("same");
-    c_fp->SaveAs((std::string("csvresult/c_fp_")+std::to_string((int)data[0][i])+".pdf").c_str());
+    c_fp->SaveAs((std::string("results/c_fp_")+std::to_string((int)data[0][i])+".pdf").c_str());
 
 
     //
@@ -611,7 +614,7 @@ void modifyelas(){
     h_fpyvsmomdiff_data->DrawCopy();
     c_hist->cd(11);
     h_fpypvsmomdiff_data->DrawCopy();
-    c_hist->SaveAs((std::string("csvresult/c_hist_")+std::to_string((int)data[0][i])+".pdf").c_str());
+    c_hist->SaveAs((std::string("results/c_hist_")+std::to_string((int)data[0][i])+".pdf").c_str());
 
     */
     i++;
@@ -635,7 +638,7 @@ void modifyelas(){
     h_yield_sim->SetMarkerStyle(21);
     h_yield_sim->Draw("same e1");
     gPad->BuildLegend();
-    c_yield->SaveAs("csvresult/c_yield.pdf");
+    c_yield->SaveAs("results/c_yield.pdf");
     */
   auto mg = new TMultiGraph();
   G_yield_data->SetMarkerStyle(20);
@@ -652,7 +655,7 @@ void modifyelas(){
     */
   mg->Draw("ap");
   c_yield->BuildLegend(0.0,0.7,0.2,0.9);
-  c_yield->SaveAs("csvresult/c_yield.pdf");
+  c_yield->SaveAs("results/elastic/c_yield.pdf");
   TCanvas *c_yield_momentum = new TCanvas;
   c_yield_momentum->SetTitle("yield vs. momentum");
   auto mg_momentum = new TMultiGraph();
@@ -670,7 +673,7 @@ void modifyelas(){
     */
   mg_momentum->Draw("ap");
   c_yield_momentum->BuildLegend(0,0.7,0.2,0.9);
-  c_yield_momentum->SaveAs("csvresult/c_yield_momentum.pdf");
+  c_yield_momentum->SaveAs("results/elastic/c_yield_momentum.pdf");
   TCanvas *c_yield_angle = new TCanvas;
   c_yield_angle->SetTitle("yield vs. angle");
   auto mg_angle = new TMultiGraph();
@@ -682,5 +685,5 @@ void modifyelas(){
   mg_angle->Add(G_yield_sim_angle);
   mg_angle->Draw("ap");
   c_yield_angle->BuildLegend(0.7,0.7,0.9,0.9);
-  c_yield_angle->SaveAs("csvresult/c_yield_angle.pdf");
+  c_yield_angle->SaveAs("results/elastic/c_yield_angle.pdf");
 }

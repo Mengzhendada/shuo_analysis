@@ -39,12 +39,29 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     if(RunGroup<=0)
       return;
   }
+  //auto p_pion = [](double px, double py, double pz) {
+  //  return TLorentzVector{px , py , pz , M_pion};
+  //};
+  //auto p_electron = [](double px, double py, double pz) {
+  //  return TLorentzVector{px , py , pz , M_e};
+  //};
+  //auto p_q = [](TLorentzVector pe ) {
+  //  return TLorentzVector{0.0,0.0,10.214, M_e}-pe;
+  //};
     auto z = [](float pq, float ph) {
       return ph/pq;
     };
     auto Mx2 = [](float nu,float z,float pmiss){
       return (M_P+nu - z*nu)*(M_P+nu - z*nu) -abs(pmiss)*abs(pmiss);
     };
+  //  auto W2 = [](TLorentzVector pq) {
+  //    auto Ptot = TLorentzVector{0.0,0.0,0.0, M_P} + pq;
+  //    return Ptot.Dot(Ptot);
+  //  };
+  //  auto Wprime2 = [](TLorentzVector pq,TLorentzVector ph){
+  //    auto Ptot = TLorentzVector{0.0,0.0,0.0,M_P}+pq-ph;
+  //    return Ptot.Dot(Ptot);
+  //  };
     auto xbj = [=](float Q2,float pq){
       return Q2/(2.0*M_P*pq);
     };
@@ -153,6 +170,7 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   std::string W2_cut = "W2 > "+std::to_string(W2_cut_num);
   double Mx2_cut_num = j_cuts["Mx2"].get<double>();
   std::string Mx2_cut = "Mx2>"+std::to_string(Mx2_cut_num);
+  std::string Wp2_cut = "Wp2>"+std::to_string(Mx2_cut_num);
   double pt_cut_num = j_cuts["pt_cut"].get<double>();
   std::string pt_cut = "pt<"+std::to_string(pt_cut_num);
   std::string H2_neg_inc_norad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_H2_neg_inc_norad.root";
@@ -188,6 +206,14 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     .Filter(Normal_yptar_HMS_sim)
     .Define("Mx2",Mx2,{"nu","z","Pm"})
     .Filter(Mx2_cut)
+    //.Define("p_electron", p_electron, {"H.gtr.px", "H.gtr.py", "H.gtr.pz"})
+    //.Define("p_pion", p_pion, {"P.gtr.px", "P.gtr.py", "P.gtr.pz"})
+    //.Define("p_q", p_q, {"p_electron"})
+    //.Define("z", z, {"p_q","p_pion"})
+    //.Define("Q2", Q2, {"p_q"})
+    //.Define("xbj", xbj, {"Q2","p_q"})
+    //.Define("W2", W2, {"p_q"})
+    //.Define("Wp2", Wprime2, {"p_q","p_pion"})
     .Define("W2",W2,{"W"})
     .Filter(W2_cut)
     .Define("phi_2pi",phi_2pi,{"phipq"})
@@ -548,10 +574,14 @@ void statistic_runs_H2_sim(int RunGroup = 0){
     .Filter(Q2_middle_cut)
     .Histo2D({"x_z_pos_inc_norad_3","x_z_pos_inc_norad_3",bins,0,1,bins,0,1},"z","xbj","weight_new")
     ;
-  auto h_xs_z_neg_inc_norad = d_H2_neg_inc_norad.Histo2D({"xs_z_neg_inc_rad","xs_z_neg_inc_rad",bins,0,1,bins,0,1},"z","siglab","weight_new");
-  auto h_xs_z_pos_inc_norad = d_H2_pos_inc_norad.Histo2D({"xs_z_pos_inc_rad","xs_z_pos_inc_rad",bins,0,1,bins,0,1},"z","siglab","weight_new");
-  auto h_xs_xbj_neg_inc_norad = d_H2_neg_inc_norad.Histo2D({"xs_xbj_neg_inc_rad","xs_xbj_neg_inc_rad",bins,0,1,bins,0,1},"xbj","siglab","weight_new");
-  auto h_xs_xbj_pos_inc_norad = d_H2_pos_inc_norad.Histo2D({"xs_xbj_pos_inc_rad","xs_xbj_pos_inc_rad",bins,0,1,bins,0,1},"xbj","siglab","weight_new");
+  auto h_xs_z_neg_inc_norad = d_H2_neg_inc_norad.Histo1D({"xs_z_neg_inc_norad","xs_z_neg_inc_norad",bins,0,1},"z","siglab");
+  auto h_xs_z_pos_inc_norad = d_H2_pos_inc_norad.Histo1D({"xs_z_pos_inc_norad","xs_z_pos_inc_norad",bins,0,1},"z","siglab");
+  auto h_xs_xbj_neg_inc_norad = d_H2_neg_inc_norad.Histo1D({"xs_xbj_neg_inc_norad","xs_xbj_neg_inc_norad",bins,0,1},"xbj","siglab");
+  auto h_xs_xbj_pos_inc_norad = d_H2_pos_inc_norad.Histo1D({"xs_xbj_pos_inc_norad","xs_xbj_pos_inc_norad",bins,0,1},"xbj","siglab");
+  auto h_xs_z_neg_inc_norad_raw = d_H2_neg_inc_norad.Histo1D({"xs_z_neg_inc_norad_raw","xs_z_neg_inc_norad_raw",bins,0,1},"z");
+  auto h_xs_z_pos_inc_norad_raw = d_H2_pos_inc_norad.Histo1D({"xs_z_pos_inc_norad_raw","xs_z_pos_inc_norad_raw",bins,0,1},"z");
+  auto h_xs_xbj_neg_inc_norad_raw = d_H2_neg_inc_norad.Histo1D({"xs_xbj_neg_inc_norad_raw","xs_xbj_neg_inc_norad_raw",bins,0,1},"xbj");
+  auto h_xs_xbj_pos_inc_norad_raw = d_H2_pos_inc_norad.Histo1D({"xs_xbj_pos_inc_norad_raw","xs_xbj_pos_inc_norad_raw",bins,0,1},"xbj");
   std::cout<<"inc norad check"<<std::endl;  
   auto h_Q2_H2_pos_exc_rad = d_H2_pos_exc_rad.Histo1D({"Q2_pos_exc_rad","Q2_pos_exc_rad",bins,0,10},"Q2","weight_new");
   auto h_xbj_H2_pos_exc_rad = d_H2_pos_exc_rad.Histo1D({"xbj_pos_exc_rad","xbj_pos_exc_rad",bins,0,1},"xbj","weight_new");
@@ -715,6 +745,10 @@ void statistic_runs_H2_sim(int RunGroup = 0){
   h_xs_z_pos_inc_norad->Write("xs_z_pos_inc_norad");
   h_xs_xbj_neg_inc_norad->Write("xs_xbj_neg_inc_norad");
   h_xs_xbj_pos_inc_norad->Write("xs_xbj_pos_inc_norad");
+  h_xs_z_neg_inc_norad_raw->Write();
+  h_xs_z_pos_inc_norad_raw->Write();
+  h_xs_xbj_neg_inc_norad_raw->Write();
+  h_xs_xbj_pos_inc_norad_raw->Write();
   h_Q2_H2_neg_rho->Write();
   h_Q2_H2_pos_rho->Write();
   h_xbj_H2_neg_rho->Write();

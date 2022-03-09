@@ -80,6 +80,11 @@ void statistic_runs_Dummy(int RunGroup=0){
   auto pt = [](double p,double th){return p*std::sin(th);};
   double pt_cut_num = j_cuts["pt_cut"].get<double>();
   std::string pt_cut = "pt<"+std::to_string(pt_cut_num);
+  double Mx2_cut_num = j_cuts["Mx2"].get<double>();
+  std::string Mx2_cut = "Mx2>"+std::to_string(Mx2_cut_num);
+  std::string Wp2_cut = "Wp2>"+std::to_string(Mx2_cut_num);
+  double W2_cut_num = j_cuts["W2"].get<double>();
+  std::string W2_cut = "W2 > "+std::to_string(W2_cut_num);
   
   double Q2_low = j_cuts["Q2_low"].get<double>();
   double Q2_high = j_cuts["Q2_high"].get<double>();
@@ -103,6 +108,9 @@ void statistic_runs_Dummy(int RunGroup=0){
         .Define("xprime2","xprime*xprime")
         .Define("zprime2","zprime*zprime")
         .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
         ;
@@ -118,6 +126,9 @@ void statistic_runs_Dummy(int RunGroup=0){
         .Define("xprime",xprime,{"Q2","xbj"})
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         ;
       auto d_pos_bg_1 = d_pos_bg.Filter(Q2_low_cut);
       auto d_pos_bg_2 = d_pos_bg.Filter(Q2_middle_cut);
@@ -135,6 +146,8 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_Q2_x_pos->Write();
       auto h_Q2 = d_pos_pi.Histo1D({"Q2","Q2",bins,0,10},"Q2","weight");
       h_Q2->Write();
+      auto h_omega = d_pos_pi.Histo1D({"omega","omega",100,0,10},"H_kin_primary_omega","weight");
+      h_omega->Write();
       auto h_Q2_1 = d_pos_pi_1.Histo1D({"Q2_1","Q2_1",bins,0,10},"Q2","weight");
       auto h_Q2_2 = d_pos_pi_2.Histo1D({"Q2_2","Q2_2",bins,0,10},"Q2","weight");
       auto h_Q2_3 = d_pos_pi_3.Histo1D({"Q2_3","Q2_3",bins,0,10},"Q2","weight");
@@ -177,6 +190,8 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_zprime_3->Write();
       auto h_Q2_bg = d_pos_bg.Histo1D({"Q2_bg","Q2_bg",bins,0,10},"Q2","weight");
       h_Q2_bg->Write();
+      auto h_omega_bg = d_pos_bg.Histo1D({"omega_bg","omega_bg",100,0,10},"H_kin_primary_omega","weight");
+      h_omega_bg->Write();
       auto h_Q2_bg_1 = d_pos_bg_1.Histo1D({"Q2_bg_1","Q2_bg_1",bins,0,10},"Q2","weight");
       auto h_Q2_bg_2 = d_pos_bg_2.Histo1D({"Q2_bg_2","Q2_bg_2",bins,0,10},"Q2","weight");
       auto h_Q2_bg_3 = d_pos_bg_3.Histo1D({"Q2_bg_3","Q2_bg_3",bins,0,10},"Q2","weight");
@@ -524,6 +539,9 @@ void statistic_runs_Dummy(int RunGroup=0){
         .Define("xprime2","xprime*xprime")
         .Define("zprime2","zprime*zprime")
         .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
         ;
@@ -539,6 +557,9 @@ void statistic_runs_Dummy(int RunGroup=0){
         .Define("xprime",xprime,{"Q2","xbj"})
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         ;
       auto d_neg_bg_1 = d_neg_bg.Filter(Q2_low_cut);
       auto d_neg_bg_2 = d_neg_bg.Filter(Q2_middle_cut);
@@ -556,6 +577,8 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_Q2_x_neg->Write();
       auto h_Q2 = d_neg_pi.Histo1D({"Q2","Q2",bins,0,10},"Q2","weight");
       h_Q2->Write();
+      auto h_omega = d_neg_pi.Histo1D({"omega","omega",100,0,10},"H_kin_primary_omega","weight");
+      h_omega->Write();
       auto h_Q2_1 = d_neg_pi_1.Histo1D({"Q2_1","Q2_1",bins,0,10},"Q2","weight");
       auto h_Q2_2 = d_neg_pi_2.Histo1D({"Q2_2","Q2_2",bins,0,10},"Q2","weight");
       auto h_Q2_3 = d_neg_pi_3.Histo1D({"Q2_3","Q2_3",bins,0,10},"Q2","weight");
@@ -598,6 +621,8 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_zprime_3->Write();
       auto h_Q2_bg = d_neg_bg.Histo1D({"Q2_bg","Q2_bg",bins,0,10},"Q2","weight");
       h_Q2_bg->Write();
+      auto h_omega_bg = d_neg_bg.Histo1D({"omega_bg","omega_bg",100,0,10},"H_kin_primary_omega","weight");
+      h_omega_bg->Write();
       auto h_Q2_bg_1 = d_neg_bg_1.Histo1D({"Q2_bg_1","Q2_bg_1",bins,0,10},"Q2","weight");
       auto h_Q2_bg_2 = d_neg_bg_2.Histo1D({"Q2_bg_2","Q2_bg_2",bins,0,10},"Q2","weight");
       auto h_Q2_bg_3 = d_neg_bg_3.Histo1D({"Q2_bg_3","Q2_bg_3",bins,0,10},"Q2","weight");

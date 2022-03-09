@@ -317,7 +317,7 @@ void acc_subtract(int RunGroup = 0){
   //h_cointime_pos_bg_4->DrawCopy("hist same");
   h_cointime_pos_all->GetXaxis()->SetTitle("coincidence time");
   h_cointime_pos_all->GetYaxis()->SetTitle("Counts");
-  c_cointime_pos->BuildLegend(0.8,0.8,1,1);
+  c_cointime_pos->BuildLegend(0.75,0.75,0.95,0.95);
   std::string c_cointime_pos_name = "results/acc_subtract/coin_pos_bg_"+std::to_string(RunGroup)+"_"+std::to_string(n)+".pdf";
   c_cointime_pos->SaveAs(c_cointime_pos_name.c_str());
   TCanvas *c_cointime_pos_log = new TCanvas();
@@ -331,7 +331,7 @@ void acc_subtract(int RunGroup = 0){
   h_cointime_pos_bg_3->DrawCopy("hist same");
   //h_cointime_pos_bg_4->SetLineColor(28);
   //h_cointime_pos_bg_4->DrawCopy("hist same");
-  c_cointime_pos_log->BuildLegend(0.8,0.8,1,1);
+  c_cointime_pos_log->BuildLegend(0.75,0.75,0.95,0.95);
   std::string c_cointime_pos_log_name = "results/acc_subtract/coin_pos_bg_"+std::to_string(RunGroup)+"_"+std::to_string(n)+"_log.pdf";
   c_cointime_pos_log->SaveAs(c_cointime_pos_log_name.c_str());
 
@@ -378,7 +378,7 @@ void acc_subtract(int RunGroup = 0){
   //h_pos_mod_bg_4->DrawCopy("hist same ");
   h_pos_mod_bg_1->GetXaxis()->SetTitle("Coin time");
   h_pos_mod_bg_1->GetYaxis()->SetTitle("Counts");
-  c_bg_pos->BuildLegend(0.75,0.75,1,1);
+  c_bg_pos->BuildLegend(0.75,0.75,0.95,0.95);
   std::string c_bg_pos_name = "results/acc_subtract/pos_bg_mod_"+std::to_string(RunGroup)+"_"+std::to_string(n)+".pdf";
   c_bg_pos->SaveAs(c_bg_pos_name.c_str());
 

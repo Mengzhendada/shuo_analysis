@@ -1,7 +1,7 @@
 #/bin/bash
 echo "make simc input files for all run groups"
-#cd /lcrc/project/jlab/csv/offline/online_csv
-cd /group/c-csv/shuo/online_csv 
+cd /lcrc/project/jlab/csv/offline/online_csv
+#cd /group/c-csv/shuo/online_csv 
 for (( i = 1; i<59; i++ )) 
 do
   root -q -b "shuo_analysis/simc/make_simc_input.cxx+(10*$i)"

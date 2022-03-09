@@ -262,11 +262,11 @@ int plot_Q2x_ratio_yieldcorr(){
           rp_radia_corr_pos ->Divide(h_z_pos_incnorad,h_z_pos_incrad);          
           TCanvas* c_radia_pos = new TCanvas();
           rp_radia_corr_pos->Draw();
-          std::string c_radia_pos_name = "results/yield/statistics_corr/radia_corr_neg"+q2xz_str_filename+"_pos.pdf";
+          std::string c_radia_pos_name = "results/yield/statistics_weightedcorr/radia_corr_neg"+q2xz_str_filename+"_pos.pdf";
           c_radia_pos->SaveAs(c_radia_pos_name.c_str());
           TCanvas* c_radia_neg = new TCanvas();
           rp_radia_corr_neg->Draw();
-          std::string c_radia_neg_name = "results/yield/statistics_corr/radia_corr_neg"+q2xz_str_filename+"_neg.pdf";
+          std::string c_radia_neg_name = "results/yield/statistics_weightedcorr/radia_corr_neg"+q2xz_str_filename+"_neg.pdf";
           c_radia_neg->SaveAs(c_radia_neg_name.c_str());
 
           TGraphErrors* g_z_pos_yield = new TGraphErrors();
@@ -339,7 +339,7 @@ int plot_Q2x_ratio_yieldcorr(){
           mg_z_yield_pos->GetXaxis()->SetTitle("z");
           mg_z_yield_pos->Draw("AL");
           c_yield_pos->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_pos_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_pos.pdf";
+          std::string c_yield_pos_name = "results/yield/statistics_weightedcorr/yield_"+q2xz_str_filename+"_pos.pdf";
           c_yield_pos->SaveAs(c_yield_pos_name.c_str());
           
           TGraphErrors* g_z_neg_yield = new TGraphErrors();
@@ -412,7 +412,7 @@ int plot_Q2x_ratio_yieldcorr(){
           mg_z_yield_neg->GetXaxis()->SetTitle("z");
           mg_z_yield_neg->Draw("AL");
           c_yield_neg->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_neg_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_neg.pdf";
+          std::string c_yield_neg_name = "results/yield/statistics_weightedcorr/yield_"+q2xz_str_filename+"_neg.pdf";
           c_yield_neg->SaveAs(c_yield_neg_name.c_str());
 
 
@@ -567,7 +567,7 @@ int plot_Q2x_ratio_yieldcorr(){
           g_yield_ratio->Draw("AP"); 
           g_yield_ratio_sim->Draw("L");
           c_Q2x_z_ratio->BuildLegend(0.1,0.1,0.5,0.2,q2xz_str.c_str());
-          std::string zratiopdfname = "results/yield/statistics_corr/"+q2xz_str_filename+"_ratio.pdf";
+          std::string zratiopdfname = "results/yield/statistics_weightedcorr/"+q2xz_str_filename+"_ratio.pdf";
 
           c_Q2x_z_ratio->SaveAs(zratiopdfname.c_str());
 
@@ -619,8 +619,8 @@ int plot_Q2x_ratio_yieldcorr(){
         //auto hermes_RD = [](double z){return ((1.0-z)*0.083583)/((1.0+z)*1.988);};
         //TF1 *fit = new TF1("HERMES","(1.0-x)**0.083583/(1.0+x)**1.9838",0,1);
         //fit->Draw("same");
-        //      std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_RDratio.pdf";
-        std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_ratio.pdf";
+        //      std::string ratiopdfname = "results/yield/statistics_weightedcorr/"+canvas_filename+"_RDratio.pdf";
+        std::string ratiopdfname = "results/yield/statistics_weightedcorr/"+canvas_filename+"_ratio.pdf";
         //c_Q2x_ratio->BuildLegend(0.6,0.6,0.95,0.95);
         c_Q2x_ratio->SaveAs(ratiopdfname.c_str());
         TCanvas* c_RD_ratio = new TCanvas();
@@ -642,7 +642,7 @@ int plot_Q2x_ratio_yieldcorr(){
 
         mg_RD->GetXaxis()->SetLimits(0.3,0.8);
 
-        std::string RDpdfname = "results/yield/statistics_corr/"+canvas_filename+"_RDratio.pdf";
+        std::string RDpdfname = "results/yield/statistics_weightedcorr/"+canvas_filename+"_RDratio.pdf";
         c_RD_ratio->BuildLegend(0.7,0.7,0.9,0.9);
         c_RD_ratio->SaveAs(RDpdfname.c_str());
       }//if x,Q2 not 0

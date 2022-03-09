@@ -473,7 +473,7 @@ void HMS_cal_DE(){
   g_HMScalDE_D2_pos_momentum_sidis->SetTitle("ptsidis");
   mg_HMScalDE_D2_momentum->Add(g_HMScalDE_D2_pos_momentum_fall,"P");
   mg_HMScalDE_D2_momentum->Add(g_HMScalDE_D2_pos_momentum_spring,"P");
-  mg_HMScalDE_D2_momentum->Add(g_HMScalDE_D2_pos_momentum_sidis,"P");
+  //mg_HMScalDE_D2_momentum->Add(g_HMScalDE_D2_pos_momentum_sidis,"P");
   TCanvas *c_HMScalDE_D2_momentum = new TCanvas();
   mg_HMScalDE_D2_momentum->Draw("A");
   mg_HMScalDE_D2_momentum->GetXaxis()->SetTitle("HMS momentum [GeV]");
@@ -494,7 +494,7 @@ void HMS_cal_DE(){
   g_HMScalDE_D2_pos_RunGroup_sidis->SetTitle("ptsidis");
   mg_HMScalDE_D2_RunGroup->Add(g_HMScalDE_D2_pos_RunGroup_fall,"P");
   mg_HMScalDE_D2_RunGroup->Add(g_HMScalDE_D2_pos_RunGroup_spring,"P");
-  mg_HMScalDE_D2_RunGroup->Add(g_HMScalDE_D2_pos_RunGroup_sidis,"P");
+  //mg_HMScalDE_D2_RunGroup->Add(g_HMScalDE_D2_pos_RunGroup_sidis,"P");
   TCanvas *c_HMScalDE_D2_RunGroup = new TCanvas();
   mg_HMScalDE_D2_RunGroup->Draw("A");
   mg_HMScalDE_D2_RunGroup->GetXaxis()->SetTitle("HMS RunGroup");
@@ -510,7 +510,7 @@ void HMS_cal_DE(){
   g_HMScalDE_D2_pos_RunNumber_sidis->SetTitle("ptsidis");
   mg_HMScalDE_D2_RunNumber->Add(g_HMScalDE_D2_pos_RunNumber_fall,"P");
   mg_HMScalDE_D2_RunNumber->Add(g_HMScalDE_D2_pos_RunNumber_spring,"P");
-  mg_HMScalDE_D2_RunNumber->Add(g_HMScalDE_D2_pos_RunNumber_sidis,"P");
+  //mg_HMScalDE_D2_RunNumber->Add(g_HMScalDE_D2_pos_RunNumber_sidis,"P");
   TCanvas *c_HMScalDE_D2_RunNumber = new TCanvas();
   mg_HMScalDE_D2_RunNumber->Draw("A");
   mg_HMScalDE_D2_RunNumber->GetXaxis()->SetTitle("HMS RunNumber");
@@ -527,7 +527,7 @@ void HMS_cal_DE(){
   g_HMScalDE_H2_pos_momentum_sidis->SetTitle("ptsidis");
   mg_HMScalDE_H2_momentum->Add(g_HMScalDE_H2_pos_momentum_fall,"P");
   mg_HMScalDE_H2_momentum->Add(g_HMScalDE_H2_pos_momentum_spring,"P");
-  mg_HMScalDE_H2_momentum->Add(g_HMScalDE_H2_pos_momentum_sidis,"P");
+  //mg_HMScalDE_H2_momentum->Add(g_HMScalDE_H2_pos_momentum_sidis,"P");
   TCanvas *c_HMScalDE_H2_momentum = new TCanvas();
   mg_HMScalDE_H2_momentum->Draw("A");
   mg_HMScalDE_H2_momentum->Fit("pol0","F");
@@ -548,7 +548,7 @@ void HMS_cal_DE(){
   g_HMScalDE_H2_pos_RunGroup_sidis->SetTitle("ptsidis");
   mg_HMScalDE_H2_RunGroup->Add(g_HMScalDE_H2_pos_RunGroup_fall,"P");
   mg_HMScalDE_H2_RunGroup->Add(g_HMScalDE_H2_pos_RunGroup_spring,"P");
-  mg_HMScalDE_H2_RunGroup->Add(g_HMScalDE_H2_pos_RunGroup_sidis,"P");
+  //mg_HMScalDE_H2_RunGroup->Add(g_HMScalDE_H2_pos_RunGroup_sidis,"P");
   TCanvas *c_HMScalDE_H2_RunGroup = new TCanvas();
   mg_HMScalDE_H2_RunGroup->Draw("A");
   mg_HMScalDE_H2_RunGroup->GetXaxis()->SetTitle("HMS RunGroup");
@@ -564,7 +564,7 @@ void HMS_cal_DE(){
   g_HMScalDE_H2_pos_RunNumber_sidis->SetTitle("ptsidis");
   mg_HMScalDE_H2_RunNumber->Add(g_HMScalDE_H2_pos_RunNumber_fall,"P");
   mg_HMScalDE_H2_RunNumber->Add(g_HMScalDE_H2_pos_RunNumber_spring,"P");
-  mg_HMScalDE_H2_RunNumber->Add(g_HMScalDE_H2_pos_RunNumber_sidis,"P");
+  //mg_HMScalDE_H2_RunNumber->Add(g_HMScalDE_H2_pos_RunNumber_sidis,"P");
   TCanvas *c_HMScalDE_H2_RunNumber = new TCanvas();
   mg_HMScalDE_H2_RunNumber->Draw("A");
   mg_HMScalDE_H2_RunNumber->GetXaxis()->SetTitle("HMS RunNumber");
@@ -581,7 +581,7 @@ void HMS_cal_DE(){
   g_HMScalDE_Dummy_pos_momentum_sidis->SetTitle("ptsidis");
   mg_HMScalDE_Dummy_momentum->Add(g_HMScalDE_Dummy_pos_momentum_fall,"P");
   mg_HMScalDE_Dummy_momentum->Add(g_HMScalDE_Dummy_pos_momentum_spring,"P");
-  mg_HMScalDE_Dummy_momentum->Add(g_HMScalDE_Dummy_pos_momentum_sidis,"P");
+  //mg_HMScalDE_Dummy_momentum->Add(g_HMScalDE_Dummy_pos_momentum_sidis,"P");
   TCanvas *c_HMScalDE_Dummy_momentum = new TCanvas();
   mg_HMScalDE_Dummy_momentum->Draw("A");
   mg_HMScalDE_Dummy_momentum->Fit("pol0","F");
@@ -602,7 +602,7 @@ void HMS_cal_DE(){
   g_HMScalDE_Dummy_pos_RunGroup_sidis->SetTitle("ptsidis");
   mg_HMScalDE_Dummy_RunGroup->Add(g_HMScalDE_Dummy_pos_RunGroup_fall,"P");
   mg_HMScalDE_Dummy_RunGroup->Add(g_HMScalDE_Dummy_pos_RunGroup_spring,"P");
-  mg_HMScalDE_Dummy_RunGroup->Add(g_HMScalDE_Dummy_pos_RunGroup_sidis,"P");
+  //mg_HMScalDE_Dummy_RunGroup->Add(g_HMScalDE_Dummy_pos_RunGroup_sidis,"P");
   TCanvas *c_HMScalDE_Dummy_RunGroup = new TCanvas();
   mg_HMScalDE_Dummy_RunGroup->Draw("A");
   mg_HMScalDE_Dummy_RunGroup->GetXaxis()->SetTitle("HMS RunGroup");
@@ -618,7 +618,7 @@ void HMS_cal_DE(){
   g_HMScalDE_Dummy_pos_RunNumber_sidis->SetTitle("ptsidis");
   mg_HMScalDE_Dummy_RunNumber->Add(g_HMScalDE_Dummy_pos_RunNumber_fall,"P");
   mg_HMScalDE_Dummy_RunNumber->Add(g_HMScalDE_Dummy_pos_RunNumber_spring,"P");
-  mg_HMScalDE_Dummy_RunNumber->Add(g_HMScalDE_Dummy_pos_RunNumber_sidis,"P");
+  //mg_HMScalDE_Dummy_RunNumber->Add(g_HMScalDE_Dummy_pos_RunNumber_sidis,"P");
   TCanvas *c_HMScalDE_Dummy_RunNumber = new TCanvas();
   mg_HMScalDE_Dummy_RunNumber->Draw("A");
   mg_HMScalDE_Dummy_RunNumber->GetXaxis()->SetTitle("HMS RunNumber");

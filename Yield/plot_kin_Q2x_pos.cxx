@@ -23,7 +23,7 @@ double Get_Wprime_line(double *x, double *par)
 int plot_kin_Q2x_pos(){
   json j_Q2x;
   {
-    std::ifstream runs("db2/kin_group_xq2_combined.json");
+    std::ifstream runs("db2/kin_group_q2x_combined.json");
     runs>>j_Q2x;
   }
   json j_allcuts;
@@ -32,12 +32,13 @@ int plot_kin_Q2x_pos(){
     allcuts>>j_allcuts;
   }
   int bins = j_allcuts["bins"].get<int>();
+  int add_legend_entry = 1;
   //int coolcolor[14] = {46,47,40,48,30,49,31,41,32,33,43,44,45};
   //int coolcolor[14] = {44,45,46,2,3,29,30,31,32,8,7,38,36,37};
   //int coolcolor[14] = {44,45,46,2,3,29,30,31,32,8,7,38,36,37};
   //int coolcolor[14] = {1,2,3,4,6,7,8,9,30,42,35,28,38,46};
-  int coolcolor[14] = {2,2,2,6,2,9,9,6,9,6,9,9,9,9};
-  //int coolcolor[3] = {2,6,9};
+  //int coolcolor[14] = {2,2,2,8,2,9,9,8,9,8,9,9,9,9};
+  int coolcolor[3] = {2,8,9};
   TCanvas* c_kin_pos = new TCanvas("","CSV",1900,1000);
   TLegend* legend = new TLegend(0.75,0.15,0.95,0.75);
   legend->SetHeader("CSV kinematic settings","C");
@@ -45,12 +46,12 @@ int plot_kin_Q2x_pos(){
   int i_color = 0;
   TH2F* h_pos_all_xQ2 = new TH2F("","",bins,0,1,bins,0,10);
   for(auto it = j_Q2x.begin();it!=j_Q2x.end();it++){
-    double x = std::stod(it.key());
-    std::string x_2 = it.key().substr(0,4);
+      double Q2 = std::stod(it.key());
+      std::string Q2_2 = it.key().substr(0,4);
     auto runjs = it.value();
     for (auto ik = runjs.begin();ik!=runjs.end();++ik){
-      double Q2 = std::stod(ik.key());
-      std::string Q2_2 = ik.key().substr(0,4);
+    double x = std::stod(ik.key());
+    std::string x_2 = ik.key().substr(0,4);
       std::cout<<"x_Q2_"<<x<<"_"<<Q2<<std::endl;
       std::string x_Q2 = x_2+","+Q2_2;
       if(x!= 0 && Q2!=0){
@@ -95,13 +96,17 @@ int plot_kin_Q2x_pos(){
           //TGraph *g_pos_all = new TGraph(h_pos_all);
           //g_pos_all->Draw("p same");
           h_pos_all->Draw("box same");
-          
+         
+          if(add_legend_entry == 1){
           legend->AddEntry(h_pos_all,x_Q2.c_str(),"f"); 
-          i_color++;
+          add_legend_entry = 0;
+          }
         }//if normal production runs
       }//if x Q2 not 0
-    }// loop over Q2
-  }//loop over x
+    }// loop over x
+          i_color++;
+    add_legend_entry = 1;
+  }//loop over Q2
   gStyle->SetOptTitle(0);
   
   TF1* W2_1 = new TF1("W2","(4-0.938272*0.938272)*(x/(1-x))",0.2,0.8);
@@ -109,14 +114,14 @@ int plot_kin_Q2x_pos(){
   TF1* Wprime2_1 = new TF1("Wp2:2.6,z:0.4",Get_Wprime_line,0.2,0.8,1);
   Wprime2_1->SetParameter(0,0.4);
   Wprime2_1->SetLineColor(kBlue);
-  Wprime2_1->SetTitle("Wpi^2,z:0.4");
+  Wprime2_1->SetTitle("#W_p^2,z:0.4");
   Wprime2_1->Draw("L same");
   TF1* Wprime2_2 = new TF1("Wp2:2.6,z:0.8",Get_Wprime_line,0.2,0.8,1);
   Wprime2_2->SetParameter(0,0.8);
   Wprime2_2->SetLineColor(8);
-  Wprime2_2->SetTitle("Wpi^2,z:0.8");
+  Wprime2_2->SetTitle("#W_p^2,z:0.8");
   Wprime2_2->Draw("L same");
-  legend->AddEntry(W2_1,"W^2","l");
+  legend->AddEntry(W2_1,"#W^2","l");
   legend->AddEntry(Wprime2_1,"","l");
   legend->AddEntry(Wprime2_2,"","l");
   double Q2_low = j_allcuts["Q2_low"].get<double>();

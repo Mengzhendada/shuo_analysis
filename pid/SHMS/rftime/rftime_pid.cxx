@@ -21,6 +21,12 @@ void rftime_pid(int RunGroup =0){
     std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
   }
+  json j_runsinfo;
+  {
+    std::string if_name = "db2/runs_info.json";
+    std::ifstream ifs(if_name.c_str());
+    ifs>>j_runsinfo;
+  }
   std::vector<int> neg_D2,pos_D2;
   neg_D2 = j_rungroup[std::to_string(RunGroup).c_str()]["neg"]["D2"].get<std::vector<int>>();
   pos_D2 = j_rungroup[std::to_string(RunGroup).c_str()]["pos"]["D2"].get<std::vector<int>>();
@@ -36,7 +42,7 @@ void rftime_pid(int RunGroup =0){
     std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
     files_pos.push_back(rootfile_name);
   }
-
+  int RunNumber = pos_D2[0];
   double lightspeed = 299792458;
   double m_pi = 0.139;
   double m_proton = 0.98;
@@ -75,22 +81,25 @@ void rftime_pid(int RunGroup =0){
         [=](double coin_time){return std::abs(coin_time-coin_peak_center_pos)<2 || std::abs(coin_time-coin_2ndpeak_center_pos)<2;},{"CTime.ePiCoinTime_ROC2"});
     
     //plot cointime
-    auto h_cointime_all = d_pos.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
+    auto h_cointime_all = d_pos.Histo1D({"",";coincidence time;counts",100,40,60},"CTime.ePiCoinTime_ROC2");
     auto h_cointime_first = d_pos_first.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
     auto h_cointime_second = d_pos_second.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
     auto h_cointime_both = d_pos_both.Histo1D({"","",100,40,60},"CTime.ePiCoinTime_ROC2");
     TCanvas *c_cointime = new TCanvas();
+    gStyle->SetOptTitle(0);
+    gStyle->SetOptStat(0);
+    gStyle->SetPalette(kBird);
     h_cointime_all->DrawCopy("hist");
-    h_cointime_second->SetLineColor(kBlue);
-    h_cointime_second->DrawCopy("hist same");
-    h_cointime_first->SetLineColor(kRed);
-    h_cointime_first->DrawCopy("hist same");
-    TPaveText *pt_cointime = new TPaveText(0.75,0.75,1,1,"brNDC");
+    //h_cointime_second->SetLineColor(kBlue);
+    //h_cointime_second->DrawCopy("hist same");
+    //h_cointime_first->SetLineColor(kRed);
+    //h_cointime_first->DrawCopy("hist same");
+    TPaveText *pt_cointime = new TPaveText(0.75,0.75,0.95,0.95,"brNDC");
     pt_cointime->AddText(("RunGroup "+std::to_string(RunGroup)).c_str());
     pt_cointime->AddText(("momentum "+std::to_string(SHMS_P)).c_str());
     pt_cointime->AddText(("1st peak"+std::to_string(coin_peak_center_pos)).c_str());
     pt_cointime->AddText(("2nd peak"+std::to_string(coin_2ndpeak_center_pos)).c_str());
-    pt_cointime->AddText(("height ratio "+std::to_string(coin_1stpeak_content/coin_2ndpeak_content)).c_str());
+    //pt_cointime->AddText(("height ratio "+std::to_string(coin_1stpeak_content/coin_2ndpeak_content)).c_str());
     c_cointime->cd();
     pt_cointime->Draw();
     std::string c_cointime_name = "results/pid/rftime/coin_time_"+std::to_string(RunGroup)+".pdf";
@@ -102,6 +111,7 @@ void rftime_pid(int RunGroup =0){
   int time_diff_pos_bin_max = h_time_diff_pos->GetMaximumBin();
   double time_diff_pos_max = h_time_diff_pos->GetBinCenter(time_diff_pos_bin_max);
   double offset_pos = 401.8-time_diff_pos_max;
+  //double offset_pos = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
   std::cout<<"offset for pos runs "<<offset_pos<<std::endl;
   auto d_mod_first = d_pos_first.Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
   .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
@@ -303,6 +313,7 @@ void rftime_pid(int RunGroup =0){
   auto h_aero_rftime = d_mod_first.Histo2D({"","pions;rftime;aero",100,0,4,100,0,30},"diff_time_mod","P.aero.npeSum");
   TCanvas *c_aero_rftime_pi = new TCanvas();
   gStyle->SetOptTitle(0);
+  gStyle->SetOptStat(0);
   gStyle->SetPalette(kBird);
   h_aero_rftime->SetMaximum(30);
   h_aero_rftime->DrawCopy("colz");

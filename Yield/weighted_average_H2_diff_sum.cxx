@@ -15,8 +15,6 @@ int weighted_average_H2_diff_sum(){
   }
   json jout;
   json jcheck;
-  TCanvas *c_diff_ratio = new TCanvas();
-  TCanvas *c_sum_ratio = new TCanvas();
   auto mg_diff = new TMultiGraph();
   auto mg_sum = new TMultiGraph();
   auto diff_legend = new TLegend(0.7,0.7,0.95,0.95);
@@ -83,12 +81,18 @@ int weighted_average_H2_diff_sum(){
           jout[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_diff_datadelta"] = mean_diff_datadelta;
           jout[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["value_diff_dataexc"] = mean_diff_dataexc;
           jout[(std::to_string(Q2)).c_str()][(std::to_string(xbj)).c_str()][(std::to_string(z)).c_str()]["error_diff"] = sig_diff;
-          double ratio_datadeltaexc = mean_diff_datadeltaexc/mean_diff_data;
-          double ratio_datadelta = mean_diff_datadelta/mean_diff_data;
-          double ratio_dataexc = mean_diff_dataexc/mean_diff_data;
+          //double ratio_datadeltaexc = mean_diff_datadeltaexc/mean_diff_data;
+          //double ratio_datadelta = mean_diff_datadelta/mean_diff_data;
+          //double ratio_dataexc = mean_diff_dataexc/mean_diff_data;
+          double ratio_datadeltaexc = mean_diff_datadeltaexc;
+          double ratio_datadelta = mean_diff_datadelta;
+          double ratio_dataexc = mean_diff_dataexc;
           g_diff_datadeltaexc->SetPoint(i_diff,z,ratio_datadeltaexc);
           g_diff_datadelta->SetPoint(i_diff,z,ratio_datadelta);
           g_diff_dataexc->SetPoint(i_diff,z,ratio_dataexc);
+          g_diff_datadeltaexc->SetPointError(i_diff,0,sig_diff);
+          g_diff_datadelta->SetPointError(i_diff,0,sig_diff);
+          g_diff_dataexc->SetPointError(i_diff,0,sig_diff);
           g_diff_ratio->SetPoint(i_diff,z,mean_diff);
           g_diff_ratio->SetPointError(i_diff,0,sig_diff);
           i_diff++;
@@ -129,22 +133,25 @@ int weighted_average_H2_diff_sum(){
       std::cout<<"color "<<i_color<<std::endl;
       g_diff_datadeltaexc->SetName("(data-delta-exc)/data");
       g_diff_datadeltaexc->SetLineColor(1);
+      g_diff_datadeltaexc->SetMarkerStyle(8);
       g_diff_datadelta->SetName("(data-delta)/data");
       g_diff_datadelta->SetLineColor(2);
+      g_diff_datadelta->SetMarkerStyle(8);
       g_diff_dataexc->SetName("(data-exc)/data");
       g_diff_dataexc->SetLineColor(3);
-      mg_diff_ratios->Add(g_diff_datadeltaexc,"L");
-      mg_diff_ratios->Add(g_diff_datadelta,"L");
-      mg_diff_ratios->Add(g_diff_dataexc,"L");
-      TCanvas* c_diff_ratios = new TCanvas();
+      g_diff_dataexc->SetMarkerStyle(8);
+      mg_diff_ratios->Add(g_diff_datadeltaexc,"P");
+      mg_diff_ratios->Add(g_diff_datadelta,"P");
+      mg_diff_ratios->Add(g_diff_dataexc,"P");
+      TCanvas* c_diff_ratios = new TCanvas("","",1900,1000);
       mg_diff_ratios->Draw("A");
-      mg_diff_ratios->SetMinimum(0);
-      mg_diff_ratios->SetMaximum(1.1);
+      mg_diff_ratios->SetMinimum(0.5);
+      mg_diff_ratios->SetMaximum(2);
       mg_diff_ratios->GetXaxis()->SetTitle("z");
       mg_diff_ratios->GetYaxis()->SetTitle("ratios");
       std::string c_diff_ratios_name = "results/yield/statistics_H2/diff_ratios_"+canvas_filename+".pdf";
       c_diff_ratios->SetTitle(canvas_name.c_str());
-      c_diff_ratios->BuildLegend(0.1,0.1,0.4,0.4,canvas_name.c_str());
+      c_diff_ratios->BuildLegend(0.75,0.75,0.95,0.95,canvas_name.c_str());
       c_diff_ratios->SaveAs(c_diff_ratios_name.c_str());
     }//loop over xbj
 
@@ -154,7 +161,7 @@ int weighted_average_H2_diff_sum(){
   ofs<<jout.dump(4)<<std::endl;
   std::string diff_ratio = "#frac{Y^{#pi^{+}}_{p}-Y^{#pi^{-}}_{p}}{Y^{#pi^{+}}_{D}-Y^{#pi^{-}}_{D}}";
   //std::string diff_ratio = "#frac{#sigma^{#pi^{+}}_{p}-#sigma^{#pi^{-}}_{p}}{#sigma^{#pi^{+}}_{D}-#sigma^{#pi^{-}}_{D}}";
-  c_diff_ratio->cd();
+  TCanvas *c_diff_ratio = new TCanvas("","",1900,1000);
   mg_diff->GetXaxis()->SetTitle("z");
   mg_diff->GetYaxis()->SetTitle(diff_ratio.c_str());
   mg_diff->Draw("A");
@@ -200,7 +207,7 @@ int weighted_average_H2_diff_sum(){
   //diff_legend->Draw();
   c_diff_ratio->BuildLegend(0.3,0.7,0.6,0.95);
   c_diff_ratio->SaveAs("results/yield/statistics_H2/diff_ratio.pdf");
-  c_sum_ratio->cd();
+  TCanvas *c_sum_ratio = new TCanvas("","",1900,1000);
   std::string sum_ratio = "#frac{Y^{#pi^{+}}_{p}+Y^{#pi^{-}}_{p}}{Y^{#pi^{+}}_{D}+Y^{#pi^{-}}_{D}}";
   //std::string sum_ratio = "#frac{#sigma^{#pi^{+}}_{p}+#sigma^{#pi^{-}}_{p}}{#sigma^{#pi^{+}}_{D}+#sigma^{#pi^{-}}_{D}}";
   mg_sum->GetXaxis()->SetTitle("z");

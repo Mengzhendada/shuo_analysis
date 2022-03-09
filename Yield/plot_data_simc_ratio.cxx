@@ -143,7 +143,7 @@ void plot_data_simc_ratio(){
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
 
               double pion_n = j_info[(std::to_string(RunNumber)).c_str()]["pion_n_integ"].get<double>();
-              int bg_n_integ = j_info[(std::to_string(RunNumber)).c_str()]["bg_n_integ"].get<double>();
+              int bg_n = j_info[(std::to_string(RunNumber)).c_str()]["bg_n_integ"].get<double>();
               double EFF = Get_all_eff(RunNumber);
               double pions_pos = (pion_n-bg_n/6.0)/EFF;
               double pions_data_yield = pions_pos/charge;
