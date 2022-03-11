@@ -32,9 +32,10 @@ void good_current_shuo(int RunNumber = 0){
             << "uA\n";
   std::cout << "Setting current offset at  " << current_offset*target_current << "uA\n";
   
-  auto h_current_time = d_scaler.Histo2D({"current vs. time", "",1000,0,3000,1000,0,100},"P.1MHz.scalerTime","P.BCM4B.scalerCurrent");
+  auto h_current_time = d_scaler.Histo2D({"current vs. time", ";time (s);current",1000,0,1500,1000,0,50},"P.1MHz.scalerTime","P.BCM4B.scalerCurrent");
   TCanvas *c_current_time = new TCanvas;
   h_current_time->SetMarkerStyle(8);
+  //h_current_time->GetYaxis()->SetTitle("current");
   h_current_time->DrawClone();
   c_current_time->SaveAs("current_time.pdf");
 
@@ -67,13 +68,16 @@ void good_current_shuo(int RunNumber = 0){
   auto event_current = d_events_current.Graph("fEvtHdr.fEvtNum","current");
   std::string good_current = "current >= "+std::to_string(current_offset*target_current);
   std::cout<<good_current<<std::endl;
-  auto event_current_good = d_events_current.Filter(good_current).Graph("fEvtHdr.fEvtNum","current");
+  //auto event_current_good = d_events_current.Filter(good_current).Graph("P.1MHz.scalerTimeCut","current");
+  //auto event_current_good = d_events_current.Filter(good_current).Graph("fEvtHdr.fEvtNum","current");
   TCanvas* c_graph = new TCanvas();
   event_current->SetMarkerStyle(8);
+  event_current->GetXaxis()->SetRangeUser(0,1000);
   event_current->Draw("ap");
-  event_current_good->SetMarkerStyle(8);
-  event_current_good->SetMarkerColor(2);
-  event_current_good->Draw("p same");
+  //event_current_good->SetMarkerStyle(8);
+  //event_current_good->SetMarkerColor(2);
+  //event_current_good->Draw("p same");
+  
   c_graph->SaveAs("event_current.pdf");
 
 }

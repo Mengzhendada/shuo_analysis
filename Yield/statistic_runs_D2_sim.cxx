@@ -92,9 +92,9 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     ifs>>j_rungroup;
   }
 
-  double z = j_rungroup[(std::to_string(RunGroup)).c_str()]["z"].get<double>();
+  double z_set = j_rungroup[(std::to_string(RunGroup)).c_str()]["z"].get<double>();
   double exc_factor = 1;
-  if(z ==0.5) exc_factor = 0.6;
+  //if(z_set ==0.5) exc_factor = 0.6;
   std::vector<int> neg_D2,pos_D2;
   neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
   pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
