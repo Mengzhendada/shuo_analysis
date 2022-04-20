@@ -48,7 +48,8 @@ void rf_offset(int RunGroup=0){
 
   json j_rungroup;
   {
-    std::ifstream ifs("db2/ratio_run_group_updated.json");
+    std::ifstream ifs("db2/ratio_run_group_withptsidis.json");
+    //std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
   }
 
@@ -102,11 +103,11 @@ void rf_offset(int RunGroup=0){
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
   json jout;
-  {
-    std::string if_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
-    std::ifstream ifs(if_name.c_str());
-    ifs>>jout;
-  }
+  //{
+  //  std::string if_name = "results/yield/run_info/"+std::to_string(RunGroup)+".json";
+  //  std::ifstream ifs(if_name.c_str());
+  //  ifs>>jout;
+  //}
   json j_runsinfo;
   {
     std::string if_name = "db2/runs_info.json";

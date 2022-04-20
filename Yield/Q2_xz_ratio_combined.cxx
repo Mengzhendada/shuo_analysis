@@ -568,7 +568,7 @@ int Q2_xz_ratio_combined(){
               double yield_neg_rho = h_xz_neg_sim_rho->GetBinContent(i+1,j+1);
               double yield_neg = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc;
               double yield_neg_data = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy;
-              double yield_negwithrho = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc-yield_neg_rho;
+              double yield_negwithrho = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc-1*yield_neg_rho;
               double error_neg_D2 = h_xz_neg_all->GetBinError(i+1,j+1)/charge_neg_all;
               double error_neg_D2_2 = std::sqrt(h_xz_neg_all->GetBinContent(i+1,j+1))/charge_neg_all;
               if((error_neg_D2_2 - error_neg_D2_2)!=0){std::cout<<"check two errors"<<error_neg_D2/error_neg_D2_2<<std::endl;}
@@ -583,7 +583,7 @@ int Q2_xz_ratio_combined(){
               double yield_pos_rho = h_xz_pos_sim_rho->GetBinContent(i+1,j+1);
               double yield_pos_data = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy;
               double yield_pos = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc;
-              double yield_poswithrho = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc-yield_pos_rho;
+              double yield_poswithrho = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc-1*yield_pos_rho;
               double error_pos_D2 = h_xz_pos_all->GetBinError(i+1,j+1)/charge_pos_all;
               double error_pos_bg_D2 = h_xz_pos_bg_all->GetBinError(i+1,j+1)/charge_pos_all;
               double error_pos_Dummy = h_xz_pos_Dummy_all->GetBinError(i+1,j+1)/charge_pos_Dummy_all;
