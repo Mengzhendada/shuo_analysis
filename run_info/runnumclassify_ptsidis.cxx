@@ -97,7 +97,7 @@ void runnumclassify_ptsidis(){
     jout[ii]["shms_theta"]=runkey.shms_th();
     jout[ii]["hms_theta"]=runkey.hms_th();
     //out<<jout<<std::endl; 
-    std::vector<int> runs_pos_2,runs_pos_3,runs_pos_5,runs_neg_2,runs_neg_3,runs_neg_5;
+    std::vector<int> runs_pos_2,runs_pos_3,runs_pos_1,runs_neg_2,runs_neg_3,runs_neg_1;
     for(auto ik = it->second.begin();ik!=it->second.end();++ik){
       runs.push_back(*ik);
       std::string runnum = std::to_string(*ik);
@@ -115,7 +115,7 @@ void runnumclassify_ptsidis(){
               runs_neg_3.push_back(*ik);
             }
             else{
-              runs_neg_5.push_back(*ik);
+              runs_neg_1.push_back(*ik);
             }
           }
         }
@@ -128,7 +128,7 @@ void runnumclassify_ptsidis(){
               runs_pos_3.push_back(*ik);
             }
             else{
-              runs_pos_5.push_back(*ik);
+              runs_pos_1.push_back(*ik);
             }
           }
         }
@@ -144,23 +144,23 @@ void runnumclassify_ptsidis(){
     }
     if(!runs_neg_3.empty()){
       onerungroup.push_back(*min_element(runs_neg_3.begin(),runs_neg_3.end()));}
-    if(!runs_neg_5.empty()){
-      onerungroup.push_back(*min_element(runs_neg_5.begin(),runs_neg_5.end()));}
+    if(!runs_neg_1.empty()){
+      onerungroup.push_back(*min_element(runs_neg_1.begin(),runs_neg_1.end()));}
     if(!runs_pos_2.empty()){
       onerungroup.push_back(*min_element(runs_pos_2.begin(),runs_pos_2.end()));}
     if(!runs_pos_3.empty()){
       onerungroup.push_back(*min_element(runs_pos_3.begin(),runs_pos_3.end()));}
-    if(!runs_pos_5.empty()){
-      onerungroup.push_back(*min_element(runs_pos_5.begin(),runs_pos_5.end()));}
+    if(!runs_pos_1.empty()){
+      onerungroup.push_back(*min_element(runs_pos_1.begin(),runs_pos_1.end()));}
     double min = *min_element(onerungroup.begin(),onerungroup.end());
     //double min = *min_element(runs.begin(),runs.end());
     jout[ii]["kin_group"]=min;
-    jout[ii]["neg"]["H2"]=runs_neg_2;
-    jout[ii]["neg"]["D2"]=runs_neg_3;
-    jout[ii]["neg"]["Dummy"]=runs_neg_5;
-    jout[ii]["pos"]["H2"]=runs_pos_2;
-    jout[ii]["pos"]["D2"]=runs_pos_3;
-    jout[ii]["pos"]["Dummy"]=runs_pos_5;
+    jout[ii]["neg"]["D2"]=runs_neg_2;
+    jout[ii]["neg"]["Dummy"]=runs_neg_3;
+    jout[ii]["neg"]["H2"]=runs_neg_1;
+    jout[ii]["pos"]["D2"]=runs_pos_2;
+    jout[ii]["pos"]["Dummy"]=runs_pos_3;
+    jout[ii]["pos"]["H2"]=runs_pos_1;
     i++;
     outfile<<"\n";
   }
