@@ -32,6 +32,9 @@ void get_bin_average(){
     .Define("zmean",divide_by_all,{"z"})
     ;
   auto h_x_pos = d_pos_pi.Histo1D({"","",20,0,1},"xbj");
+  auto h_x_pos_bins = d_pos_pi.Histo1D({"","",100,0,1},"xbj");
+  auto h_weight_xbj_1 = d_pos_pi.Histo1D({"","",20,0,1},"xbj","xbj");
+  h_weight_xbj_1->Divide(h_x_pos.GetPtr());
   std::cout<<h_x_pos->FindBin(0.36)<<" "<<h_x_pos->GetBinContent(h_x_pos->FindBin(0.36))<<" "<<h_x_pos->GetBinCenter(h_x_pos->FindBin(0.36))<<std::endl;
   auto h_x_pos_bg = d_pos_bg_raw.Histo1D({"","",20,0,1},"xbj");
   //h_x_pos->Rebin(5);
@@ -47,8 +50,9 @@ void get_bin_average(){
      //return x*bincontent/(pi_bincontent*pi_bincontent);//*all);
      //return bincontent*x/(all);
      //*pi_bincontent);
-     return x*bincontent/(all*pi_bincontent);
+     //return x*bincontent/(all*pi_bincontent);
      //return x/(bincontent*pi_bincontent);
+     return x/pi_bincontent;
   };
   auto get_ratio_weight = [&](double x){
      int binNumber = h_x_pos->FindBin(x);
@@ -57,12 +61,12 @@ void get_bin_average(){
      double bg_bincontent = h_x_pos_bg->GetBinContent(binNumber);
      double bincontent = h_x_pos->GetBinContent(binNumber)-h_x_pos_bg->GetBinContent(binNumber)/6.0;
      double all = h_x_pos->GetEntries()-h_x_pos_bg->GetEntries()/6.0;
-     return x*bincontent/(all*pi_bincontent*binCenter);
+     //return x*bincontent/(all*pi_bincontent*binCenter);
      //return x/(bincontent*pi_bincontent*binCenter);
      //return x/(bincontent*pi_bincontent*binCenter*all);
      //return x*bincontent/(pi_bincontent*pi_bincontent*binCenter);
      //return x*bincontent/(pi_bincontent*pi_bincontent*all*binCenter);
-     //return x/(pi_bincontent*binCenter);
+     return x/(pi_bincontent*binCenter);
   
   };
   auto d_pos_pi_after = d_pos_pi
@@ -90,9 +94,22 @@ void get_bin_average(){
   h_x_pos->GetXaxis()->SetTitle("x_{bj}");
   h_x_pos->GetXaxis()->SetTitleSize(0.05);
   h_x_pos->Draw();
-  h_x_pos_bg->SetLineColor(kRed);
-  h_x_pos_bg->Scale(1/6.0);
-  h_x_pos_bg->Draw("same");
+  h_x_pos_bins->Scale(5);
+  TGraph* g_x_pos_bins = new TGraph(h_x_pos_bins.GetPtr());
+  g_x_pos_bins->SetLineColor(kRed);
+  g_x_pos_bins->Draw("same");
+  std::cout<<h_x_pos->GetBinContent(10)<<std::endl;
+  TLine* line_2 = new TLine(0.475,0,0.475,h_x_pos->GetBinContent(10));
+  line_2->SetLineStyle(3);
+  line_2->Draw("same");
+  double xave = h_weight_xbj->GetBinContent(10);
+  TLine* line_ave = new TLine(xave,0,xave,h_x_pos->GetBinContent(10));
+  line_ave->SetLineStyle(2);
+  line_ave->SetLineColor(kRed);
+  line_ave->Draw("same");
+  //h_x_pos_bg->SetLineColor(kRed);
+  //h_x_pos_bg->Scale(1/6.0);
+  //h_x_pos_bg->Draw("same");
   c_check_1d->SaveAs("6194_xbj.pdf");
   TCanvas *c_check_1d_2 = new TCanvas();
   h_weight_xbj->SetBit(TH1::kNoStats);
@@ -102,16 +119,19 @@ void get_bin_average(){
   h_weight_xbj->GetXaxis()->SetTitleSize(0.05);
   h_weight_xbj->GetYaxis()->SetTitleSize(0.05);
   h_weight_xbj->Draw();
+  h_weight_xbj_1->SetLineColor(kRed);
+  h_weight_xbj_1->Draw("hist same");
   //h_x_pos_mean->Draw();
   c_check_1d_2->SaveAs("6194_xbjmean_xbj.pdf");
   TCanvas *c_check_1d_3 = new TCanvas();
-  h_weight_xbj_ratio->SetBit(TH1::kNoStats);
-  h_weight_xbj_ratio->GetXaxis()->SetRangeUser(0.3,0.6);
-  h_weight_xbj_ratio->GetXaxis()->SetTitle("x_{bj,center}");
-  h_weight_xbj_ratio->GetYaxis()->SetTitle("ratio");
-  h_weight_xbj_ratio->GetXaxis()->SetTitleSize(0.05);
-  h_weight_xbj_ratio->GetYaxis()->SetTitleSize(0.05);
-  h_weight_xbj_ratio->Draw();
+  h_weight_xbj_1->Draw();
+  //h_weight_xbj_ratio->SetBit(TH1::kNoStats);
+  //h_weight_xbj_ratio->GetXaxis()->SetRangeUser(0.3,0.6);
+  //h_weight_xbj_ratio->GetXaxis()->SetTitle("x_{bj,center}");
+  //h_weight_xbj_ratio->GetYaxis()->SetTitle("ratio");
+  //h_weight_xbj_ratio->GetXaxis()->SetTitleSize(0.05);
+  //h_weight_xbj_ratio->GetYaxis()->SetTitleSize(0.05);
+  //h_weight_xbj_ratio->Draw();
   //h_x_pos_mean->Draw();
   c_check_1d_3->SaveAs("6194_xbjmean_xbj_ratio.pdf");
   
