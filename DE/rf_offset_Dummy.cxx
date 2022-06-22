@@ -48,8 +48,8 @@ void rf_offset_Dummy(int RunGroup=0){
 
   json j_rungroup;
   {
-    std::ifstream ifs("db2/ratio_run_group_withptsidis.json");
-    //std::ifstream ifs("db2/ratio_run_group_updated.json");
+    //std::ifstream ifs("db2/ratio_run_group_withptsidis.json");
+    std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
   }
 
@@ -116,7 +116,6 @@ void rf_offset_Dummy(int RunGroup=0){
     std::ifstream ifs("db2/PID_test.json");
     ifs>>j_DE;
   }
-  if(!neg_Dummy.empty() && !pos_Dummy.empty()){
     std::vector<std::string> files_neg,files_pos;
     double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
     auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
@@ -168,7 +167,8 @@ void rf_offset_Dummy(int RunGroup=0){
       Pvec4D missing_mass = Pvec4D{0.0,0.0,Eb,M_e}+Pvec4D{0.0,0.0,0.0,M_P}-p_electron-p_pion;
       return std::sqrt(missing_mass.M2());
     };
-
+  //if(!neg_Dummy.empty() && !pos_Dummy.empty()){
+if(1){
 
     //loop over each pos runs data
     for(auto it = pos_Dummy.begin();it!=pos_Dummy.end();++it){

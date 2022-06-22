@@ -48,8 +48,8 @@ void rf_offset(int RunGroup=0){
 
   json j_rungroup;
   {
-    std::ifstream ifs("db2/ratio_run_group_withptsidis.json");
-    //std::ifstream ifs("db2/ratio_run_group_updated.json");
+    //std::ifstream ifs("db2/ratio_run_group_withptsidis.json");
+    std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
   }
 

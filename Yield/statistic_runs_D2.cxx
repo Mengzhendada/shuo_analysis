@@ -107,10 +107,6 @@ void statistic_runs_D2(int RunGroup=0){
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Define("xprime2","xprime*xprime")
         .Define("zprime2","zprime*zprime")
-        .Filter(pt_cut)
-        //.Filter(Mx2_cut)
-        .Filter(W2_cut)
-        .Filter(Wp2_cut)
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
         .Define("Q22","Q2*Q2")
@@ -118,6 +114,10 @@ void statistic_runs_D2(int RunGroup=0){
         .Define("shms_dp2","P_gtr_dp*P_gtr_dp")
         .Define("W22","W2*W2")
         .Define("Wp22","Wp2*Wp2")
+        .Filter(pt_cut)
+        //.Filter(Mx2_cut)
+        .Filter(W2_cut)
+        .Filter(Wp2_cut)
         ;
       //int pion_n = *d_pos_pi.Count();
       //jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;

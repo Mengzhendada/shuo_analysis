@@ -51,8 +51,9 @@ int Q2_xz_ratio_combined(){
   json jout_sthwrong;
   std::ofstream csv_file;
   csv_file.open("results/csv.csv");
-  csv_file<<"Q2,Q2_corr,Q2_corr_err,xbj,xbj_corr,xbj_corr_err,z,z_corr,z_corr_err,RunGroup,y_RD,error_RD,y_RD_rho,yield_neg,yield_pos,yield_neg_data,error_neg,yield_pos_data,error_pos,charge_neg_all,charge_pos_all,yield_neg_exc,yield_neg_delta,yield_neg_rho,yield_pos_exc,yield_pos_delta,yield_pos_rho,yield_neg_incnorad,yield_neg_incrad,yield_pos_incnorad,yield_pos_incrad,W2_corr,Wp2_corr,xprime_corr,zprime_corr,shms_p,shms_dp"<<std::endl;      
-                  //csv_file<<Q2<<","<<Q2_corr<<","<<xbj_str<<","<<xbj_corr<<","<<z_str<<","<<z_corr<<","<<RunGroup<<","<<y_RD<<","<<error_RD<<","<<y_RD_rho<<","<<yield_neg<<","<<yield_pos<<","<<charge_neg_all<<","<<charge_pos_all<<","<<yield_neg_rho<<","<<yield_pos_rho<<","<<yield_neg_incnorad<<","<<yield_neg_incrad<<","<<yield_pos_incnorad<<","<<yield_pos_incrad<<","<<W2_corr<<","<<Wp2_corr<<","<<xprime_corr<<","<<zprime_corr<<std::endl;                  
+  //remember to change xbj_str to xbj , z_str to z
+  csv_file<<"Q2,Q2_corr,Q2_corr_err,xbj_set,xbj,xbj_corr,xbj_corr_err,z_set,z,z_corr,z_corr_err,RunGroup,y_RD,error_RD,y_RD_rho,RY,RY_rho,RY_1p8rho,error,yield_neg,yield_pos,yield_neg_data,error_neg,yield_pos_data,error_pos,charge_neg_all,charge_pos_all,yield_neg_exc,yield_neg_delta,yield_neg_rho,yield_pos_exc,yield_pos_delta,yield_pos_rho,yield_neg_incnorad,yield_neg_incrad,yield_pos_incnorad,yield_pos_incrad,W2_corr,Wp2_corr,xprime_corr,zprime_corr,shms_p_corr,shms_dp_corr"<<std::endl;                  
+                  //csv_file<<Q2<<","<<Q2_corr<<","<<Q2_corr_err<<","<<xbj_set<<","<<xbj_str<<","<<xbj_corr<<","<<xbj_corr_err<<","<<","<<z_set<<","<<z_str<<","<<z_corr<<","<<z_corr_err<<","<<RunGroup<<","<<y_RD<<","<<error_RD<<","<<y_RD_rho<<","<<RY<<","<<RY_rho<<","<<RY_1p8rho<<","<<error<<","<<yield_neg<<","<<yield_pos<<","<<yield_neg_data<<","<<error_neg<<","<<yield_pos_data<<","<<error_pos<<","<<charge_neg_all<<","<<charge_pos_all<<","<<yield_neg_exc<<","<<yield_neg_delta<<","<<yield_neg_rho<<","<<yield_pos_exc<<","<<yield_pos_delta<<","<<yield_pos_rho<<","<<yield_neg_incnorad<<","<<yield_neg_incrad<<","<<yield_pos_incnorad<<","<<yield_pos_incrad<<","<<W2_corr<<","<<Wp2_corr<<","<<xprime_corr<<","<<zprime_corr<<","<<shms_p_corr<<","<<shms_dp_corr<<std::endl;                  
  
   //TH2D* h_Q2_1_neg =new TH2D("","3.95",bins,0,1,bins,0,1);
   //TH2D* h_Q2_1_pos =new TH2D("","3.95",bins,0,1,bins,0,1);
@@ -77,6 +78,7 @@ int Q2_xz_ratio_combined(){
     TCanvas* c_RDmeas = new TCanvas();
     for(json::iterator it  = j_xz.begin();it!=j_xz.end();++it){
       double xbj = std::stod(it.key());
+      double xbj_set = xbj;
       auto j_z = it.value();
       TH2D* h_neg_q2 = new TH2D("",(q2_name).c_str(),bins,0,1,bins,0,1);
       TH2D* h_pos_q2 = new TH2D("",(q2_name).c_str(),bins,0,1,bins,0,1);
@@ -84,6 +86,7 @@ int Q2_xz_ratio_combined(){
       if(xbj !=0 && Q2!=0){  
         for(json::iterator it = j_z.begin();it!=j_z.end();++it){
           double z = std::stod(it.key());
+          double z_set = z;
           std::string q2xz_str = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5)+",z:"+std::to_string(z).substr(0,4);
           std::string q2xz_str_filename = "x_Q2_z_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4)+"_"+std::to_string(100*z).substr(0,2);
           TH2D* h_xz_neg_all = new TH2D("","neg;z;x",bins,0,1,bins,0,1);
@@ -281,7 +284,7 @@ int Q2_xz_ratio_combined(){
               TH2D* h_xz_shms_pmean2_neg = new TH2D("","",bins,0,1,bins,0,1);
               h_xz_shms_pmean2_neg = (TH2D*)root_file_neg->Get("weighted_shms_p2");
               h_xz_shms_pmean2_neg_all->Add(h_xz_shms_pmean2_neg);
-              std::cout<<"check shms p "<<h_xz_shms_pmean_neg->GetBinContent(10,10)<<std::endl;
+              //std::cout<<"check shms p "<<h_xz_shms_pmean_neg->GetBinContent(10,10)<<std::endl;
               //for shms_dp mean
               TH2D* h_xz_shms_dpmean_neg = new TH2D("","",bins,0,1,bins,0,1);
               h_xz_shms_dpmean_neg = (TH2D*)root_file_neg->Get("weighted_shms_dp");
@@ -289,7 +292,7 @@ int Q2_xz_ratio_combined(){
               TH2D* h_xz_shms_dpmean2_neg = new TH2D("","",bins,0,1,bins,0,1);
               h_xz_shms_dpmean2_neg = (TH2D*)root_file_neg->Get("weighted_shms_dp2");
               h_xz_shms_dpmean2_neg_all->Add(h_xz_shms_dpmean2_neg);
-              std::cout<<"check shms dp"<<h_xz_shms_dpmean_neg->GetBinContent(10,10)<<std::endl;
+              //std::cout<<"check shms dp"<<h_xz_shms_dpmean_neg->GetBinContent(10,10)<<std::endl;
               //for Q2 mean
               TH2D* h_xz_Q2mean_neg = new TH2D("","",bins,0,1,bins,0,1);
               h_xz_Q2mean_neg = (TH2D*)root_file_neg->Get("weighted_Q2");
@@ -569,6 +572,7 @@ int Q2_xz_ratio_combined(){
               double yield_neg = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc;
               double yield_neg_data = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy;
               double yield_negwithrho = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc-1*yield_neg_rho;
+              double yield_negwith_1p8rho = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc-1.8*yield_neg_rho;
               double error_neg_D2 = h_xz_neg_all->GetBinError(i+1,j+1)/charge_neg_all;
               double error_neg_D2_2 = std::sqrt(h_xz_neg_all->GetBinContent(i+1,j+1))/charge_neg_all;
               if((error_neg_D2_2 - error_neg_D2_2)!=0){std::cout<<"check two errors"<<error_neg_D2/error_neg_D2_2<<std::endl;}
@@ -584,6 +588,7 @@ int Q2_xz_ratio_combined(){
               double yield_pos_data = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy;
               double yield_pos = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc;
               double yield_poswithrho = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc-1*yield_pos_rho;
+              double yield_poswith_1p8rho = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc-1.8*yield_pos_rho;
               double error_pos_D2 = h_xz_pos_all->GetBinError(i+1,j+1)/charge_pos_all;
               double error_pos_bg_D2 = h_xz_pos_bg_all->GetBinError(i+1,j+1)/charge_pos_all;
               double error_pos_Dummy = h_xz_pos_Dummy_all->GetBinError(i+1,j+1)/charge_pos_Dummy_all;
@@ -597,8 +602,9 @@ int Q2_xz_ratio_combined(){
               //for yield
               double radia_corr_neg = rp_radia_corr_neg->GetBinContent(i+1,j+1);
               double radia_corr_pos = rp_radia_corr_pos->GetBinContent(i+1,j+1);
+              //std::cout<<"check neg radiative correction"<<radia_corr_neg<<std::endl;
               if(yield_neg_incrad!=0 && yield_neg_incnorad/yield_neg_incrad!=radia_corr_neg){
-                  std::cout<<"check neg radiative correction"<<yield_neg_incnorad/yield_neg_incrad<< " rp "<<radia_corr_neg<<std::endl;
+                  std::cout<<"wrong neg radiative correction"<<yield_neg_incnorad/yield_neg_incrad<< " rp "<<radia_corr_neg<<std::endl;
               }
               //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl; rp_radia_corr_pos
               yield_neg = yield_neg*radia_corr_neg;
@@ -606,13 +612,16 @@ int Q2_xz_ratio_combined(){
               error_pos = error_pos*radia_corr_pos;
               error_neg = error_neg*radia_corr_neg;
               yield_negwithrho = yield_negwithrho*radia_corr_neg;
+              yield_negwith_1p8rho = yield_negwith_1p8rho*radia_corr_neg;
               yield_poswithrho = yield_poswithrho*radia_corr_pos;
+              yield_poswith_1p8rho = yield_poswith_1p8rho*radia_corr_pos;
 
               //need to think of how to convert to xs
 
 
               double RY = (yield_neg)/(yield_pos);
               double RY_rho = yield_negwithrho/yield_poswithrho;
+              double RY_1p8rho = yield_negwith_1p8rho/yield_poswith_1p8rho;
               //std::cout<<"RY "<<RY<<std::endl;
               double error = RY*std::sqrt((error_neg*error_neg)/(yield_neg*yield_neg)+(error_pos*error_pos)/(yield_pos*yield_pos));
               double error_rho = RY_rho*std::sqrt((error_neg*error_neg)/(yield_neg_rho*yield_neg_rho)+(error_pos*error_pos)/(yield_pos_rho*yield_pos_rho));
@@ -803,7 +812,7 @@ int Q2_xz_ratio_combined(){
                     //std::cout<<"outofrange alert"<<std::endl;
                   }
                   jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["z_corr"] = z_corr;
-                  csv_file<<Q2<<","<<Q2_corr<<","<<Q2_corr_err<<","<<xbj_str<<","<<xbj_corr<<","<<xbj_corr_err<<","<<z_str<<","<<z_corr<<","<<z_corr_err<<","<<RunGroup<<","<<y_RD<<","<<error_RD<<","<<y_RD_rho<<","<<yield_neg<<","<<yield_pos<<","<<yield_neg_data<<","<<error_neg<<","<<yield_pos_data<<","<<error_pos<<","<<charge_neg_all<<","<<charge_pos_all<<","<<yield_neg_exc<<","<<yield_neg_delta<<","<<yield_neg_rho<<","<<yield_pos_exc<<","<<yield_pos_delta<<","<<yield_pos_rho<<","<<yield_neg_incnorad<<","<<yield_neg_incrad<<","<<yield_pos_incnorad<<","<<yield_pos_incrad<<","<<W2_corr<<","<<Wp2_corr<<","<<xprime_corr<<","<<zprime_corr<<","<<shms_p_corr<<","<<shms_dp_corr<<std::endl;                  
+                  csv_file<<Q2<<","<<Q2_corr<<","<<Q2_corr_err<<","<<xbj_set<<","<<xbj_str<<","<<xbj_corr<<","<<xbj_corr_err<<","<<z_set<<","<<z_str<<","<<z_corr<<","<<z_corr_err<<","<<RunGroup<<","<<y_RD<<","<<error_RD<<","<<y_RD_rho<<","<<RY<<","<<RY_rho<<","<<RY_1p8rho<<","<<error<<","<<yield_neg<<","<<yield_pos<<","<<yield_neg_data<<","<<error_neg<<","<<yield_pos_data<<","<<error_pos<<","<<charge_neg_all<<","<<charge_pos_all<<","<<yield_neg_exc<<","<<yield_neg_delta<<","<<yield_neg_rho<<","<<yield_pos_exc<<","<<yield_pos_delta<<","<<yield_pos_rho<<","<<yield_neg_incnorad<<","<<yield_neg_incrad<<","<<yield_pos_incnorad<<","<<yield_pos_incrad<<","<<W2_corr<<","<<Wp2_corr<<","<<xprime_corr<<","<<zprime_corr<<","<<shms_p_corr<<","<<shms_dp_corr<<std::endl;                  
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["value"] = y_RD;
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["error"] = error_RD;
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["RD_rho"] = y_RD_rho;

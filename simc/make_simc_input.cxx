@@ -1010,7 +1010,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_exc_rad<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_pos_exc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
-  ofs_D2_pos_exc_rad<<" 377468"<<std::endl;
+  ofs_D2_neg_exc_rad<<" random_seed = 377468"<<std::endl;
   
   ofs_D2_pos_exc_rad<<"end parm simulate\n"<<std::endl;
 

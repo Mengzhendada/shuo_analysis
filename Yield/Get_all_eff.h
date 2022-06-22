@@ -28,7 +28,8 @@ static double Get_all_eff(int RunNumber){
 static double Get_D2_neg_delta_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_neg_delta_pars"].get<std::vector<double>>();
@@ -38,7 +39,8 @@ static double Get_D2_neg_delta_ratio(double xbj,double Q2,double z){
 static double Get_D2_pos_delta_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_pos_delta_pars"].get<std::vector<double>>();
@@ -48,7 +50,8 @@ static double Get_D2_pos_delta_ratio(double xbj,double Q2,double z){
 static double Get_D2_neg_exc_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_neg_exc_pars"].get<std::vector<double>>();
@@ -58,7 +61,8 @@ static double Get_D2_neg_exc_ratio(double xbj,double Q2,double z){
 static double Get_D2_pos_exc_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_pos_exc_pars"].get<std::vector<double>>();
@@ -68,7 +72,8 @@ static double Get_D2_pos_exc_ratio(double xbj,double Q2,double z){
 static double Get_D2_neg_rho_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_neg_rho_pars"].get<std::vector<double>>();
@@ -78,7 +83,8 @@ static double Get_D2_neg_rho_ratio(double xbj,double Q2,double z){
 static double Get_D2_pos_rho_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_pos_rho_pars"].get<std::vector<double>>();
@@ -88,7 +94,8 @@ static double Get_D2_pos_rho_ratio(double xbj,double Q2,double z){
 static double Get_D2_neg_Dummy_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_neg_Dummy_pars"].get<std::vector<double>>();
@@ -98,7 +105,8 @@ static double Get_D2_neg_Dummy_ratio(double xbj,double Q2,double z){
 static double Get_D2_pos_Dummy_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_pos_Dummy_pars"].get<std::vector<double>>();
@@ -108,7 +116,8 @@ static double Get_D2_pos_Dummy_ratio(double xbj,double Q2,double z){
 static double Get_D2_neg_incnorad_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_neg_incnorad_pars"].get<std::vector<double>>();
@@ -118,7 +127,8 @@ static double Get_D2_neg_incnorad_ratio(double xbj,double Q2,double z){
 static double Get_D2_pos_incnorad_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["D2_pos_incnorad_pars"].get<std::vector<double>>();
@@ -128,7 +138,8 @@ static double Get_D2_pos_incnorad_ratio(double xbj,double Q2,double z){
 static double Get_H2_neg_delta_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_neg_delta_pars"].get<std::vector<double>>();
@@ -138,7 +149,8 @@ static double Get_H2_neg_delta_ratio(double xbj,double Q2,double z){
 static double Get_H2_pos_delta_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_pos_delta_pars"].get<std::vector<double>>();
@@ -148,7 +160,8 @@ static double Get_H2_pos_delta_ratio(double xbj,double Q2,double z){
 static double Get_H2_pos_exc_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_pos_exc_pars"].get<std::vector<double>>();
@@ -158,7 +171,8 @@ static double Get_H2_pos_exc_ratio(double xbj,double Q2,double z){
 static double Get_H2_neg_rho_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_neg_rho_pars"].get<std::vector<double>>();
@@ -168,7 +182,8 @@ static double Get_H2_neg_rho_ratio(double xbj,double Q2,double z){
 static double Get_H2_pos_rho_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_pos_rho_pars"].get<std::vector<double>>();
@@ -178,7 +193,8 @@ static double Get_H2_pos_rho_ratio(double xbj,double Q2,double z){
 static double Get_H2_neg_Dummy_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_neg_Dummy_pars"].get<std::vector<double>>();
@@ -188,7 +204,8 @@ static double Get_H2_neg_Dummy_ratio(double xbj,double Q2,double z){
 static double Get_H2_pos_Dummy_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_pos_Dummy_pars"].get<std::vector<double>>();
@@ -198,7 +215,8 @@ static double Get_H2_pos_Dummy_ratio(double xbj,double Q2,double z){
 static double Get_H2_neg_incnorad_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_neg_incnorad_pars"].get<std::vector<double>>();
@@ -208,7 +226,8 @@ static double Get_H2_neg_incnorad_ratio(double xbj,double Q2,double z){
 static double Get_H2_pos_incnorad_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {
-    std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
+    std::ifstream ifs("db2/bg_ratio.json");
+    //std::ifstream ifs("results/yield/statistics_check/bg_ratio.json");
     ifs>>j_bgratio;
   }
   std::vector<double> pars = j_bgratio[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["H2_pos_incnorad_pars"].get<std::vector<double>>();

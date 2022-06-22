@@ -48,8 +48,8 @@ void rf_offset_H2(int RunGroup=0){
 
   json j_rungroup;
   {
-    std::ifstream ifs("db2/ratio_run_group_withptsidis.json");
-    //std::ifstream ifs("db2/ratio_run_group_updated.json");
+    //std::ifstream ifs("db2/ratio_run_group_withptsidis.json");
+    std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs>>j_rungroup;
   }
 
@@ -116,59 +116,59 @@ void rf_offset_H2(int RunGroup=0){
     std::ifstream ifs(if_name.c_str());
     ifs>>j_runsinfo;
   }
-  if(!neg_H2.empty() && !pos_H2.empty()){
-    std::vector<std::string> files_neg,files_pos;
-    double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
-    auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
-    if(SHMS_P>3.2){aeroCutSHMS = aeroCutSHMS + " && P.hgcer.npeSum > "+(std::to_string(P_hgcer)).c_str();}
-    double Eb;
-    if(RunGroup < 420) {Eb = 10.597;}
-    else{Eb = 10.214;}
-    auto p_proton = [](double px, double py, double pz){
-      return Pvec4D{px , py , pz , M_P};
-    };
-    auto p_pion = [](double px, double py, double pz) {
-      return Pvec4D{px , py , pz , M_pion};
-    };
-    auto pion_momentum = [](double px,double py,double pz){
-      TVector3 v(px,py,pz);
-      return v;
-    };
-    auto p_electron = [](double px, double py, double pz) {
-      return Pvec4D{px , py , pz , M_e};
-    };
-    auto p_q = [&](Pvec4D& pe ) {
-      return Pvec4D{0.0,0.0,Eb, M_e}-pe;
-    };
-    auto t = [](const double Egamma, Pvec4D& jpsi) {
-      Pvec4D beam{0, 0, Egamma, 0};
-      return (beam - jpsi).M2();
-    };
-    auto z = [](Pvec4D& pq, Pvec4D& ph) {
-      return ph.E()/pq.E();
-    };
-    auto xbj = [](double Q2,Pvec4D& pq) {
-      return Q2/(2.0*0.938*pq.E());
-    };
-    auto Q2 = [](Pvec4D& pq) {
-      return -1.0*(pq.Dot(pq));
-    };
-    auto Wprime2 = [](Pvec4D& pq,Pvec4D& ph) {
-      auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq - ph;
-      return Ptot.Dot(Ptot);
-    };
-    auto W2 = [](Pvec4D& pq) {
-      auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq;
-      return Ptot.Dot(Ptot);
-    };
-    auto Emiss = [&](Pvec4D& p_pion, Pvec4D p_electron){
-      return Eb+M_P-sqrt(p_pion.E()*p_pion.E())-sqrt(p_electron.E()*p_electron.E());
-    };
-    auto mmiss = [&](Pvec4D& p_pion,Pvec4D p_electron){
-      Pvec4D missing_mass = Pvec4D{0.0,0.0,Eb,M_e}+Pvec4D{0.0,0.0,0.0,M_P}-p_electron-p_pion;
-      return std::sqrt(missing_mass.M2());
-    };
+  std::vector<std::string> files_neg,files_pos;
+  double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
+  auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
+  if(SHMS_P>3.2){aeroCutSHMS = aeroCutSHMS + " && P.hgcer.npeSum > "+(std::to_string(P_hgcer)).c_str();}
+  double Eb;
+  if(RunGroup < 420) {Eb = 10.597;}
+  else{Eb = 10.214;}
+  auto p_proton = [](double px, double py, double pz){
+    return Pvec4D{px , py , pz , M_P};
+  };
+  auto p_pion = [](double px, double py, double pz) {
+    return Pvec4D{px , py , pz , M_pion};
+  };
+  auto pion_momentum = [](double px,double py,double pz){
+    TVector3 v(px,py,pz);
+    return v;
+  };
+  auto p_electron = [](double px, double py, double pz) {
+    return Pvec4D{px , py , pz , M_e};
+  };
+  auto p_q = [&](Pvec4D& pe ) {
+    return Pvec4D{0.0,0.0,Eb, M_e}-pe;
+  };
+  auto t = [](const double Egamma, Pvec4D& jpsi) {
+    Pvec4D beam{0, 0, Egamma, 0};
+    return (beam - jpsi).M2();
+  };
+  auto z = [](Pvec4D& pq, Pvec4D& ph) {
+    return ph.E()/pq.E();
+  };
+  auto xbj = [](double Q2,Pvec4D& pq) {
+    return Q2/(2.0*0.938*pq.E());
+  };
+  auto Q2 = [](Pvec4D& pq) {
+    return -1.0*(pq.Dot(pq));
+  };
+  auto Wprime2 = [](Pvec4D& pq,Pvec4D& ph) {
+    auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq - ph;
+    return Ptot.Dot(Ptot);
+  };
+  auto W2 = [](Pvec4D& pq) {
+    auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq;
+    return Ptot.Dot(Ptot);
+  };
+  auto Emiss = [&](Pvec4D& p_pion, Pvec4D p_electron){
+    return Eb+M_P-sqrt(p_pion.E()*p_pion.E())-sqrt(p_electron.E()*p_electron.E());
+  };
+  auto mmiss = [&](Pvec4D& p_pion,Pvec4D p_electron){
+    Pvec4D missing_mass = Pvec4D{0.0,0.0,Eb,M_e}+Pvec4D{0.0,0.0,0.0,M_P}-p_electron-p_pion;
+    return std::sqrt(missing_mass.M2());
+  };
 
+  if(!pos_H2.empty()){
 
     //loop over each pos runs data
     for(auto it = pos_H2.begin();it!=pos_H2.end();++it){
@@ -300,27 +300,27 @@ void rf_offset_H2(int RunGroup=0){
       auto h_shms_cal_after_pos = d_pos_pi.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
       auto h_shms_aero_after_pos = d_pos_pi.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
 
-    std::string bg_cut = " ";
+      std::string bg_cut = " ";
 
-    //for bg
-    int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
-    int bg_left_high = j_cuts["random_bg_left_high"].get<int>();
-    int bg_right_low = j_cuts["random_bg_right_low"].get<int>();
-    int bg_right_high = j_cuts["random_bg_right_high"].get<int>();
-    for(int i = bg_left_low;i<bg_left_high;i=i+2){
-      double bg_main = coin_peak_center_pos+i*4.008;
-      double bg_left = bg_main+cointime_lowcut;
-      double bg_right = bg_main+cointime_highcut;
-      bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
-    }
-    for(int i = bg_right_low;i<bg_right_high;i=i+2){
-      double bg_main = coin_peak_center_pos+i*4.008;
-      double bg_left = bg_main+cointime_lowcut;
-      double bg_right = bg_main+cointime_highcut;
-      bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
-    }
-    bg_cut = bg_cut.substr(0,bg_cut.size()-2);
-    std::cout<<bg_cut<<std::endl;
+      //for bg
+      int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
+      int bg_left_high = j_cuts["random_bg_left_high"].get<int>();
+      int bg_right_low = j_cuts["random_bg_right_low"].get<int>();
+      int bg_right_high = j_cuts["random_bg_right_high"].get<int>();
+      for(int i = bg_left_low;i<bg_left_high;i=i+2){
+        double bg_main = coin_peak_center_pos+i*4.008;
+        double bg_left = bg_main+cointime_lowcut;
+        double bg_right = bg_main+cointime_highcut;
+        bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
+      }
+      for(int i = bg_right_low;i<bg_right_high;i=i+2){
+        double bg_main = coin_peak_center_pos+i*4.008;
+        double bg_left = bg_main+cointime_lowcut;
+        double bg_right = bg_main+cointime_highcut;
+        bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
+      }
+      bg_cut = bg_cut.substr(0,bg_cut.size()-2);
+      std::cout<<bg_cut<<std::endl;
       // for bg
       auto d_pos_forbg = d_pos_run
         .Define("diff_time_shift",[offset_pos](double difftime){return difftime+offset_pos;},{"fptime_minus_rf"})
@@ -371,7 +371,8 @@ void rf_offset_H2(int RunGroup=0){
       std::cout<<"bg counts "<<bg_counts<<std::endl;
 
     }
-
+  }//pos h2 not empty
+  if(!neg_H2.empty()){
     //loop over each neg runs data
     for(auto it = neg_H2.begin();it!=neg_H2.end();++it){
       int RunNumber = *it;
@@ -420,29 +421,29 @@ void rf_offset_H2(int RunGroup=0){
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return current>current_offset;},{"current"})
         ;
-    //coin time cut for neg runs
-    auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
-    int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
-    double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
-    double cointime_lowcut,cointime_highcut;
-    if(RunGroup<410){
-      cointime_lowcut = j_cuts["cointime_low_fall"].get<double>();
-      cointime_highcut = j_cuts["cointime_high_fall"].get<double>();
-    }
-    else{
-      cointime_lowcut = j_cuts["cointime_low_spring"].get<double>();
-      cointime_highcut = j_cuts["cointime_high_spring"].get<double>();
-    }
-    //cointime cut
-    double cointime_low_neg = coin_peak_center_neg+cointime_lowcut;
-    double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
-    
-    //rftime cut
-    double rf_pi_low = j_DE["SHMS"]["rf_time_low"].get<double>();
-    std::cout<<rf_pi_low<<std::endl;
-    double rf_pi_high =j_DE["SHMS"]["rf_time_high"].get<double>();
-    std::cout<<rf_pi_high<<std::endl;
-      
+      //coin time cut for neg runs
+      auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
+      int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
+      double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
+      double cointime_lowcut,cointime_highcut;
+      if(RunGroup<410){
+        cointime_lowcut = j_cuts["cointime_low_fall"].get<double>();
+        cointime_highcut = j_cuts["cointime_high_fall"].get<double>();
+      }
+      else{
+        cointime_lowcut = j_cuts["cointime_low_spring"].get<double>();
+        cointime_highcut = j_cuts["cointime_high_spring"].get<double>();
+      }
+      //cointime cut
+      double cointime_low_neg = coin_peak_center_neg+cointime_lowcut;
+      double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
+
+      //rftime cut
+      double rf_pi_low = j_DE["SHMS"]["rf_time_low"].get<double>();
+      std::cout<<rf_pi_low<<std::endl;
+      double rf_pi_high =j_DE["SHMS"]["rf_time_high"].get<double>();
+      std::cout<<rf_pi_high<<std::endl;
+
       auto h_current_before_neg = d_neg_run.Histo1D({"","current",100,3,100},"current");
       TCanvas* c_neg_current = new TCanvas("","coin time",2200,1450);
       h_current_before_neg->DrawCopy("hist");
@@ -453,8 +454,8 @@ void rf_offset_H2(int RunGroup=0){
         .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
         .Define("diff_time_mod_beforeshift",[](double difftime){return std::fmod(difftime,4.008);},{"fptime_minus_rf"})
         ;
-    auto h_coin_neg = d_neg_run.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
-    auto h_coin_negcut = d_neg_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+      auto h_coin_neg = d_neg_run.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+      auto h_coin_negcut = d_neg_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
 
       //rftime cut
       auto h_time_diff_negcheck = d_neg_first.Histo1D({"h_rf_time","type4;rf_time",200,-100,100},"fptime_minus_rf");
@@ -502,27 +503,27 @@ void rf_offset_H2(int RunGroup=0){
       auto h_shms_cal_after_neg = d_neg_pi.Histo1D({"","SHMS cal",100,0.001,2.5},"P.cal.etottracknorm");
       auto h_shms_aero_after_neg = d_neg_pi.Histo1D({"","SHMS aero",100,0,15},"P.aero.npeSum");
 
-    std::string bg_cut = " ";
+      std::string bg_cut = " ";
 
-    //for bg
-    int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
-    int bg_left_high = j_cuts["random_bg_left_high"].get<int>();
-    int bg_right_low = j_cuts["random_bg_right_low"].get<int>();
-    int bg_right_high = j_cuts["random_bg_right_high"].get<int>();
-    for(int i = bg_left_low;i<bg_left_high;i=i+2){
-      double bg_main = coin_peak_center_neg+i*4.008;
-      double bg_left = bg_main+cointime_lowcut;
-      double bg_right = bg_main+cointime_highcut;
-      bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
-    }
-    for(int i = bg_right_low;i<bg_right_high;i=i+2){
-      double bg_main = coin_peak_center_neg+i*4.008;
-      double bg_left = bg_main+cointime_lowcut;
-      double bg_right = bg_main+cointime_highcut;
-      bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
-    }
-    bg_cut = bg_cut.substr(0,bg_cut.size()-2);
-    std::cout<<bg_cut<<std::endl;
+      //for bg
+      int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
+      int bg_left_high = j_cuts["random_bg_left_high"].get<int>();
+      int bg_right_low = j_cuts["random_bg_right_low"].get<int>();
+      int bg_right_high = j_cuts["random_bg_right_high"].get<int>();
+      for(int i = bg_left_low;i<bg_left_high;i=i+2){
+        double bg_main = coin_peak_center_neg+i*4.008;
+        double bg_left = bg_main+cointime_lowcut;
+        double bg_right = bg_main+cointime_highcut;
+        bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
+      }
+      for(int i = bg_right_low;i<bg_right_high;i=i+2){
+        double bg_main = coin_peak_center_neg+i*4.008;
+        double bg_left = bg_main+cointime_lowcut;
+        double bg_right = bg_main+cointime_highcut;
+        bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
+      }
+      bg_cut = bg_cut.substr(0,bg_cut.size()-2);
+      std::cout<<bg_cut<<std::endl;
       // for bg
       auto d_neg_forbg = d_neg_run
         .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
