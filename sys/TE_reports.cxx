@@ -44,7 +44,7 @@ R__LOAD_LIBRARY(libGenVector.so)
 #include <vector>
 #include <string>
 #include <locale>
-  void TE_sys(){
+  void TE_reports(){
     //get rate info from tracking json. yes too lazy
     json j_rungroup;
     {

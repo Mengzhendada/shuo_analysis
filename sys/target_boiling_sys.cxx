@@ -73,7 +73,7 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     TGraph* g_TB_RunGroup = new TGraph();
     double i_TB = 0;
 
-    TH1D* h_uncertainty = new TH1D("","Target Boiling Uncertainty",10,0,0.5);
+    TH1D* h_uncertainty = new TH1D("","Target Boiling Uncertainty",10,0,0.2);
 
     //D2 uncertainty is 0.3% per 100 muA
     double D2_TB_uncertainty = 0.3;
@@ -115,7 +115,8 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
         i_neg_TB+=1;
         g_pos_TB_RunGroup->SetPoint(i_pos_TB,RunGroup,pos_curr_uncertainty);
         i_pos_TB+=1;
-        double all_uncertainty = std::sqrt(neg_curr_uncertainty*neg_curr_uncertainty+pos_curr_uncertainty*pos_curr_uncertainty);
+        double all_uncertainty = abs(neg_curr-pos_curr)*D2_TB_uncertainty/100;
+          //std::sqrt(neg_curr_uncertainty*neg_curr_uncertainty+pos_curr_uncertainty*pos_curr_uncertainty);
         g_TB_RunGroup->SetPoint(i_TB,RunGroup,all_uncertainty);
         i_TB+=1;
     
@@ -144,6 +145,8 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     c_pos_TB->SaveAs(c_pos_TB_name.c_str());
  
     TCanvas* c_TB = new TCanvas();
+    g_TB_RunGroup->Fit("pol0");
+    gStyle->SetOptFit(1);
     g_TB_RunGroup->SetMarkerColor(kRed);
     g_TB_RunGroup->SetMarkerStyle(8);
     g_TB_RunGroup->GetXaxis()->SetTitle("RunGroup");

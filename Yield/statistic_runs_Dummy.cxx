@@ -148,6 +148,10 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_Q2->Write();
       auto h_omega = d_pos_pi.Histo1D({"omega","omega",100,0,10},"H_kin_primary_omega","weight");
       h_omega->Write();
+      auto h_shmsdp = d_pos_pi.Histo1D({"shmsdp","shmsdp",100,-10,20},"P_gtr_dp","weight");
+      h_shmsdp->Write();
+      auto h_hmsdp = d_pos_pi.Histo1D({"hmsdp","hmsdp",100,-10,20},"H_gtr_dp","weight");
+      h_hmsdp->Write();
       auto h_Q2_1 = d_pos_pi_1.Histo1D({"Q2_1","Q2_1",bins,0,10},"Q2","weight");
       auto h_Q2_2 = d_pos_pi_2.Histo1D({"Q2_2","Q2_2",bins,0,10},"Q2","weight");
       auto h_Q2_3 = d_pos_pi_3.Histo1D({"Q2_3","Q2_3",bins,0,10},"Q2","weight");
@@ -192,6 +196,10 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_Q2_bg->Write();
       auto h_omega_bg = d_pos_bg.Histo1D({"omega_bg","omega_bg",100,0,10},"H_kin_primary_omega","weight");
       h_omega_bg->Write();
+      auto h_shmsdp_bg = d_pos_bg.Histo1D({"shmsdp_bg","shmsdp_bg",100,-10,20},"P_gtr_dp","weight");
+      h_shmsdp_bg->Write();
+      auto h_hmsdp_bg = d_pos_bg.Histo1D({"hmsdp_bg","hmsdp_bg",100,-10,20},"H_gtr_dp","weight");
+      h_hmsdp_bg->Write();
       auto h_Q2_bg_1 = d_pos_bg_1.Histo1D({"Q2_bg_1","Q2_bg_1",bins,0,10},"Q2","weight");
       auto h_Q2_bg_2 = d_pos_bg_2.Histo1D({"Q2_bg_2","Q2_bg_2",bins,0,10},"Q2","weight");
       auto h_Q2_bg_3 = d_pos_bg_3.Histo1D({"Q2_bg_3","Q2_bg_3",bins,0,10},"Q2","weight");
@@ -579,6 +587,10 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_Q2->Write();
       auto h_omega = d_neg_pi.Histo1D({"omega","omega",100,0,10},"H_kin_primary_omega","weight");
       h_omega->Write();
+      auto h_shmsdp = d_neg_pi.Histo1D({"shmsdp","shmsdp",100,-10,20},"P_gtr_dp","weight");
+      h_shmsdp->Write();
+      auto h_hmsdp = d_neg_pi.Histo1D({"hmsdp","hmsdp",100,-10,20},"H_gtr_dp","weight");
+      h_hmsdp->Write();
       auto h_Q2_1 = d_neg_pi_1.Histo1D({"Q2_1","Q2_1",bins,0,10},"Q2","weight");
       auto h_Q2_2 = d_neg_pi_2.Histo1D({"Q2_2","Q2_2",bins,0,10},"Q2","weight");
       auto h_Q2_3 = d_neg_pi_3.Histo1D({"Q2_3","Q2_3",bins,0,10},"Q2","weight");
@@ -623,6 +635,10 @@ void statistic_runs_Dummy(int RunGroup=0){
       h_Q2_bg->Write();
       auto h_omega_bg = d_neg_bg.Histo1D({"omega_bg","omega_bg",100,0,10},"H_kin_primary_omega","weight");
       h_omega_bg->Write();
+      auto h_shmsdp_bg = d_neg_bg.Histo1D({"shmsdp_bg","shmsdp_bg",100,-10,20},"P_gtr_dp","weight");
+      h_shmsdp_bg->Write();
+      auto h_hmsdp_bg = d_neg_bg.Histo1D({"hmsdp_bg","hmsdp_bg",100,-10,20},"H_gtr_dp","weight");
+      h_hmsdp_bg->Write();
       auto h_Q2_bg_1 = d_neg_bg_1.Histo1D({"Q2_bg_1","Q2_bg_1",bins,0,10},"Q2","weight");
       auto h_Q2_bg_2 = d_neg_bg_2.Histo1D({"Q2_bg_2","Q2_bg_2",bins,0,10},"Q2","weight");
       auto h_Q2_bg_3 = d_neg_bg_3.Histo1D({"Q2_bg_3","Q2_bg_3",bins,0,10},"Q2","weight");

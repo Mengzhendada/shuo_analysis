@@ -65,8 +65,7 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
       std::ifstream ifs("db2/runs_info.json");
       ifs>>j_info;
     }
-    //for current between 15 to 65, uncertainty is 0.5%, for current less 10 and greater 65, uncertainty is 0.7% 
-    double current_uncertainty = 0.007;
+    double current_uncertainty = 0.1;
     TGraph* g_currentratio_RunGroup = new TGraph();
     double i_currratio=0;
     TGraph* g_currentratio_err_RunGroup = new TGraph();
@@ -74,7 +73,7 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     TGraph* g_currentratio_err_R_RunGroup = new TGraph();
     double i_currentratio_err_R = 0;
 
-    TH1D* h_uncertainty = new TH1D("","current ratio uncertainty",10,0,0.05);
+    TH1D* h_uncertainty = new TH1D("","current ratio uncertainty",10,0,0.01);
 
     int i_rungoup_pos = 0,i_rungroup_neg = 0,i_run_pos = 0,i_run_neg = 0;
     for(auto it = j_rungroup.begin();it!=j_rungroup.end();++it){
@@ -87,16 +86,16 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
         std::vector<double> pos_current,pos_charge,neg_current,neg_charge;
         for(auto i_neg = neg_D2.begin();i_neg!=neg_D2.end();i_neg++){
            int RunNumber = *i_neg;
-           std::cout<<RunNumber<<std::endl;
            double current = j_info[(std::to_string(RunNumber)).c_str()]["current"].get<double>();
+           std::cout<<RunNumber<<", neg "<<current<<std::endl;
            neg_current.push_back(current);
            double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
            neg_charge.push_back(charge);
         }//loop over neg runs
         for(auto i_pos = pos_D2.begin();i_pos!=pos_D2.end();i_pos++){
            int RunNumber = *i_pos;
-           std::cout<<RunNumber<<std::endl;
            double current = j_info[(std::to_string(RunNumber)).c_str()]["current"].get<double>();
+           std::cout<<RunNumber<<", pos "<<current<<std::endl;
            pos_current.push_back(current);
            double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
            pos_charge.push_back(charge);
@@ -108,17 +107,13 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
         g_currentratio_RunGroup ->SetPoint(i_currratio,RunGroup,curr_ratio);
         i_currratio+=1;
         
-        if(neg_curr>15 && neg_curr<65) current_uncertainty = 0.005;
-        else current_uncertainty = 0.007; 
-        double neg_curr_low = neg_curr*(1-current_uncertainty);
-        double neg_curr_high = neg_curr*(1+current_uncertainty);
+        double neg_curr_low = neg_curr-current_uncertainty;
+        double neg_curr_high = neg_curr+current_uncertainty;
         std::cout<<current_uncertainty<<", neg low "<<neg_curr_low<<" neg high "<<neg_curr_high<<std::endl;
-        if(pos_curr>15 && pos_curr<65) current_uncertainty = 0.005;
-        else current_uncertainty = 0.007; 
-        double pos_curr_low = pos_curr*(1-current_uncertainty);        
-        double pos_curr_high = pos_curr*(1+current_uncertainty);
+        double pos_curr_low = pos_curr-current_uncertainty;        
+        double pos_curr_high = pos_curr+current_uncertainty;
         std::cout<<current_uncertainty<<", pos low "<<pos_curr_low<<" pos high "<<pos_curr_high<<std::endl;
-        double currratio_uncertainty = ((neg_curr_high/pos_curr_low)-(neg_curr_low/pos_curr_high))/curr_ratio;
+        double currratio_uncertainty = std::abs((neg_curr_high/pos_curr_high)-(neg_curr_low/pos_curr_low))/curr_ratio;
         g_currentratio_err_RunGroup->SetPoint(i_currentratio_err,RunGroup,currratio_uncertainty);
         i_currentratio_err +=1;
 
@@ -126,11 +121,12 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
         g_currentratio_err_R_RunGroup->SetPoint(i_currentratio_err_R,RunGroup,currratio_uncertainty_R);
         i_currentratio_err_R+=1;
   
-        h_uncertainty->Fill(currratio_uncertainty_R);
+        h_uncertainty->Fill(currratio_uncertainty);
 
       }//if normal production runs
     }//loop over rungroups
     TCanvas* c_currratio = new TCanvas();
+    g_currentratio_RunGroup->Fit("pol0");
     g_currentratio_RunGroup->SetMarkerColor(kRed);
     g_currentratio_RunGroup->SetMarkerStyle(8);
     g_currentratio_RunGroup->GetXaxis()->SetTitle("RunGroup");
@@ -140,15 +136,19 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     c_currratio->SaveAs(c_currratio_name.c_str());
 
     TCanvas* c_currratio_uncertainty = new TCanvas();
+    g_currentratio_err_RunGroup->Fit("pol0");
+    gStyle->SetOptFit(1);
+    //g_currentratio_err_RunGroup->GetXaxis()->SetRangeUser(0,0.1);
     g_currentratio_err_RunGroup->SetMarkerColor(kRed);
     g_currentratio_err_RunGroup->SetMarkerStyle(8);
     g_currentratio_err_RunGroup->GetXaxis()->SetTitle("RunGroup");
-    g_currentratio_err_RunGroup->GetYaxis()->SetTitle("neg_current/pos_current uncertainty");
+    g_currentratio_err_RunGroup->GetYaxis()->SetTitle("current ratio uncertainty");
     g_currentratio_err_RunGroup->Draw("AP");
     std::string c_currratio_uncertainty_name = "results/sys/current_ratio_uncertainty.pdf";
     c_currratio_uncertainty->SaveAs(c_currratio_uncertainty_name.c_str());
     
     TCanvas* c_currratio_uncertainty_R = new TCanvas();
+    //g_currentratio_err_R_RunGroup->GetXaxis()->SetRangeUser(0,0.1);
     g_currentratio_err_R_RunGroup->SetMarkerColor(kRed);
     g_currentratio_err_R_RunGroup->SetMarkerStyle(8);
     g_currentratio_err_R_RunGroup->GetXaxis()->SetTitle("RunGroup");

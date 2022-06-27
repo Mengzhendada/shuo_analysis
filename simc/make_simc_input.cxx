@@ -87,12 +87,14 @@ void make_simc_input(int RunGroup = 0){
   //D2 input file
   std::string ofs_D2_neg_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.inp";
   std::string ofs_D2_neg_inc_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.inp";
+  std::string ofs_D2_neg_K_inc_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_K_inc_rad.inp";
   std::string ofs_D2_neg_exc_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.inp";
   std::string ofs_D2_neg_rho_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_rho.inp";
   std::string ofs_D2_neg_delta_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_neg_delta.inp";
  
   std::string ofs_D2_pos_inc_norad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.inp";
   std::string ofs_D2_pos_inc_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.inp";
+  std::string ofs_D2_pos_K_inc_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_K_inc_rad.inp";
   std::string ofs_D2_pos_exc_rad_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_rad.inp";
   std::string ofs_D2_pos_rho_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_rho.inp";
   std::string ofs_D2_pos_delta_name = "shuo_analysis/simc/input/csv_"+std::to_string(RunGroup)+"_D2_pos_delta.inp";
@@ -102,6 +104,8 @@ void make_simc_input(int RunGroup = 0){
   
   std::ofstream ofs_D2_neg_inc_rad;
   ofs_D2_neg_inc_rad.open(ofs_D2_neg_inc_rad_name.c_str());
+  std::ofstream ofs_D2_neg_K_inc_rad;
+  ofs_D2_neg_K_inc_rad.open(ofs_D2_neg_K_inc_rad_name.c_str());
   std::ofstream ofs_D2_neg_inc_norad;
   ofs_D2_neg_inc_norad.open(ofs_D2_neg_inc_norad_name.c_str());
   std::ofstream ofs_D2_neg_exc_rad;
@@ -112,6 +116,8 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_delta.open(ofs_D2_neg_delta_name.c_str());
   std::ofstream ofs_D2_pos_inc_rad;
   ofs_D2_pos_inc_rad.open(ofs_D2_pos_inc_rad_name.c_str());
+  std::ofstream ofs_D2_pos_K_inc_rad;
+  ofs_D2_pos_K_inc_rad.open(ofs_D2_pos_K_inc_rad_name.c_str());
   std::ofstream ofs_D2_pos_inc_norad;
   ofs_D2_pos_inc_norad.open(ofs_D2_pos_inc_norad_name.c_str());
   std::ofstream ofs_D2_pos_exc_rad;
@@ -381,6 +387,133 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_inc_rad<<"end parm simulate\n"<<std::endl;
 
   ofs_D2_neg_inc_rad.close();
+  
+  //for kaon decay
+  ofs_D2_neg_K_inc_rad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"begin parm experiment"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" ngen = "<<ngen/10<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" doing_phsp = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" doing_kaon = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" doing_pion = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" which_pion = "<<neg<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" doing_delta = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" doing_rho = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" doing_semi = "<<inc<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" doing_hplus = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" doing_decay = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" ctau = 372"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"end parm experiment\n"<<std::endl;
+
+  ofs_D2_neg_K_inc_rad<<"begin parm kinematics_main"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" Ebeam = "<<Ebeam<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" dEbeam = "<<dEbeam<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" electron_arm =1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" hadron_arm = 5"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"end parm kinematics_main\n"<<std::endl;
+  
+  ofs_D2_neg_K_inc_rad<<"begin parm target"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%A = 2.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%Z = 1.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%mass_amu = 2.01355"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%mrec_amu = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%rho = 0.1668"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%thick = 1668"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%angle = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%abundancy = 100"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%can = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"end parm target\n"<<std::endl;
+  
+  ofs_D2_neg_K_inc_rad<<"begin parm debug"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" debug(1) = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" debug(2) = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" debug(3) = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" debug(4) = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" debug(5) = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"end parm debug\n"<<std::endl;
+ 
+  ofs_D2_neg_K_inc_rad<<"begin parm e_arm_accept"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%e%delta%min = -15.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%e%delta%max = 15.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%e%xptar%max = 120.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"end parm e_arm_accept\n"<<std::endl;
+
+  ofs_D2_neg_K_inc_rad<<"begin parm p_arm_accept"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"end parm p_arm_accept\n"<<std::endl;
+
+  ofs_D2_neg_K_inc_rad<<"begin parm beamandtargetinfo"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" gen%xwid = 0.008868"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" gen%ywid = 0.004235"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%fr_pattern = 3"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%fr1 = 0.1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%fr2 = 0.1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%xoffset = 0.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%yoffset = 0.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" targ%zoffset = 0.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
+  
+  ofs_D2_neg_K_inc_rad<<"begin parm spect_offset"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%e%offset%y = 0.09"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%e%offset%z = 0."<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%p%offset%y = -0.06"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%p%offset%z = 0."<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
+  ofs_D2_neg_K_inc_rad<<"end parm spect_offset"<<std::endl;
+
+
+  ofs_D2_neg_K_inc_rad<<"begin parm simulate"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" hard_cuts = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" using_rad = "<<rad<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" one_tail = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" intcor_mode = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" spect_mode = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" cuts%Em%min = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" cuts%Em%max = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" using_Eloss = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" correct_Eloss = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" correct_raster = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" mc_smear = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" deForest_flag = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" rad_flag = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" extrad_flag = 2"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" lambda(1) = 0.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" lambda(2) = 0.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" lambda(3) = 0.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" Nntu = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" using_Coulomb = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" dE_edge_test = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" use_offshell_rad = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" Egamma_gen_max = 8000"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" do_fermi = 0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" sigc_flag = 1"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" sigc_kin_max = 1.0"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_neg_K_inc_rad<<" random_seed = 377468"<<std::endl;
+  
+  ofs_D2_neg_K_inc_rad<<"end parm simulate\n"<<std::endl;
+
+  ofs_D2_neg_K_inc_rad.close();
   
   //for exclusive
   ofs_D2_neg_exc_rad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
@@ -888,6 +1021,133 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_inc_rad<<"end parm simulate\n"<<std::endl;
 
   ofs_D2_pos_inc_rad.close();
+  
+  //for kaon decay
+  ofs_D2_pos_K_inc_rad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"begin parm experiment"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" ngen = "<<ngen/10<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" EXPER%charge = "<<charge<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" doing_phsp = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" doing_kaon = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" doing_pion = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" which_pion = "<<pos<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" doing_delta = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" doing_rho = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" doing_semi = "<<inc<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" doing_hplus = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" doing_decay = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" ctau = 372"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"end parm experiment\n"<<std::endl;
+
+  ofs_D2_pos_K_inc_rad<<"begin parm kinematics_main"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" Ebeam = "<<Ebeam<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" dEbeam = "<<dEbeam<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" electron_arm =1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" hadron_arm = 5"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%e%P = "<<e_momentum<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%e%theta = "<<e_theta<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%p%P = "<<p_momentum<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%p%theta = "<<p_theta<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"end parm kinematics_main\n"<<std::endl;
+  
+  ofs_D2_pos_K_inc_rad<<"begin parm target"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%A = 2.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%Z = 1.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%mass_amu = 2.01355"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%mrec_amu = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%rho = 0.1668"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%thick = 1668"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%angle = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%abundancy = 100"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%can = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"end parm target\n"<<std::endl;
+  
+  ofs_D2_pos_K_inc_rad<<"begin parm debug"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" debug(1) = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" debug(2) = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" debug(3) = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" debug(4) = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" debug(5) = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"end parm debug\n"<<std::endl;
+ 
+  ofs_D2_pos_K_inc_rad<<"begin parm e_arm_accept"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%e%delta%min = -15.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%e%delta%max = 15.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%e%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%e%yptar%max = 90.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%e%xptar%min = -120.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%e%xptar%max = 120.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"end parm e_arm_accept\n"<<std::endl;
+
+  ofs_D2_pos_K_inc_rad<<"begin parm p_arm_accept"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%p%delta%min = -20.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%p%delta%max = 40.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%p%yptar%min = -90.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%p%yptar%max = 90.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%p%xptar%min = -100.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" SPedge%p%xptar%max = 100.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"end parm p_arm_accept\n"<<std::endl;
+
+  ofs_D2_pos_K_inc_rad<<"begin parm beamandtargetinfo"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" gen%xwid = 0.008868"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" gen%ywid = 0.004235"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%fr_pattern = 3"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%fr1 = 0.1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%fr2 = 0.1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%xoffset = 0.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%yoffset = 0.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" targ%zoffset = 0.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"end parm beamandtargetinfo\n"<<std::endl;
+  
+  ofs_D2_pos_K_inc_rad<<"begin parm spect_offset"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%e%offset%x = 0.13"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%e%offset%y = 0.09"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%e%offset%z = 0."<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%p%offset%y = -0.06"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%p%offset%z = 0."<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
+  ofs_D2_pos_K_inc_rad<<"end parm spect_offset"<<std::endl;
+
+
+  ofs_D2_pos_K_inc_rad<<"begin parm simulate"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" hard_cuts = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" using_rad = "<<rad<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" one_tail = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" intcor_mode = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" spect_mode = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" cuts%Em%min = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" cuts%Em%max = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" using_Eloss = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" correct_Eloss = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" correct_raster = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" mc_smear = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" deForest_flag = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" rad_flag = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" extrad_flag = 2"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" lambda(1) = 0.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" lambda(2) = 0.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" lambda(3) = 0.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" Nntu = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" using_Coulomb = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" dE_edge_test = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" use_offshell_rad = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" Egamma_gen_max = 8000"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" do_fermi = 0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" pt_b_param = 3.8"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" sigc_flag = 1"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" sigc_nbin = 100"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" sigc_kin_min = 0.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" sigc_kin_max = 1.0"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" sigc_kin_ind = 0.550"<<std::endl;
+  ofs_D2_pos_K_inc_rad<<" random_seed = 377468"<<std::endl;
+  
+  ofs_D2_pos_K_inc_rad<<"end parm simulate\n"<<std::endl;
+
+  ofs_D2_pos_K_inc_rad.close();
   
   //for exclusive
   ofs_D2_pos_exc_rad<<";This is a CTP file, using info from Run "<<RunNumber<<"\n"<<std::endl;
