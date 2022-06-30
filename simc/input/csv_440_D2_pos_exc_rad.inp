@@ -20,9 +20,9 @@ begin parm kinematics_main
  dEbeam = 0.00404
  electron_arm =1
  hadron_arm = 5
- spec%e%P = 5714
+ spec%e%P = 5654.88
  spec%e%theta = 17.65
- spec%p%P = 2248
+ spec%p%P = 2243.5
  spec%p%theta = 19.93
 end parm kinematics_main
 
@@ -117,6 +117,5 @@ begin parm simulate
  sigc_kin_min = 0.0
  sigc_kin_max = 1.0
  sigc_kin_ind = 0.550
- 377468
 end parm simulate
 

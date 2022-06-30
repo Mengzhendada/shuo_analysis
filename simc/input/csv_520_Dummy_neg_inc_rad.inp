@@ -21,9 +21,9 @@ begin parm kinematics_main
  electron_arm =1
  hadron_arm = 5
  using_first_cer = 1
- spec%e%P = 5270
+ spec%e%P = 5227.86
  spec%e%theta = 18.51
- spec%p%P = 2223
+ spec%p%P = 2218.55
  spec%p%theta = 17.75
 end parm kinematics_main
 

@@ -160,12 +160,14 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   std::string pt_cut = "pt<"+std::to_string(pt_cut_num);
   std::string D2_neg_inc_norad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_norad.root";
   std::string D2_neg_inc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_inc_rad.root";
+  std::string D2_neg_K_inc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_K_inc_rad.root";
   std::string D2_neg_exc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_exc_rad.root";
   std::string D2_neg_rho_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_rho.root";
   std::string D2_neg_delta_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_neg_delta.root";
   std::string Dummy_neg_inc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_Dummy_neg_inc_rad.root";
   std::string D2_pos_inc_norad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_norad.root";
   std::string D2_pos_inc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_inc_rad.root";
+  std::string D2_pos_K_inc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_K_inc_rad.root";
   std::string D2_pos_exc_rad_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_exc_rad.root";
   std::string D2_pos_rho_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_rho.root";
   std::string D2_pos_delta_rootfile_name = "sim/csv_"+std::to_string(RunGroup)+"_D2_pos_delta.root";
@@ -356,6 +358,65 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   auto d_D2_pos_inc_rad = d_D2_pos_inc_rad_1.Define("weight_new",[wfac_D2_pos_inc_rad](float weight){return wfac_D2_pos_inc_rad*weight;},{"Weight"});
   d_D2_pos_inc_rad.Snapshot("T_pos_inc_rad",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
   
+  //For inc rad
+  ROOT::RDataFrame d_D2_neg_K_inc_rad_raw("h10",D2_neg_K_inc_rad_rootfile_name.c_str()); 
+  ROOT::RDataFrame d_D2_pos_K_inc_rad_raw("h10",D2_pos_K_inc_rad_rootfile_name.c_str()); 
+  auto d_D2_neg_K_inc_rad_1 = d_D2_neg_K_inc_rad_raw
+    .Filter(Good_Track_SHMS_sim)
+    .Filter(Good_Track_HMS_sim)
+    .Filter(Normal_xptar_SHMS_sim)
+    .Filter(Normal_xptar_HMS_sim)
+    .Filter(Normal_yptar_SHMS_sim)
+    .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
+    .Define("phi_2pi",phi_2pi,{"phipq"})
+    .Define("pt",pt,{"ppi","thetapq"})
+    .Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
+    ;
+  double nentries_D2_neg_K_inc_rad = *d_D2_neg_K_inc_rad_raw.Count();
+
+  double normfac_D2_neg_K_inc_rad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["neg"]["inc"]["rad"]["normfac"].get<double>();
+  double normfac_D2_pos_K_inc_rad = j_simc[std::to_string(RunGroup).c_str()]["D2"]["pos"]["inc"]["rad"]["normfac"].get<double>();
+
+  double wfac_D2_neg_K_inc_rad = (normfac_D2_neg_K_inc_rad/nentries_D2_neg_K_inc_rad);
+  //auto weight_calculate = [&](float weight){return wfac_D2_neg_K_inc_rad*weight;}
+  //neg inc rad
+  auto d_D2_neg_K_inc_rad = d_D2_neg_K_inc_rad_1.Define("weight_new",[wfac_D2_neg_K_inc_rad](float weight){return wfac_D2_neg_K_inc_rad*weight;},{"Weight"});
+  d_D2_neg_K_inc_rad.Snapshot("T_neg_K_inc_rad",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
+
+  auto d_D2_pos_K_inc_rad_1 = d_D2_pos_K_inc_rad_raw
+    .Filter(Good_Track_SHMS_sim)
+    .Filter(Good_Track_HMS_sim)
+    .Filter(Normal_xptar_SHMS_sim)
+    .Filter(Normal_xptar_HMS_sim)
+    .Filter(Normal_yptar_SHMS_sim)
+    .Filter(Normal_yptar_HMS_sim)
+    .Define("Mx2",Mx2,{"nu","z","Pm"})
+    .Filter(Mx2_cut)
+    .Define("W2",W2,{"W"})
+    .Filter(W2_cut)
+    .Define("phi_2pi",phi_2pi,{"phipq"})
+    .Define("pt",pt,{"ppi","thetapq"})
+    .Filter(pt_cut)
+    .Define("HMS_Dipole_Exit",Dipole_Exit_HMS,{"hsxfp","hsxpfp","hsyfp","hsypfp"})
+    .Filter("HMS_Dipole_Exit>0")
+    .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
+    .Filter("SHMS_Dipole_Exit>0")
+    ;
+  double nentries_D2_pos_K_inc_rad = *d_D2_pos_K_inc_rad_raw.Count();
+  std::cout<<"sim counts "<<nentries_D2_pos_K_inc_rad<<std::endl;
+  double wfac_D2_pos_K_inc_rad = (normfac_D2_pos_K_inc_rad/nentries_D2_pos_K_inc_rad);
+  //pos inc rad
+  auto d_D2_pos_K_inc_rad = d_D2_pos_K_inc_rad_1.Define("weight_new",[wfac_D2_pos_K_inc_rad](float weight){return wfac_D2_pos_K_inc_rad*weight;},{"Weight"});
+  d_D2_pos_K_inc_rad.Snapshot("T_pos_K_inc_rad",skim_name.c_str(),{"xbj","z","Q2","W2","W","Em","missmass","Mx2","Pm","weight_new","ssxptar","ssyptar","ssytar","ssdelta","ssxpfp","ssypfp","hsxptar","hsyptar","hsdelta"},opts);
+
   //For rho 
   ROOT::RDataFrame d_D2_neg_rho_raw("h10",D2_neg_rho_rootfile_name.c_str()); 
   auto d_D2_neg_rho_1 = d_D2_neg_rho_raw
@@ -663,6 +724,19 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   //g_xs_xbj_pos_inc_rad->SetPoint(i,xbj_pos_inc_rad_list->at(i),xs_pos_inc_rad_list->at(i));
   //}
   std::cout<<"inc rad check"<<std::endl;  
+  
+  auto h_Q2_D2_neg_K_inc_rad = d_D2_neg_K_inc_rad.Histo1D({"Q2_neg_K_inc_rad","Q2_neg_K_inc_rad",bins,0,10},"Q2","weight_new");
+  auto h_Q2_D2_pos_K_inc_rad = d_D2_pos_K_inc_rad.Histo1D({"Q2_pos_K_inc_rad","Q2_pos_K_inc_rad",bins,0,10},"Q2","weight_new");
+  auto h_xbj_D2_neg_K_inc_rad = d_D2_neg_K_inc_rad.Histo1D({"xbj_neg_K_inc_rad","xbj_neg_K_inc_rad",bins,0,1},"xbj","weight_new");
+  auto h_xbj_D2_pos_K_inc_rad = d_D2_pos_K_inc_rad.Histo1D({"xbj_pos_K_inc_rad","xbj_pos_K_inc_rad",bins,0,1},"xbj","weight_new");
+  auto h_z_D2_neg_K_inc_rad = d_D2_neg_K_inc_rad.Histo1D({"z_neg_K_inc_rad","z_neg_K_inc_rad",bins,0,1},"z","weight_new");
+  auto h_z_D2_pos_K_inc_rad = d_D2_pos_K_inc_rad.Histo1D({"z_pos_K_inc_rad","z_pos_K_inc_rad",bins,0,1},"z","weight_new");
+  auto h_x_z_neg_K_inc_rad = d_D2_neg_K_inc_rad.Histo2D({"x_z_neg_K_inc_rad","x_z_neg_K_inc_rad",bins,0,1,bins,0,1},"z","xbj","weight_new");
+  auto h_x_z_pos_K_inc_rad = d_D2_pos_K_inc_rad.Histo2D({"x_z_pos_K_inc_rad","x_z_pos_K_inc_rad",bins,0,1,bins,0,1},"z","xbj","weight_new");
+  auto h_shmsdp_D2_neg_K_inc_rad = d_D2_neg_K_inc_rad.Histo1D({"shmsdp_neg_K_inc_rad","shmsdp_neg_K_inc_rad",100,-10,20},"ssdelta","weight_new");
+  auto h_shmsdp_D2_pos_K_inc_rad = d_D2_pos_K_inc_rad.Histo1D({"shmsdp_pos_K_inc_rad","shmsdp_pos_K_inc_rad",100,-10,20},"ssdelta","weight_new");
+  auto h_hmsdp_D2_neg_K_inc_rad = d_D2_neg_K_inc_rad.Histo1D({"hmsdp_neg_K_inc_rad","hmsdp_neg_K_inc_rad",100,-10,20},"hsdelta","weight_new");
+  auto h_hmsdp_D2_pos_K_inc_rad = d_D2_pos_K_inc_rad.Histo1D({"hmsdp_pos_K_inc_rad","hmsdp_pos_K_inc_rad",100,-10,20},"hsdelta","weight_new");
 
   auto h_Q2_D2_neg_rho = d_D2_neg_rho.Histo1D({"Q2_neg_rho","Q2_neg_rho",bins,0,10},"Q2","weight_new");
   auto h_Q2_D2_pos_rho = d_D2_pos_rho.Histo1D({"Q2_pos_rho","Q2_pos_rho",bins,0,10},"Q2","weight_new");
@@ -761,6 +835,14 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   h_x_z_pos_inc_rad_2->Write();
   h_x_z_neg_inc_rad_3->Write();
   h_x_z_pos_inc_rad_3->Write();
+  h_Q2_D2_neg_K_inc_rad->Write();
+  h_Q2_D2_pos_K_inc_rad->Write();
+  h_xbj_D2_neg_K_inc_rad->Write();
+  h_xbj_D2_pos_K_inc_rad->Write();
+  h_z_D2_neg_K_inc_rad->Write();
+  h_z_D2_pos_K_inc_rad->Write();
+  h_x_z_neg_K_inc_rad->Write();
+  h_x_z_pos_K_inc_rad->Write();
   h_xs_z_neg_inc_norad->Write("xs_z_neg_inc_norad");
   h_xs_z_pos_inc_norad->Write("xs_z_pos_inc_norad");
   h_xs_xbj_neg_inc_norad->Write("xs_xbj_neg_inc_norad");
@@ -796,6 +878,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   h_shmsdp_D2_pos_inc_rad->Write();
   h_hmsdp_D2_neg_inc_rad->Write();
   h_hmsdp_D2_pos_inc_rad->Write();
+  h_shmsdp_D2_neg_K_inc_rad->Write();
+  h_shmsdp_D2_pos_K_inc_rad->Write();
+  h_hmsdp_D2_neg_K_inc_rad->Write();
+  h_hmsdp_D2_pos_K_inc_rad->Write();
   h_shmsdp_D2_neg_inc_norad->Write();
   h_shmsdp_D2_pos_inc_norad->Write();
   h_hmsdp_D2_neg_inc_norad->Write();

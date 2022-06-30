@@ -36,6 +36,7 @@ void acceptance_sys(){
     ifs>>j_cuts;
   }
   int bins = j_cuts["bins"].get<int>();
+  double a_rho = 1.6;
 
   int coolcolor[11] = {4,3,7,39,38,37,36,35,34,33,32};
   int warmcolor[11] = {2,6,46,45,44,43,42,41,40,47,48};
@@ -113,14 +114,12 @@ void acceptance_sys(){
           h_shmsdp_neg_sim_incrad = (TH1D*)rootfile_neg_sim->Get("shmsdp_neg_inc_rad");
           TH1D *h_shmsdp_neg_sim_incnorad = new TH1D("","pi- sim SIDIS",100,-10,20);
           h_shmsdp_neg_sim_incnorad = (TH1D*)rootfile_neg_sim->Get("shmsdp_neg_inc_norad");
-          //TH1D *h_shmsdp_neg_sim_excrad = new TH1D("","pi- sim exc",100,-10,20);
-          //h_shmsdp_neg_sim_excrad = (TH1D*)rootfile_neg_sim->Get("shmsdp_neg_exc_rad");
-          //TH1D *h_shmsdp_neg_sim_rho = new TH1D("","pi- sim rho",100,-10,20);
-          //h_shmsdp_neg_sim_rho = (TH1D*)rootfile_neg_sim->Get("shmsdp_neg_rho");
-          //TH1D *h_shmsdp_neg_sim_delta = new TH1D("","pi- sim delta",100,-10,20);
-          //h_shmsdp_neg_sim_delta = (TH1D*)rootfile_neg_sim->Get("shmsdp_neg_delta");
-          //TH2D *h_xs_z_neg_sim = new TH2D("","pi- sim xs",100,-10,20,100,-10,20);
-          //h_xs_z_neg_sim = (TH2D*)rootfile_neg_sim->Get("xs_z_neg_inc_rad");
+          TH1D *h_shmsdp_neg_sim_excrad = new TH1D("","pi- sim exc",100,-10,20);
+          h_shmsdp_neg_sim_excrad = (TH1D*)rootfile_neg_sim->Get("shmsdp_neg_exc_rad");
+          TH1D *h_shmsdp_neg_sim_rho = new TH1D("","pi- sim rho",100,-10,20);
+          h_shmsdp_neg_sim_rho = (TH1D*)rootfile_neg_sim->Get("shmsdp_neg_rho");
+          TH1D *h_shmsdp_neg_sim_delta = new TH1D("","pi- sim delta",100,-10,20);
+          h_shmsdp_neg_sim_delta = (TH1D*)rootfile_neg_sim->Get("shmsdp_neg_delta");
           h_shmsdp_neg_sim->Add(h_shmsdp_neg_sim_incrad,1);
           //h_shmsdp_neg_sim->Add(h_shmsdp_neg_sim_excrad,1);
           //h_shmsdp_neg_sim->Add(h_shmsdp_neg_sim_rho,1);
@@ -131,14 +130,12 @@ void acceptance_sys(){
           h_shmsdp_pos_sim_incrad = (TH1D*)rootfile_pos_sim->Get("shmsdp_pos_inc_rad");
           TH1D *h_shmsdp_pos_sim_incnorad = new TH1D("","pi+ sim SIDIS",100,-10,20);
           h_shmsdp_pos_sim_incnorad = (TH1D*)rootfile_pos_sim->Get("shmsdp_pos_inc_norad");
-          //TH1D *h_shmsdp_pos_sim_excrad = new TH1D("","pi+ sim exc",100,-10,20);
-          //h_shmsdp_pos_sim_excrad = (TH1D*)rootfile_pos_sim->Get("shmsdp_pos_exc_rad");
-          //TH1D *h_shmsdp_pos_sim_rho = new TH1D("","pi+ sim rho",100,-10,20);
-          //h_shmsdp_pos_sim_rho = (TH1D*)rootfile_pos_sim->Get("shmsdp_pos_rho");
-          //TH1D *h_shmsdp_pos_sim_delta = new TH1D("","pi+ sim delta",100,-10,20);
-          //h_shmsdp_pos_sim_delta = (TH1D*)rootfile_pos_sim->Get("shmsdp_pos_delta");
-          //TH2D *h_xs_z_pos_sim = new TH2D("","pi- sim xs",100,-10,20,100,-10,20);
-          //h_xs_z_pos_sim = (TH2D*)rootfile_pos_sim->Get("xs_z_pos_inc_rad");
+          TH1D *h_shmsdp_pos_sim_excrad = new TH1D("","pi+ sim exc",100,-10,20);
+          h_shmsdp_pos_sim_excrad = (TH1D*)rootfile_pos_sim->Get("shmsdp_pos_exc_rad");
+          TH1D *h_shmsdp_pos_sim_rho = new TH1D("","pi+ sim rho",100,-10,20);
+          h_shmsdp_pos_sim_rho = (TH1D*)rootfile_pos_sim->Get("shmsdp_pos_rho");
+          TH1D *h_shmsdp_pos_sim_delta = new TH1D("","pi+ sim delta",100,-10,20);
+          h_shmsdp_pos_sim_delta = (TH1D*)rootfile_pos_sim->Get("shmsdp_pos_delta");
           h_shmsdp_pos_sim->Add(h_shmsdp_pos_sim_incrad,1);
           //h_shmsdp_pos_sim->Add(h_shmsdp_pos_sim_excrad,1);
           //h_shmsdp_pos_sim->Add(h_shmsdp_pos_sim_rho,1);
@@ -439,7 +436,7 @@ void acceptance_sys(){
           mg_z_yield_pos->GetXaxis()->SetTitle("shmsdp");
           mg_z_yield_pos->Draw("AL");
           c_yield_pos->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_pos_name = "results/acceptance/yield_"+q2xz_str_filename+"_pos.pdf";
+          std::string c_yield_pos_name = "results/acceptance/"+q2xz_str_filename+"_yield_pos.pdf";
           c_yield_pos->SaveAs(c_yield_pos_name.c_str());
 
           //h_shmsdp_neg_all->Rebin(2);
@@ -542,7 +539,7 @@ void acceptance_sys(){
           //h_shmsdp_neg_sim_delta->SetTitle("pi- sim delta");
           //h_shmsdp_neg_sim_delta->DrawCopy("hist same");
           c_yield_neg->BuildLegend(0.75,0.75,1,1);
-          std::string c_yield_neg_name = "results/acceptance/yield_"+q2xz_str_filename+"_neg.pdf";
+          std::string c_yield_neg_name = "results/acceptance/"+q2xz_str_filename+"_yield_neg.pdf";
           c_yield_neg->SaveAs(c_yield_neg_name.c_str());
 
           /*
@@ -603,14 +600,16 @@ void acceptance_sys(){
           TGraphErrors* g_yield_ratio = new TGraphErrors();
           std::string z_string = "R_Y z setting "+(std::to_string(z)).substr(0,4);
           g_yield_ratio->SetName(z_string.c_str());
+          g_yield_ratio->SetTitle((std::to_string(RunGroup)).c_str());
 
           TGraphErrors* g_yield_ratio_sim = new TGraphErrors();
           std::string z_string_sim = "z simc "+(std::to_string(z)).substr(0,4);
           g_yield_ratio_sim->SetName(z_string_sim.c_str());
           //TGraphErrors* g_yield_ratio_sim = new TGraphErrors(h_shmsdp_neg_sim_incnorad);
           TGraphErrors* g_datasimratio_ratio = new TGraphErrors();
-          std::string datasimratio_z_string = "data yield ratio/ sim yield ratio";//" "+(std::to_string(z)).substr(0,4);
-          g_datasimratio_ratio->SetName(datasimratio_z_string.c_str());
+          //std::string datasimratio_z_string = "data yield ratio/ sim yield ratio";//" "+(std::to_string(z)).substr(0,4);
+          //g_datasimratio_ratio->SetName(datasimratio_z_string.c_str());
+          g_datasimratio_ratio->SetTitle((std::to_string(RunGroup)).c_str());
           int ii_sim = 0;
           int ii = 0;
           for(int i = 0;i<nbins;i++){
@@ -619,9 +618,10 @@ void acceptance_sys(){
             double y_neg_D2 = h_shmsdp_neg_all->GetBinContent(i+1)/charge_neg_all;
             double y_neg_bg_D2 = h_shmsdp_neg_bg_all->GetBinContent(i+1)/charge_neg_all;
             double y_neg_Dummy = h_shmsdp_neg_Dummy_all->GetBinContent(i+1)/charge_neg_Dummy_all;
-            //double y_neg_delta = h_shmsdp_neg_sim_delta->GetBinContent(i+1);
-            //double y_neg_exc = h_shmsdp_neg_sim_excrad->GetBinContent(i+1);
-            double y_neg = y_neg_D2-y_neg_bg_D2-0.245*y_neg_Dummy;//-y_neg_delta-y_neg_exc;
+            double y_neg_delta = h_shmsdp_neg_sim_delta->GetBinContent(i+1);
+            double y_neg_exc = h_shmsdp_neg_sim_excrad->GetBinContent(i+1);
+            double y_neg_rho = h_shmsdp_neg_sim_rho->GetBinContent(i+1);
+            double y_neg = y_neg_D2-y_neg_bg_D2-0.245*y_neg_Dummy-y_neg_delta-y_neg_exc-a_rho*y_neg_rho;
             double error_neg_D2 = h_shmsdp_neg_all->GetBinError(i+1)/charge_neg_all;
             double error_neg_bg_D2 = h_shmsdp_neg_bg_all->GetBinError(i+1)/charge_neg_all;
             double error_neg_Dummy = h_shmsdp_neg_Dummy_all->GetBinError(i+1)/charge_neg_Dummy_all;
@@ -629,9 +629,10 @@ void acceptance_sys(){
             double y_pos_D2 = h_shmsdp_pos_all->GetBinContent(i+1)/charge_pos_all;
             double y_pos_bg_D2 = h_shmsdp_pos_bg_all->GetBinContent(i+1)/charge_pos_all;
             double y_pos_Dummy = h_shmsdp_pos_Dummy_all->GetBinContent(i+1)/charge_pos_Dummy_all;
-            //double y_pos_delta = h_shmsdp_pos_sim_delta->GetBinContent(i+1);
-            //double y_pos_exc = h_shmsdp_pos_sim_excrad->GetBinContent(i+1);
-            double y_pos = y_pos_D2-y_pos_bg_D2-0.245*y_pos_Dummy;//-y_pos_delta-y_pos_exc;
+            double y_pos_delta = h_shmsdp_pos_sim_delta->GetBinContent(i+1);
+            double y_pos_exc = h_shmsdp_pos_sim_excrad->GetBinContent(i+1);
+            double y_pos_rho = h_shmsdp_pos_sim_rho->GetBinContent(i+1);
+            double y_pos = y_pos_D2-y_pos_bg_D2-0.245*y_pos_Dummy-y_pos_delta-y_pos_exc-a_rho*y_pos_rho;
             double error_pos_D2 = h_shmsdp_pos_all->GetBinError(i+1)/charge_pos_all;
             double error_pos_bg_D2 = h_shmsdp_pos_bg_all->GetBinError(i+1)/charge_pos_all;
             double error_pos_Dummy = h_shmsdp_pos_Dummy_all->GetBinError(i+1)/charge_pos_Dummy_all;
@@ -676,7 +677,7 @@ void acceptance_sys(){
             double y_sim = h_shmsdp_neg_sim_incnorad->GetBinContent(i+1);
             double error_sim = h_shmsdp_neg_sim_incnorad->GetBinError(i+1);
             //std::cout<<i<<" x "<<x<<" y "<<y<<std::endl;
-            if(y_sim!=0){
+            if(y>0 && y_sim!=0){
               //      double y_RD = (4*y-1)/(1-y);
               //       g_yield_ratio_sim->SetPoint(ii_sim,x,y_RD);
               g_yield_ratio_sim->SetPoint(ii_sim,x_sim,y_sim);
@@ -730,6 +731,7 @@ void acceptance_sys(){
           // //h_shmsdp_neg_all->Draw();
           //g_yield_ratio->GetXaxis()->SetRangeUser(0.1,1);
           //g_yield_ratio->GetYaxis()->SetRangeUser(0.1,1.2);
+          g_yield_ratio->GetYaxis()->SetRangeUser(0,2);
           g_yield_ratio->GetXaxis()->SetTitle("shmsdp");
           g_yield_ratio->GetYaxis()->SetTitle("yield_ratio");
           g_yield_ratio->GetXaxis()->SetTitleSize(0.053);
@@ -746,7 +748,10 @@ void acceptance_sys(){
           g_yield_ratio_all->SetName(z_string_all.c_str());
 
           TCanvas* c_data_simc_ratio = new TCanvas();
-          g_datasimratio_ratio->GetXaxis()->SetRangeUser(0,2);
+          g_datasimratio_ratio->SetTitle((std::to_string(RunGroup)).c_str());
+          g_datasimratio_ratio->GetYaxis()->SetRangeUser(0,2);
+          g_datasimratio_ratio->Fit("pol0");
+          gStyle->SetOptFit(1);
           g_datasimratio_ratio->GetXaxis()->SetTitle("shmsdp");
           g_datasimratio_ratio->GetYaxis()->SetTitle("data/simc");
           g_datasimratio_ratio->SetMarkerStyle(4);

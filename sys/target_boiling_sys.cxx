@@ -72,6 +72,10 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     double i_pos_TB = 0;
     TGraph* g_TB_RunGroup = new TGraph();
     double i_TB = 0;
+    TGraph* g_TB_spring_RunGroup = new TGraph();
+    double i_TB_spring = 0;
+    TGraph* g_TB_fall_RunGroup = new TGraph();
+    double i_TB_fall = 0;
 
     TH1D* h_uncertainty = new TH1D("","Target Boiling Uncertainty",10,0,0.2);
 
@@ -122,7 +126,14 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     
         h_uncertainty->Fill(all_uncertainty);
 
-        
+       if(RunGroup<420){
+         g_TB_fall_RunGroup->SetPoint(i_TB_fall,RunGroup,all_uncertainty);
+         i_TB_fall++;
+       }
+       else{
+         g_TB_spring_RunGroup->SetPoint(i_TB_spring,RunGroup,all_uncertainty);
+         i_TB_spring++;
+       }
 
       }//if normal production runs
     }//loop over rungroups
@@ -154,6 +165,28 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     g_TB_RunGroup->Draw("AP");
     std::string c_TB_name = "results/sys/TB_uncertainty.pdf";
     c_TB->SaveAs(c_TB_name.c_str());
+    
+    TCanvas* c_TB_fall = new TCanvas();
+    g_TB_fall_RunGroup->Fit("pol0");
+    gStyle->SetOptFit(1);
+    g_TB_fall_RunGroup->SetMarkerColor(kRed);
+    g_TB_fall_RunGroup->SetMarkerStyle(8);
+    g_TB_fall_RunGroup->GetXaxis()->SetTitle("RunGroup");
+    g_TB_fall_RunGroup->GetYaxis()->SetTitle("Target Boiling uncertainty(%)");
+    g_TB_fall_RunGroup->Draw("AP");
+    std::string c_TB_fall_name = "results/sys/TB_fall_uncertainty.pdf";
+    c_TB_fall->SaveAs(c_TB_fall_name.c_str());
+    
+    TCanvas* c_TB_spring = new TCanvas();
+    g_TB_spring_RunGroup->Fit("pol0");
+    gStyle->SetOptFit(1);
+    g_TB_spring_RunGroup->SetMarkerColor(kRed);
+    g_TB_spring_RunGroup->SetMarkerStyle(8);
+    g_TB_spring_RunGroup->GetXaxis()->SetTitle("RunGroup");
+    g_TB_spring_RunGroup->GetYaxis()->SetTitle("Target Boiling uncertainty(%)");
+    g_TB_spring_RunGroup->Draw("AP");
+    std::string c_TB_spring_name = "results/sys/TB_spring_uncertainty.pdf";
+    c_TB_spring->SaveAs(c_TB_spring_name.c_str());
 
     TCanvas* c_histo = new TCanvas();
     h_uncertainty->Draw("hist");

@@ -30,11 +30,13 @@ void get_normfac(int RunGroup = 0){
   std::string hist_D2_pos_rho_name        = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_rho.hist";
   std::string hist_D2_pos_delta_name      = path+"outfiles/csv_"+std::to_string(RunGroup)+"_D2_pos_delta.hist";
   std::string hist_H2_neg_inc_norad_name  = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_inc_norad.hist";
+  std::string hist_H2_neg_inc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_inc_rad.hist";
   std::string hist_H2_neg_K_inc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_K_inc_rad.hist";
   std::string hist_H2_neg_exc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_exc_rad.hist";
   std::string hist_H2_neg_rho_name        = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_rho.hist";
   std::string hist_H2_neg_delta_name      = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_neg_delta.hist";
   std::string hist_H2_pos_inc_norad_name  = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_inc_norad.hist";
+  std::string hist_H2_pos_inc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_inc_rad.hist";
   std::string hist_H2_pos_K_inc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_K_inc_rad.hist";
   std::string hist_H2_pos_exc_rad_name    = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_exc_rad.hist";
   std::string hist_H2_pos_rho_name        = path+"outfiles/csv_"+std::to_string(RunGroup)+"_H2_pos_rho.hist";
@@ -124,7 +126,7 @@ void get_normfac(int RunGroup = 0){
       for(;i < line.length();i++){ if(isdigit(line[i])) break; }
       normfac_num = std::stod(line.substr(i,line.size()));
       std::cout<<"neg inc rad"<<normfac_num<<std::endl;
-      j_simc[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["inc"]["rad"]["normfac"] = normfac_num;
+      j_simc[(std::to_string(RunGroup)).c_str()]["neg"]["D2"]["inc"]["K_rad"]["normfac"] = normfac_num;
     }
   }
   line = "";
@@ -190,7 +192,7 @@ void get_normfac(int RunGroup = 0){
       for(;i < line.length();i++){ if(isdigit(line[i])) break; }
       normfac_num = std::stod(line.substr(i,line.size()));
       std::cout<<"pos inc rad"<<normfac_num<<std::endl;
-      j_simc[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["inc"]["rad"]["normfac"] = normfac_num;
+      j_simc[(std::to_string(RunGroup)).c_str()]["pos"]["D2"]["inc"]["K_rad"]["normfac"] = normfac_num;
     }
   }
   line = "";
@@ -256,7 +258,7 @@ void get_normfac(int RunGroup = 0){
       for(;i < line.length();i++){ if(isdigit(line[i])) break; }
       normfac_num = std::stod(line.substr(i,line.size()));
       std::cout<<"neg inc rad"<<normfac_num<<std::endl;
-      j_simc[(std::to_string(RunGroup)).c_str()]["neg"]["H2"]["inc"]["rad"]["normfac"] = normfac_num;
+      j_simc[(std::to_string(RunGroup)).c_str()]["neg"]["H2"]["inc"]["K_rad"]["normfac"] = normfac_num;
     }
   }
   line = "";
@@ -322,7 +324,7 @@ void get_normfac(int RunGroup = 0){
       for(;i < line.length();i++){ if(isdigit(line[i])) break; }
       normfac_num = std::stod(line.substr(i,line.size()));
       std::cout<<"pos inc rad"<<normfac_num<<std::endl;
-      j_simc[(std::to_string(RunGroup)).c_str()]["pos"]["H2"]["inc"]["rad"]["normfac"] = normfac_num;
+      j_simc[(std::to_string(RunGroup)).c_str()]["pos"]["H2"]["inc"]["K_rad"]["normfac"] = normfac_num;
     }
   }
   line = "";

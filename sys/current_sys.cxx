@@ -70,6 +70,10 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     double i_currratio=0;
     TGraph* g_currentratio_err_RunGroup = new TGraph();
     double i_currentratio_err = 0;
+    TGraph* g_currentratio_fall_err_RunGroup = new TGraph();
+    double i_currentratio_fall_err = 0;
+    TGraph* g_currentratio_spring_err_RunGroup = new TGraph();
+    double i_currentratio_spring_err = 0;
     TGraph* g_currentratio_err_R_RunGroup = new TGraph();
     double i_currentratio_err_R = 0;
 
@@ -123,6 +127,14 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
   
         h_uncertainty->Fill(currratio_uncertainty);
 
+        if(RunGroup<420){
+          g_currentratio_fall_err_RunGroup->SetPoint(i_currentratio_fall_err,RunGroup,currratio_uncertainty);
+          i_currentratio_fall_err++;
+        }
+        else{
+          g_currentratio_spring_err_RunGroup->SetPoint(i_currentratio_spring_err,RunGroup,currratio_uncertainty);
+          i_currentratio_spring_err++;
+        }
       }//if normal production runs
     }//loop over rungroups
     TCanvas* c_currratio = new TCanvas();
@@ -146,6 +158,30 @@ double Get_average(std::vector<double> current,std::vector<double> charge){
     g_currentratio_err_RunGroup->Draw("AP");
     std::string c_currratio_uncertainty_name = "results/sys/current_ratio_uncertainty.pdf";
     c_currratio_uncertainty->SaveAs(c_currratio_uncertainty_name.c_str());
+    
+    TCanvas* c_currratio_fall_uncertainty = new TCanvas();
+    g_currentratio_fall_err_RunGroup->Fit("pol0");
+    gStyle->SetOptFit(1);
+    //g_currentratio_fall_err_RunGroup->GetXaxis()->SetRangeUser(0,0.1);
+    g_currentratio_fall_err_RunGroup->SetMarkerColor(kRed);
+    g_currentratio_fall_err_RunGroup->SetMarkerStyle(8);
+    g_currentratio_fall_err_RunGroup->GetXaxis()->SetTitle("RunGroup");
+    g_currentratio_fall_err_RunGroup->GetYaxis()->SetTitle("current ratio uncertainty");
+    g_currentratio_fall_err_RunGroup->Draw("AP");
+    std::string c_currratio_fall_uncertainty_name = "results/sys/current_ratio_fall_uncertainty.pdf";
+    c_currratio_fall_uncertainty->SaveAs(c_currratio_fall_uncertainty_name.c_str());
+    
+    TCanvas* c_currratio_spring_uncertainty = new TCanvas();
+    g_currentratio_spring_err_RunGroup->Fit("pol0");
+    gStyle->SetOptFit(1);
+    //g_currentratio_spring_err_RunGroup->GetXaxis()->SetRangeUser(0,0.1);
+    g_currentratio_spring_err_RunGroup->SetMarkerColor(kRed);
+    g_currentratio_spring_err_RunGroup->SetMarkerStyle(8);
+    g_currentratio_spring_err_RunGroup->GetXaxis()->SetTitle("RunGroup");
+    g_currentratio_spring_err_RunGroup->GetYaxis()->SetTitle("current ratio uncertainty");
+    g_currentratio_spring_err_RunGroup->Draw("AP");
+    std::string c_currratio_spring_uncertainty_name = "results/sys/current_ratio_spring_uncertainty.pdf";
+    c_currratio_spring_uncertainty->SaveAs(c_currratio_spring_uncertainty_name.c_str());
     
     TCanvas* c_currratio_uncertainty_R = new TCanvas();
     //g_currentratio_err_R_RunGroup->GetXaxis()->SetRangeUser(0,0.1);

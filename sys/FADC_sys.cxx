@@ -86,6 +86,11 @@ void FADC_sys(){
   TGraph* g_FADCratio_pos_err_RunGroup = new TGraph();
   TGraph* g_FADCratio_neg_err_RunGroup = new TGraph();
   double i_FADCratio_err = 0;
+  TGraph* g_FADCratio_err_RunGroup = new TGraph();
+  TGraph* g_FADCratio_spring_err_RunGroup = new TGraph();
+  TGraph* g_FADCratio_fall_err_RunGroup = new TGraph();
+  double i_spring =0;
+  double i_fall = 0;
 
   TH1D* h_uncertainty = new TH1D("","FADC ratio uncertainty",10,0,0.01);
 
@@ -109,27 +114,27 @@ void FADC_sys(){
         std::string line;
         while(std::getline(report_file,line)){
           if(line.find(SHMS_rate_str)<line.length()){
-            std::cout<<line<<std::endl;
+            //std::cout<<line<<std::endl;
             size_t i = 0;
             i = line.find(':');
             std::string SHMS_rate_str2 = line.substr(i+1,line.length()-1);
-            std::cout<<SHMS_rate_str2<<std::endl;
+            //std::cout<<SHMS_rate_str2<<std::endl;
             i = 0;
             for(;i<SHMS_rate_str2.length();i++){if(!isdigit(SHMS_rate_str2[i])) break;}
             SHMS_rate = std::stod(SHMS_rate_str2.substr(0,i-1));
-            std::cout<<"SHMS rate "<<SHMS_rate<<std::endl;    
+            //std::cout<<"SHMS rate "<<SHMS_rate<<std::endl;    
           }
           if(line.find(HMS_rate_str)<line.length()){
-            std::cout<<line<<std::endl;
+            //std::cout<<line<<std::endl;
             size_t i = 0;
             i = line.find('[');
             std::string HMS_rate_str2 = line.substr(i+1,line.length()-1);
-            std::cout<<HMS_rate_str2<<std::endl;
-            std::cout<<std::stod(HMS_rate_str2)<<std::endl;
+            //std::cout<<HMS_rate_str2<<std::endl;
+            //std::cout<<std::stod(HMS_rate_str2)<<std::endl;
             i = 0;
             for(;i<HMS_rate_str2.length();i++){if(!isdigit(HMS_rate_str2[i])) break;}
             HMS_rate = std::stod(HMS_rate_str2.substr(0,i-1));
-            std::cout<<"HMS rate "<<HMS_rate<<std::endl;    
+            //std::cout<<"HMS rate "<<HMS_rate<<std::endl;    
           }
         }
         neg_SHMSrate.push_back(SHMS_rate);
@@ -148,27 +153,27 @@ void FADC_sys(){
         std::string line;
         while(std::getline(report_file,line)){
           if(line.find(SHMS_rate_str)<line.length()){
-            std::cout<<line<<std::endl;
+            //std::cout<<line<<std::endl;
             size_t i = 0;
             i = line.find(':');
             std::string SHMS_rate_str2 = line.substr(i+1,line.length()-1);
-            std::cout<<SHMS_rate_str2<<std::endl;
+            //std::cout<<SHMS_rate_str2<<std::endl;
             i = 0;
             for(;i<SHMS_rate_str2.length();i++){if(!isdigit(SHMS_rate_str2[i])) break;}
             SHMS_rate = std::stod(SHMS_rate_str2.substr(0,i-1));
-            std::cout<<"SHMS rate "<<SHMS_rate<<std::endl;    
+            //std::cout<<"SHMS rate "<<SHMS_rate<<std::endl;    
           }
           if(line.find(HMS_rate_str)<line.length()){
-            std::cout<<line<<std::endl;
+            //std::cout<<line<<std::endl;
             size_t i = 0;
             i = line.find('[');
             std::string HMS_rate_str2 = line.substr(i+1,line.length()-1);
-            std::cout<<HMS_rate_str2<<std::endl;
-            std::cout<<std::stod(HMS_rate_str2)<<std::endl;
+            //std::cout<<HMS_rate_str2<<std::endl;
+            //std::cout<<std::stod(HMS_rate_str2)<<std::endl;
             i = 0;
             for(;i<HMS_rate_str2.length();i++){if(!isdigit(HMS_rate_str2[i])) break;}
             HMS_rate = std::stod(HMS_rate_str2.substr(0,i-1));
-            std::cout<<"HMS rate "<<HMS_rate<<std::endl;    
+            //std::cout<<"HMS rate "<<HMS_rate<<std::endl;    
           }
         }
         pos_SHMSrate.push_back(SHMS_rate);
@@ -185,19 +190,31 @@ void FADC_sys(){
       double pos_FADC_eff = Get_FADC_eff(pos_SHMS_rate,pos_HMS_rate);
       double pos_FADC_eff_max = Get_FADC_eff_max(pos_SHMS_rate,pos_HMS_rate);
       double pos_FADC_eff_min = Get_FADC_eff_min(pos_SHMS_rate,pos_HMS_rate);
+      std::cout<<pos_FADC_eff<<"pos, max "<<pos_FADC_eff_max<<",min "<<pos_FADC_eff_min<<std::endl;
 
       double neg_FADC_eff = Get_FADC_eff(neg_SHMS_rate,neg_HMS_rate);
       double neg_FADC_eff_max = Get_FADC_eff_max(neg_SHMS_rate,neg_HMS_rate);
       double neg_FADC_eff_min = Get_FADC_eff_min(neg_SHMS_rate,neg_HMS_rate);
+      std::cout<<neg_FADC_eff<<"neg, max "<<neg_FADC_eff_max<<",min "<<neg_FADC_eff_min<<std::endl;
    
       double pos_FADC_uncertain = (pos_FADC_eff_max-pos_FADC_eff_min)/pos_FADC_eff;
       double neg_FADC_uncertain = (neg_FADC_eff_max-neg_FADC_eff_min)/neg_FADC_eff;
+      double FADC_ratio_uncertain = std::abs(neg_FADC_eff_max/pos_FADC_eff_max-neg_FADC_eff_min/pos_FADC_eff_min)/(neg_FADC_eff/pos_FADC_eff);
       g_FADCratio_pos_RunGroup->SetPoint(i_FADCratio,RunGroup,pos_FADC_eff);
       g_FADCratio_neg_RunGroup->SetPoint(i_FADCratio,RunGroup,neg_FADC_eff);
       g_FADCratio_pos_err_RunGroup->SetPoint(i_FADCratio,RunGroup,pos_FADC_uncertain);
       g_FADCratio_neg_err_RunGroup->SetPoint(i_FADCratio,RunGroup,neg_FADC_uncertain);
+      g_FADCratio_err_RunGroup->SetPoint(i_FADCratio,RunGroup,FADC_ratio_uncertain);
       i_FADCratio++;
 
+      if(RunGroup<420){
+        g_FADCratio_fall_err_RunGroup->SetPoint(i_fall,RunGroup,FADC_ratio_uncertain);
+        i_fall++;
+      }
+      else{
+        g_FADCratio_spring_err_RunGroup->SetPoint(i_spring,RunGroup,FADC_ratio_uncertain);
+        i_spring++;
+      }
     }//not empty
   }//loop over rungroup
 
@@ -220,7 +237,34 @@ void FADC_sys(){
   g_FADCratio_neg_err_RunGroup->SetMarkerStyle(8);
   g_FADCratio_neg_err_RunGroup->Draw("P same");
   c_FADC_err->SaveAs("results/sys/FADC_err.pdf");
+  
+  TCanvas* c_FADC_ratio_err = new TCanvas();
+  g_FADCratio_err_RunGroup->SetMarkerStyle(8);
+  g_FADCratio_err_RunGroup->SetMarkerColor(kRed);
+  g_FADCratio_err_RunGroup->GetXaxis()->SetTitle("RunGroup");
+  g_FADCratio_err_RunGroup->GetYaxis()->SetTitle("FADC eff ratio err");
+  g_FADCratio_err_RunGroup->Draw("AP");
+  c_FADC_ratio_err->SaveAs("results/sys/FADC_ratio_err.pdf");
 
+  TCanvas* c_FADC_fall_err = new TCanvas();
+  g_FADCratio_fall_err_RunGroup->Fit("pol0");
+  gStyle->SetOptFit(1);
+  g_FADCratio_fall_err_RunGroup->SetMarkerStyle(8);
+  g_FADCratio_fall_err_RunGroup->SetMarkerColor(kRed);
+  g_FADCratio_fall_err_RunGroup->GetXaxis()->SetTitle("RunGroup");
+  g_FADCratio_fall_err_RunGroup->GetYaxis()->SetTitle("FADC eff ratio err");
+  g_FADCratio_fall_err_RunGroup->Draw("AP");
+  c_FADC_fall_err->SaveAs("results/sys/FADC_ratio_fall_err.pdf");
+
+  TCanvas* c_FADC_spring_err = new TCanvas();
+  g_FADCratio_spring_err_RunGroup->Fit("pol0");
+  gStyle->SetOptFit(1);
+  g_FADCratio_spring_err_RunGroup->SetMarkerStyle(8);
+  g_FADCratio_spring_err_RunGroup->SetMarkerColor(kRed);
+  g_FADCratio_spring_err_RunGroup->GetXaxis()->SetTitle("RunGroup");
+  g_FADCratio_spring_err_RunGroup->GetYaxis()->SetTitle("FADC eff ratio err");
+  g_FADCratio_spring_err_RunGroup->Draw("AP");
+  c_FADC_spring_err->SaveAs("results/sys/FADC_ratio_spring_err.pdf");
 
 }
 

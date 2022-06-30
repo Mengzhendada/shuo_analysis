@@ -20,10 +20,10 @@ begin parm kinematics_main
  dEbeam = 0.00404
  electron_arm =1
  hadron_arm = 5
- spec%e%P = 5270
+ spec%e%P = 5227.86
  spec%e%theta = 18.51
- spec%p%P = 2718
- spec%p%theta = 17.75
+ spec%p%P = 2712.56
+ spec%p%theta = 0
 end parm kinematics_main
 
 begin parm target

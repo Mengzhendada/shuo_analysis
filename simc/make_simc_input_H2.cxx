@@ -74,12 +74,12 @@ void make_simc_input_H2(int RunGroup = 0){
     dEbeam = 0.00415;
   }
   else{
-    double HMS_P = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>());
+    double HMS_P = std::abs(j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>());
     double HMS_P_corr = Get_HMS_P_corr(HMS_P)*HMS_P;
     e_momentum = HMS_P_corr*1000; 
-    //e_momentum = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>())*1000;
-    e_theta = j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_angle"].get<double>();
-    double SHMS_P = std::abs(j_fall[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>());
+    //e_momentum = std::abs(j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_momentum"].get<double>())*1000;
+    e_theta = j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["hms_angle"].get<double>();
+    double SHMS_P = std::abs(j_spring[std::to_string(RunNumber).c_str()]["spectrometers"]["shms_momentum"].get<double>());
     double SHMS_P_corr = Get_SHMS_P_corr(SHMS_P)*SHMS_P;
     p_momentum = SHMS_P_corr*1000; 
     Ebeam = 10212.715;

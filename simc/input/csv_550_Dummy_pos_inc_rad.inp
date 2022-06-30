@@ -10,7 +10,7 @@ begin parm experiment
  doing_delta = 0
  doing_rho = 0
  doing_semi = 1
- doing_hplus = 0
+ doing_hplus = 1
  doing_decay = 1
  ctau = 780.4
 end parm experiment
@@ -21,9 +21,9 @@ begin parm kinematics_main
  electron_arm =1
  hadron_arm = 5
  using_first_cer = 1
- spec%e%P = 4890
+ spec%e%P = 4857.98
  spec%e%theta = 19.1
- spec%p%P = 2394
+ spec%p%P = 2389.21
  spec%p%theta = 15.94
 end parm kinematics_main
 

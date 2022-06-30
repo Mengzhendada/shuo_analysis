@@ -1,7 +1,7 @@
 ;This is a CTP file, using info from Run 7684
 
 begin parm experiment
- ngen = 10000
+ ngen = 5000
  EXPER%charge = 1
  doing_phsp = 0
  doing_kaon = 0
@@ -20,9 +20,9 @@ begin parm kinematics_main
  dEbeam = 0.00404
  electron_arm =1
  hadron_arm = 5
- spec%e%P = 4357
+ spec%e%P = 4334.31
  spec%e%theta = 20.24
- spec%p%P = 2341
+ spec%p%P = 2336.32
  spec%p%theta = 13.81
 end parm kinematics_main
 
@@ -49,17 +49,17 @@ end parm debug
 begin parm e_arm_accept
  SPedge%e%delta%min = -15.0
  SPedge%e%delta%max = 15.0
- SPedge%e%yptar%min = -100.0
- SPedge%e%yptar%max = 100.0
- SPedge%e%xptar%min = -100.0
- SPedge%e%xptar%max = 100.0
+ SPedge%e%yptar%min = -90.0
+ SPedge%e%yptar%max = 90.0
+ SPedge%e%xptar%min = -120.0
+ SPedge%e%xptar%max = 120.0
 end parm e_arm_accept
 
 begin parm p_arm_accept
- SPedge%p%delta%min = -15.0
- SPedge%p%delta%max = 30.0
- SPedge%p%yptar%min = -100.0
- SPedge%p%yptar%max = 100.0
+ SPedge%p%delta%min = -20.0
+ SPedge%p%delta%max = 40.0
+ SPedge%p%yptar%min = -90.0
+ SPedge%p%yptar%max = 90.0
  SPedge%p%xptar%min = -100.0
  SPedge%p%xptar%max = 100.0
 end parm p_arm_accept
@@ -111,11 +111,12 @@ begin parm simulate
  use_offshell_rad = 1
  Egamma_gen_max = 8000
  do_fermi = 0
+ pt_b_param = 3.8
  sigc_flag = 1
  sigc_nbin = 100
  sigc_kin_min = 0.0
  sigc_kin_max = 1.0
  sigc_kin_ind = 0.550
- random_seed = 1236221
+ random_seed = 377468
 end parm simulate
 
