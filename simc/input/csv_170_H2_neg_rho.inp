@@ -1,7 +1,7 @@
 ;This is a CTP file, using info from Run 6256
 
 begin parm experiment
- ngen = 2000
+ ngen = 20000
  EXPER%charge = 1
  doing_phsp = 0
  doing_kaon = 0
