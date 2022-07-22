@@ -54,7 +54,7 @@ double gaus_fun_kaonNodecay(double x,double *params){
   //param[1] is the momentum, gaus peak mean of the kaon that doesn't decay is calculated by the momentum
   double kaon_nodecay_peak = t_K_peak_position(params[1]);
   //std::cout<<"check kaon "<<kaon_nodecay_peak<<std::endl;
-  double gaus_shape = params[0]*exp(-0.5*pow((x-kaon_nodecay_peak)/params[2],2))/(params[2] *sqrt(2*M_PI));
+  double gaus_shape = params[0]*exp(-0.5*pow((x-kaon_nodecay_peak)/params[2],2));///(params[2] *sqrt(2*M_PI));
   //std::cout<<"check gaus "<<gaus_shape<<std::endl;
   return gaus_shape;
   
@@ -62,10 +62,10 @@ double gaus_fun_kaonNodecay(double x,double *params){
 double gaus_fun_pion_kaondecay(double x,double *pa){
 //pa[1] is the momentum,
 //pa[0] is the probability at the position/78.1%(the probability that kaon doesn't decay at all) of kaon decays multiplied to the fitting kaon peak amplitude(params[0]), pa[2] is the sigma of pion peak, which I use 0.2
-//pa[4] is the position where the kaon decay
+//pa[3] is the position where the kaon decay
 //gaus peak mean of the pions that kaon decays is calculated by momentum pa[1],and the position where kaon decays pa[3]    
   double pi_fromkaondecay_peak = t_pi_fromkaondecay(pa[1],pa[3]);
-  double gaus_shape = pa[0]*exp(-0.5*pow((x-pi_fromkaondecay_peak)/pa[2],2))/(pa[2] *sqrt(2*M_PI));
+  double gaus_shape = pa[0]*exp(-0.5*pow((x-pi_fromkaondecay_peak)/pa[2],2));///(pa[2] *sqrt(2*M_PI));
   //std::cout<<"check pion "<<pi_fromkaondecay_peak<<" gaus "<<gaus_shape<<std::endl;
   return gaus_shape;
 }
@@ -152,6 +152,9 @@ void kaon_contam_func(){
   //g_kaondecay->Draw("AL");
   //g_gaus->Draw("P same");
   //mg_pion_fromkaondecay->SetMarkerColor(kBlue);
+  //c_kaondecay->SetLogy(true);
+  //mg_pion_fromkaondecay->GetYaxis()->SetRangeUser(0.1,15);
+  //mg_pion_fromkaondecay->GetXaxis()->SetRangeUser(0.1,3);
   mg_pion_fromkaondecay->Draw("A");
   mg_pion_fromkaondecay->GetXaxis()->SetTitle("rftime");
   mg_pion_fromkaondecay->GetYaxis()->SetTitle("counts");

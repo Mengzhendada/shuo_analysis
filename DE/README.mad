@@ -49,3 +49,23 @@ rewrite every DE script.
 SHMS_DE_clean.cxx,HMS_DE_clean.cxx, these two are in slurm/DE.sh, submit jobs to run for all rungroups, the results would be in pid/DE/(S)HMS_RunNumber_DE.json;
 SHMS_cal_DE.cxx, SHMS_aero_DE.cxx,HMS_cal_DE.cxx, These plots the eff vs momentum,RunNumber,RunGroup  and fit momentum 
 write_DE_to_json_updated.cxx, this one write the efficiencies in runs_info.json
+
+2022 July update
+SHMS_rf_twofit_high.cxx, this one reads the rftime spectrum, separate into 6 delta bins, so that the momentum range is not that spread. It fits the rftime spectrum with two simple gaus fit, one for pion peak and one for kaon peak. The results is in results/pid/rftime/....
+
+kaon_contam_func.cxx, This is a test file to read values from db2/kaon_comtam.inp, and draw small kaon decayed pions discrete gaus for each meter and not decay kaon gaus shape(depending on the input file)
+kaon_contam_fun_fit.cxx, This is a test file to use the new shape to fit the rf spectrum. 
+rf_offset_plot.cxx, reads rf offsets from db2/runs_info_offset.cxx(where the offset is determined by the maximum bin), plot the offsets vs. run number, and fit pol0
+rf_offset_update.cxx, update the rfoffset from pol0 fit result to the input runsinfo file
+
+SHMS_rf_DE_plots.cxx This one reads the results from SHMS_rf_twofit_high.cxx, and plot the rf eff and purity as a function of momentum
+
+SHMS_rf_twocomplicatedfit_high.cxx This one is similar to SHMS_rf_twofit_high.cxx, but with updated kaon decay function as in kaon_contam_func.cxx. the results is in results/pid/rftime_new/...
+
+SHMS_rf_twocomplicatedfit_low.cxx This one is similar to SHMS_rf_twofit_high.cxx, with updated kaon decay function as in kaon_contam_func.cxx but without the 80% not decayed kaon. Since the aero cut removed all the kaons. the results is in results/pid/rftime_new/..._low....
+
+SHMS_rf_DE_plots_new.cxx similar to SHMS_rf_DE_plots.cxx, but using the new results from results/pid/rftime_new/...
+SHMS_rf_DE_plots_low.cxx similar to SHMS_rf_DE_plots.cxx, but using the new low results from results/pid/rftime_new/.._low...
+
+rf_offset_fit_plot.cxx pion peak position from the fitting results
+
