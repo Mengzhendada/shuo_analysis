@@ -179,7 +179,7 @@ public:
     return gaus_shape;
   }
   double kaon_part(double x, double mu_piK,double sigma_pi, double A_K, double sigma_K ) const {
-    double params[5] = {mu_piK, sigma_pi, A_K, mu_piK, sigma_K};
+    double params[5] = {mu_piK, sigma_pi, A_K, SHMS_momentum, sigma_K};
     double xx = x;
     double nodecay_kaon = gaus_fun_kaonNodecay(
       &xx, params); // This should be already in the last line of the loop (which is deleted, compare
@@ -904,11 +904,11 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       minimum->SetTolerance(0.01);
       minimum->SetPrintLevel(2);
 
-      RFTimeFitFCN f(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
+      RFTimeFitFCN f(h_rf_pos_piall,h_rf_neg_piall,shms_p);
       minimum->SetFunction(f);
 
       // Set the free variables to be minimized !
-      minimum->SetVariable(0,"A_{#pi}",     10.0,  1 );
+      minimum->SetVariable(0,"A_{#pi}",     100.0,  1 );
       minimum->SetLimitedVariable(1,"#mu",          1.0,  0.01, 0.9, 1.1);
       minimum->SetVariable(2,"#sigma_{#pi}", 0.2,  0.001);
       minimum->SetVariable(3,"A_{K}",        2.0,  1.0 );
