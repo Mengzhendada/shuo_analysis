@@ -65,13 +65,13 @@ double gaus_fun_kaonNodecay(double *x,double *params){
   double gaus_shape = params[2]*exp(-0.5*pow((x[0]-kaon_nodecay_peak)/params[4],2));///(params[2] *sqrt(2*M_PI));
   //std::cout<<"check gaus "<<gaus_shape<<std::endl;
   return gaus_shape;
-  
+
 }
 double gaus_fun_pion_kaondecay(double *x,double *pa){
-//pa[1] is the momentum,
-//pa[0] is the probability at the position/78.1%(the probability that kaon doesn't decay at all) of kaon decays multiplied to the fitting kaon peak amplitude(params[0]), pa[2] is the sigma of pion peak, which I use 0.2
-//pa[3] is the position where the kaon decay
-//gaus peak mean of the pions that kaon decays is calculated by momentum pa[1],and the position where kaon decays pa[3]    
+  //pa[1] is the momentum,
+  //pa[0] is the probability at the position/78.1%(the probability that kaon doesn't decay at all) of kaon decays multiplied to the fitting kaon peak amplitude(params[0]), pa[2] is the sigma of pion peak, which I use 0.2
+  //pa[3] is the position where the kaon decay
+  //gaus peak mean of the pions that kaon decays is calculated by momentum pa[1],and the position where kaon decays pa[3]    
   double pi_fromkaondecay_peak = t_pi_fromkaondecay(pa[1],pa[3],pa[4]);
   double gaus_shape = pa[0]*exp(-0.5*pow((x[0]-pi_fromkaondecay_peak)/pa[2],2));///(pa[2] *sqrt(2*M_PI));
   //std::cout<<"check pion "<<pi_fromkaondecay_peak<<" gaus "<<gaus_shape<<std::endl;
@@ -107,7 +107,7 @@ double fit_kaondecay(double *x,double *params){
   return all_kaon;
 }
 double fit_pion(double *x,double *params){
-  
+
   double gaus_shape = params[0]*exp(-0.5*pow((x[0]-params[1])/params[2],2));///(params[2] *sqrt(2*M_PI));
   return gaus_shape;
 }
@@ -376,6 +376,146 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0){
         h_delta_pos_all->Add(h_delta.GetPtr(),1.0);
 
       }
+      //loop over each neg runs data
+      for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
+        int RunNumber = *it;
+        std::cout<<"neg data"<<RunNumber<<std::endl;
+        std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
+        ROOT::RDataFrame d_neg_raw("T",rootfile_name);
+        ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
+        std::cout<<rootfile_name<<std::endl;
+        auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM1.scalerCurrent");
+        auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
+        auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM1.scalerCurrent");
+        double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
+        std::cout<<"set current "<<neg_setcurrent<<std::endl;
+        //std::cout<<"event size "<<neg_scaler_event_list->size()<<" current size "<<neg_scaler_current_list->size()<<std::endl;
+        auto neg_get_current = [&](unsigned int eventNum){
+          int i = 0;
+          while(eventNum>neg_scaler_event_list->at(i)){
+            ++i;
+            if(i>neg_scaler_event_list->size()-1)
+            {
+              i=neg_scaler_event_list->size()-1;
+              break;
+            }
+          }
+          return neg_scaler_current_list->at(i);
+          //std::cout<< neg_scaler_current_list->at(i)<<std::endl;
+
+        };
+        auto d_neg_run = d_neg_raw.Filter("fEvtHdr.fEvtType == 4")
+          //.Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
+          .Filter(goodTrackSHMS)
+          .Filter(goodTrackHMS)
+          .Filter(piCutSHMS)
+          .Filter(eCutHMS)
+          //.Filter(aeroCutSHMS)
+          .Filter(Normal_SHMS)
+          .Filter(Normal_HMS)
+          .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+          .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
+          .Filter([&](double current){return current>current_offset;},{"current"})
+          ;
+
+
+        //coin time cut for neg runs
+        auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
+        int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
+        double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
+        std::cout<<"neg coin time peak "<<coin_peak_center_neg<<std::endl;
+        //cointime cut
+        double cointime_low_neg = coin_peak_center_neg+cointime_lowcut;
+        double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
+
+        auto d_neg_first = d_neg_run
+          .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
+          ;
+        auto h_coin_neg = d_neg_run.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+        auto h_coin_negcut_rungroup = d_neg_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
+
+        //rftime cut
+        //offset
+        double offset_neg = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
+        std::cout<<"offset for neg runs "<<offset_neg<<std::endl;
+        auto d_mod_first = d_neg_first
+          .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
+          .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
+          //    .Filter(aeroCutSHMS)
+          ;
+
+
+        std::string bg_cut = " ";  
+        //for bg
+        int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
+        int bg_left_high = j_cuts["random_bg_left_high"].get<int>();
+        int bg_right_low = j_cuts["random_bg_right_low"].get<int>();
+        int bg_right_high = j_cuts["random_bg_right_high"].get<int>();
+        for(int i = bg_left_low;i<bg_left_high;i=i+2){
+          double bg_main = coin_peak_center_neg+i*4.008;
+          double bg_left = bg_main+cointime_lowcut;
+          double bg_right = bg_main+cointime_highcut;
+          bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
+        }
+        for(int i = bg_right_low;i<bg_right_high;i=i+2){
+          double bg_main = coin_peak_center_neg+i*4.008;
+          double bg_left = bg_main+cointime_lowcut;
+          double bg_right = bg_main+cointime_highcut;
+          bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
+        }
+        bg_cut = bg_cut.substr(0,bg_cut.size()-2);
+        std::cout<<bg_cut<<std::endl;
+
+        auto d_neg_bg_norfcut = d_neg_run
+          .Define("bg_cointime",[](double cointime){return cointime;},{"CTime.ePiCoinTime_ROC2"})
+          .Filter(bg_cut)
+          .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
+          .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
+          //  .Filter(aeroCutSHMS)
+          ;
+
+        auto d_neg_piall  = d_mod_first
+          .Filter(dp_cut.c_str())
+          //.Filter(aeroCutSHMS)
+          .Filter(SHMS_hgc_aero)
+          ;
+        auto d_neg_Kall = d_mod_first
+          //.Filter("P.aero.npeSum<10")
+          .Filter("P.hgcer.npeSum<2")
+          .Filter(dp_cut.c_str())
+          //.Filter(piCutSHMS)
+          //.Filter(aeroCutSHMS)
+          ;
+        auto d_neg_piall_bg = d_neg_bg_norfcut
+          .Filter(dp_cut.c_str())
+          //.Filter(aeroCutSHMS)
+          .Filter(SHMS_hgc_aero)
+          ;
+        auto d_neg_Kall_bg = d_neg_bg_norfcut
+          //.Filter("P.aero.npeSum<10")
+          .Filter("P.hgcer.npeSum<2")
+          .Filter(dp_cut.c_str())
+          //.Filter(piCutSHMS)
+          //.Filter(aeroCutSHMS)
+          ;
+
+        //statistics for DE efficiency
+        auto h_rf_neg = d_neg_piall.Histo1D({"","neg,rftime,norfcut",100,0,4},"diff_time_mod");
+        auto h_rf_neg_bg = d_neg_piall_bg.Histo1D({"","neg,cal,norfcut",100,0,4},"diff_time_mod");
+        h_rf_neg->Add(h_rf_neg_bg.GetPtr(),-1.0/6); 
+        h_rf_neg_piall->Add(h_rf_neg.GetPtr(),1);
+
+        auto h_rf_neg_K = d_neg_Kall.Histo1D({"","neg,rftime,norfcut",100,0,4},"diff_time_mod");
+        auto h_rf_neg_K_bg = d_neg_Kall_bg.Histo1D({"","neg,cal,norfcut",100,0,4},"diff_time_mod");
+        h_rf_neg_K->Add(h_rf_neg_K_bg.GetPtr(),-1.0/6); 
+        h_rf_neg_Kall->Add(h_rf_neg_K.GetPtr(),1);
+
+        //get mean SHMS momentum 
+        auto h_delta = d_neg_piall.Histo1D({"","",100,-10,20},"P.gtr.dp");
+        auto h_delta_bg = d_neg_piall_bg.Histo1D({"","",100,-10,20},"P.gtr.dp");
+        h_delta->Add(h_delta_bg.GetPtr(),-1.0/6);
+        h_delta_neg_all->Add(h_delta.GetPtr(),1.0);
+      }
 
       double delta_mean_pos = h_delta_pos_all->GetMean();
       std::cout<<"delta mean"<<delta_mean_pos<<std::endl;
@@ -424,6 +564,75 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0){
       std::string c_rftime_pos_name = "results/pid/rftime_new/rftime_pos_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+".pdf";
       c_rftime_pos->SaveAs(c_rftime_pos_name.c_str());
 
+      double par_neg_pi[6];
+      TCanvas *c_pi_neg = new TCanvas();
+      //c_pi_neg->SetGrid();
+      gStyle->SetOptTitle(0);
+      gStyle->SetPalette(kBird);
+      h_rf_neg_piall->SetMinimum(0);
+      h_rf_neg_piall->DrawCopy("hist");
+      TF1 *all_neg_pi = new TF1("all fit",fit_all,0.5,1+2*time_diff,6);
+      all_neg_pi->SetLineColor(1);
+      all_neg_pi->SetParameter(1,1);
+      all_neg_pi->SetParLimits(1,0.9,1.1);
+      all_neg_pi->SetParameter(2,0.2);
+      all_neg_pi->SetParameter(4,shms_p);
+      all_neg_pi->FixParameter(4,shms_p);
+      all_neg_pi->SetParameter(5,par_pos[5]);
+      all_neg_pi->FixParameter(5,par_pos[5]);
+      h_rf_neg_piall->Fit(all_neg_pi);
+      all_neg_pi->GetParameters(&par_neg_pi[0]);
+      TF1* pi_neg_piall = new TF1("pi",fit_pion,0.5,1.5,3);
+      pi_neg_piall->SetParameters(par_neg_pi[0],par_neg_pi[1],par_neg_pi[2]);
+      TF1* K_neg_piall = new TF1("K",fit_kaondecay,0.5,1+2*time_diff,5);
+      K_neg_piall->SetParameters(par_neg_pi[1],par_neg_pi[2],par_neg_pi[3],par_neg_pi[4],par_neg_pi[5]);
+      pi_neg_piall->SetLineColor(kRed);
+      K_neg_piall->SetLineColor(kOrange);
+      pi_neg_piall->Draw("same");
+      K_neg_piall->Draw("same");
+      double width_neg = h_rf_neg_piall->GetXaxis()->GetBinWidth(1);
+      std::cout<<"Bin width "<<width_neg<<std::endl;
+      double neg_pi_all_pifit = pi_neg_piall->Integral(0,4,width_neg);
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["pi_eff_all"] = neg_pi_all_pifit;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pi_peak"]["neg"] = par_neg_pi[1];
+      TPaveText* pt_neg_pi = new TPaveText(0.75,0.5,1,0.95,"brNDC");
+      pt_neg_pi->AddText(("RunGroup neg pi "+std::to_string(RunGroup)).c_str());
+      pt_neg_pi->AddText(("shms p "+std::to_string(shms_p)).c_str());
+      pt_neg_pi->AddText(("A_{#pi} = "+std::to_string(par_neg_pi[0])).c_str());
+      pt_neg_pi->AddText(("#mu_{#pi} = "+std::to_string(par_neg_pi[1])).c_str());
+      pt_neg_pi->AddText(("#sigma_{#pi} = "+std::to_string(par_neg_pi[2])).c_str());
+      pt_neg_pi->AddText(("Kaon time "+std::to_string(par_neg_pi[1]+time_diff)).c_str());
+      pt_neg_pi->AddText(("A_{K} = "+std::to_string(par_neg_pi[3])).c_str());
+      pt_neg_pi->AddText(("#mu_{K} = "+std::to_string(par_neg_pi[4])).c_str());
+      pt_neg_pi->AddText(("#sigma_{K} = "+std::to_string(par_neg_pi[5])).c_str());
+      pt_neg_pi->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
+      pt_neg_pi->Draw();
+      c_pi_neg->Update();
+      std::string c_pi_neg_name = "results/pid/rftime_new/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi.pdf";
+      c_pi_neg->SaveAs(c_pi_neg_name.c_str());
+      std::vector<double> n_neg_pi_rf,n_neg_K_rf;
+      std::vector<double> rf_neg_cuts,rf_neg_cuts_low;
+      for(int i = 0;i<rf_cuts.size();++i){
+        //double rf_cut_percent = rf_cuts[i];
+        ////double rf_pi_low = 0.5;
+        //double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
+        //double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+
+        double rf_pi_low = 1-(rf_cuts[i]-1);
+        double rf_pi_high = rf_cuts[i];
+
+        rf_neg_cuts.push_back(rf_pi_high);
+        rf_neg_cuts_low.push_back(rf_pi_low);
+        double neg_pi_N = pi_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
+        n_neg_pi_rf.push_back(neg_pi_N);
+        double neg_K_N = K_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
+        n_neg_K_rf.push_back(neg_K_N); 
+        std::cout<<neg_K_N<<" "<<neg_pi_N<<" "<<i_dpcut<<std::endl;
+      }
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["rf_cuts_high"] = rf_neg_cuts ;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["rf_cuts_low"] = rf_neg_cuts_low ;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["pi_eff_Ns"] = n_neg_pi_rf ;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["Ks"] = n_neg_K_rf;
 
       double par_pos_pi[6];
       TCanvas *c_pi_pos = new TCanvas();
@@ -434,8 +643,10 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0){
       h_rf_pos_piall->DrawCopy("hist");
       TF1 *all_pos_pi = new TF1("all fit",fit_all,0.5,1+2*time_diff,6);
       all_pos_pi->SetLineColor(1);
-      all_pos_pi->SetParameter(1,1);
-      all_pos_pi->SetParLimits(1,0.9,1.1);
+      //all_pos_pi->SetParameter(1,1);
+      //all_pos_pi->SetParLimits(1,0.9,1.1);
+      all_pos_pi->SetParameter(1,par_neg_pi[1]);
+      all_pos_pi->FixParameter(1,par_neg_pi[1]);
       all_pos_pi->SetParameter(2,par_pos[2]);
       all_pos_pi->SetParameter(4,shms_p);
       all_pos_pi->FixParameter(4,shms_p);
@@ -457,7 +668,7 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0){
       double pos_pi_all_pifit = pi_pos_piall->Integral(0,4,width_pos);
       j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]["pi_eff_all"] = pos_pi_all_pifit;
       j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["shms_p"] = shms_p;
-        j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pi_peak"]["pos"] = par_pos_pi[1];
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pi_peak"]["pos"] = par_pos_pi[1];
       TPaveText* pt_pos_pi = new TPaveText(0.75,0.5,1,0.95,"brNDC");
       pt_pos_pi->AddText(("RunGroup pos pi "+std::to_string(RunGroup)).c_str());
       pt_pos_pi->AddText(("shms p "+std::to_string(shms_p)).c_str());
@@ -481,7 +692,7 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0){
         //double rf_pi_low = 0.5;
         //double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
         //double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
-        
+
         double rf_pi_low = 1-(rf_cuts[i]-1);
         double rf_pi_high = rf_cuts[i];
 
@@ -532,301 +743,92 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0){
       //std::string c_pi_pos_2nd_name = "results/pid/rftime/rftime_pos_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd.pdf";
       //c_pi_pos_2nd->SaveAs(c_pi_pos_2nd_name.c_str());
 
-      //loop over each neg runs data
-         for(auto it = neg_D2.begin();it!=neg_D2.end();++it){
-         int RunNumber = *it;
-         std::cout<<"neg data"<<RunNumber<<std::endl;
-         std::string rootfile_name = "ROOTfiles/coin_replay_production_"+std::to_string(RunNumber)+"_"+std::to_string(RunNumber)+".root";
-         ROOT::RDataFrame d_neg_raw("T",rootfile_name);
-         ROOT::RDataFrame d_neg_scaler("TSP",rootfile_name);
-         std::cout<<rootfile_name<<std::endl;
-         auto neg_scaler_current_list = d_neg_scaler.Take<double>("P.BCM1.scalerCurrent");
-         auto neg_scaler_event_list = d_neg_scaler.Take<double>("evNumber");
-         auto h_neg_current = d_neg_scaler.Histo1D({"neg current","neg current",100,3,100},"P.BCM1.scalerCurrent");
-         double neg_setcurrent = h_neg_current->GetBinCenter(h_neg_current->GetMaximumBin());
-         std::cout<<"set current "<<neg_setcurrent<<std::endl;
-      //std::cout<<"event size "<<neg_scaler_event_list->size()<<" current size "<<neg_scaler_current_list->size()<<std::endl;
-      auto neg_get_current = [&](unsigned int eventNum){
-      int i = 0;
-      while(eventNum>neg_scaler_event_list->at(i)){
-      ++i;
-      if(i>neg_scaler_event_list->size()-1)
-      {
-      i=neg_scaler_event_list->size()-1;
-      break;
-      }
-      }
-      return neg_scaler_current_list->at(i);
-      //std::cout<< neg_scaler_current_list->at(i)<<std::endl;
 
-      };
-      auto d_neg_run = d_neg_raw.Filter("fEvtHdr.fEvtType == 4")
-      //.Define("shms_p",shms_p_calculate,{"P.gtr.dp"})
-      .Filter(goodTrackSHMS)
-      .Filter(goodTrackHMS)
-      .Filter(piCutSHMS)
-      .Filter(eCutHMS)
-      //.Filter(aeroCutSHMS)
-      .Filter(Normal_SHMS)
-      .Filter(Normal_HMS)
-      .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
-      .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
-      .Filter([&](double current){return current>current_offset;},{"current"})
-      ;
+      //double delta_mean_neg = h_delta_neg_all->GetMean();
+      //shms_p = shms_p_central*(1+delta_mean_neg/100);
+      //double time_diff = t_K(shms_p) - t_pi(shms_p);
+      //double time_diff_proton = t_proton(shms_p) - t_pi(shms_p);
+      //std::cout<<"time for kaon "<<time_diff<<std::endl;
 
-
-      //coin time cut for neg runs
-      auto h_cointime_neg = d_neg_run.Histo1D({"","coin_time",800,30,55},"CTime.ePiCoinTime_ROC2");
-      int coin_peak_bin_neg = h_cointime_neg->GetMaximumBin();
-      double coin_peak_center_neg = h_cointime_neg->GetBinCenter(coin_peak_bin_neg);
-      std::cout<<"neg coin time peak "<<coin_peak_center_neg<<std::endl;
-      //cointime cut
-      double cointime_low_neg = coin_peak_center_neg+cointime_lowcut;
-      double cointime_high_neg = coin_peak_center_neg+cointime_highcut;
-
-      auto d_neg_first = d_neg_run
-      .Filter([cointime_low_neg,cointime_high_neg](double cointime){return cointime>cointime_low_neg && cointime<cointime_high_neg;},{"CTime.ePiCoinTime_ROC2"})
-      ;
-      auto h_coin_neg = d_neg_run.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
-      auto h_coin_negcut_rungroup = d_neg_first.Histo1D({"","",800,0,100},"CTime.ePiCoinTime_ROC2");
-
-      //rftime cut
-      //offset
-      double offset_neg = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
-      std::cout<<"offset for neg runs "<<offset_neg<<std::endl;
-      auto d_mod_first = d_neg_first
-      .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
-      .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
-      //    .Filter(aeroCutSHMS)
-      ;
-
-
-      std::string bg_cut = " ";  
-      //for bg
-      int bg_left_low = j_cuts["random_bg_left_low"].get<int>();
-      int bg_left_high = j_cuts["random_bg_left_high"].get<int>();
-      int bg_right_low = j_cuts["random_bg_right_low"].get<int>();
-      int bg_right_high = j_cuts["random_bg_right_high"].get<int>();
-      for(int i = bg_left_low;i<bg_left_high;i=i+2){
-        double bg_main = coin_peak_center_neg+i*4.008;
-        double bg_left = bg_main+cointime_lowcut;
-        double bg_right = bg_main+cointime_highcut;
-        bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
-      }
-      for(int i = bg_right_low;i<bg_right_high;i=i+2){
-        double bg_main = coin_peak_center_neg+i*4.008;
-        double bg_left = bg_main+cointime_lowcut;
-        double bg_right = bg_main+cointime_highcut;
-        bg_cut = bg_cut + " (bg_cointime > "+std::to_string(bg_left)+" && bg_cointime < "+std::to_string(bg_right)+") ||";
-      }
-      bg_cut = bg_cut.substr(0,bg_cut.size()-2);
-      std::cout<<bg_cut<<std::endl;
-
-      auto d_neg_bg_norfcut = d_neg_run
-        .Define("bg_cointime",[](double cointime){return cointime;},{"CTime.ePiCoinTime_ROC2"})
-        .Filter(bg_cut)
-        .Define("diff_time_shift",[offset_neg](double difftime){return difftime+offset_neg;},{"fptime_minus_rf"})
-        .Define("diff_time_mod",[](double difftime){return std::fmod(difftime,4.008);},{"diff_time_shift"})
-        //  .Filter(aeroCutSHMS)
-        ;
-
-      auto d_neg_piall  = d_mod_first
-        .Filter(dp_cut.c_str())
-        //.Filter(aeroCutSHMS)
-        .Filter(SHMS_hgc_aero)
-        ;
-      auto d_neg_Kall = d_mod_first
-        //.Filter("P.aero.npeSum<10")
-        .Filter("P.hgcer.npeSum<2")
-        .Filter(dp_cut.c_str())
-        //.Filter(piCutSHMS)
-        //.Filter(aeroCutSHMS)
-        ;
-      auto d_neg_piall_bg = d_neg_bg_norfcut
-        .Filter(dp_cut.c_str())
-        //.Filter(aeroCutSHMS)
-        .Filter(SHMS_hgc_aero)
-        ;
-      auto d_neg_Kall_bg = d_neg_bg_norfcut
-        //.Filter("P.aero.npeSum<10")
-        .Filter("P.hgcer.npeSum<2")
-        .Filter(dp_cut.c_str())
-        //.Filter(piCutSHMS)
-        //.Filter(aeroCutSHMS)
-        ;
-
-      //statistics for DE efficiency
-      auto h_rf_neg = d_neg_piall.Histo1D({"","neg,rftime,norfcut",100,0,4},"diff_time_mod");
-      auto h_rf_neg_bg = d_neg_piall_bg.Histo1D({"","neg,cal,norfcut",100,0,4},"diff_time_mod");
-      h_rf_neg->Add(h_rf_neg_bg.GetPtr(),-1.0/6); 
-      h_rf_neg_piall->Add(h_rf_neg.GetPtr(),1);
-
-      auto h_rf_neg_K = d_neg_Kall.Histo1D({"","neg,rftime,norfcut",100,0,4},"diff_time_mod");
-      auto h_rf_neg_K_bg = d_neg_Kall_bg.Histo1D({"","neg,cal,norfcut",100,0,4},"diff_time_mod");
-      h_rf_neg_K->Add(h_rf_neg_K_bg.GetPtr(),-1.0/6); 
-      h_rf_neg_Kall->Add(h_rf_neg_K.GetPtr(),1);
-
-      //get mean SHMS momentum 
-      auto h_delta = d_neg_piall.Histo1D({"","",100,-10,20},"P.gtr.dp");
-      auto h_delta_bg = d_neg_piall_bg.Histo1D({"","",100,-10,20},"P.gtr.dp");
-      h_delta->Add(h_delta_bg.GetPtr(),-1.0/6);
-      h_delta_neg_all->Add(h_delta.GetPtr(),1.0);
-  }
-
-  //double delta_mean_neg = h_delta_neg_all->GetMean();
-  //shms_p = shms_p_central*(1+delta_mean_neg/100);
-  //double time_diff = t_K(shms_p) - t_pi(shms_p);
-  //double time_diff_proton = t_proton(shms_p) - t_pi(shms_p);
-  //std::cout<<"time for kaon "<<time_diff<<std::endl;
-
-  double par_neg[6];
-  TCanvas *c_rftime_neg = new TCanvas();
-  gStyle->SetOptTitle(0);
-  gStyle->SetPalette(kBird);
-  //c_rftime_neg->SetGrid();
-  h_rf_neg_Kall->DrawCopy("hist");
-  TF1 *all_neg = new TF1("all fit",fit_all,0.5,1+2*time_diff,6);
-  all_neg->SetLineColor(1);
-  all_neg->SetParameter(1,1);
-  all_neg->SetParLimits(1,0.9,1.1);
-  all_neg->SetParameter(2,0.2);
-  all_neg->SetParameter(4,shms_p);
-  all_neg->FixParameter(4,shms_p);
-  all_neg->SetParameter(5,par_pos[5]);
-  all_neg->FixParameter(5,par_pos[5]);
-  h_rf_neg_Kall->Fit(all_neg);
-  all_neg->GetParameters(&par_neg[0]);
-  TF1* pi_neg_Kall = new TF1("pi",fit_pion,0.5,1.5,3);
-  TF1* K_neg_Kall = new TF1("K",fit_kaondecay,0.5,1+2*time_diff,5);
-  pi_neg_Kall->SetParameters(par_neg[0],par_neg[1],par_neg[2]);
-  K_neg_Kall->SetParameters(par_neg[1],par_neg[2],par_neg[3],par_neg[4],par_neg[5]);
-  pi_neg_Kall->SetLineColor(kRed);
-  K_neg_Kall->SetLineColor(kOrange);
-  pi_neg_Kall->Draw("same");
-  K_neg_Kall->Draw("same");
-  TPaveText* pt_neg = new TPaveText(0.75,0.5,1,0.95,"brNDC");
-  pt_neg->AddText(("RunGroup neg K "+std::to_string(RunGroup)).c_str());
-  pt_neg->AddText(("shms p "+std::to_string(shms_p)).c_str());
-  pt_neg->AddText(("A_{#pi} = "+std::to_string(par_neg[0])).c_str());
-  pt_neg->AddText(("#mu_{#pi} = "+std::to_string(par_neg[1])).c_str());
-  pt_neg->AddText(("#sigma_{#pi} = "+std::to_string(par_neg[2])).c_str());
-  pt_neg->AddText(("Kaon time "+std::to_string(par_neg[1]+time_diff)).c_str());
-  pt_neg->AddText(("A_{#pi} "+std::to_string(par_neg[3])).c_str());
-  pt_neg->AddText(("#mu_{K} = "+std::to_string(par_neg[4])).c_str());
-  pt_neg->AddText(("#sigma_{K} = "+std::to_string(par_neg[5])).c_str());
-  pt_neg->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
-  pt_neg->Draw();
-  c_rftime_neg->Update();
-  std::string c_rftime_neg_name = "results/pid/rftime_new/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+".pdf";
-  c_rftime_neg->SaveAs(c_rftime_neg_name.c_str());
+      double par_neg[6];
+      TCanvas *c_rftime_neg = new TCanvas();
+      gStyle->SetOptTitle(0);
+      gStyle->SetPalette(kBird);
+      //c_rftime_neg->SetGrid();
+      h_rf_neg_Kall->DrawCopy("hist");
+      TF1 *all_neg = new TF1("all fit",fit_all,0.5,1+2*time_diff,6);
+      all_neg->SetLineColor(1);
+      all_neg->SetParameter(1,1);
+      all_neg->SetParLimits(1,0.9,1.1);
+      all_neg->SetParameter(2,0.2);
+      all_neg->SetParameter(4,shms_p);
+      all_neg->FixParameter(4,shms_p);
+      all_neg->SetParameter(5,par_pos[5]);
+      all_neg->FixParameter(5,par_pos[5]);
+      h_rf_neg_Kall->Fit(all_neg);
+      all_neg->GetParameters(&par_neg[0]);
+      TF1* pi_neg_Kall = new TF1("pi",fit_pion,0.5,1.5,3);
+      TF1* K_neg_Kall = new TF1("K",fit_kaondecay,0.5,1+2*time_diff,5);
+      pi_neg_Kall->SetParameters(par_neg[0],par_neg[1],par_neg[2]);
+      K_neg_Kall->SetParameters(par_neg[1],par_neg[2],par_neg[3],par_neg[4],par_neg[5]);
+      pi_neg_Kall->SetLineColor(kRed);
+      K_neg_Kall->SetLineColor(kOrange);
+      pi_neg_Kall->Draw("same");
+      K_neg_Kall->Draw("same");
+      TPaveText* pt_neg = new TPaveText(0.75,0.5,1,0.95,"brNDC");
+      pt_neg->AddText(("RunGroup neg K "+std::to_string(RunGroup)).c_str());
+      pt_neg->AddText(("shms p "+std::to_string(shms_p)).c_str());
+      pt_neg->AddText(("A_{#pi} = "+std::to_string(par_neg[0])).c_str());
+      pt_neg->AddText(("#mu_{#pi} = "+std::to_string(par_neg[1])).c_str());
+      pt_neg->AddText(("#sigma_{#pi} = "+std::to_string(par_neg[2])).c_str());
+      pt_neg->AddText(("Kaon time "+std::to_string(par_neg[1]+time_diff)).c_str());
+      pt_neg->AddText(("A_{#pi} "+std::to_string(par_neg[3])).c_str());
+      pt_neg->AddText(("#mu_{K} = "+std::to_string(par_neg[4])).c_str());
+      pt_neg->AddText(("#sigma_{K} = "+std::to_string(par_neg[5])).c_str());
+      pt_neg->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
+      pt_neg->Draw();
+      c_rftime_neg->Update();
+      std::string c_rftime_neg_name = "results/pid/rftime_new/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+".pdf";
+      c_rftime_neg->SaveAs(c_rftime_neg_name.c_str());
 
 
 
-  double par_neg_pi[6];
-  TCanvas *c_pi_neg = new TCanvas();
-  //c_pi_neg->SetGrid();
-  gStyle->SetOptTitle(0);
-  gStyle->SetPalette(kBird);
-  h_rf_neg_piall->SetMinimum(0);
-  h_rf_neg_piall->DrawCopy("hist");
-  TF1 *all_neg_pi = new TF1("all fit",fit_all,0.5,1+2*time_diff,6);
-  all_neg_pi->SetLineColor(1);
-  all_neg_pi->SetParameter(1,1);
-  all_neg_pi->SetParLimits(1,0.9,1.1);
-  all_neg_pi->SetParameter(2,0.2);
-  all_neg_pi->SetParameter(4,shms_p);
-  all_neg_pi->FixParameter(4,shms_p);
-  all_neg_pi->SetParameter(5,par_pos[5]);
-  all_neg_pi->FixParameter(5,par_pos[5]);
-  h_rf_neg_piall->Fit(all_neg_pi);
-  all_neg_pi->GetParameters(&par_neg_pi[0]);
-  TF1* pi_neg_piall = new TF1("pi",fit_pion,0.5,1.5,3);
-  pi_neg_piall->SetParameters(par_neg_pi[0],par_neg_pi[1],par_neg_pi[2]);
-  TF1* K_neg_piall = new TF1("K",fit_kaondecay,0.5,1+2*time_diff,5);
-  K_neg_piall->SetParameters(par_neg_pi[1],par_neg_pi[2],par_neg_pi[3],par_neg_pi[4],par_neg_pi[5]);
-  pi_neg_piall->SetLineColor(kRed);
-  K_neg_piall->SetLineColor(kOrange);
-  pi_neg_piall->Draw("same");
-  K_neg_piall->Draw("same");
-  double width_neg = h_rf_neg_piall->GetXaxis()->GetBinWidth(1);
-  std::cout<<"Bin width "<<width_neg<<std::endl;
-  double neg_pi_all_pifit = pi_neg_piall->Integral(0,4,width_neg);
-  j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["pi_eff_all"] = neg_pi_all_pifit;
-        j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pi_peak"]["neg"] = par_neg_pi[1];
-  TPaveText* pt_neg_pi = new TPaveText(0.75,0.5,1,0.95,"brNDC");
-  pt_neg_pi->AddText(("RunGroup neg pi "+std::to_string(RunGroup)).c_str());
-  pt_neg_pi->AddText(("shms p "+std::to_string(shms_p)).c_str());
-  pt_neg_pi->AddText(("A_{#pi} = "+std::to_string(par_neg_pi[0])).c_str());
-  pt_neg_pi->AddText(("#mu_{#pi} = "+std::to_string(par_neg_pi[1])).c_str());
-  pt_neg_pi->AddText(("#sigma_{#pi} = "+std::to_string(par_neg_pi[2])).c_str());
-  pt_neg_pi->AddText(("Kaon time "+std::to_string(par_neg_pi[1]+time_diff)).c_str());
-  pt_neg_pi->AddText(("A_{K} = "+std::to_string(par_neg_pi[3])).c_str());
-  pt_neg_pi->AddText(("#mu_{K} = "+std::to_string(par_neg_pi[4])).c_str());
-  pt_neg_pi->AddText(("#sigma_{K} = "+std::to_string(par_neg_pi[5])).c_str());
-  pt_neg_pi->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
-  pt_neg_pi->Draw();
-  c_pi_neg->Update();
-  std::string c_pi_neg_name = "results/pid/rftime_new/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi.pdf";
-  c_pi_neg->SaveAs(c_pi_neg_name.c_str());
-  std::vector<double> n_neg_pi_rf,n_neg_K_rf;
-  std::vector<double> rf_neg_cuts,rf_neg_cuts_low;
-  for(int i = 0;i<rf_cuts.size();++i){
-    //double rf_cut_percent = rf_cuts[i];
-    ////double rf_pi_low = 0.5;
-    //double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
-    //double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
 
-    double rf_pi_low = 1-(rf_cuts[i]-1);
-    double rf_pi_high = rf_cuts[i];
-
-    rf_neg_cuts.push_back(rf_pi_high);
-    rf_neg_cuts_low.push_back(rf_pi_low);
-    double neg_pi_N = pi_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
-    n_neg_pi_rf.push_back(neg_pi_N);
-    double neg_K_N = K_neg_piall->Integral(rf_pi_low,rf_pi_high,width_neg);
-    n_neg_K_rf.push_back(neg_K_N); 
-    std::cout<<neg_K_N<<" "<<neg_pi_N<<" "<<i_dpcut<<std::endl;
-  }
-  j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["rf_cuts_high"] = rf_neg_cuts ;
-  j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["rf_cuts_low"] = rf_neg_cuts_low ;
-  j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["pi_eff_Ns"] = n_neg_pi_rf ;
-  j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]["Ks"] = n_neg_K_rf;
-
-  /*
-  TCanvas *c_pi_neg_2nd = new TCanvas();
-  //c_pi_neg_2nd->SetGrid();
-  gStyle->SetOptTitle(0);
-  gStyle->SetPalette(kBird);
-  h_rf_neg_piall->DrawCopy("hist");
-  pi_neg_piall->GetParameters(&par_neg_pi[0]);
-  K_neg_piall->GetParameters(&par_neg_pi[3]);
-  double sigma_pi_neg = par_neg_pi[2];
-  TLine *l_rf_lowsigma_neg = new TLine(1-3*sigma_pi_neg,0,1-3*sigma_pi_neg,1000);
-  TLine *l_rf_highsigma_neg = new TLine(1+3*sigma_pi_neg,0,1+3*sigma_pi_neg,1000);
-  l_rf_lowsigma_neg->Draw("same");
-  l_rf_highsigma_neg->Draw("same");
-  double neg_pi_N_sigma = all_neg_pi->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
-  //double neg_pi_N_sigma = pi_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
-  double neg_K_N_sigma = K_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
-  std::cout<<"Pi number in fitting "<<neg_pi_N_sigma<<"K number in fitting "<<neg_K_N_sigma<<std::endl;
-  TPaveText* pt_neg_pi_2nd = new TPaveText(0.75,0.5,1,0.95,"brNDC");
-  pt_neg_pi_2nd->AddText(("RunGroup neg pi in 3 sigma "+std::to_string(RunGroup)).c_str());
-  pt_neg_pi_2nd->AddText(("shms p "+std::to_string(shms_p)).c_str());
-  //pt_neg_pi_2nd->AddText(("Pi: p0 = "+std::to_string(par_neg_pi[0])).c_str());
-  pt_neg_pi_2nd->AddText(("#mu_{#pi} = "+std::to_string(par_neg_pi[1])).c_str());
-  pt_neg_pi_2nd->AddText(("#sigma_{#pi} = "+std::to_string(par_neg_pi[2])).c_str());
-  pt_neg_pi_2nd->AddText(("Kaon time "+std::to_string(1+time_diff)).c_str());
-  //pt_neg_pi_2nd->AddText(("K: p0 = "+std::to_string(par_neg_pi[3])).c_str());
-  pt_neg_pi_2nd->AddText(("#mu_{K} = "+std::to_string(par_neg_pi[4])).c_str());
-  pt_neg_pi_2nd->AddText(("#sigma_{K} = "+std::to_string(par_neg_pi[5])).c_str());
-  pt_neg_pi_2nd->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
-  pt_neg_pi_2nd->Draw();
-  c_pi_neg_2nd->Update();
-  std::string c_pi_neg_2nd_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd.pdf";
-  c_pi_neg_2nd->SaveAs(c_pi_neg_2nd_name.c_str());
-  */
-  i_dpcut = i_dpcut+1;
-  delta_lowend = *it;
+      /*
+         TCanvas *c_pi_neg_2nd = new TCanvas();
+      //c_pi_neg_2nd->SetGrid();
+      gStyle->SetOptTitle(0);
+      gStyle->SetPalette(kBird);
+      h_rf_neg_piall->DrawCopy("hist");
+      pi_neg_piall->GetParameters(&par_neg_pi[0]);
+      K_neg_piall->GetParameters(&par_neg_pi[3]);
+      double sigma_pi_neg = par_neg_pi[2];
+      TLine *l_rf_lowsigma_neg = new TLine(1-3*sigma_pi_neg,0,1-3*sigma_pi_neg,1000);
+      TLine *l_rf_highsigma_neg = new TLine(1+3*sigma_pi_neg,0,1+3*sigma_pi_neg,1000);
+      l_rf_lowsigma_neg->Draw("same");
+      l_rf_highsigma_neg->Draw("same");
+      double neg_pi_N_sigma = all_neg_pi->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
+      //double neg_pi_N_sigma = pi_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
+      double neg_K_N_sigma = K_neg_piall->Integral(1-3*sigma_pi_neg,1+3*sigma_pi_neg,width_neg);
+      std::cout<<"Pi number in fitting "<<neg_pi_N_sigma<<"K number in fitting "<<neg_K_N_sigma<<std::endl;
+      TPaveText* pt_neg_pi_2nd = new TPaveText(0.75,0.5,1,0.95,"brNDC");
+      pt_neg_pi_2nd->AddText(("RunGroup neg pi in 3 sigma "+std::to_string(RunGroup)).c_str());
+      pt_neg_pi_2nd->AddText(("shms p "+std::to_string(shms_p)).c_str());
+      //pt_neg_pi_2nd->AddText(("Pi: p0 = "+std::to_string(par_neg_pi[0])).c_str());
+      pt_neg_pi_2nd->AddText(("#mu_{#pi} = "+std::to_string(par_neg_pi[1])).c_str());
+      pt_neg_pi_2nd->AddText(("#sigma_{#pi} = "+std::to_string(par_neg_pi[2])).c_str());
+      pt_neg_pi_2nd->AddText(("Kaon time "+std::to_string(1+time_diff)).c_str());
+      //pt_neg_pi_2nd->AddText(("K: p0 = "+std::to_string(par_neg_pi[3])).c_str());
+      pt_neg_pi_2nd->AddText(("#mu_{K} = "+std::to_string(par_neg_pi[4])).c_str());
+      pt_neg_pi_2nd->AddText(("#sigma_{K} = "+std::to_string(par_neg_pi[5])).c_str());
+      pt_neg_pi_2nd->AddText(("proton time "+std::to_string(1+time_diff_proton)).c_str());
+      pt_neg_pi_2nd->Draw();
+      c_pi_neg_2nd->Update();
+      std::string c_pi_neg_2nd_name = "results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd.pdf";
+      c_pi_neg_2nd->SaveAs(c_pi_neg_2nd_name.c_str());
+      */
+      i_dpcut = i_dpcut+1;
+      delta_lowend = *it;
   }//different delta cut    
 }//if normal production runs
 std::string of_name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_compare.json";

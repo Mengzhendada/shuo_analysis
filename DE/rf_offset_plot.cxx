@@ -33,7 +33,7 @@ void rf_offset_plot(){
   }
   json j_info;
   {
-    std::ifstream ifs("db2/runs_info.json");
+    std::ifstream ifs("db2/runs_info_offset.json");
     ifs>>j_info;
   }
   TGraph* g_neg_D2_fall = new TGraph();

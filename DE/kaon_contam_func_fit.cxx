@@ -123,6 +123,11 @@ void kaon_contam_func_fit(){
     std::ifstream ifs("db2/PID_test.json");
     ifs>>j_DE;
   }
+  json j_runsinfo;
+  {
+    std::ifstream ifs("db2/runs_info.json");
+    ifs>>j_runsinfo;
+  }
   //std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_cuts"].get<std::vector<double>>();
   std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_right_cuts"].get<std::vector<double>>();
 
@@ -164,11 +169,6 @@ void kaon_contam_func_fit(){
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
 
-  json j_runsinfo;
-  {
-    std::ifstream ifs("db2/runs_info.json");
-    ifs>>j_runsinfo;
-  }
     double cointime_lowcut,cointime_highcut;
   cointime_lowcut = j_cuts["cointime_low_fall"].get<double>();
   cointime_highcut = j_cuts["cointime_high_fall"].get<double>();
