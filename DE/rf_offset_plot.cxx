@@ -68,8 +68,11 @@ void rf_offset_plot(){
             i_run_fall_high++;
           }
           else{
-            g_D2_fall_low->SetPoint(i_run_fall_low,RunNumber,offset);
-            i_run_fall_low++;
+            offset = offset+2.004;
+            g_D2_fall_high->SetPoint(i_run_fall_high,RunNumber,offset);
+            i_run_fall_high++;
+            //g_D2_fall_low->SetPoint(i_run_fall_low,RunNumber,offset);
+            //i_run_fall_low++;
           }
         }
         else{
@@ -80,8 +83,11 @@ void rf_offset_plot(){
             i_run_spring_high++;
           }
           else{
-            g_D2_spring_low->SetPoint(i_run_spring_low,RunNumber,offset);
-            i_run_spring_low++;
+            offset = offset+2.004;
+            g_D2_spring_high->SetPoint(i_run_spring_high,RunNumber,offset);
+            i_run_spring_high++;
+            //g_D2_spring_low->SetPoint(i_run_spring_low,RunNumber,offset);
+            //i_run_spring_low++;
           }
         }
 
@@ -98,8 +104,11 @@ void rf_offset_plot(){
             i_run_fall_high++;
           }
           else{
-            g_D2_fall_low->SetPoint(i_run_fall_low,RunNumber,offset);
-            i_run_fall_low++;
+            offset = offset+2.004;
+            g_D2_fall_high->SetPoint(i_run_fall_high,RunNumber,offset);
+            i_run_fall_high++;
+            //g_D2_fall_low->SetPoint(i_run_fall_low,RunNumber,offset);
+            //i_run_fall_low++;
           }
         }
         else{
@@ -110,8 +119,11 @@ void rf_offset_plot(){
             i_run_spring_high++;
           }
           else{
-            g_D2_spring_low->SetPoint(i_run_spring_low,RunNumber,offset);
-            i_run_spring_low++;
+            offset = offset+2.004;
+            g_D2_spring_high->SetPoint(i_run_spring_high,RunNumber,offset);
+            i_run_spring_high++;
+            //g_D2_spring_low->SetPoint(i_run_spring_low,RunNumber,offset);
+            //i_run_spring_low++;
           }
         }
 
@@ -126,7 +138,7 @@ void rf_offset_plot(){
   mg_D2_fall->Add(g_pos_D2_fall,"P");
   TCanvas* c_offset_fall = new TCanvas();
   g_D2_fall_high->Fit("pol0");
-  g_D2_fall_low->Fit("pol0");
+  //g_D2_fall_low->Fit("pol0");
   mg_D2_fall->Draw("AP");
   mg_D2_fall->GetXaxis()->SetTitle("RunNumber");
   mg_D2_fall->GetYaxis()->SetTitle("offset");
@@ -139,7 +151,7 @@ void rf_offset_plot(){
   mg_D2_spring->Add(g_pos_D2_spring,"P");
   TCanvas* c_offset_spring = new TCanvas();
   g_D2_spring_high->Fit("pol0");
-  g_D2_spring_low->Fit("pol0");
+  //g_D2_spring_low->Fit("pol0");
   mg_D2_spring->Draw("AP");
   mg_D2_spring->GetXaxis()->SetTitle("RunNumber");
   mg_D2_spring->GetYaxis()->SetTitle("offset");

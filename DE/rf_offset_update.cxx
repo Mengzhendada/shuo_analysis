@@ -26,10 +26,10 @@ using namespace std;
 #include "ROOT/RSnapshotOptions.hxx"
 //update D2 runs rf offset. all runs has same high/low offset
 void rf_offset_update(){
-  double offset_fall_high = 401.032;
-  double offset_fall_low = 399.006;
-  double offset_spring_high = 400.448;
-  double offset_spring_low = 398.361;
+  double offset_fall_high = 401.016;
+  double offset_fall_low = 399.012;
+  double offset_spring_high = 400.436;
+  double offset_spring_low = 398.432;
   json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");

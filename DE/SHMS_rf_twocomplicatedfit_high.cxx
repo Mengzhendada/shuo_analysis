@@ -91,9 +91,11 @@ double gaus_fun_pion_kaondecay(double* x, double* pa) {
   return gaus_shape;
 }
 double fit_kaondecay(double* x, double* params) {
-  // params[0] is the amplitude of nodecay kaon need to be determined by fitting
-  // params[1] is the momentum, the mean peak is calculated by the momentum, need to be fixed to be
-  // what it is params[2] is the sigma of the nodecay kaon, need to be determined by fitting
+  // params[0] is the pion peak positon
+  // params[1] is the pion sigma, not used here
+  // params[2] is the amplitude of nodecay kaon need to be determined by fitting
+  // params[3] is the momentum, the mean peak is calculated by the momentum, need to be fixed to be
+  // what it is params[4] is the sigma of the nodecay kaon, need to be determined by fitting
   double        all_kaon = 0;
   std::ifstream infile("db2/kaoncontam.inp");
   // std::cout<<"type meter prob_left prob_right a b c d e f "<<std::endl;
@@ -204,7 +206,7 @@ public:
   ROOT::Math::IBaseFunctionMultiDim * 	Clone () const { return new  RFTimeFitFCN(*this); }
  
   // NDim is the number of fit parameters
-  unsigned int 	NDim () const { return 5;}
+  unsigned int 	NDim () const { return 9;}
 
   double DoEval (const double *x) const {
     double A_pi     = x[0];
@@ -212,21 +214,31 @@ public:
     double sigma_pi = x[2];
     double A_K      = x[3];
     double sigma_K  = x[4];
+    double A_pi_pos     = x[5];
+    //double mu_piK   = x[1];//same as negative
+    double sigma_pi_pos = x[6];
+    double A_K_pos      = x[7];
+    double sigma_K_pos  = x[8];
 
     double chi2 = 0; 
-    std::cout <<  "A_pi       = " << A_pi     << "\n";
+    std::cout <<  "A_pi_neg       = " << A_pi     << "\n";
     std::cout <<  "mu_piK     = " << mu_piK   << "\n";
-    std::cout <<  "sigma_pi   = " << sigma_pi << "\n";
-    std::cout <<  "A_K        = " << A_K      << "\n";
-    std::cout <<  "sigma_K    = " << sigma_K  << "\n";
+    std::cout <<  "sigma_pi_neg   = " << sigma_pi << "\n";
+    std::cout <<  "A_K_neg        = " << A_K      << "\n";
+    std::cout <<  "sigma_K_neg    = " << sigma_K  << "\n";
+    std::cout <<  "A_pi_pos       = " << A_pi_pos     << "\n";
+    //std::cout <<  "mu_piK     = " << mu_piK   << "\n";
+    std::cout <<  "sigma_pi_pos   = " << sigma_pi_pos << "\n";
+    std::cout <<  "A_K_pos        = " << A_K_pos      << "\n";
+    std::cout <<  "sigma_K_pos    = " << sigma_K_pos  << "\n";
 
     int n_bins  = h_positive->GetNbinsX();
     for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
       double x_bin = h_positive->GetBinCenter(i_bin);
       double y_bin = h_positive->GetBinContent(i_bin);
       double dy_bin = h_positive->GetBinError(i_bin);
-      double y_function = kaon_part(x_bin, mu_piK, sigma_pi,  A_K, sigma_K ) +
-                          pion_part(x_bin, A_pi, mu_piK, sigma_pi);
+      double y_function = kaon_part(x_bin, mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos ) +
+                          pion_part(x_bin, A_pi_pos, mu_piK, sigma_pi_pos);
       double chi = (y_bin - y_function)/dy_bin;
       chi2 += chi*chi;
       //std::cout << " chi2(i=" << i_bin << ") = " << chi*chi << "\n";
@@ -555,103 +567,6 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       double time_diff_proton = t_proton(shms_p) - t_pi(shms_p);
       std::cout << "time for kaon " << time_diff << std::endl;
 
-      double   par_pos[6];
-      TCanvas* c_rftime_pos = new TCanvas();
-      gStyle->SetOptTitle(0);
-      gStyle->SetPalette(kBird);
-      h_rf_pos_Kall->DrawCopy("hist");
-
-
-      //TF1* all_pos = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 6);
-      //all_pos->SetLineColor(1);
-      //all_pos->SetParameter(1, 1);
-      //all_pos->SetParLimits(1, 0.9, 1.1);
-      //all_pos->SetParameter(2, 0.2);
-      //all_pos->FixParameter(2, 0.2);
-      //all_pos->SetParameter(4, shms_p);
-      //all_pos->FixParameter(4, shms_p);
-      //all_pos->SetParameter(5, 0.3);
-      //h_rf_pos_Kall->Fit(all_pos);
-      //all_pos->GetParameters(&par_pos[0]);
-      //TF1* pi_pos_Kall = new TF1("pi", fit_pion, 0.5, 1.5, 3);
-      //TF1* K_pos_Kall  = new TF1("K", fit_kaondecay, 0.5, 1 + 2 * time_diff, 5);
-      //pi_pos_Kall->SetParameters(par_pos[0], par_pos[1], par_pos[2]);
-      //K_pos_Kall->SetParameters(par_pos[1], par_pos[2], par_pos[3], par_pos[4], par_pos[5]);
-      //pi_pos_Kall->SetLineColor(kRed);
-      //K_pos_Kall->SetLineColor(kOrange);
-      //pi_pos_Kall->Draw("same");
-      //K_pos_Kall->Draw("same");
-      //TPaveText* pt_pos = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
-      //pt_pos->AddText(("RunGroup pos K " + std::to_string(RunGroup)).c_str());
-      //pt_pos->AddText(("shms p " + std::to_string(shms_p)).c_str());
-      //pt_pos->AddText(("A_{#pi} = " + std::to_string(par_pos[0])).c_str());
-      //pt_pos->AddText(("#mu_{#pi} = " + std::to_string(par_pos[1])).c_str());
-      //pt_pos->AddText(("#sigma_{#pi} = " + std::to_string(par_pos[2])).c_str());
-      //pt_pos->AddText(("Kaon time " + std::to_string(par_pos[1] + time_diff)).c_str());
-      //pt_pos->AddText(("A_{K} = " + std::to_string(par_pos[3])).c_str());
-      //pt_pos->AddText(("#mu_{K} = " + std::to_string(par_pos[1] + time_diff)).c_str());
-      //pt_pos->AddText(("#sigma_{K} = " + std::to_string(par_pos[5])).c_str());
-      //pt_pos->AddText(("proton time " + std::to_string(1 + time_diff_proton)).c_str());
-      //pt_pos->Draw();
-      //c_rftime_pos->Update();
-      //std::string c_rftime_pos_name = "results/pid/rftime_new/rftime_pos_" +
-      //                                std::to_string(RunGroup) + "_" + std::to_string(i_dpcut) +
-      //                                ".pdf";
-      //c_rftime_pos->SaveAs(c_rftime_pos_name.c_str());
-
-      //double   par_pos_pi[6];
-      //TCanvas* c_pi_pos = new TCanvas();
-      //////c_pi_pos->SetGrid();
-      //gStyle->SetOptTitle(0);
-      //gStyle->SetPalette(kBird);
-      //h_rf_pos_piall->SetMinimum(0);
-      //h_rf_pos_piall->DrawCopy("hist");
-      //TF1* all_pos_pi = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 6);
-      //all_pos_pi->SetLineColor(1);
-      //all_pos_pi->SetParameter(1, 1);
-      //all_pos_pi->SetParLimits(1, 0.9, 1.1);
-      //all_pos_pi->SetParameter(2, par_pos[2]);
-      //all_pos_pi->SetParameter(4, shms_p);
-      //all_pos_pi->FixParameter(4, shms_p);
-      //all_pos_pi->SetParameter(5, par_pos[5]);
-      //all_pos_pi->FixParameter(5, par_pos[5]);
-      //// all_pos_pi->FixParameter(5,par_pos[5]);
-      //h_rf_pos_piall->Fit(all_pos_pi);
-      //all_pos_pi->GetParameters(&par_pos_pi[0]);
-      //TF1* pi_pos_piall = new TF1("pion fit", fit_pion, 0.5, 2, 3);
-      //pi_pos_piall->SetParameters(par_pos_pi[0], par_pos_pi[1], par_pos_pi[2]);
-      //TF1* K_pos_piall = new TF1("K", fit_kaondecay, 0.5, 1 + 2 * time_diff, 5);
-      //K_pos_piall->SetParameters(par_pos_pi[1], par_pos_pi[2], par_pos_pi[3], par_pos_pi[4],
-      //                           par_pos_pi[5]);
-      //pi_pos_piall->SetLineColor(kRed);
-      //K_pos_piall->SetLineColor(kOrange);
-      //pi_pos_piall->Draw("same");
-      //K_pos_piall->Draw("same");
-      //double width_pos = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
-      //std::cout << "Bin width " << width_pos << std::endl;
-      //double pos_pi_all_pifit = pi_pos_piall->Integral(0, 4, width_pos);
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["pi_eff_all"] = pos_pi_all_pifit;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
-      //               ["shms_p"] = shms_p;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
-      //               ["pi_peak"]["pos"] = par_pos_pi[1];
-      //TPaveText* pt_pos_pi              = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
-      //pt_pos_pi->AddText(("RunGroup pos pi " + std::to_string(RunGroup)).c_str());
-      //pt_pos_pi->AddText(("shms p " + std::to_string(shms_p)).c_str());
-      //pt_pos_pi->AddText(("A_{#pi} = " + std::to_string(par_pos_pi[0])).c_str());
-      //pt_pos_pi->AddText(("#mu_{#pi} = " + std::to_string(par_pos_pi[1])).c_str());
-      //pt_pos_pi->AddText(("#sigma_{#pi} = " + std::to_string(par_pos_pi[2])).c_str());
-      //pt_pos_pi->AddText(("Kaon time " + std::to_string(par_pos_pi[1] + time_diff)).c_str());
-      //pt_pos_pi->AddText(("A_{K} = " + std::to_string(par_pos_pi[3])).c_str());
-      //// pt_pos_pi->AddText(("#mu_{K} = "+std::to_string(par_pos_pi[1]+time_diff)).c_str());
-      //pt_pos_pi->AddText(("#sigma_{K} = " + std::to_string(par_pos_pi[5])).c_str());
-      //pt_pos_pi->AddText(("proton time " + std::to_string(1 + time_diff_proton)).c_str());
-      //pt_pos_pi->Draw();
-      //c_pi_pos->Update();
-      //std::string c_pi_pos_name = "results/pid/rftime_new/rftime_pos_" + std::to_string(RunGroup) +
-      //                            "_" + std::to_string(i_dpcut) + "_pi.pdf";
-      //c_pi_pos->SaveAs(c_pi_pos_name.c_str());
 
       //std::vector<double> n_pos_pi_rf, n_pos_K_rf;
       //std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
@@ -880,21 +795,15 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       // double time_diff_proton = t_proton(shms_p) - t_pi(shms_p);
       // std::cout<<"time for kaon "<<time_diff<<std::endl;
 
-      double   par_neg[6];
-      TCanvas* c_rftime_neg = new TCanvas();
-      gStyle->SetOptTitle(0);
-      gStyle->SetPalette(kBird);
-      // c_rftime_neg->SetGrid();
-      h_rf_neg_Kall->DrawCopy("hist");
-      TF1* all_neg = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 6);
-      all_neg->SetLineColor(1);
-      all_neg->SetParameter(1, 1);
-      all_neg->SetParLimits(1, 0.9, 1.1);
-      all_neg->SetParameter(2, 0.2);
-      all_neg->SetParameter(4, shms_p);
-      all_neg->FixParameter(4, shms_p);
-      all_neg->SetParameter(5, par_pos[5]);
-      all_neg->FixParameter(5, par_pos[5]);
+      //TF1* all_neg = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 6);
+      //all_neg->SetLineColor(1);
+      //all_neg->SetParameter(1, 1);
+      //all_neg->SetParLimits(1, 0.9, 1.1);
+      //all_neg->SetParameter(2, 0.2);
+      //all_neg->SetParameter(4, shms_p);
+      //all_neg->FixParameter(4, shms_p);
+      //all_neg->SetParameter(5, par_pos[5]);
+      //all_neg->FixParameter(5, par_pos[5]);
 
       ROOT::Math::Minimizer* minimum =
       ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
@@ -904,49 +813,152 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       minimum->SetTolerance(0.01);
       minimum->SetPrintLevel(2);
 
-      RFTimeFitFCN f(h_rf_pos_piall,h_rf_neg_piall,shms_p);
+      RFTimeFitFCN f(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
       minimum->SetFunction(f);
 
       // Set the free variables to be minimized !
-      minimum->SetVariable(0,"A_{#pi}",     100.0,  1 );
-      minimum->SetLimitedVariable(1,"#mu",          1.0,  0.01, 0.9, 1.1);
-      minimum->SetVariable(2,"#sigma_{#pi}", 0.2,  0.001);
-      minimum->SetVariable(3,"A_{K}",        2.0,  1.0 );
-      minimum->SetVariable(4,"#sigma_{K}",   0.2,  0.001);
+      minimum->SetVariable(0,"A_{#pi,neg}",     100.0,  1 );
+      minimum->SetLimitedVariable(1,"#mu",          1.0,  0.01, 0.8, 1.2);
+      //minimum->SetVariable(2,"#sigma_{#pi,neg}", 0.2,  0.001);
+      minimum->SetLimitedVariable(2,"#sigma_{#pi,neg}", 0.2,  0.001,0.18,0.22);
+      minimum->SetVariable(3,"A_{K,neg}",        2.0,  1.0 );
+      minimum->SetVariable(4,"#sigma_{K,neg}",   0.2,  0.001);
+      minimum->SetVariable(5,"A_{#pi,pos}",     100.0,  1 );
+      //minimum->SetLimitedVariable(1,"#mu",          1.0,  0.01, 0.8, 1.2);
+      minimum->SetVariable(6,"#sigma_{#pi,pos}", 0.2,  0.001);
+      minimum->SetVariable(7,"A_{K,pos}",        2.0,  1.0 );
+      minimum->SetVariable(8,"#sigma_{K,pos}",   0.2,  0.001);
       // do the minimization
       minimum->Minimize();
 
       const double *min_pars = minimum->X();
 
+      TCanvas* c_rftime_pos = new TCanvas();
+      gStyle->SetOptTitle(0);
+      gStyle->SetPalette(kBird);
+      h_rf_pos_Kall->DrawCopy("hist");
+      //TF1* all_pos = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 6);
+      //all_pos->SetLineColor(1);
+      //all_pos->SetParameter(1, 1);
+      //all_pos->SetParLimits(1, 0.9, 1.1);
+      //all_pos->SetParameter(2, 0.2);
+      //all_pos->FixParameter(2, 0.2);
+      //all_pos->SetParameter(4, shms_p);
+      //all_pos->FixParameter(4, shms_p);
+      //all_pos->SetParameter(5, 0.3);
+      //h_rf_pos_Kall->Fit(all_pos);
+      //all_pos->GetParameters(&par_pos[0]);
+      TF1* pi_pos_Kall = new TF1("pi", fit_pion, 0.5, 1.5, 3);
+      TF1* K_pos_Kall  = new TF1("K", fit_kaondecay, 0.5, 1 + 2 * time_diff, 5);
+      pi_pos_Kall->SetParameters(min_pars[5], min_pars[1], min_pars[6]);
+      K_pos_Kall->SetParameters(min_pars[1], min_pars[6], min_pars[7], shms_p, min_pars[8]);
+      pi_pos_Kall->SetLineColor(kRed);
+      K_pos_Kall->SetLineColor(kOrange);
+      pi_pos_Kall->Draw("same");
+      K_pos_Kall->Draw("same");
+      TPaveText* pt_pos = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
+      pt_pos->AddText(("RunGroup pos K " + std::to_string(RunGroup)).c_str());
+      pt_pos->AddText(("shms p " + std::to_string(shms_p)).c_str());
+      pt_pos->AddText(("A_{#pi} = " + std::to_string(min_pars[5])).c_str());
+      pt_pos->AddText(("#mu_{#pi} = " + std::to_string(min_pars[1])).c_str());
+      pt_pos->AddText(("#sigma_{#pi} = " + std::to_string(min_pars[6])).c_str());
+      pt_pos->AddText(("Kaon time " + std::to_string(min_pars[1] + time_diff)).c_str());
+      pt_pos->AddText(("A_{K} = " + std::to_string(min_pars[7])).c_str());
+      //pt_pos->AddText(("#mu_{K} = " + std::to_string(min_pars[1] + time_diff)).c_str());
+      pt_pos->AddText(("#sigma_{K} = " + std::to_string(min_pars[8])).c_str());
+      pt_pos->AddText(("proton time " + std::to_string(1 + time_diff_proton)).c_str());
+      pt_pos->Draw();
+      c_rftime_pos->Update();
+      std::string c_rftime_pos_name = "results/pid/rftime_new/rftime_pos_" +
+                                      std::to_string(RunGroup) + "_" + std::to_string(i_dpcut) +
+                                      ".pdf";
+      c_rftime_pos->SaveAs(c_rftime_pos_name.c_str());
+
+      //TCanvas* c_pi_pos = new TCanvas();
+      //////c_pi_pos->SetGrid();
+      //gStyle->SetOptTitle(0);
+      //gStyle->SetPalette(kBird);
+      //h_rf_pos_piall->SetMinimum(0);
+      //h_rf_pos_piall->DrawCopy("hist");
+      //TF1* all_pos_pi = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 6);
+      //all_pos_pi->SetLineColor(1);
+      //all_pos_pi->SetParameter(1, 1);
+      //all_pos_pi->SetParLimits(1, 0.9, 1.1);
+      //all_pos_pi->SetParameter(2, par_pos[2]);
+      //all_pos_pi->SetParameter(4, shms_p);
+      //all_pos_pi->FixParameter(4, shms_p);
+      //all_pos_pi->SetParameter(5, par_pos[5]);
+      //all_pos_pi->FixParameter(5, par_pos[5]);
+      //// all_pos_pi->FixParameter(5,par_pos[5]);
+      //h_rf_pos_piall->Fit(all_pos_pi);
+      //all_pos_pi->GetParameters(&par_pos_pi[0]);
+      //TF1* pi_pos_piall = new TF1("pion fit", fit_pion, 0.5, 2, 3);
+      //pi_pos_piall->SetParameters(par_pos_pi[0], par_pos_pi[1], par_pos_pi[2]);
+      //TF1* K_pos_piall = new TF1("K", fit_kaondecay, 0.5, 1 + 2 * time_diff, 5);
+      //K_pos_piall->SetParameters(par_pos_pi[1], par_pos_pi[2], par_pos_pi[3], par_pos_pi[4],
+      //                           par_pos_pi[5]);
+      //pi_pos_piall->SetLineColor(kRed);
+      //K_pos_piall->SetLineColor(kOrange);
+      //pi_pos_piall->Draw("same");
+      //K_pos_piall->Draw("same");
+      //double width_pos = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
+      //std::cout << "Bin width " << width_pos << std::endl;
+      //double pos_pi_all_pifit = pi_pos_piall->Integral(0, 4, width_pos);
+      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+      //               ["pi_eff_all"] = pos_pi_all_pifit;
+      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
+      //               ["shms_p"] = shms_p;
+      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
+      //               ["pi_peak"]["pos"] = par_pos_pi[1];
+      //TPaveText* pt_pos_pi              = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
+      //pt_pos_pi->AddText(("RunGroup pos pi " + std::to_string(RunGroup)).c_str());
+      //pt_pos_pi->AddText(("shms p " + std::to_string(shms_p)).c_str());
+      //pt_pos_pi->AddText(("A_{#pi} = " + std::to_string(par_pos_pi[0])).c_str());
+      //pt_pos_pi->AddText(("#mu_{#pi} = " + std::to_string(par_pos_pi[1])).c_str());
+      //pt_pos_pi->AddText(("#sigma_{#pi} = " + std::to_string(par_pos_pi[2])).c_str());
+      //pt_pos_pi->AddText(("Kaon time " + std::to_string(par_pos_pi[1] + time_diff)).c_str());
+      //pt_pos_pi->AddText(("A_{K} = " + std::to_string(par_pos_pi[3])).c_str());
+      //// pt_pos_pi->AddText(("#mu_{K} = "+std::to_string(par_pos_pi[1]+time_diff)).c_str());
+      //pt_pos_pi->AddText(("#sigma_{K} = " + std::to_string(par_pos_pi[5])).c_str());
+      //pt_pos_pi->AddText(("proton time " + std::to_string(1 + time_diff_proton)).c_str());
+      //pt_pos_pi->Draw();
+      //c_pi_pos->Update();
+      //std::string c_pi_pos_name = "results/pid/rftime_new/rftime_pos_" + std::to_string(RunGroup) +
+      //                            "_" + std::to_string(i_dpcut) + "_pi.pdf";
+      //c_pi_pos->SaveAs(c_pi_pos_name.c_str());
+      TCanvas* c_rftime_neg = new TCanvas();
+      gStyle->SetOptTitle(0);
+      gStyle->SetPalette(kBird);
+      // c_rftime_neg->SetGrid();
+      h_rf_neg_Kall->DrawCopy("hist");
       //h_rf_neg_Kall->Fit(all_neg);
       //all_neg->GetParameters(&par_neg[0]);
-      //TF1* pi_neg_Kall = new TF1("pi", fit_pion, 0.5, 1.5, 3);
-      //TF1* K_neg_Kall  = new TF1("K", fit_kaondecay, 0.5, 1 + 2 * time_diff, 5);
-      //pi_neg_Kall->SetParameters(par_neg[0], par_neg[1], par_neg[2]);
-      //K_neg_Kall->SetParameters(par_neg[1], par_neg[2], par_neg[3], par_neg[4], par_neg[5]);
-      //pi_neg_Kall->SetLineColor(kRed);
-      //K_neg_Kall->SetLineColor(kOrange);
-      //pi_neg_Kall->Draw("same");
-      //K_neg_Kall->Draw("same");
-      //TPaveText* pt_neg = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
-      //pt_neg->AddText(("RunGroup neg K " + std::to_string(RunGroup)).c_str());
-      //pt_neg->AddText(("shms p " + std::to_string(shms_p)).c_str());
-      //pt_neg->AddText(("A_{#pi} = " + std::to_string(par_neg[0])).c_str());
-      //pt_neg->AddText(("#mu_{#pi} = " + std::to_string(par_neg[1])).c_str());
-      //pt_neg->AddText(("#sigma_{#pi} = " + std::to_string(par_neg[2])).c_str());
-      //pt_neg->AddText(("Kaon time " + std::to_string(par_neg[1] + time_diff)).c_str());
-      //pt_neg->AddText(("A_{#pi} " + std::to_string(par_neg[3])).c_str());
-      //pt_neg->AddText(("#mu_{K} = " + std::to_string(par_neg[4])).c_str());
-      //pt_neg->AddText(("#sigma_{K} = " + std::to_string(par_neg[5])).c_str());
-      //pt_neg->AddText(("proton time " + std::to_string(1 + time_diff_proton)).c_str());
-      //pt_neg->Draw();
-      //c_rftime_neg->Update();
-      //std::string c_rftime_neg_name = "results/pid/rftime_new/rftime_neg_" +
-      //                                std::to_string(RunGroup) + "_" + std::to_string(i_dpcut) +
-      //                                ".pdf";
-      //c_rftime_neg->SaveAs(c_rftime_neg_name.c_str());
+      TF1* pi_neg_Kall = new TF1("pi", fit_pion, 0.5, 1.5, 3);
+      TF1* K_neg_Kall  = new TF1("K", fit_kaondecay, 0.5, 1 + 2 * time_diff, 5);
+      pi_neg_Kall->SetParameters(min_pars[0], min_pars[1], min_pars[2]);
+      K_neg_Kall->SetParameters(min_pars[1], min_pars[2], min_pars[3], min_pars[4], min_pars[5]);
+      pi_neg_Kall->SetLineColor(kRed);
+      K_neg_Kall->SetLineColor(kOrange);
+      pi_neg_Kall->Draw("same");
+      K_neg_Kall->Draw("same");
+      TPaveText* pt_neg = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
+      pt_neg->AddText(("RunGroup neg K " + std::to_string(RunGroup)).c_str());
+      pt_neg->AddText(("shms p " + std::to_string(shms_p)).c_str());
+      pt_neg->AddText(("A_{#pi} = " + std::to_string(min_pars[0])).c_str());
+      pt_neg->AddText(("#mu_{#pi} = " + std::to_string(min_pars[1])).c_str());
+      pt_neg->AddText(("#sigma_{#pi} = " + std::to_string(min_pars[2])).c_str());
+      pt_neg->AddText(("Kaon time " + std::to_string(min_pars[1] + time_diff)).c_str());
+      pt_neg->AddText(("A_{#pi} " + std::to_string(min_pars[3])).c_str());
+      //pt_neg->AddText(("#mu_{K} = " + std::to_string(min_pars[4])).c_str());
+      pt_neg->AddText(("#sigma_{K} = " + std::to_string(min_pars[4])).c_str());
+      pt_neg->AddText(("proton time " + std::to_string(1 + time_diff_proton)).c_str());
+      pt_neg->Draw();
+      c_rftime_neg->Update();
+      std::string c_rftime_neg_name = "results/pid/rftime_new/rftime_neg_" +
+                                      std::to_string(RunGroup) + "_" + std::to_string(i_dpcut) +
+                                      ".pdf";
+      c_rftime_neg->SaveAs(c_rftime_neg_name.c_str());
 
-      //double   par_neg_pi[6];
       //TCanvas* c_pi_neg = new TCanvas();
       //// c_pi_neg->SetGrid();
       //gStyle->SetOptTitle(0);
@@ -1059,7 +1071,7 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       //"results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd.pdf";
       //c_pi_neg_2nd->SaveAs(c_pi_neg_2nd_name.c_str());
       //*/
-      //i_dpcut      = i_dpcut + 1;
+      i_dpcut      = i_dpcut + 1;
       //delta_lowend = *it;
     } // different delta cut
   }   // if normal production runs
