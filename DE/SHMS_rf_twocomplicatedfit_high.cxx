@@ -568,33 +568,6 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       std::cout << "time for kaon " << time_diff << std::endl;
 
 
-      //std::vector<double> n_pos_pi_rf, n_pos_K_rf;
-      //std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
-      //for (int i = 0; i < rf_cuts.size(); ++i) {
-      //  // double rf_cut_percent = rf_cuts[i];
-      //  // double rf_pi_low = 0.5;
-      //  // double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
-      //  // double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
-
-      //  double rf_pi_low  = 1 - (rf_cuts[i] - 1);
-      //  double rf_pi_high = rf_cuts[i];
-
-      //  rf_pos_cuts.push_back(rf_pi_high);
-      //  rf_pos_cuts_low.push_back(rf_pi_low);
-      //  double pos_pi_N = pi_pos_piall->Integral(rf_pi_low, rf_pi_high, width_pos);
-      //  n_pos_pi_rf.push_back(pos_pi_N);
-      //  double pos_K_N = K_pos_piall->Integral(rf_pi_low, rf_pi_high, width_pos);
-      //  n_pos_K_rf.push_back(pos_K_N);
-      //  std::cout << pos_K_N << " " << pos_pi_N << " " << i_dpcut << std::endl;
-      //}
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["rf_cuts_high"] = rf_pos_cuts;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["rf_cuts_low"] = rf_pos_cuts_low;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["pi_eff_Ns"] = n_pos_pi_rf;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["Ks"] = n_pos_K_rf;
 
       // TCanvas *c_pi_pos_2nd = new TCanvas();
       ////c_pi_pos_2nd->SetGrid();
@@ -976,15 +949,18 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       all_pos_pi->SetParameters(min_pi_pars[0],min_pi_pars[1],min_pi_pars[2],min_pi_pars[3],shms_p,min_pi_pars[4]);
       all_pos_pi->SetLineColor(kBlack);
       all_pos_pi->Draw("same");
-      //double width_pos = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
-      //std::cout << "Bin width " << width_pos << std::endl;
-      //double pos_pi_all_pifit = pi_pos_piall->Integral(0, 4, width_pos);
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["pi_eff_all"] = pos_pi_all_pifit;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
-      //               ["shms_p"] = shms_p;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
-      //               ["pi_peak"]["pos"] = par_pos_pi[1];
+      
+      //for pi efficiency, integral the pion peak
+      double width_pos = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
+      std::cout << "Bin width " << width_pos << std::endl;
+      double pos_pi_all_pifit = pi_pos_piall->Integral(0, 4, width_pos);
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+                     ["pi_eff_all"] = pos_pi_all_pifit;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
+                     ["shms_p"] = shms_p;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
+                     ["pi_peak"]["pos"] = min_pi_pars[1];//this the the pion peak mu
+      
       TPaveText* pt_pos_pi              = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
       pt_pos_pi->AddText(("RunGroup pos K " + std::to_string(RunGroup)).c_str());
       pt_pos_pi->AddText(("shms p " + std::to_string(shms_p)).c_str());
@@ -1032,13 +1008,16 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       all_neg_pi->SetParameters(min_pi_pars[0],min_pi_pars[1],min_pi_pars[2],min_pi_pars[3],shms_p,min_pi_pars[4]);
       all_neg_pi->SetLineColor(kBlack);
       all_neg_pi->Draw("same");
-      //double width_neg = h_rf_neg_piall->GetXaxis()->GetBinWidth(1);
-      //std::cout << "Bin width " << width_neg << std::endl;
-      //double neg_pi_all_pifit = pi_neg_piall->Integral(0, 4, width_neg);
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
-      //               ["pi_eff_all"] = neg_pi_all_pifit;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
-      //               ["pi_peak"]["neg"] = min_pi_pars[1];
+      
+      //integral for pion efficiency
+      double width_neg = h_rf_neg_piall->GetXaxis()->GetBinWidth(1);
+      std::cout << "Bin width " << width_neg << std::endl;
+      double neg_pi_all_pifit = pi_neg_piall->Integral(0, 4, width_neg);
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
+                     ["pi_eff_all"] = neg_pi_all_pifit;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]
+                     ["pi_peak"]["neg"] = min_pi_pars[1];//pion peak mu
+
       TPaveText* pt_neg_pi              = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
       pt_neg_pi->AddText(("RunGroup neg pi " + std::to_string(RunGroup)).c_str());
       pt_neg_pi->AddText(("shms p " + std::to_string(shms_p)).c_str());
@@ -1055,6 +1034,35 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       std::string c_pi_neg_name = "results/pid/rftime_new/rftime_neg_" + std::to_string(RunGroup) +
                                   "_" + std::to_string(i_dpcut) + "_pi.pdf";
       c_pi_neg->SaveAs(c_pi_neg_name.c_str());
+      
+      //numbers for the pion purity
+      //std::vector<double> n_pos_pi_rf, n_pos_K_rf;
+      //std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
+      //for (int i = 0; i < rf_cuts.size(); ++i) {
+      //  // double rf_cut_percent = rf_cuts[i];
+      //  // double rf_pi_low = 0.5;
+      //  // double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
+      //  // double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+
+      //  double rf_pi_low  = 1 - (rf_cuts[i] - 1);
+      //  double rf_pi_high = rf_cuts[i];
+
+      //  rf_pos_cuts.push_back(rf_pi_high);
+      //  rf_pos_cuts_low.push_back(rf_pi_low);
+      //  double pos_pi_N = pi_pos_piall->Integral(rf_pi_low, rf_pi_high, width_pos);
+      //  n_pos_pi_rf.push_back(pos_pi_N);
+      //  double pos_K_N = K_pos_piall->Integral(rf_pi_low, rf_pi_high, width_pos);
+      //  n_pos_K_rf.push_back(pos_K_N);
+      //  std::cout << pos_K_N << " " << pos_pi_N << " " << i_dpcut << std::endl;
+      //}
+      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+      //               ["rf_cuts_high"] = rf_pos_cuts;
+      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+      //               ["rf_cuts_low"] = rf_pos_cuts_low;
+      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+      //               ["pi_eff_Ns"] = n_pos_pi_rf;
+      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+      //               ["Ks"] = n_pos_K_rf;
       //std::vector<double> n_neg_pi_rf, n_neg_K_rf;
       //std::vector<double> rf_neg_cuts, rf_neg_cuts_low;
       //for (int i = 0; i < rf_cuts.size(); ++i) {
