@@ -214,7 +214,8 @@ public:
     double sigma_pi = x[2];
     double A_K      = x[3];
     double sigma_K  = x[4];
-    double A_pi_pos     = x[5];
+    double A_pi_pos = x[5];
+    double A_K_pos  = x[6];
     //double mu_piK   = x[1];//same as negative
     double sigma_pi_pos = x[2];//same as negative
     double A_K_pos      = x[6];
@@ -222,15 +223,15 @@ public:
 
     double chi2 = 0; 
     std::cout <<  "A_pi_neg       = " << A_pi     << "\n";
-    std::cout <<  "mu_piK     = " << mu_piK   << "\n";
+    std::cout <<  "mu_piK         = " << mu_piK   << "\n";
     std::cout <<  "sigma_pi_neg   = " << sigma_pi << "\n";
     std::cout <<  "A_K_neg        = " << A_K      << "\n";
     std::cout <<  "sigma_K_neg    = " << sigma_K  << "\n";
     std::cout <<  "A_pi_pos       = " << A_pi_pos     << "\n";
     //std::cout <<  "mu_piK     = " << mu_piK   << "\n";
-    std::cout <<  "sigma_pi_pos   = " << sigma_pi_pos << "\n";
+    //std::cout <<  "sigma_pi_pos   = " << sigma_pi_pos << "\n";
     std::cout <<  "A_K_pos        = " << A_K_pos      << "\n";
-    std::cout <<  "sigma_K_pos    = " << sigma_K_pos  << "\n";
+    //std::cout <<  "sigma_K_pos    = " << sigma_K_pos  << "\n";
 
     int n_bins  = h_positive->GetNbinsX();
     for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
@@ -817,16 +818,15 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       minimum->SetFunction(f);
 
       // Set the free variables to be minimized !
-      minimum->SetVariable(0,"A_{#pi,neg}",     100.0,  1 );
-      minimum->SetLimitedVariable(1,"#mu",          1.0,  0.01, 0.8, 1.2);
-      //minimum->SetVariable(2,"#sigma_{#pi,neg}", 0.2,  0.001);
+      minimum->SetVariable(       0,"A_{#pi,neg}     ",     100.0,  1 );
+      minimum->SetLimitedVariable(1,"#mu             ",          1.0,  0.01, 0.8, 1.2);
       minimum->SetLimitedVariable(2,"#sigma_{#pi,neg}", 0.2,  0.001,0.18,0.22);
-      minimum->SetVariable(3,"A_{K,neg}",        2.0,  1.0 );
-      minimum->SetVariable(4,"#sigma_{K,neg}",   0.2,  0.001);
-      minimum->SetVariable(5,"A_{#pi,pos}",     100.0,  1 );
+      minimum->SetVariable(       3,"A_{K,neg}       ",        2.0,  1.0 );
+      minimum->SetVariable(       4,"#sigma_{K,neg}  ",   0.2,  0.001);
+      minimum->SetVariable(       5,"A_{#pi,pos}     ",     100.0,  1 );
+      minimum->SetVariable(       6,"A_{K,pos}       ",        2.0,  1.0 );
       //minimum->SetLimitedVariable(1,"#mu",          1.0,  0.01, 0.8, 1.2);
-      minimum->SetVariable(6,"#sigma_{#pi,pos}", 0.2,  0.001);
-      minimum->SetVariable(7,"A_{K,pos}",        2.0,  1.0 );
+      //minimum->SetVariable(6,"#sigma_{#pi,pos}", 0.2,  0.001);
       //minimum->SetVariable(8,"#sigma_{K,pos}",   0.2,  0.001);
       // do the minimization
       minimum->Minimize();
