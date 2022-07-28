@@ -218,7 +218,7 @@ public:
     //double mu_piK   = x[1];//same as negative
     double sigma_pi_pos = x[2];//same as negative
     double A_K_pos      = x[6];
-    double sigma_K_pos  = x[4];//same as pos
+    double sigma_K_pos  = x[4];//same as neg
 
     double chi2 = 0; 
     std::cout <<  "A_pi_neg       = " << A_pi     << "\n";
@@ -837,7 +837,10 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       gStyle->SetOptTitle(0);
       gStyle->SetPalette(kBird);
       h_rf_pos_Kall->DrawCopy("hist");
-      //TF1* all_pos = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 6);
+      TF1* all_pos = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 7);
+      all_pos->SetParameters(min_pars[5],min_pars[1],min_pars[2],min_pars[6],shms_p,min_pars[4]);
+      all_pos->SetLineColor(kBlack);
+      all_pos->Draw("same");
       //all_pos->SetLineColor(1);
       //all_pos->SetParameter(1, 1);
       //all_pos->SetParLimits(1, 0.9, 1.1);
@@ -889,6 +892,10 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       K_neg_Kall->SetLineColor(kOrange);
       pi_neg_Kall->Draw("same");
       K_neg_Kall->Draw("same");
+      TF1* all_neg = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 7);
+      all_neg->SetParameters(min_pars[0],min_pars[1],min_pars[2],min_pars[3],shms_p,min_pars[4]);
+      all_neg->SetLineColor(kBlack);
+      all_neg->Draw("same");
       TPaveText* pt_neg = new TPaveText(0.75, 0.5, 1, 0.95, "brNDC");
       pt_neg->AddText(("RunGroup neg K " + std::to_string(RunGroup)).c_str());
       pt_neg->AddText(("shms p " + std::to_string(shms_p)).c_str());
@@ -965,6 +972,10 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       K_pos_piall->SetLineColor(kOrange);
       pi_pos_piall->Draw("same");
       K_pos_piall->Draw("same");
+      TF1* all_pos_pi = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 7);
+      all_pos_pi->SetParameters(min_pi_pars[0],min_pi_pars[1],min_pi_pars[2],min_pi_pars[3],shms_p,min_pi_pars[4]);
+      all_pos_pi->SetLineColor(kBlack);
+      all_pos_pi->Draw("same");
       //double width_pos = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
       //std::cout << "Bin width " << width_pos << std::endl;
       //double pos_pi_all_pifit = pi_pos_piall->Integral(0, 4, width_pos);
@@ -1017,6 +1028,10 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       K_neg_piall->SetLineColor(kOrange);
       pi_neg_piall->Draw("same");
       K_neg_piall->Draw("same");
+      TF1* all_neg_pi = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 7);
+      all_neg_pi->SetParameters(min_pi_pars[0],min_pi_pars[1],min_pi_pars[2],min_pi_pars[3],shms_p,min_pi_pars[4]);
+      all_neg_pi->SetLineColor(kBlack);
+      all_neg_pi->Draw("same");
       //double width_neg = h_rf_neg_piall->GetXaxis()->GetBinWidth(1);
       //std::cout << "Bin width " << width_neg << std::endl;
       //double neg_pi_all_pifit = pi_neg_piall->Integral(0, 4, width_neg);
