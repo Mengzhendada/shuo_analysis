@@ -292,14 +292,18 @@ public:
   }
 };
 
-void SHMS_rftime_fit_high(int RunGroup = 150) {
+void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
   if (RunGroup == 0) {
     std::cout << "Enter a RunGroup (-1 to exit):";
     std::cin >> RunGroup;
     if (RunGroup <= 0)
       return;
   }
-  std::unique_ptr<TFile> fin( TFile::Open("results/rf_hitsograms.root","READ") ); 
+  std::unique_ptr<TFile> fin(TFile::Open(string("results/rf_hitsograms" + to_string(RunGroup) +
+                                                "_aero" + std::string(n_aero) + ".root")
+                                             .c_str(),
+                                         "READ"));
+
   json j_DE;
   {
     std::ifstream ifs("db2/PID_test.json");
@@ -342,14 +346,14 @@ void SHMS_rftime_fit_high(int RunGroup = 150) {
     minimum->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.8, 1.2);
     minimum->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
     minimum->SetVariable(       3,"A_{K,neg}   ", 2.0,  1.0 );
-    minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0.20);
+    minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
     minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
     minimum->SetVariable(       6,"A_{K,pos}   ", 2.0,  1.0 );
     minimum->Minimize();
 
     const double *min_pi_pars = minimum->X();
 
-    TCanvas* c = new TCanvas();
+    TCanvas* c = new TCanvas("c1","c1",1200,900);
     c->Divide(1,3);
     c->cd(1);
     TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
@@ -366,6 +370,8 @@ void SHMS_rftime_fit_high(int RunGroup = 150) {
     fpos_pp->DrawCopy("lsame");
     fpos_kp->DrawCopy("lsame");
 
+    TLatex lt;
+    lt.DrawLatexNDC(0.8,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
 
     c->cd(2);
     TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.

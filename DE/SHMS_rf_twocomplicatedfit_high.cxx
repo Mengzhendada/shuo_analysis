@@ -366,7 +366,11 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       cointime_highcut = j_cuts["cointime_high_spring"].get<double>();
     }
 
-    std::unique_ptr<TFile> fout( TFile::Open("results/rf_hitsograms.root","RECREATE") ); 
+    std::unique_ptr<TFile> fout(
+        TFile::Open(string("results/rf_hitsograms" + std::to_string(RunGroup) + "_aero" +
+                           std::to_string(int(P_aero))+ ".root")
+                        .c_str(),
+                    "RECREATE"));
 
     TH1D* h_rf_pos_Kall = new TH1D("", ";rftime;counts", 100, 0, 4);
     TH1D* h_rf_neg_Kall = new TH1D("", ";rftime;counts", 100, 0, 4);
@@ -383,13 +387,17 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
     //{-5,0,5,10,15,20};
     //{"P.gtr.dp < -5","P.gtr.dp>-5 && P.gtr.dp<0","P.gtr.dp>0 && P.gtr.dp < 5","P.gtr.dp>5 &&
     //P.gtr.dp<10","P.gtr.dp>10 && P.gtr.dp < 15","P.gtr.dp>15"};
+    
     int    i_dpcut      = 0;
-    double delta_lowend = delta_cut_num[0];
-    for (auto it = std::next(delta_cut_num.begin()); it < delta_cut_num.end(); it++) {
+
+    //for (auto it = std::next(delta_cut_num.begin()); it < delta_cut_num.end(); it++) {
+    for (int i_dpcut = 0; i_dpcut < std::size(delta_cut_num) - 1; i_dpcut++) {
+      double      delta_lowend = delta_cut_num[i_dpcut];
       std::string dp_cut =
-          "P.gtr.dp>" + std::to_string(delta_lowend) + " && P.gtr.dp < " + std::to_string(*it);
+          "P.gtr.dp>" + std::to_string(delta_lowend) + " && P.gtr.dp < " + std::to_string(delta_cut_num[i_dpcut+1]);
       std::cout << "delta cut is " << dp_cut << std::endl;
       double shms_p_lowend = shms_p_central * (100 + delta_lowend) / 100;
+      //
       if (shms_p_lowend > 3) {
         SHMS_hgc_aero = aeroCutSHMS;
         //+" && "+hgcCutSHMS;
