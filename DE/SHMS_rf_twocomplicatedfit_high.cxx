@@ -215,6 +215,7 @@ public:
     double A_K      = x[3];
     double sigma_K  = x[4];
     double A_pi_pos = x[5];
+    double A_K_pos  = x[6];
     //double mu_piK   = x[1];//same as negative
     double sigma_pi_pos = x[2];//same as negative
     double sigma_K_pos  = x[4];//same as neg

@@ -292,7 +292,7 @@ public:
   }
 };
 
-void SHMS_rftime_fit_high(int RunGroup = 150) {
+void SHMS_rftime_fit_high(int RunGroup = 0) {
   if (RunGroup == 0) {
     std::cout << "Enter a RunGroup (-1 to exit):";
     std::cin >> RunGroup;
@@ -366,6 +366,8 @@ void SHMS_rftime_fit_high(int RunGroup = 150) {
     fpos_pp->DrawCopy("lsame");
     fpos_kp->DrawCopy("lsame");
 
+    TLatex lt;
+    lt.DrawLatexNDC(0.8,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
 
     c->cd(2);
     TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
