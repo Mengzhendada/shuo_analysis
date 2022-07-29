@@ -295,7 +295,6 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
     std::ifstream ifs("db2/PID_test.json");
     ifs >> j_DE;
   }
-  // std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_cuts"].get<std::vector<double>>();
   std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_right_cuts"].get<std::vector<double>>();
 
   double      H_dp_low  = j_cuts["H_dp_low"].get<double>();
@@ -372,14 +371,6 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
                         .c_str(),
                     "RECREATE"));
 
-    TH1D* h_rf_pos_Kall = new TH1D("", ";rftime;counts", 100, 0, 4);
-    TH1D* h_rf_neg_Kall = new TH1D("", ";rftime;counts", 100, 0, 4);
-
-    TH1D* h_rf_pos_piall = new TH1D("", ";rftime;counts", 100, 0, 4);
-    TH1D* h_rf_neg_piall = new TH1D("", ";rftime;counts", 100, 0, 4);
-
-    TH1D* h_delta_pos_all = new TH1D("", "", 100, -10, 20);
-    TH1D* h_delta_neg_all = new TH1D("", "", 100, -10, 20);
 
     // loop over each pos runs data
     std::cout << "check" << std::endl;
@@ -397,6 +388,16 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
           "P.gtr.dp>" + std::to_string(delta_lowend) + " && P.gtr.dp < " + std::to_string(delta_cut_num[i_dpcut+1]);
       std::cout << "delta cut is " << dp_cut << std::endl;
       double shms_p_lowend = shms_p_central * (100 + delta_lowend) / 100;
+
+      TH1D* h_rf_pos_Kall = new TH1D("", ";rftime;counts", 100, 0, 4);
+      TH1D* h_rf_neg_Kall = new TH1D("", ";rftime;counts", 100, 0, 4);
+
+      TH1D* h_rf_pos_piall = new TH1D("", ";rftime;counts", 100, 0, 4);
+      TH1D* h_rf_neg_piall = new TH1D("", ";rftime;counts", 100, 0, 4);
+
+      TH1D* h_delta_pos_all = new TH1D("", "", 100, -10, 20);
+      TH1D* h_delta_neg_all = new TH1D("", "", 100, -10, 20);
+
       //
       if (shms_p_lowend > 3) {
         SHMS_hgc_aero = aeroCutSHMS;
@@ -905,9 +906,11 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       minimum_pi->SetTolerance(0.01);
       minimum_pi->SetPrintLevel(2);
 
+      */
       fout->cd();
       h_rf_pos_piall->Write(std::string("rftime_pos_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
       h_rf_neg_piall->Write(std::string("rftime_neg_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+      /*
 
       RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
       minimum_pi->SetFunction(f_pi);
@@ -1145,8 +1148,6 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       //"results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd.pdf";
       //c_pi_neg_2nd->SaveAs(c_pi_neg_2nd_name.c_str());
       //*/
-      i_dpcut      = i_dpcut + 1;
-      delta_lowend = *it;
     } // different delta cut
   }   // if normal production runs
   std::string of_name =

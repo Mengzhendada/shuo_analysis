@@ -300,7 +300,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
       return;
   }
   std::unique_ptr<TFile> fin(TFile::Open(string("results/rf_hitsograms" + to_string(RunGroup) +
-                                                "_aero" + std::string(n_aero) + ".root")
+                                                "_aero" + std::to_string(n_aero) + ".root")
                                              .c_str(),
                                          "READ"));
 
@@ -346,7 +346,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
     minimum->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.8, 1.2);
     minimum->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
     minimum->SetVariable(       3,"A_{K,neg}   ", 2.0,  1.0 );
-    minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
+    minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0.2);
     minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
     minimum->SetVariable(       6,"A_{K,pos}   ", 2.0,  1.0 );
     minimum->Minimize();
