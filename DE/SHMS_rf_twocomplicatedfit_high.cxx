@@ -215,7 +215,6 @@ public:
     double A_K      = x[3];
     double sigma_K  = x[4];
     double A_pi_pos = x[5];
-    double A_K_pos  = x[6];
     //double mu_piK   = x[1];//same as negative
     double sigma_pi_pos = x[2];//same as negative
     double A_K_pos      = x[6];
@@ -946,7 +945,8 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       pi_pos_piall->Draw("same");
       K_pos_piall->Draw("same");
       TF1* all_pos_pi = new TF1("all fit", fit_all, 0.5, 1 + 2 * time_diff, 7);
-      all_pos_pi->SetParameters(min_pi_pars[0],min_pi_pars[1],min_pi_pars[2],min_pi_pars[3],shms_p,min_pi_pars[4]);
+      all_pos_pi->SetParameters(min_pi_pars[5],min_pi_pars[1],min_pi_pars[2],min_pi_pars[6],shms_p,min_pi_pars[4]);
+      //all_pos->SetParameters(min_pars[5],min_pars[1],min_pars[2],min_pars[6],shms_p,min_pars[4]);
       all_pos_pi->SetLineColor(kBlack);
       all_pos_pi->Draw("same");
       
@@ -1036,60 +1036,64 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       c_pi_neg->SaveAs(c_pi_neg_name.c_str());
       
       //numbers for the pion purity
-      //std::vector<double> n_pos_pi_rf, n_pos_K_rf;
-      //std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
-      //for (int i = 0; i < rf_cuts.size(); ++i) {
-      //  // double rf_cut_percent = rf_cuts[i];
-      //  // double rf_pi_low = 0.5;
-      //  // double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
-      //  // double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+      std::vector<double> n_pos_pi_rf, n_pos_K_rf;
+      std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
+      for (int i = 0; i < rf_cuts.size(); ++i) {
+        // double rf_cut_percent = rf_cuts[i];
+        // double rf_pi_low = 0.5;
+        // double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
+        // double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
 
-      //  double rf_pi_low  = 1 - (rf_cuts[i] - 1);
-      //  double rf_pi_high = rf_cuts[i];
+        //double rf_pi_low  = 1 - (rf_cuts[i] - 1);
+        //double rf_pi_high = rf_cuts[i];
+        double rf_pi_low  = min_pi_pars[1] - (rf_cuts[i] - 1);
+        double rf_pi_high = min_pi_pars[1] + (rf_cuts[i] - 1);
 
-      //  rf_pos_cuts.push_back(rf_pi_high);
-      //  rf_pos_cuts_low.push_back(rf_pi_low);
-      //  double pos_pi_N = pi_pos_piall->Integral(rf_pi_low, rf_pi_high, width_pos);
-      //  n_pos_pi_rf.push_back(pos_pi_N);
-      //  double pos_K_N = K_pos_piall->Integral(rf_pi_low, rf_pi_high, width_pos);
-      //  n_pos_K_rf.push_back(pos_K_N);
-      //  std::cout << pos_K_N << " " << pos_pi_N << " " << i_dpcut << std::endl;
-      //}
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["rf_cuts_high"] = rf_pos_cuts;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["rf_cuts_low"] = rf_pos_cuts_low;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["pi_eff_Ns"] = n_pos_pi_rf;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
-      //               ["Ks"] = n_pos_K_rf;
-      //std::vector<double> n_neg_pi_rf, n_neg_K_rf;
-      //std::vector<double> rf_neg_cuts, rf_neg_cuts_low;
-      //for (int i = 0; i < rf_cuts.size(); ++i) {
-      //  // double rf_cut_percent = rf_cuts[i];
-      //  ////double rf_pi_low = 0.5;
-      //  // double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
-      //  // double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
+        rf_pos_cuts.push_back(rf_pi_high);
+        rf_pos_cuts_low.push_back(rf_pi_low);
+        double pos_pi_N = pi_pos_piall->Integral(rf_pi_low, rf_pi_high, width_pos);
+        n_pos_pi_rf.push_back(pos_pi_N);
+        double pos_K_N = K_pos_piall->Integral(rf_pi_low, rf_pi_high, width_pos);
+        n_pos_K_rf.push_back(pos_K_N);
+        std::cout << pos_K_N << " " << pos_pi_N << " " << i_dpcut << std::endl;
+      }
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+                     ["rf_cuts_high"] = rf_pos_cuts;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+                     ["rf_cuts_low"] = rf_pos_cuts_low;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+                     ["pi_eff_Ns"] = n_pos_pi_rf;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["pos"]
+                     ["Ks"] = n_pos_K_rf;
+      std::vector<double> n_neg_pi_rf, n_neg_K_rf;
+      std::vector<double> rf_neg_cuts, rf_neg_cuts_low;
+      for (int i = 0; i < rf_cuts.size(); ++i) {
+        // double rf_cut_percent = rf_cuts[i];
+        ////double rf_pi_low = 0.5;
+        // double rf_pi_low = 1-(rf_cut_percent/100)*time_diff;
+        // double rf_pi_high = 1+(rf_cut_percent/100)*time_diff;
 
-      //  double rf_pi_low  = 1 - (rf_cuts[i] - 1);
-      //  double rf_pi_high = rf_cuts[i];
+        //double rf_pi_low  = 1 - (rf_cuts[i] - 1);
+        //double rf_pi_high = rf_cuts[i];
+        double rf_pi_low  = min_pi_pars[1] - (rf_cuts[i] - 1);
+        double rf_pi_high = min_pi_pars[1] + (rf_cuts[i] - 1);
 
-      //  rf_neg_cuts.push_back(rf_pi_high);
-      //  rf_neg_cuts_low.push_back(rf_pi_low);
-      //  double neg_pi_N = pi_neg_piall->Integral(rf_pi_low, rf_pi_high, width_neg);
-      //  n_neg_pi_rf.push_back(neg_pi_N);
-      //  double neg_K_N = K_neg_piall->Integral(rf_pi_low, rf_pi_high, width_neg);
-      //  n_neg_K_rf.push_back(neg_K_N);
-      //  std::cout << neg_K_N << " " << neg_pi_N << " " << i_dpcut << std::endl;
-      //}
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
-      //               ["rf_cuts_high"] = rf_neg_cuts;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
-      //               ["rf_cuts_low"] = rf_neg_cuts_low;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
-      //               ["pi_eff_Ns"] = n_neg_pi_rf;
-      //j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
-      //               ["Ks"] = n_neg_K_rf;
+        rf_neg_cuts.push_back(rf_pi_high);
+        rf_neg_cuts_low.push_back(rf_pi_low);
+        double neg_pi_N = pi_neg_piall->Integral(rf_pi_low, rf_pi_high, width_neg);
+        n_neg_pi_rf.push_back(neg_pi_N);
+        double neg_K_N = K_neg_piall->Integral(rf_pi_low, rf_pi_high, width_neg);
+        n_neg_K_rf.push_back(neg_K_N);
+        std::cout << neg_K_N << " " << neg_pi_N << " " << i_dpcut << std::endl;
+      }
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
+                     ["rf_cuts_high"] = rf_neg_cuts;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
+                     ["rf_cuts_low"] = rf_neg_cuts_low;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
+                     ["pi_eff_Ns"] = n_neg_pi_rf;
+      j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
+                     ["Ks"] = n_neg_K_rf;
 
       ///*
       //TCanvas *c_pi_neg_2nd = new TCanvas();
