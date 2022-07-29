@@ -28,7 +28,7 @@ using namespace std;
 #include "TLine.h"
 #include "TPaveText.h"
 #include "TStyle.h"
-_low#include "TVector3.h"
+#include "TVector3.h"
 #include "Math/IFunction.h"
 #include "Math/Minimizer.h"
 #include "Math/Factory.h"
@@ -104,7 +104,7 @@ double fit_kaondecay(double* x, double* params) {
   // kaoncomtam.inp in db2 and in shuo_analysis/dbase), but the sigma is different.
   // This is kaon sigma, which will be a fitting parameter. For the small kaon decay
   // pion peaks, I am using sigma as 0.2, which is typical pion sigma
-  all_kaon = all_kaon + nodecay_kaon;
+  all_kaon = all_kaon;// + nodecay_kaon;
   string line;
   // file IO is a very bad idea here.... very slow.
   while (getline(infile, line)) {
