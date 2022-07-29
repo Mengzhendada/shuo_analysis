@@ -270,6 +270,7 @@ public:
     int n_bins  = h_positive->GetNbinsX();
     for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
       double x_bin = h_positive->GetBinCenter(i_bin);
+      if(x_bin>2.25) continue;
       double y_bin = h_positive->GetBinContent(i_bin);
       double dy_bin = h_positive->GetBinError(i_bin);
       double y_function = kaon_part(x_bin, mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos ) +
@@ -280,6 +281,7 @@ public:
     n_bins  = h_negative->GetNbinsX();
     for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
       double x_bin = h_negative->GetBinCenter(i_bin);
+      if(x_bin>2.25) continue;
       double y_bin = h_negative->GetBinContent(i_bin);
       double dy_bin = h_negative->GetBinError(i_bin);
       double y_function = kaon_part(x_bin, mu_piK, sigma_pi,  A_K, sigma_K ) +
@@ -292,7 +294,7 @@ public:
   }
 };
 
-void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
+void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
   if (RunGroup == 0) {
     std::cout << "Enter a RunGroup (-1 to exit):";
     std::cin >> RunGroup;
@@ -316,10 +318,27 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs >> j_rungroup;
   }
-  double shms_p_central = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
 
+  json j_runsinfo;
+  {
+    std::ifstream ifs("db2/runs_info.json");
+    ifs >> j_runsinfo;
+  }
 
+  std::string rg = (std::to_string(RunGroup)).c_str();
+  double shms_p_central = j_rungroup[rg]["shms_p"].get<double>();
+  std::vector<int> pruns = j_rungroup[rg]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> nruns = j_rungroup[rg]["neg"]["D2"].get<std::vector<int>>();
+  std::vector<double> prun_offsets;
+  std::vector<double> nrun_offsets;
+  for (auto r : pruns) {
+    prun_offsets.push_back(j_runsinfo[(std::to_string(r)).c_str()]["offset"].get<double>());
+  }
+  for (auto r : nruns) {
+    nrun_offsets.push_back(j_runsinfo[(std::to_string(r)).c_str()]["offset"].get<double>());
+  }
 
+  double y_max = 400;
   std::vector<int> delta_cut = j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>();
   double delta_lowend = delta_cut[0];
   for (int i_dpcut = 0;i_dpcut< std::size(delta_cut)-1 ;i_dpcut++) {
@@ -330,6 +349,9 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
 
     auto h_rf_pos_piall = fin->Get<TH1D>(std::string("rftime_pos_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
     auto h_rf_neg_piall = fin->Get<TH1D>(std::string("rftime_neg_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+    if(i_dpcut == 0 ) {
+      y_max = h_rf_pos_piall->GetMaximum() * 1.1;
+    }
 
     ROOT::Math::Minimizer* minimum =
     ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
@@ -356,6 +378,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
     TCanvas* c = new TCanvas("c1","c1",1200,900);
     c->Divide(1,3);
     c->cd(1);
+    gPad->SetLogy(false);
     TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
     fpos->SetParameters(min_pi_pars);
     TF1 * fpos_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
@@ -365,28 +388,54 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
     fpos_kp->SetParameters(min_pi_pars);
     fpos_kp->SetLineColor(2);
     auto h1 = h_rf_pos_piall->DrawCopy();
-    h1->GetYaxis()->SetRangeUser(0,h1->GetMaximum()*1.1);
+    h1->GetYaxis()->SetRangeUser(0.1,y_max);
     fpos->DrawCopy("lsame");
     fpos_pp->DrawCopy("lsame");
     fpos_kp->DrawCopy("lsame");
 
     TLatex lt;
-    lt.DrawLatexNDC(0.8,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
+    lt.DrawLatexNDC(0.6,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
+
+    std::string rgtext = "ratio run group " + rg + "  #splitline{";
+    for (auto r : pruns)
+      rgtext += (std::to_string(r) + ",");
+    rgtext += "}{";
+    for (auto r : nruns)
+      rgtext += (std::to_string(r) + ",");
+    rgtext += "}";
+    lt.DrawLatexNDC(0.6,0.5, rgtext.c_str());
+
+    std::string offsettext = "run RF time offsets  #splitline{";
+    for (auto r : prun_offsets)
+      offsettext += (std::to_string(r) + ",");
+    offsettext += "}{";
+    for (auto r : nrun_offsets)
+      offsettext += (std::to_string(r) + ",");
+    offsettext += "}";
+    lt.DrawLatexNDC(0.6,0.4, offsettext.c_str());
 
     c->cd(2);
+    gPad->SetLogy(false);
     TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
     fneg->SetParameters(min_pi_pars);
+    TF1 * fneg_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
+    fneg_pp->SetParameters(min_pi_pars);
+    fneg_pp->SetLineColor(4);
+    TF1 * fneg_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
+    fneg_kp->SetParameters(min_pi_pars);
+    fneg_kp->SetLineColor(2);
     h_rf_neg_piall->Draw();
-    h_rf_neg_piall->GetYaxis()->SetRangeUser(0,h_rf_neg_piall->GetMaximum()*1.1);
+    h_rf_neg_piall->GetYaxis()->SetRangeUser(0.1,y_max);
     fneg->DrawCopy("lsame");
+    fneg_pp->DrawCopy("lsame");
+    fneg_kp->DrawCopy("lsame");
 
     c->cd(3);
     h_rf_pos_piall->Divide(h_rf_neg_piall);
     h_rf_pos_piall->Draw();
-    h_rf_pos_piall->GetYaxis()->SetRangeUser(0,3.5);
+    h_rf_pos_piall->GetYaxis()->SetRangeUser(0.1,3.5);
 
-    c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)+".png").c_str());
-
+    c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) + "_" + std::to_string(i_dpcut)+".png").c_str());
   }
 
 
