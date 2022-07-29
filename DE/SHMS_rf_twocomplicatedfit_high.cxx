@@ -218,19 +218,18 @@ public:
     double A_K_pos  = x[6];
     //double mu_piK   = x[1];//same as negative
     double sigma_pi_pos = x[2];//same as negative
-    double A_K_pos      = x[6];
     double sigma_K_pos  = x[4];//same as neg
 
     double chi2 = 0; 
-    std::cout <<  "A_pi_neg       = " << A_pi     << "\n";
-    std::cout <<  "mu_piK         = " << mu_piK   << "\n";
-    std::cout <<  "sigma_pi_neg   = " << sigma_pi << "\n";
-    std::cout <<  "A_K_neg        = " << A_K      << "\n";
-    std::cout <<  "sigma_K_neg    = " << sigma_K  << "\n";
-    std::cout <<  "A_pi_pos       = " << A_pi_pos     << "\n";
-    //std::cout <<  "mu_piK     = " << mu_piK   << "\n";
-    //std::cout <<  "sigma_pi_pos   = " << sigma_pi_pos << "\n";
-    std::cout <<  "A_K_pos        = " << A_K_pos      << "\n";
+    //std::cout <<  "A_pi_neg       = " << A_pi     << "\n";
+    //std::cout <<  "mu_piK         = " << mu_piK   << "\n";
+    //std::cout <<  "sigma_pi_neg   = " << sigma_pi << "\n";
+    //std::cout <<  "A_K_neg        = " << A_K      << "\n";
+    //std::cout <<  "sigma_K_neg    = " << sigma_K  << "\n";
+    //std::cout <<  "A_pi_pos       = " << A_pi_pos     << "\n";
+    ////std::cout <<  "mu_piK     = " << mu_piK   << "\n";
+    ////std::cout <<  "sigma_pi_pos   = " << sigma_pi_pos << "\n";
+    //std::cout <<  "A_K_pos        = " << A_K_pos      << "\n";
     //std::cout <<  "sigma_K_pos    = " << sigma_K_pos  << "\n";
 
     int n_bins  = h_positive->GetNbinsX();
@@ -255,7 +254,7 @@ public:
       chi2 += chi*chi;
       //std::cout << " chi2(i=" << i_bin << ") = " << chi*chi << "\n";
     }
-      std::cout << " chi2 = " << chi2 << "\n";
+    //std::cout << " chi2 = " << chi2 << "\n";
     return chi2;
   }
 };
@@ -366,6 +365,8 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       cointime_lowcut  = j_cuts["cointime_low_spring"].get<double>();
       cointime_highcut = j_cuts["cointime_high_spring"].get<double>();
     }
+
+    std::unique_ptr<TFile> fout( TFile::Open("results/rf_hitsograms.root","RECREATE") ); 
 
     TH1D* h_rf_pos_Kall = new TH1D("", ";rftime;counts", 100, 0, 4);
     TH1D* h_rf_neg_Kall = new TH1D("", ";rftime;counts", 100, 0, 4);
@@ -894,6 +895,10 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       minimum_pi->SetMaxIterations(100000);  // for GSL
       minimum_pi->SetTolerance(0.01);
       minimum_pi->SetPrintLevel(2);
+
+      fout->cd();
+      h_rf_pos_piall->Write(std::string("rftime_pos_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+      h_rf_neg_piall->Write(std::string("rftime_neg_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
 
       RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
       minimum_pi->SetFunction(f_pi);
