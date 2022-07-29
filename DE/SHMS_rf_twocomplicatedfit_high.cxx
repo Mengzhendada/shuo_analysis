@@ -787,7 +787,8 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       //all_neg->FixParameter(4, shms_p);
       //all_neg->SetParameter(5, par_pos[5]);
       //all_neg->FixParameter(5, par_pos[5]);
-
+      
+      /* just save in small root files, no fitting yet. 
       ROOT::Math::Minimizer* minimum =
       ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
       // set tolerance , etc...
@@ -1108,7 +1109,7 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
                      ["pi_eff_Ns"] = n_neg_pi_rf;
       j_rungroup_info[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dpcut)).c_str()]["neg"]
                      ["Ks"] = n_neg_K_rf;
-
+      */
       ///*
       //TCanvas *c_pi_neg_2nd = new TCanvas();
       ////c_pi_neg_2nd->SetGrid();
@@ -1144,6 +1145,8 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       //"results/pid/rftime/rftime_neg_"+std::to_string(RunGroup)+"_"+std::to_string(i_dpcut)+"_pi_2nd.pdf";
       //c_pi_neg_2nd->SaveAs(c_pi_neg_2nd_name.c_str());
       //*/
+      i_dpcut      = i_dpcut + 1;
+      delta_lowend = *it;
     } // different delta cut
   }   // if normal production runs
   std::string of_name =
