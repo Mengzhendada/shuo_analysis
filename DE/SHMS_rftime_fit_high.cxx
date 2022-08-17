@@ -301,7 +301,13 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
     if (RunGroup <= 0)
       return;
   }
-  std::unique_ptr<TFile> fin(TFile::Open(string("results/rf_hitsograms" + to_string(RunGroup) +
+  if (n_aero == -1) {
+    std::cout << "Enter a n_aero (-1 to exit):";
+    std::cin >> n_aero;
+    if (n_aero <= 0)
+      return;
+  }
+  std::unique_ptr<TFile> fin(TFile::Open(string("results/pid/rf_histograms" + to_string(RunGroup) +
                                                 "_aero" + std::to_string(n_aero) + ".root")
                                              .c_str(),
                                          "READ"));
@@ -324,6 +330,9 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
     std::ifstream ifs("db2/runs_info.json");
     ifs >> j_runsinfo;
   }
+
+  json j_rungroup_info;
+  std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_right_cuts"].get<std::vector<double>>();
 
   std::string rg = (std::to_string(RunGroup)).c_str();
   double shms_p_central = j_rungroup[rg]["shms_p"].get<double>();
@@ -436,7 +445,67 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
     h_rf_pos_piall->GetYaxis()->SetRangeUser(0.1,3.5);
 
     c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) + "_" + std::to_string(i_dpcut)+".png").c_str());
-  }
+    
+    //for pi efficiency
+    double width = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
+    double pos_pi_all = fpos_pp->Integral(0,4,width);
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]["pi_eff_all"] = pos_pi_all;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["shms_p"] = shms_p;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pi_peak"]["pos"] = min_pi_pars[1];
+    double neg_pi_all = fneg_pp->Integral(0,4,width);
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]["pi_eff_all"] = neg_pi_all;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pi_peak"]["neg"] = min_pi_pars[1];
+    //numbers for the pion purity
+    std::vector<double> n_pos_pi_rf, n_pos_K_rf;
+    std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
+    for (int i = 0; i < rf_cuts.size(); ++i) {
+      double rf_pi_low  = min_pi_pars[1] - (rf_cuts[i] - 1);
+      double rf_pi_high = min_pi_pars[1] + (rf_cuts[i] - 1);
 
+      rf_pos_cuts.push_back(rf_pi_high);
+      rf_pos_cuts_low.push_back(rf_pi_low);
+      double pos_pi_N = fpos_pp->Integral(rf_pi_low, rf_pi_high, width);
+      n_pos_pi_rf.push_back(pos_pi_N);
+      double pos_K_N = fpos_kp->Integral(rf_pi_low, rf_pi_high, width);
+      n_pos_K_rf.push_back(pos_K_N);
+      std::cout << pos_K_N << " " << pos_pi_N << " " << i_dpcut << std::endl;
+    }
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
+      ["rf_cuts_high"] = rf_pos_cuts;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
+      ["rf_cuts_low"] = rf_pos_cuts_low;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
+      ["pi_eff_Ns"] = n_pos_pi_rf;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
+      ["Ks"] = n_pos_K_rf;
+    std::vector<double> n_neg_pi_rf, n_neg_K_rf;
+    std::vector<double> rf_neg_cuts, rf_neg_cuts_low;
+    for (int i = 0; i < rf_cuts.size(); ++i) {
+      double rf_pi_low  = min_pi_pars[1] - (rf_cuts[i] - 1);
+      double rf_pi_high = min_pi_pars[1] + (rf_cuts[i] - 1);
+
+      rf_neg_cuts.push_back(rf_pi_high);
+      rf_neg_cuts_low.push_back(rf_pi_low);
+      double neg_pi_N = fneg_pp->Integral(rf_pi_low, rf_pi_high, width);
+      n_neg_pi_rf.push_back(neg_pi_N);
+      double neg_K_N = fneg_kp->Integral(rf_pi_low, rf_pi_high, width);
+      n_neg_K_rf.push_back(neg_K_N);
+      std::cout << neg_K_N << " " << neg_pi_N << " " << i_dpcut << std::endl;
+    }
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
+      ["rf_cuts_high"] = rf_neg_cuts;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
+      ["rf_cuts_low"] = rf_neg_cuts_low;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
+      ["pi_eff_Ns"] = n_neg_pi_rf;
+    j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
+      ["Ks"] = n_neg_K_rf;
+  }//loop over dp
+
+  std::string of_name =
+      "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_compare.json";
+  std::ofstream ofs;
+  ofs.open(of_name.c_str());
+  ofs << j_rungroup_info.dump(4) << std::endl;
 
 }

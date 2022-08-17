@@ -117,7 +117,7 @@ double fit_kaondecay(double* x, double* params) {
     double pa[5];
     pa[0] =
         params[2] * (prob_left + prob_right) /
-        (2 * 0.8748); // the amplitude of the pion(from kaon decay) peak portion of nodecay kaons.
+        (2 * 0.8891); // the amplitude of the pion(from kaon decay) peak portion of nodecay kaons.
     pa[1]                   = params[3];
     pa[2]                   = 0.2;
     pa[3]                   = meter;
@@ -153,26 +153,26 @@ public:
   TH1D * h_negative = nullptr;
   // this should be momentum dependent?
   const std::vector<std::pair<double,double>> kaon_decay_prob =  {
-    { 1, 0.0086 + 0.0087 },
-    { 2, 0.0066 + 0.0060 },
-    { 3, 0.0037 + 0.0031 },
-    { 4, 0.0018 + 0.0015 },
-    { 5, 0.0015 + 0.0010 },
-    { 6, 0.0014 + 0.0009 },
-    { 7, 0.0010 + 0.0007 },
-    { 8, 0.0031 + 0.0025 },
-    { 9, 0.0025 + 0.0023 },
-    {10, 0.0019 + 0.0012 },
-    {11, 0.0044 + 0.0038 },
-    {12, 0.0044 + 0.0036 },
-    {13, 0.0057 + 0.0043 },
-    {14, 0.0067 + 0.0038 },
-    {15, 0.0043 + 0.0026 },
-    {16, 0.0035 + 0.0017 },
-    {17, 0.0020 + 0.0010 },
-    {18, 0.0016 + 0.0015 },
-    {19, 0.0259 + 0.0255 },
-    {20, 0.0346 + 0.0351 }};
+    { 1, 0.0087 + 0.0087 },
+    { 2, 0.0060 + 0.0060 },
+    { 3, 0.0031 + 0.0031 },
+    { 4, 0.0015 + 0.0015 },
+    { 5, 0.0010 + 0.0010 },
+    { 6, 0.0009 + 0.0009 },
+    { 7, 0.0007 + 0.0007 },
+    { 8, 0.0025 + 0.0025 },
+    { 9, 0.0023 + 0.0023 },
+    {10, 0.0012 + 0.0012 },
+    {11, 0.0038 + 0.0038 },
+    {12, 0.0036 + 0.0036 },
+    {13, 0.0043 + 0.0043 },
+    {14, 0.0038 + 0.0038 },
+    {15, 0.0026 + 0.0026 },
+    {16, 0.0017 + 0.0017 },
+    {17, 0.0010 + 0.0010 },
+    {18, 0.0015 + 0.0015 },
+    {19, 0.0255 + 0.0255 },
+    {20, 0.0351 + 0.0351 }};
   RFTimeFitFCN(TH1D* p, TH1D* n,double mom) :h_positive(p), h_negative(n), SHMS_momentum(mom) { }
 
   double pion_part(double x, double A_pi, double mu_piK, double sigma_pi) const {
@@ -190,7 +190,7 @@ public:
     double pa[5];
     double all_kaon = nodecay_kaon;
     for( const auto& [meter,prob] : kaon_decay_prob ) {
-      pa[0] = A_K * prob / (2 * 0.8748); // the amplitude of the pion(from kaon decay) peak portion of nodecay kaons.
+      pa[0] = A_K * prob / (2 * 0.8891); // the amplitude of the pion(from kaon decay) peak portion of nodecay kaons.
       pa[1] = SHMS_momentum; //
       pa[2] = 0.2;   // sigma fixed
       pa[3] = meter; // distance into spectrometer
@@ -365,7 +365,7 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
     }
 
     std::unique_ptr<TFile> fout(
-        TFile::Open(string("results/rf_hitsograms" + std::to_string(RunGroup) + "_aero" +
+        TFile::Open(string("results/pid/rf_histograms" + std::to_string(RunGroup) + "_aero" +
                            std::to_string(int(P_aero))+ ".root")
                         .c_str(),
                     "RECREATE"));
@@ -1149,9 +1149,9 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       //*/
     } // different delta cut
   }   // if normal production runs
-  std::string of_name =
-      "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_compare.json";
-  std::ofstream ofs;
-  ofs.open(of_name.c_str());
-  ofs << j_rungroup_info.dump(4) << std::endl;
+  //std::string of_name =
+  //    "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_compare.json";
+  //std::ofstream ofs;
+  //ofs.open(of_name.c_str());
+  //ofs << j_rungroup_info.dump(4) << std::endl;
 }

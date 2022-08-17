@@ -14,7 +14,7 @@
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 using namespace std;
-  
+
 
 void SHMS_rf_DE_plots_low(){
 
@@ -48,56 +48,58 @@ void SHMS_rf_DE_plots_low(){
     std::vector<int> neg_D2,pos_D2;
     neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
     pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
+    if(!pos_D2.empty() && !neg_D2.empty()){
+      //std::cout<<"check"<<std::endl;
       json j_rfeff_delta;
       {
-        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_low_compare.json";
+        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_compare_low.json";
         std::ifstream ifstream(name.c_str());
         ifstream>>j_rfeff_delta;
       }
-    if(!pos_D2.empty() && !neg_D2.empty()&& !j_rfeff_delta.empty()){
-       
-      auto runjs = j_rfeff_delta.begin().value();
-      //std::cout<<runjs.begin().key()<<std::endl;
-      for(auto it = runjs.begin();it!=runjs.end();++it){
-        int i_dp = std::stoi(it.key());
-        //std::cout<<i_dp<<std::endl;
-        double shms_p = it.value()["shms_p"].get<double>();
-        if(shms_p<2.8){
-        std::vector<double> pi_eff_Ns_pos = it.value()["pos"]["pi_eff_Ns"].get<std::vector<double>>();
-        double pi_eff_N_pos = pi_eff_Ns_pos[i_rfcut];
-        double pi_eff_all_pos = it.value()["pos"]["pi_eff_all"].get<double>();
-        std::vector<double> K_con_Ns_pos = it.value()["pos"]["Ks"].get<std::vector<double>>();
-        double K_n_pos = K_con_Ns_pos[i_rfcut];
-        double pi_eff_pos = pi_eff_N_pos/pi_eff_all_pos;
-        double pi_purity_pos = pi_eff_N_pos/(pi_eff_N_pos+K_n_pos);
-        //double pi_eff_pos_err = sqrt(pi_eff_all_pos-pi_eff_N_pos)/pi_eff_all_pos;
-        double pi_eff_pos_err = sqrt(pi_eff_pos*(1-pi_eff_pos)/pi_eff_all_pos);
-        double pi_purity_pos_err = sqrt(K_n_pos)/(pi_eff_N_pos+K_n_pos);
-        
-        std::vector<double> pi_eff_Ns_neg = it.value()["neg"]["pi_eff_Ns"].get<std::vector<double>>();
-        double pi_eff_N_neg = pi_eff_Ns_neg[i_rfcut];
-        double pi_eff_all_neg = it.value()["neg"]["pi_eff_all"].get<double>();
-        std::vector<double> K_con_Ns_neg = it.value()["neg"]["Ks"].get<std::vector<double>>();
-        double K_n_neg = K_con_Ns_neg[i_rfcut];
-        double pi_eff_neg = pi_eff_N_neg/pi_eff_all_neg;
-        double pi_purity_neg = pi_eff_N_neg/(pi_eff_N_neg+K_n_neg);
-        double pi_eff_neg_err = sqrt(pi_eff_neg*(1-pi_eff_neg)/pi_eff_all_neg);
-          //sqrt(pi_eff_all_neg-pi_eff_N_neg)/pi_eff_all_neg;
-        double pi_purity_neg_err = sqrt(K_n_neg)/(pi_eff_N_neg+K_n_neg);
+      //std::cout<<"check"<<std::endl;
+      if(!j_rfeff_delta.empty() ){
+        auto runjs = j_rfeff_delta.begin().value();
+        //std::cout<<runjs.begin().key()<<std::endl;
+        for(auto it = runjs.begin();it!=runjs.end();++it){
+          int i_dp = std::stoi(it.key());
+         // std::cout<<i_dp<<std::endl;
+          double shms_p = it.value()["shms_p"].get<double>();
+          if(shms_p<2.8 && !it.value()["pos"]["pi_eff_all"].empty()){
+            std::vector<double> pi_eff_Ns_pos = it.value()["pos"]["pi_eff_Ns"].get<std::vector<double>>();
+            double pi_eff_N_pos = pi_eff_Ns_pos[i_rfcut];
+            double pi_eff_all_pos = it.value()["pos"]["pi_eff_all"].get<double>();
+            std::vector<double> K_con_Ns_pos = it.value()["pos"]["Ks"].get<std::vector<double>>();
+            double K_n_pos = K_con_Ns_pos[i_rfcut];
+            double pi_eff_pos = pi_eff_N_pos/pi_eff_all_pos;
+            double pi_purity_pos = pi_eff_N_pos/(pi_eff_N_pos+K_n_pos);
+            //double pi_eff_pos_err = sqrt(pi_eff_all_pos-pi_eff_N_pos)/pi_eff_all_pos;
+            double pi_eff_pos_err = sqrt(pi_eff_pos*(1-pi_eff_pos)/pi_eff_all_pos);
+            double pi_purity_pos_err = sqrt(K_n_pos)/(pi_eff_N_pos+K_n_pos);
 
-        g_pos_pieff->SetPoint(i_graph_pos,shms_p,pi_eff_pos);
-        g_pos_pieff->SetPointError(i_graph_pos,0,pi_eff_pos_err);
-        g_pos_pipurity->SetPoint(i_graph_pos,shms_p,pi_purity_pos);
-        g_pos_pipurity->SetPointError(i_graph_pos,0,pi_purity_pos_err);
-        g_neg_pieff->SetPoint(i_graph_neg,shms_p,pi_eff_neg);
-        g_neg_pieff->SetPointError(i_graph_neg,0,pi_eff_neg_err);
-        g_neg_pipurity->SetPoint(i_graph_neg,shms_p,pi_purity_neg);
-        g_neg_pipurity->SetPointError(i_graph_neg,0,pi_purity_neg_err);
-        i_graph_pos++;
-        i_graph_neg++;
-        }//if less than 2.8
-      }
+            std::vector<double> pi_eff_Ns_neg = it.value()["neg"]["pi_eff_Ns"].get<std::vector<double>>();
+            double pi_eff_N_neg = pi_eff_Ns_neg[i_rfcut];
+            double pi_eff_all_neg = it.value()["neg"]["pi_eff_all"].get<double>();
+            std::vector<double> K_con_Ns_neg = it.value()["neg"]["Ks"].get<std::vector<double>>();
+            double K_n_neg = K_con_Ns_neg[i_rfcut];
+            double pi_eff_neg = pi_eff_N_neg/pi_eff_all_neg;
+            double pi_purity_neg = pi_eff_N_neg/(pi_eff_N_neg+K_n_neg);
+            double pi_eff_neg_err = sqrt(pi_eff_neg*(1-pi_eff_neg)/pi_eff_all_neg);
+            //sqrt(pi_eff_all_neg-pi_eff_N_neg)/pi_eff_all_neg;
+            double pi_purity_neg_err = sqrt(K_n_neg)/(pi_eff_N_neg+K_n_neg);
 
+            g_pos_pieff->SetPoint(i_graph_pos,shms_p,pi_eff_pos);
+            g_pos_pieff->SetPointError(i_graph_pos,0,pi_eff_pos_err);
+            g_pos_pipurity->SetPoint(i_graph_pos,shms_p,pi_purity_pos);
+            g_pos_pipurity->SetPointError(i_graph_pos,0,pi_purity_pos_err);
+            g_neg_pieff->SetPoint(i_graph_neg,shms_p,pi_eff_neg);
+            g_neg_pieff->SetPointError(i_graph_neg,0,pi_eff_neg_err);
+            g_neg_pipurity->SetPoint(i_graph_neg,shms_p,pi_purity_neg);
+            g_neg_pipurity->SetPointError(i_graph_neg,0,pi_purity_neg_err);
+            i_graph_pos++;
+            i_graph_neg++;
+          }//if less than 2.8
+        }
+      }//if json file exist
     }//if neg and pos not empty
   }//loop over rungroups
   TMultiGraph* mg_pieff = new TMultiGraph();
@@ -179,7 +181,7 @@ void SHMS_rf_DE_plots_low(){
         int i_dp = std::stoi(it.key());
         //std::cout<<i_dp<<std::endl;
         double shms_p = it.value()["shms_p"].get<double>();
-        if(shms_p<2.8){
+        if(shms_p<2.8 && !it.value()["pos"]["pi_eff_all"].empty()){
         std::vector<double> pi_eff_Ns_pos = it.value()["pos"]["pi_eff_Ns"].get<std::vector<double>>();
         double pi_eff_all_pos = it.value()["pos"]["pi_eff_all"].get<double>();
         std::vector<double> K_con_Ns_pos = it.value()["pos"]["Ks"].get<std::vector<double>>();

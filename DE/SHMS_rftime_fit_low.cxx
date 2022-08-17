@@ -73,7 +73,7 @@ double gaus_fun_kaonNodecay(double* x, double* params) {
   // "<<params[0]<<" kaon no decay position "<<kaon_nodecay_peak<<std::endl; std::cout<<"check kaon
   // "<<kaon_nodecay_peak<<std::endl;
   double gaus_shape = params[2] * exp(-0.5 * pow((x[0] - kaon_nodecay_peak) / params[4],
-                                                 2)); ///(params[2] *sqrt(2*M_PI));
+        2)); ///(params[2] *sqrt(2*M_PI));
   // std::cout<<"check gaus "<<gaus_shape<<std::endl;
   return gaus_shape;
 }
@@ -85,14 +85,14 @@ double gaus_fun_pion_kaondecay(double* x, double* pa) {
   // pions that kaon decays is calculated by momentum pa[1],and the position where kaon decays pa[3]
   double pi_fromkaondecay_peak = t_pi_fromkaondecay(pa[1], pa[3], pa[4]);
   double gaus_shape =
-      pa[0] * exp(-0.5 * pow((x[0] - pi_fromkaondecay_peak) / pa[2], 2)); ///(pa[2] *sqrt(2*M_PI));
+    pa[0] * exp(-0.5 * pow((x[0] - pi_fromkaondecay_peak) / pa[2], 2)); ///(pa[2] *sqrt(2*M_PI));
   // std::cout<<"check pion "<<pi_fromkaondecay_peak<<" gaus "<<gaus_shape<<std::endl;
   return gaus_shape;
 }
 
 double fit_pion(double* x, double* params) {
   double gaus_shape =
-      params[0] * exp(-0.5 * pow((x[0] - params[1]) / params[2], 2)); ///(params[2] *sqrt(2*M_PI));
+    params[0] * exp(-0.5 * pow((x[0] - params[1]) / params[2], 2)); ///(params[2] *sqrt(2*M_PI));
   return gaus_shape;
 }
 
@@ -100,209 +100,217 @@ double fit_pion(double* x, double* params) {
  *
  */
 class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
-public:
+  public:
 
-  double SHMS_momentum = 2.0;
-  TH1D * h_positive = nullptr;
-  TH1D * h_negative = nullptr;
-  // this should be momentum dependent?
-  const std::vector<std::pair<double,double>> kaon_decay_prob =  {
-    { 1 , 0.027 + 0.020},
-    { 2 , 0.014 + 0.013},
-    { 3 , 0.005 + 0.006},
-    { 4 , 0.003 + 0.004},
-    { 5 , 0.001 + 0.004},
-    { 6 , 0.002 + 0.002},
-    { 7 , 0.002 + 0.003},
-    { 8 , 0.002 + 0.003},
-    { 9 , 0.004 + 0.003},
-    {10 , 0.003 + 0.004},
-    {11 , 0.004 + 0.005},
-    {12 , 0.005 + 0.007},
-    {13 , 0.005 + 0.009},
-    {14 , 0.004 + 0.008},
-    {15 , 0.004 + 0.008},
-    {16 , 0.002 + 0.005},
-    {17 , 0.001 + 0.004},
-    {18 , 0.001 + 0.004},
-    {19 , 0.033 + 0.030},
-    {20 , 0.050 + 0.041}};
+    double SHMS_momentum = 2.0;
+    TH1D * h_positive = nullptr;
+    TH1D * h_negative = nullptr;
+    // this should be momentum dependent?
+    const std::vector<std::pair<double,double>> kaon_decay_prob =  {
+      { 1 , 0.027 + 0.020},
+      { 2 , 0.014 + 0.013},
+      { 3 , 0.005 + 0.006},
+      { 4 , 0.003 + 0.004},
+      { 5 , 0.001 + 0.004},
+      { 6 , 0.002 + 0.002},
+      { 7 , 0.002 + 0.003},
+      { 8 , 0.002 + 0.003},
+      { 9 , 0.004 + 0.003},
+      {10 , 0.003 + 0.004},
+      {11 , 0.004 + 0.005},
+      {12 , 0.005 + 0.007},
+      {13 , 0.005 + 0.009},
+      {14 , 0.004 + 0.008},
+      {15 , 0.004 + 0.008},
+      {16 , 0.002 + 0.005},
+      {17 , 0.001 + 0.004},
+      {18 , 0.001 + 0.004},
+      {19 , 0.033 + 0.030},
+      {20 , 0.050 + 0.041}};
 
-  RFTimeFitFCN(TH1D* p, TH1D* n,double mom) :h_positive(p), h_negative(n), SHMS_momentum(mom) { }
+    RFTimeFitFCN(TH1D* p, TH1D* n,double mom) :h_positive(p), h_negative(n), SHMS_momentum(mom) { }
 
-  double pion_part(double x, double A_pi, double mu_piK, double sigma_pi) const {
-    double gaus_shape = A_pi * exp(-0.5 * pow((x - mu_piK) / sigma_pi, 2)); ///(params[2] *sqrt(2*M_PI));
-    return gaus_shape;
-  }
-  double kaon_part(double x, double mu_piK,double sigma_pi, double A_K, double sigma_K ) const {
-    double params[5] = {mu_piK, sigma_pi/*not used*/, A_K, SHMS_momentum, sigma_K};
-    double xx = x;
-    //double nodecay_kaon = gaus_fun_kaonNodecay( &xx, params); 
-    double pa[5];
-    double all_kaon = 0;//nodecay_kaon;
-    for( const auto& [meter,prob] : kaon_decay_prob ) {
-      pa[0] = A_K * prob / (2 * 0.8235); // the amplitude of the pion(from kaon decay) peak portion of nodecay kaons.
-      pa[1] = SHMS_momentum; //
-      pa[2] = 0.2;   // sigma fixed
-      pa[3] = meter; // distance into spectrometer
-      pa[4] = mu_piK; // mu
-      double pi_fromkaondecay = gaus_fun_pion_kaondecay(&xx, pa);
-      // std::cout<<"check"<<all_kaon<<std::endl;
-      all_kaon += pi_fromkaondecay;
+    double pion_part(double x, double A_pi, double mu_piK, double sigma_pi) const {
+      double gaus_shape = A_pi * exp(-0.5 * pow((x - mu_piK) / sigma_pi, 2)); ///(params[2] *sqrt(2*M_PI));
+      return gaus_shape;
     }
-    return all_kaon;
-  }
-
-  ROOT::Math::IBaseFunctionMultiDim * 	Clone () const { return new  RFTimeFitFCN(*this); }
-
-
-  double Evaluate_pos (double *x, double *p) {
-    double A_pi     = p[0];
-    double mu_piK   = p[1];
-    double sigma_pi = p[2];
-    double A_K      = p[3];
-    double sigma_K  = p[4];
-    double A_pi_pos = p[5];
-    double A_K_pos  = p[6];
-    double sigma_pi_pos = p[2];//same as negative
-    double sigma_K_pos  = p[4];//same as neg
-    double y_function = kaon_part(x[0], mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos ) +
-                        pion_part(x[0], A_pi_pos, mu_piK, sigma_pi_pos);
-    return y_function;
-  }
-  double Evaluate_neg (double *x, double *p) {
-    double A_pi     = p[0];
-    double mu_piK   = p[1];
-    double sigma_pi = p[2];
-    double A_K      = p[3];
-    double sigma_K  = p[4];
-    double A_pi_pos = p[5];
-    double A_K_pos  = p[6];
-    double sigma_pi_pos = p[2];//same as negative
-    double sigma_K_pos  = p[4];//same as neg
-    double y_function = kaon_part(x[0], mu_piK, sigma_pi,  A_K, sigma_K ) +
-                        pion_part(x[0], A_pi, mu_piK, sigma_pi);
-    return y_function;
-  }
-  double Evaluate_pions_pos(double *x, double *p)const {
-    double A_pi     = p[0];
-    double mu_piK   = p[1];
-    double sigma_pi = p[2];
-    double A_K      = p[3];
-    double sigma_K  = p[4];
-    double A_pi_pos = p[5];
-    double A_K_pos  = p[6];
-    double sigma_pi_pos = p[2];//same as negative
-    double sigma_K_pos  = p[4];//same as neg
-    double y_function = pion_part(x[0], A_pi_pos, mu_piK, sigma_pi_pos);
-    return y_function;
-  }
-  double Evaluate_kaons_pos(double *x, double *p) const {
-    double A_pi     = p[0];
-    double mu_piK   = p[1];
-    double sigma_pi = p[2];
-    double A_K      = p[3];
-    double sigma_K  = p[4];
-    double A_pi_pos = p[5];
-    double A_K_pos  = p[6];
-    double sigma_pi_pos = p[2];//same as negative
-    double sigma_K_pos  = p[4];//same as neg
-    double y_function = kaon_part(x[0], mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos );
-    return y_function;
-  }
-  double Evaluate_pions_neg(double *x, double *p) const {
-    double A_pi     = p[0];
-    double mu_piK   = p[1];
-    double sigma_pi = p[2];
-    double A_K      = p[3];
-    double sigma_K  = p[4];
-    double A_pi_pos = p[5];
-    double A_K_pos  = p[6];
-    double sigma_pi_pos = p[2];//same as negative
-    double sigma_K_pos  = p[4];//same as neg
-    double y_function = pion_part(x[0], A_pi, mu_piK, sigma_pi);
-    return y_function;
-  }
-  double Evaluate_kaons_neg(double *x, double *p) const {
-    double A_pi     = p[0];
-    double mu_piK   = p[1];
-    double sigma_pi = p[2];
-    double A_K      = p[3];
-    double sigma_K  = p[4];
-    double A_pi_pos = p[5];
-    double A_K_pos  = p[6];
-    double sigma_pi_pos = p[2];//same as negative
-    double sigma_K_pos  = p[4];//same as neg
-    double y_function = kaon_part(x[0], mu_piK, sigma_pi,  A_K, sigma_K );
-    return y_function;
-  }
-
-  void PrintPars() const {
-    //std::cout <<  "A_pi_neg       = " << A_pi     << "\n";
-    //std::cout <<  "mu_piK         = " << mu_piK   << "\n";
-    //std::cout <<  "sigma_pi_neg   = " << sigma_pi << "\n";
-    //std::cout <<  "A_K_neg        = " << A_K      << "\n";
-    //std::cout <<  "sigma_K_neg    = " << sigma_K  << "\n";
-    //std::cout <<  "A_pi_pos       = " << A_pi_pos     << "\n";
-    ////std::cout <<  "mu_piK     = " << mu_piK   << "\n";
-    ////std::cout <<  "sigma_pi_pos   = " << sigma_pi_pos << "\n";
-    //std::cout <<  "A_K_pos        = " << A_K_pos      << "\n";
-    //std::cout <<  "sigma_K_pos    = " << sigma_K_pos  << "\n";
-  }
- 
-  // NDim is the number of fit parameters
-  unsigned int 	NDim () const { return 7;}
-
-  double DoEval (const double *x) const {
-    double A_pi     = x[0];
-    double mu_piK   = x[1];
-    double sigma_pi = x[2];
-    double A_K      = x[3];
-    double sigma_K  = x[4];
-    double A_pi_pos = x[5];
-    double A_K_pos  = x[6];
-    //double mu_piK   = x[1];//same as negative
-    double sigma_pi_pos = x[2];//same as negative
-    double sigma_K_pos  = x[4];//same as neg
-
-    double chi2 = 0; 
-
-    int n_bins  = h_positive->GetNbinsX();
-    for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
-      double x_bin = h_positive->GetBinCenter(i_bin);
-      double y_bin = h_positive->GetBinContent(i_bin);
-      double dy_bin = h_positive->GetBinError(i_bin);
-      double y_function = kaon_part(x_bin, mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos ) +
-                          pion_part(x_bin, A_pi_pos, mu_piK, sigma_pi_pos);
-      double chi = (y_bin - y_function)/dy_bin;
-      chi2 += chi*chi;
+    double kaon_part(double x, double mu_piK,double sigma_pi, double A_K, double sigma_K ) const {
+      double params[5] = {mu_piK, sigma_pi/*not used*/, A_K, SHMS_momentum, sigma_K};
+      double xx = x;
+      double nodecay_kaon = gaus_fun_kaonNodecay( &xx, params); 
+      double pa[5];
+      double all_kaon = 0;//nodecay_kaon;
+      for( const auto& [meter,prob] : kaon_decay_prob ) {
+        pa[0] = A_K * prob / (2 * 0.8235); // the amplitude of the pion(from kaon decay) peak portion of nodecay kaons.
+        pa[1] = SHMS_momentum; //
+        pa[2] = 0.2;   // sigma fixed
+        pa[3] = meter; // distance into spectrometer
+        pa[4] = mu_piK; // mu
+        double pi_fromkaondecay = gaus_fun_pion_kaondecay(&xx, pa);
+        // std::cout<<"check"<<all_kaon<<std::endl;
+        all_kaon += pi_fromkaondecay;
+      }
+      return all_kaon;
     }
-    n_bins  = h_negative->GetNbinsX();
-    for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
-      double x_bin = h_negative->GetBinCenter(i_bin);
-      double y_bin = h_negative->GetBinContent(i_bin);
-      double dy_bin = h_negative->GetBinError(i_bin);
-      double y_function = kaon_part(x_bin, mu_piK, sigma_pi,  A_K, sigma_K ) +
-                          pion_part(x_bin, A_pi, mu_piK, sigma_pi);
-      double chi = (y_bin - y_function)/dy_bin;
-      chi2 += chi*chi;
+
+    ROOT::Math::IBaseFunctionMultiDim * 	Clone () const { return new  RFTimeFitFCN(*this); }
+
+
+    double Evaluate_pos (double *x, double *p) {
+      double A_pi     = p[0];
+      double mu_piK   = p[1];
+      double sigma_pi = p[2];
+      double A_K      = p[3];
+      double sigma_K  = p[4];
+      double A_pi_pos = p[5];
+      double A_K_pos  = p[6];
+      double sigma_pi_pos = p[2];//same as negative
+      double sigma_K_pos  = p[4];//same as neg
+      double y_function = kaon_part(x[0], mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos ) +
+        pion_part(x[0], A_pi_pos, mu_piK, sigma_pi_pos);
+      return y_function;
     }
-    //std::cout << " chi2 = " << chi2 << "\n";
-    return chi2;
-  }
+    double Evaluate_neg (double *x, double *p) {
+      double A_pi     = p[0];
+      double mu_piK   = p[1];
+      double sigma_pi = p[2];
+      double A_K      = p[3];
+      double sigma_K  = p[4];
+      double A_pi_pos = p[5];
+      double A_K_pos  = p[6];
+      double sigma_pi_pos = p[2];//same as negative
+      double sigma_K_pos  = p[4];//same as neg
+      double y_function = kaon_part(x[0], mu_piK, sigma_pi,  A_K, sigma_K ) +
+        pion_part(x[0], A_pi, mu_piK, sigma_pi);
+      return y_function;
+    }
+    double Evaluate_pions_pos(double *x, double *p)const {
+      double A_pi     = p[0];
+      double mu_piK   = p[1];
+      double sigma_pi = p[2];
+      double A_K      = p[3];
+      double sigma_K  = p[4];
+      double A_pi_pos = p[5];
+      double A_K_pos  = p[6];
+      double sigma_pi_pos = p[2];//same as negative
+      double sigma_K_pos  = p[4];//same as neg
+      double y_function = pion_part(x[0], A_pi_pos, mu_piK, sigma_pi_pos);
+      return y_function;
+    }
+    double Evaluate_kaons_pos(double *x, double *p) const {
+      double A_pi     = p[0];
+      double mu_piK   = p[1];
+      double sigma_pi = p[2];
+      double A_K      = p[3];
+      double sigma_K  = p[4];
+      double A_pi_pos = p[5];
+      double A_K_pos  = p[6];
+      double sigma_pi_pos = p[2];//same as negative
+      double sigma_K_pos  = p[4];//same as neg
+      double y_function = kaon_part(x[0], mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos );
+      return y_function;
+    }
+    double Evaluate_pions_neg(double *x, double *p) const {
+      double A_pi     = p[0];
+      double mu_piK   = p[1];
+      double sigma_pi = p[2];
+      double A_K      = p[3];
+      double sigma_K  = p[4];
+      double A_pi_pos = p[5];
+      double A_K_pos  = p[6];
+      double sigma_pi_pos = p[2];//same as negative
+      double sigma_K_pos  = p[4];//same as neg
+      double y_function = pion_part(x[0], A_pi, mu_piK, sigma_pi);
+      return y_function;
+    }
+    double Evaluate_kaons_neg(double *x, double *p) const {
+      double A_pi     = p[0];
+      double mu_piK   = p[1];
+      double sigma_pi = p[2];
+      double A_K      = p[3];
+      double sigma_K  = p[4];
+      double A_pi_pos = p[5];
+      double A_K_pos  = p[6];
+      double sigma_pi_pos = p[2];//same as negative
+      double sigma_K_pos  = p[4];//same as neg
+      double y_function = kaon_part(x[0], mu_piK, sigma_pi,  A_K, sigma_K );
+      return y_function;
+    }
+
+    void PrintPars() const {
+      //std::cout <<  "A_pi_neg       = " << A_pi     << "\n";
+      //std::cout <<  "mu_piK         = " << mu_piK   << "\n";
+      //std::cout <<  "sigma_pi_neg   = " << sigma_pi << "\n";
+      //std::cout <<  "A_K_neg        = " << A_K      << "\n";
+      //std::cout <<  "sigma_K_neg    = " << sigma_K  << "\n";
+      //std::cout <<  "A_pi_pos       = " << A_pi_pos     << "\n";
+      ////std::cout <<  "mu_piK     = " << mu_piK   << "\n";
+      ////std::cout <<  "sigma_pi_pos   = " << sigma_pi_pos << "\n";
+      //std::cout <<  "A_K_pos        = " << A_K_pos      << "\n";
+      //std::cout <<  "sigma_K_pos    = " << sigma_K_pos  << "\n";
+    }
+
+    // NDim is the number of fit parameters
+    unsigned int 	NDim () const { return 7;}
+
+    double DoEval (const double *x) const {
+      double A_pi     = x[0];
+      double mu_piK   = x[1];
+      double sigma_pi = x[2];
+      double A_K      = x[3];
+      double sigma_K  = x[4];
+      double A_pi_pos = x[5];
+      double A_K_pos  = x[6];
+      //double mu_piK   = x[1];//same as negative
+      double sigma_pi_pos = x[2];//same as negative
+      double sigma_K_pos  = x[4];//same as neg
+
+      double chi2 = 0; 
+
+      int n_bins  = h_positive->GetNbinsX();
+      for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
+        double x_bin = h_positive->GetBinCenter(i_bin);
+        if(x_bin>2.25) continue;
+        double y_bin = h_positive->GetBinContent(i_bin);
+        double dy_bin = h_positive->GetBinError(i_bin);
+        double y_function = kaon_part(x_bin, mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos ) +
+          pion_part(x_bin, A_pi_pos, mu_piK, sigma_pi_pos);
+        double chi = (y_bin - y_function)/dy_bin;
+        chi2 += chi*chi;
+      }
+      n_bins  = h_negative->GetNbinsX();
+      for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
+        double x_bin = h_negative->GetBinCenter(i_bin);
+        if(x_bin>2.25) continue;
+        double y_bin = h_negative->GetBinContent(i_bin);
+        double dy_bin = h_negative->GetBinError(i_bin);
+        double y_function = kaon_part(x_bin, mu_piK, sigma_pi,  A_K, sigma_K ) +
+          pion_part(x_bin, A_pi, mu_piK, sigma_pi);
+        double chi = (y_bin - y_function)/dy_bin;
+        chi2 += chi*chi;
+      }
+      //std::cout << " chi2 = " << chi2 << "\n";
+      return chi2;
+    }
 };
 
-void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
+void SHMS_rftime_fit_low(int RunGroup = 0, int n_aero=-1 ) {
   if (RunGroup == 0) {
     std::cout << "Enter a RunGroup (-1 to exit):";
     std::cin >> RunGroup;
     if (RunGroup <= 0)
       return;
   }
-  std::unique_ptr<TFile> fin(TFile::Open(string("results/rf_hitsograms" + to_string(RunGroup) +
-                                                "_aero" + std::string(n_aero) + ".root")
-                                             .c_str(),
-                                         "READ"));
+  if (n_aero == -1) {
+    std::cout << "Enter a n_aero (-1 to exit):";
+    std::cin >> n_aero;
+    if (n_aero <= 0)
+      return;
+  }
+  std::unique_ptr<TFile> fin(TFile::Open(string("results/pid/rf_histograms" + to_string(RunGroup) +
+          "_aero" + std::to_string(n_aero) + ".root")
+        .c_str(),
+        "READ"));
 
   json j_DE;
   {
@@ -316,10 +324,30 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
     ifs >> j_rungroup;
   }
-  double shms_p_central = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
 
+  json j_runsinfo;
+  {
+    std::ifstream ifs("db2/runs_info.json");
+    ifs >> j_runsinfo;
+  }
 
+  json j_rungroup_info;
+  std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_right_cuts"].get<std::vector<double>>();
 
+  std::string rg = (std::to_string(RunGroup)).c_str();
+  double shms_p_central = j_rungroup[rg]["shms_p"].get<double>();
+  std::vector<int> pruns = j_rungroup[rg]["pos"]["D2"].get<std::vector<int>>();
+  std::vector<int> nruns = j_rungroup[rg]["neg"]["D2"].get<std::vector<int>>();
+  std::vector<double> prun_offsets;
+  std::vector<double> nrun_offsets;
+  for (auto r : pruns) {
+    prun_offsets.push_back(j_runsinfo[(std::to_string(r)).c_str()]["offset"].get<double>());
+  }
+  for (auto r : nruns) {
+    nrun_offsets.push_back(j_runsinfo[(std::to_string(r)).c_str()]["offset"].get<double>());
+  }
+
+  double y_max = 400;
   std::vector<int> delta_cut = j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>();
   double delta_lowend = delta_cut[0];
   for (int i_dpcut = 0;i_dpcut< std::size(delta_cut)-1 ;i_dpcut++) {
@@ -327,67 +355,158 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=4 ) {
     std::string dp_cut = "P.gtr.dp>" + std::to_string(delta_cut[i_dpcut]) + " && P.gtr.dp < " + std::to_string(delta_cut[i_dpcut+1]);
     std::cout << "delta cut is " << dp_cut << std::endl;
     double shms_p = shms_p_central * (100 + (delta_cut[i_dpcut]+delta_cut[i_dpcut+1])/2) / 100;
+    if(shms_p<2.8){
+      auto h_rf_pos_piall = fin->Get<TH1D>(std::string("rftime_pos_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+      auto h_rf_neg_piall = fin->Get<TH1D>(std::string("rftime_neg_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+      if(i_dpcut == 0 ) {
+        y_max = h_rf_pos_piall->GetMaximum() * 1.1;
+      }
 
-    auto h_rf_pos_piall = fin->Get<TH1D>(std::string("rftime_pos_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
-    auto h_rf_neg_piall = fin->Get<TH1D>(std::string("rftime_neg_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+      ROOT::Math::Minimizer* minimum =
+        ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
+      // set tolerance , etc...
+      minimum->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+      minimum->SetMaxIterations(100000);  // for GSL
+      minimum->SetTolerance(0.001);
+      minimum->SetPrintLevel(2);
 
-    ROOT::Math::Minimizer* minimum =
-    ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
-    // set tolerance , etc...
-    minimum->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-    minimum->SetMaxIterations(100000);  // for GSL
-    minimum->SetTolerance(0.001);
-    minimum->SetPrintLevel(2);
+      RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
+      minimum->SetFunction(f_pi);
 
-    RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
-    minimum->SetFunction(f_pi);
+      minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
+      minimum->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.8, 1.2);
+      minimum->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
+      minimum->SetVariable(       3,"A_{K,neg}   ", 2.0,  1.0 );
+      minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0.2);
+      minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
+      minimum->SetVariable(       6,"A_{K,pos}   ", 2.0,  1.0 );
+      minimum->Minimize();
 
-    minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
-    minimum->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.8, 1.2);
-    minimum->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
-    minimum->SetVariable(       3,"A_{K,neg}   ", 2.0,  1.0 );
-    minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
-    minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
-    minimum->SetVariable(       6,"A_{K,pos}   ", 2.0,  1.0 );
-    minimum->Minimize();
+      const double *min_pi_pars = minimum->X();
 
-    const double *min_pi_pars = minimum->X();
+      TCanvas* c = new TCanvas("c1","c1",1200,900);
+      c->Divide(1,3);
+      c->cd(1);
+      gPad->SetLogy(false);
+      TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
+      fpos->SetParameters(min_pi_pars);
+      TF1 * fpos_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
+      fpos_pp->SetParameters(min_pi_pars);
+      fpos_pp->SetLineColor(4);
+      TF1 * fpos_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
+      fpos_kp->SetParameters(min_pi_pars);
+      fpos_kp->SetLineColor(2);
+      auto h1 = h_rf_pos_piall->DrawCopy();
+      h1->GetYaxis()->SetRangeUser(0.1,y_max);
+      fpos->DrawCopy("lsame");
+      fpos_pp->DrawCopy("lsame");
+      fpos_kp->DrawCopy("lsame");
 
-    TCanvas* c = new TCanvas("c1","c1",1200,900);
-    c->Divide(1,3);
-    c->cd(1);
-    TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
-    fpos->SetParameters(min_pi_pars);
-    TF1 * fpos_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
-    fpos_pp->SetParameters(min_pi_pars);
-    fpos_pp->SetLineColor(4);
-    TF1 * fpos_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
-    fpos_kp->SetParameters(min_pi_pars);
-    fpos_kp->SetLineColor(2);
-    auto h1 = h_rf_pos_piall->DrawCopy();
-    h1->GetYaxis()->SetRangeUser(0,h1->GetMaximum()*1.1);
-    fpos->DrawCopy("lsame");
-    fpos_pp->DrawCopy("lsame");
-    fpos_kp->DrawCopy("lsame");
+      TLatex lt;
+      lt.DrawLatexNDC(0.6,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
 
-    TLatex lt;
-    lt.DrawLatexNDC(0.8,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
+      std::string rgtext = "ratio run group " + rg + "  #splitline{";
+      for (auto r : pruns)
+        rgtext += (std::to_string(r) + ",");
+      rgtext += "}{";
+      for (auto r : nruns)
+        rgtext += (std::to_string(r) + ",");
+      rgtext += "}";
+      lt.DrawLatexNDC(0.6,0.5, rgtext.c_str());
 
-    c->cd(2);
-    TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
-    fneg->SetParameters(min_pi_pars);
-    h_rf_neg_piall->Draw();
-    h_rf_neg_piall->GetYaxis()->SetRangeUser(0,h_rf_neg_piall->GetMaximum()*1.1);
-    fneg->DrawCopy("lsame");
+      std::string offsettext = "run RF time offsets  #splitline{";
+      for (auto r : prun_offsets)
+        offsettext += (std::to_string(r) + ",");
+      offsettext += "}{";
+      for (auto r : nrun_offsets)
+        offsettext += (std::to_string(r) + ",");
+      offsettext += "}";
+      lt.DrawLatexNDC(0.6,0.4, offsettext.c_str());
 
-    c->cd(3);
-    h_rf_pos_piall->Divide(h_rf_neg_piall);
-    h_rf_pos_piall->Draw();
-    h_rf_pos_piall->GetYaxis()->SetRangeUser(0,3.5);
+      c->cd(2);
+      gPad->SetLogy(false);
+      TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
+      fneg->SetParameters(min_pi_pars);
+      TF1 * fneg_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
+      fneg_pp->SetParameters(min_pi_pars);
+      fneg_pp->SetLineColor(4);
+      TF1 * fneg_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
+      fneg_kp->SetParameters(min_pi_pars);
+      fneg_kp->SetLineColor(2);
+      h_rf_neg_piall->Draw();
+      h_rf_neg_piall->GetYaxis()->SetRangeUser(0.1,y_max);
+      fneg->DrawCopy("lsame");
+      fneg_pp->DrawCopy("lsame");
+      fneg_kp->DrawCopy("lsame");
 
-    c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)+".png").c_str());
+      c->cd(3);
+      h_rf_pos_piall->Divide(h_rf_neg_piall);
+      h_rf_pos_piall->Draw();
+      h_rf_pos_piall->GetYaxis()->SetRangeUser(0.1,3.5);
 
-  }
+      c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) + "_" + std::to_string(i_dpcut)+"_low.png").c_str());
 
+      //for pi efficiency
+      double width = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
+      double pos_pi_all = fpos_pp->Integral(0,4,width);
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]["pi_eff_all"] = pos_pi_all;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["shms_p"] = shms_p;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pi_peak"]["pos"] = min_pi_pars[1];
+      double neg_pi_all = fneg_pp->Integral(0,4,width);
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]["pi_eff_all"] = neg_pi_all;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pi_peak"]["neg"] = min_pi_pars[1];
+      //numbers for the pion purity
+      std::vector<double> n_pos_pi_rf, n_pos_K_rf;
+      std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
+      for (int i = 0; i < rf_cuts.size(); ++i) {
+        double rf_pi_low  = min_pi_pars[1] - (rf_cuts[i] - 1);
+        double rf_pi_high = min_pi_pars[1] + (rf_cuts[i] - 1);
+
+        rf_pos_cuts.push_back(rf_pi_high);
+        rf_pos_cuts_low.push_back(rf_pi_low);
+        double pos_pi_N = fpos_pp->Integral(rf_pi_low, rf_pi_high, width);
+        n_pos_pi_rf.push_back(pos_pi_N);
+        double pos_K_N = fpos_kp->Integral(rf_pi_low, rf_pi_high, width);
+        n_pos_K_rf.push_back(pos_K_N);
+        std::cout << pos_K_N << " " << pos_pi_N << " " << i_dpcut << std::endl;
+      }
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
+        ["rf_cuts_high"] = rf_pos_cuts;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
+        ["rf_cuts_low"] = rf_pos_cuts_low;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
+        ["pi_eff_Ns"] = n_pos_pi_rf;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
+        ["Ks"] = n_pos_K_rf;
+      std::vector<double> n_neg_pi_rf, n_neg_K_rf;
+      std::vector<double> rf_neg_cuts, rf_neg_cuts_low;
+      for (int i = 0; i < rf_cuts.size(); ++i) {
+        double rf_pi_low  = min_pi_pars[1] - (rf_cuts[i] - 1);
+        double rf_pi_high = min_pi_pars[1] + (rf_cuts[i] - 1);
+
+        rf_neg_cuts.push_back(rf_pi_high);
+        rf_neg_cuts_low.push_back(rf_pi_low);
+        double neg_pi_N = fneg_pp->Integral(rf_pi_low, rf_pi_high, width);
+        n_neg_pi_rf.push_back(neg_pi_N);
+        double neg_K_N = fneg_kp->Integral(rf_pi_low, rf_pi_high, width);
+        n_neg_K_rf.push_back(neg_K_N);
+        std::cout << neg_K_N << " " << neg_pi_N << " " << i_dpcut << std::endl;
+      }
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
+        ["rf_cuts_high"] = rf_neg_cuts;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
+        ["rf_cuts_low"] = rf_neg_cuts_low;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
+        ["pi_eff_Ns"] = n_neg_pi_rf;
+      j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
+        ["Ks"] = n_neg_K_rf;
+    }
+  }//loop over dp
+
+  std::string of_name =
+    "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_compare_low.json";
+  std::ofstream ofs;
+  ofs.open(of_name.c_str());
+  ofs << j_rungroup_info.dump(4) << std::endl;
 
 }

@@ -61,18 +61,23 @@ void rf_offset_fit_plot(){
       for(int i_dp = 0;i_dp<5;i_dp++){
         double shms_p = j_high[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["shms_p"].get<double>();
         //std::cout<<"check"<<shms_p<<std::endl;
-        double pion_peak = 1;
+        double pion_peak = 0.8;
         if(shms_p<2.8){
           json j_low;
           {
-            std::string low_json_name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_low_compare.json";
+            std::string low_json_name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_compare_low.json";
             std::ifstream ifs(low_json_name.c_str());
             ifs>>j_low;
           }
-          pion_peak = j_low[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pi_peak"]["neg"].get<double>();
+          
+          if(!j_low[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pi_peak"]["neg"].empty()){
+            pion_peak = j_low[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pi_peak"]["neg"].get<double>();
+          }
         }
         else{
-          pion_peak = j_high[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pi_peak"]["neg"].get<double>();
+          if(!j_high[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pi_peak"]["neg"].empty()){
+            pion_peak = j_high[(std::to_string(RunGroup)).c_str()][(std::to_string(i_dp)).c_str()]["pi_peak"]["neg"].get<double>();
+          }
         }
         if(RunGroup<420){
           g_shmsp_D2_fall->SetPoint(i_run_shmsp_fall,shms_p,pion_peak);
