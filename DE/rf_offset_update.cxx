@@ -57,6 +57,8 @@ void rf_offset_update(){
     offset_fall_low = 399.012 + rfoffset_shift;
     offset_spring_high = 400.436+rfoffset_shift;
     offset_spring_low = 398.432+ rfoffset_shift;
+    //offset_spring_high = 400.016+rfoffset_shift;
+    //offset_spring_low = 398.012+ rfoffset_shift;
     std::cout<<offset_fall_high<<" "<<offset_fall_low<<" "<<offset_spring_high<<" "<<offset_spring_low<<std::endl;
     std::cout<<RunGroup<<std::endl;
     std::vector<int> neg_D2,pos_D2;

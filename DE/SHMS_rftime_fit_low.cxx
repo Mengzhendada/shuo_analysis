@@ -309,6 +309,8 @@ void SHMS_rftime_fit_low(int RunGroup = 0, int n_aero=-1 ) {
   }
   std::unique_ptr<TFile> fin(TFile::Open(string("results/pid/rf_histograms" + to_string(RunGroup) +
           "_aero" + std::to_string(n_aero) + ".root")
+          //"_aero" + std::to_string(n_aero) + "_electrons.root")
+          //"_aero" + std::to_string(n_aero) + "_withhgc.root")
         .c_str(),
         "READ"));
 
@@ -504,7 +506,7 @@ void SHMS_rftime_fit_low(int RunGroup = 0, int n_aero=-1 ) {
   }//loop over dp
 
   std::string of_name =
-    "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_compare_low.json";
+    "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_"+std::to_string(n_aero)+"_compare_low.json";
   std::ofstream ofs;
   ofs.open(of_name.c_str());
   ofs << j_rungroup_info.dump(4) << std::endl;

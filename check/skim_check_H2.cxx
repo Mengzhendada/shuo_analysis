@@ -41,14 +41,16 @@ double Get_SHMS_P_corr(double shmsp){
   return 0.998;
 } 
 double Get_pi_eff(double shms_p){
-  double pi_eff = 0.9824+0.002969*shms_p;
-  if(pi_eff>1) pi_eff = 1;
+  //double pi_eff = 0.9824+0.002969*shms_p;
+  //if(pi_eff>1) pi_eff = 1;
+  double pi_eff = 1;
   return pi_eff;
 }
 double Get_pos_pi_purity(double shms_p){
-  if(shms_p>3){
-  double pi_purity = 1.978-0.4815*shms_p+0.05161*shms_p*shms_p;
-  if(pi_purity>1) pi_purity = 1;
+  if(shms_p>2.8){
+  //double pi_purity = 1.978-0.4815*shms_p+0.05161*shms_p*shms_p;
+    double pi_purity = 0.8381+0.1812*shms_p-0.04437*shms_p*shms_p;
+    if(pi_purity>1) pi_purity = 1;
   return pi_purity;
   }
   else{
@@ -56,9 +58,10 @@ double Get_pos_pi_purity(double shms_p){
   }
 }
 double Get_neg_pi_purity(double shms_p){
-  if(shms_p>3){
-  double pi_purity = 1.478-0.2423*shms_p+0.0687*shms_p*shms_p;
-  if(pi_purity>1) pi_purity = 1;
+  if(shms_p>2.8){
+  //double pi_purity = 1.478-0.2423*shms_p+0.0687*shms_p*shms_p;
+    double pi_purity = 0.9079+0.09864*shms_p-0.02375*shms_p*shms_p;
+    if(pi_purity>1) pi_purity = 1;
   return pi_purity;
   }
   else{

@@ -57,6 +57,7 @@ double t_proton(double p) {
   const double m = 0.938;
   return (shms_length * std::sqrt(p * p + m * m) * 1e9) / (c * p);
 }
+/*
 double t_pi_fromkaondecay(double p, double position, double pion_peak) {
   const double m_pi          = 0.139;
   const double m_K           = 0.493;
@@ -135,7 +136,7 @@ double fit_pion(double* x, double* params) {
       params[0] * exp(-0.5 * pow((x[0] - params[1]) / params[2], 2)); ///(params[2] *sqrt(2*M_PI));
   return gaus_shape;
 }
-
+*/
 /** Functor class that takes fit parameters as function arguments.
  *
  *  x[0] is \f$ A_{\pi} \f$
@@ -145,6 +146,7 @@ double fit_pion(double* x, double* params) {
  *  x[4] is \f$ \sigma_{\pi} \f$ 
  *
  */
+/*
 class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
 public:
 
@@ -261,7 +263,7 @@ public:
 double fit_all(double* x, double* params) {
   return fit_pion(x, params) + fit_kaondecay(x, &params[1]);
 }
-
+*/
 void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
   if (RunGroup == 0) {
     std::cout << "Enter a RunGroup (-1 to exit):";
@@ -367,6 +369,7 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
     std::unique_ptr<TFile> fout(
         TFile::Open(string("results/pid/rf_histograms" + std::to_string(RunGroup) + "_aero" +
                            std::to_string(int(P_aero))+ ".root")
+                           //std::to_string(int(P_aero))+ "_withhgc.root")
                         .c_str(),
                     "RECREATE"));
 
@@ -399,7 +402,7 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
 
       //
       if (shms_p_lowend > 3) {
-        SHMS_hgc_aero = aeroCutSHMS;
+        SHMS_hgc_aero = aeroCutSHMS; 
         //+" && "+hgcCutSHMS;
       }
       // SHMS_hgc_aero = aeroCutSHMS;}
