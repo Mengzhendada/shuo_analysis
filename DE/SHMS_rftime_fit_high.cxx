@@ -407,7 +407,6 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
                                                 //"_aero" + std::to_string(n_aero) + "_electrons.root")
                                                 //"_aero" + std::to_string(n_aero) + "_withhgc.root")
                                                 "_aero" + std::to_string(n_aero) + ".root")
->>>>>>> ab74ecdaa39d6c59a10c0b1c6fcfeee3cc5dadf7
                                              .c_str(),
                                          "READ"));
 
