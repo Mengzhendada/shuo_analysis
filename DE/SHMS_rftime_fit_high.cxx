@@ -359,6 +359,7 @@ public:
     //double mu_piK   = x[1];//same as negative
     double sigma_pi_pos = x[2];//same as negative
     double sigma_K_pos  = x[4];//same as neg
+    
 
     double chi2 = 0; 
 
@@ -368,10 +369,12 @@ public:
       if(x_bin>2.25) continue;
       double y_bin = h_positive->GetBinContent(i_bin);
       double dy_bin = h_positive->GetBinError(i_bin);
+      if(dy_bin==0) continue;
       double y_function = kaon_part(x_bin, mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos ) +
                           pion_part(x_bin, A_pi_pos, mu_piK, sigma_pi_pos);
       double chi = (y_bin - y_function)/dy_bin;
       chi2 += chi*chi;
+      //std::cout<<i_bin<<" check "<<chi<<std::endl;
     }
     n_bins  = h_negative->GetNbinsX();
     for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
@@ -379,10 +382,12 @@ public:
       if(x_bin>2.25) continue;
       double y_bin = h_negative->GetBinContent(i_bin);
       double dy_bin = h_negative->GetBinError(i_bin);
+      if(dy_bin==0) continue;
       double y_function = kaon_part(x_bin, mu_piK, sigma_pi,  A_K, sigma_K ) +
                           pion_part(x_bin, A_pi, mu_piK, sigma_pi);
-      double chi = (y_bin - y_function)/dy_bin;
+      double chi = (y_bin - y_function)/(dy_bin);
       chi2 += chi*chi;
+      //std::cout<<i_bin<<" 2 check "<<chi<<std::endl;
     }
     //std::cout << " chi2 = " << chi2 << "\n";
     return chi2;
@@ -456,27 +461,59 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
 
     auto h_rf_pos_piall = fin->Get<TH1D>(std::string("rftime_pos_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
     auto h_rf_neg_piall = fin->Get<TH1D>(std::string("rftime_neg_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+    auto h_rf_pos_Kall = fin->Get<TH1D>(std::string("rftime_pos_K_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+    auto h_rf_neg_Kall = fin->Get<TH1D>(std::string("rftime_neg_K_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
     if(i_dpcut == 0 ) {
       y_max = h_rf_pos_piall->GetMaximum() * 1.1;
     }
+
+    ROOT::Math::Minimizer* minimum_K =
+    ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
+    // set tolerance , etc...
+    minimum_K->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+    minimum_K->SetMaxIterations(100000);  // for GSL
+    minimum_K->SetTolerance(0.01);
+    minimum_K->SetPrintLevel(2);
+
+    RFTimeFitFCN f_K(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
+    minimum_K->SetFunction(f_K);
+
+    //minimum_K->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
+    minimum_K->SetLimitedVariable(0,"A_{#pi,neg} ", 100.0,  1,0,10000 );
+    minimum_K->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.1, 1.8);
+    minimum_K->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
+    minimum_K->SetVariable(       3,"A_{K,neg}   ", 100.0,  1.0 );
+    //minimum_K->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
+    minimum_K->SetVariable(  4,"#sigma_{K}  ", 0.3,0.001);
+    //minimum_K->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
+    minimum_K->SetLimitedVariable(5,"A_{#pi,pos} ", 100.0,  1,0,10000 );
+    minimum_K->SetVariable(       6,"A_{K,pos}   ", 100.0,  1.0 );
+    minimum_K->Minimize();
+    const double *min_K_pars = minimum_K->X();
+    
+    double sigma_K = 0.25;
+    if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
 
     ROOT::Math::Minimizer* minimum =
     ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
     // set tolerance , etc...
     minimum->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
     minimum->SetMaxIterations(100000);  // for GSL
-    minimum->SetTolerance(0.001);
+    minimum->SetTolerance(0.01);
     minimum->SetPrintLevel(2);
 
     RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
     minimum->SetFunction(f_pi);
 
-    minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
-    minimum->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.8, 1.2);
+    //minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
+    minimum->SetLimitedVariable(0,"A_{#pi,neg} ", 100.0,  1,0,10000 );
+    minimum->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.1, 1.8);
     minimum->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
     minimum->SetVariable(       3,"A_{K,neg}   ", 2.0,  1.0 );
-    minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0.2);
-    minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
+    minimum->SetFixedVariable(  4,"#sigma_{K}  ", sigma_K);
+    //minimum->SetVariable(  4,"#sigma_{K}  ", 0.3,0.001);
+    //minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
+    minimum->SetLimitedVariable(5,"A_{#pi,pos} ", 100.0,  1,0,10000 );
     minimum->SetVariable(       6,"A_{K,pos}   ", 2.0,  1.0 );
     minimum->Minimize();
 
@@ -503,6 +540,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
 
     TLatex lt;
     lt.DrawLatexNDC(0.6,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
+    
 
     std::string rgtext = "ratio run group " + rg + "  #splitline{";
     for (auto r : pruns)
@@ -522,6 +560,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
     offsettext += "}";
     lt.DrawLatexNDC(0.6,0.4, offsettext.c_str());
 
+    
     c->cd(2);
     //gPad->SetLogy();
     gPad->SetLogy(false);
@@ -538,7 +577,12 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
     fneg->DrawCopy("lsame");
     fneg_pp->DrawCopy("lsame");
     fneg_kp->DrawCopy("lsame");
-
+    
+    TLatex lt2;
+    std::string fitting_text = "A_{#pi neg} , #mu_{#pi} , #sigma_{#pi} , A_{K neg} , #sigma_K , A_{#pi pos} , A_{Kpos}:";
+    lt2.DrawLatexNDC(0.6,0.6, fitting_text.c_str());
+    std::string fitting_params_text = std::to_string(min_pi_pars[0]).substr(0,7)+","+std::to_string(min_pi_pars[1]).substr(0,4)+","+std::to_string(min_pi_pars[2]).substr(0,4)+","+std::to_string(min_pi_pars[3]).substr(0,6)+","+std::to_string(min_pi_pars[4]).substr(0,4)+","+std::to_string(min_pi_pars[5]).substr(0,6)+","+std::to_string(min_pi_pars[6]).substr(0,6);
+    lt2.DrawLatexNDC(0.6,0.5,fitting_params_text.c_str());
     c->cd(3);
     h_rf_pos_piall->Divide(h_rf_neg_piall);
     h_rf_pos_piall->Draw();
@@ -568,7 +612,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
       n_pos_pi_rf.push_back(pos_pi_N);
       double pos_K_N = fpos_kp->Integral(rf_pi_low, rf_pi_high, width);
       n_pos_K_rf.push_back(pos_K_N);
-      std::cout << pos_K_N << " " << pos_pi_N << " " << i_dpcut << std::endl;
+      //std::cout << pos_K_N << " " << pos_pi_N << " " << i_dpcut << std::endl;
     }
     j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["pos"]
       ["rf_cuts_high"] = rf_pos_cuts;
@@ -590,7 +634,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
       n_neg_pi_rf.push_back(neg_pi_N);
       double neg_K_N = fneg_kp->Integral(rf_pi_low, rf_pi_high, width);
       n_neg_K_rf.push_back(neg_K_N);
-      std::cout << neg_K_N << " " << neg_pi_N << " " << i_dpcut << std::endl;
+      //std::cout << neg_K_N << " " << neg_pi_N << " " << i_dpcut << std::endl;
     }
     j_rungroup_info[rg][(std::to_string(i_dpcut)).c_str()]["neg"]
       ["rf_cuts_high"] = rf_neg_cuts;

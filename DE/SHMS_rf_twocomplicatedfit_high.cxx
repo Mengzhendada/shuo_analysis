@@ -912,6 +912,8 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
       fout->cd();
       h_rf_pos_piall->Write(std::string("rftime_pos_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
       h_rf_neg_piall->Write(std::string("rftime_neg_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+      h_rf_pos_Kall->Write(std::string("rftime_pos_K_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
+      h_rf_neg_Kall->Write(std::string("rftime_neg_K_" + std::to_string(RunGroup) + "_" + std::to_string(i_dpcut)).c_str());
       /*
 
       RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);

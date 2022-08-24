@@ -53,10 +53,10 @@ void rf_offset_update(){
     double rfoffset_shift = -(t_pi(shms_p)-t_pi(shms_p_mean));
     //std::cout<<" 1 "<<t_pi(shms_p)<<std::endl;
     std::cout<<"shift "<<rfoffset_shift<<std::endl;
-    offset_fall_high = 401.016 + rfoffset_shift;
-    offset_fall_low = 399.012 + rfoffset_shift;
-    offset_spring_high = 400.436+rfoffset_shift;
-    offset_spring_low = 398.432+ rfoffset_shift;
+    //offset_fall_high = 401.016 + rfoffset_shift;
+    //offset_fall_low = 399.012 + rfoffset_shift;
+    //offset_spring_high = 400.436+rfoffset_shift;
+    //offset_spring_low = 398.432+ rfoffset_shift;
     //offset_spring_high = 400.016+rfoffset_shift;
     //offset_spring_low = 398.012+ rfoffset_shift;
     std::cout<<offset_fall_high<<" "<<offset_fall_low<<" "<<offset_spring_high<<" "<<offset_spring_low<<std::endl;
