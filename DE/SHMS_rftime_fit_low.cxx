@@ -367,7 +367,7 @@ class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
         if(x_bin>2.25) continue;
         double y_bin = h_positive->GetBinContent(i_bin);
         double dy_bin = h_positive->GetBinError(i_bin);
-        if(dy_bin == 0) continue;
+        if(dy_bin<1e-5) continue;
         double y_function = kaon_part(x_bin, mu_piK, sigma_pi_pos,  A_K_pos, sigma_K_pos ) +
           pion_part(x_bin, A_pi_pos, mu_piK, sigma_pi_pos);
         double chi = (y_bin - y_function)/dy_bin;
@@ -379,7 +379,7 @@ class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
         if(x_bin>2.25) continue;
         double y_bin = h_negative->GetBinContent(i_bin);
         double dy_bin = h_negative->GetBinError(i_bin);
-        if(dy_bin == 0) continue;
+        if(dy_bin<1e-5) continue;
         double y_function = kaon_part(x_bin, mu_piK, sigma_pi,  A_K, sigma_K ) +
           pion_part(x_bin, A_pi, mu_piK, sigma_pi);
         double chi = (y_bin - y_function)/dy_bin;
@@ -461,32 +461,33 @@ void SHMS_rftime_fit_low(int RunGroup = 0, int n_aero=-1 ) {
       if(i_dpcut == 0 ) {
         y_max = h_rf_pos_piall->GetMaximum() * 1.1;
       }
-    ROOT::Math::Minimizer* minimum_K =
-    ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
-    // set tolerance , etc...
-    minimum_K->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-    minimum_K->SetMaxIterations(100000);  // for GSL
-    minimum_K->SetTolerance(0.01);
-    minimum_K->SetPrintLevel(2);
+      /*no need to do K fit for low momentum
+        ROOT::Math::Minimizer* minimum_K =
+        ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
+      // set tolerance , etc...
+      minimum_K->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+      minimum_K->SetMaxIterations(100000);  // for GSL
+      minimum_K->SetTolerance(0.01);
+      minimum_K->SetPrintLevel(2);
 
-    RFTimeFitFCN f_K(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
-    minimum_K->SetFunction(f_K);
+      RFTimeFitFCN f_K(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
+      minimum_K->SetFunction(f_K);
 
-    //minimum_K->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
-    minimum_K->SetLimitedVariable(0,"A_{#pi,neg} ", 100.0,  1,0,10000 );
-    minimum_K->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.1, 1.8);
-    minimum_K->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
-    minimum_K->SetVariable(       3,"A_{K,neg}   ", 100.0,  1.0 );
-    //minimum_K->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
-    minimum_K->SetVariable(  4,"#sigma_{K}  ", 0.3,0.001);
-    //minimum_K->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
-    minimum_K->SetLimitedVariable(5,"A_{#pi,pos} ", 100.0,  1,0,10000 );
-    minimum_K->SetVariable(       6,"A_{K,pos}   ", 100.0,  1.0 );
-    minimum_K->Minimize();
-    const double *min_K_pars = minimum_K->X();
-    
-    double sigma_K = 0.25;
-    if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
+      //minimum_K->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
+      minimum_K->SetLimitedVariable(0,"A_{#pi,neg} ", 100.0,  1,0,10000 );
+      minimum_K->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.1, 1.8);
+      minimum_K->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
+      minimum_K->SetVariable(       3,"A_{K,neg}   ", 100.0,  1.0 );
+      //minimum_K->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
+      minimum_K->SetVariable(  4,"#sigma_{K}  ", 0.3,0.001);
+      //minimum_K->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
+      minimum_K->SetLimitedVariable(5,"A_{#pi,pos} ", 100.0,  1,0,10000 );
+      minimum_K->SetVariable(       6,"A_{K,pos}   ", 100.0,  1.0 );
+      minimum_K->Minimize();
+      const double *min_K_pars = minimum_K->X();
+      */ 
+      double sigma_K = 0.25;
+      //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
 
       ROOT::Math::Minimizer* minimum =
         ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
@@ -499,14 +500,14 @@ void SHMS_rftime_fit_low(int RunGroup = 0, int n_aero=-1 ) {
       RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
       minimum->SetFunction(f_pi);
 
-      minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
-      minimum->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.8, 1.2);
+      minimum->SetLimitedVariable(0,"A_{#pi,neg} ", 150.0,  1 ,50,1000);
+      minimum->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.5, 1.3);
       minimum->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
-      minimum->SetVariable(       3,"A_{K,neg}   ", 2.0,  1.0 );
+      minimum->SetLimitedVariable(3,"A_{K,neg}   ", 2.0,  1.0 ,0,1000);
       //minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0.2);
       minimum->SetFixedVariable(  4,"#sigma_{K}  ", sigma_K);
-      minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
-      minimum->SetVariable(       6,"A_{K,pos}   ", 2.0,  1.0 );
+      minimum->SetLimitedVariable(5,"A_{#pi,pos} ", 150.0,  1 ,50,1000);
+      minimum->SetLimitedVariable(6,"A_{K,pos}   ", 2.0,  1.0 ,0,1000);
       minimum->Minimize();
 
       const double *min_pi_pars = minimum->X();
@@ -514,7 +515,8 @@ void SHMS_rftime_fit_low(int RunGroup = 0, int n_aero=-1 ) {
       TCanvas* c = new TCanvas("c1","c1",1200,900);
       c->Divide(1,3);
       c->cd(1);
-      gPad->SetLogy(false);
+      gPad->SetLogy();
+      //gPad->SetLogy(false);
       TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
       fpos->SetParameters(min_pi_pars);
       TF1 * fpos_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_pos,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
@@ -551,7 +553,8 @@ void SHMS_rftime_fit_low(int RunGroup = 0, int n_aero=-1 ) {
       lt.DrawLatexNDC(0.6,0.4, offsettext.c_str());
 
       c->cd(2);
-      gPad->SetLogy(false);
+      gPad->SetLogy();
+      //gPad->SetLogy(false);
       TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
       fneg->SetParameters(min_pi_pars);
       TF1 * fneg_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_neg,0.5,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.

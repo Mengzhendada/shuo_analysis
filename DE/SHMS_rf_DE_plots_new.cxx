@@ -56,7 +56,7 @@ void SHMS_rf_DE_plots_new(){
 
       json j_rfeff_delta;
       {
-        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_compare.json";
+        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_4_compare.json";
         std::ifstream ifstream(name.c_str());
         ifstream>>j_rfeff_delta;
       }
@@ -180,7 +180,7 @@ void SHMS_rf_DE_plots_new(){
     if(!pos_D2.empty() && !neg_D2.empty()){
       json j_rfeff_delta;
       {
-        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_compare.json";
+        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_4_compare.json";
         std::ifstream ifstream(name.c_str());
         ifstream>>j_rfeff_delta;
       }

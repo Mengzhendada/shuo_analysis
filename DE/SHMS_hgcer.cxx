@@ -29,6 +29,7 @@ using namespace std;
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "TEfficiency.h"
+#include "TEllipse.h"
 constexpr const double M_P     = 0.938272;
 constexpr const double M_P2    = M_P * M_P;
 constexpr const double M_pion  = 0.139;
@@ -40,6 +41,9 @@ using Pvec4D = ROOT::Math::PxPyPzMVector;
 
 
 bool shms_momentum_high = true;
+//double center_region(double x){
+//  return sqrt(36-(x-1.33)*(x-1.33))+0.83;
+//}
 
 void SHMS_hgcer(int RunGroup=0){
 
@@ -201,7 +205,7 @@ void SHMS_hgcer(int RunGroup=0){
       int coin_peak_bin_pos = h_cointime_pos->GetMaximumBin();
       double coin_peak_center_pos = h_cointime_pos->GetBinCenter(coin_peak_bin_pos);
       double cointime_lowcut,cointime_highcut;
-      if(RunGroup<410){
+      if(RunGroup<420){
         cointime_lowcut = j_cuts["cointime_low_fall"].get<double>();
         cointime_highcut = j_cuts["cointime_high_fall"].get<double>();
       }
@@ -213,9 +217,9 @@ void SHMS_hgcer(int RunGroup=0){
       double cointime_low_pos = coin_peak_center_pos+cointime_lowcut;
       double cointime_high_pos = coin_peak_center_pos+cointime_highcut;
 
-      double rf_pi_low = j_cuts["rf_pi_low"].get<double>();
+      double rf_pi_low = j_cuts["rf_cut_low"].get<double>();
       std::cout<<rf_pi_low<<std::endl;
-      double rf_pi_high =j_cuts["rf_pi_high"].get<double>();
+      double rf_pi_high =j_cuts["rf_cut_high"].get<double>();
       std::cout<<rf_pi_high<<std::endl;
 
 
@@ -358,6 +362,17 @@ void SHMS_hgcer(int RunGroup=0){
         //h_hgcer_pi_did_2d->GetYaixs()->SetTitle("xCer");
         //gPad()->Modified();
         h_hgcer_pi_did_2d->DrawCopy("colz");
+        //TF1* center_cir = new TF1("center","center_region(x)",-5.33,7.33);
+        TEllipse *center_cir = new TEllipse(1.33,0.83,6,0);
+        //center_cir->SetFillColor(6);
+        center_cir->SetFillStyle(0);
+        //center_cir->SetLineColor(6);
+        center_cir->Draw("same");
+        TLine *line_up = new TLine(-40,0,40,0);
+        TLine *line_down = new TLine(-40,3,40,3);
+        line_up->Draw("same");
+        line_down->Draw("same");
+        //TF2* left = new TF1("left","1.33",)
         gStyle->SetOptTitle(0);
         std::string c_hgc_eff_2d_name = "results/pid/hgcer/SHMS_hgcer_eff_"+std::to_string(RunNumber)+"_"+std::to_string(hgc_cut).substr(0,1)+"_2d.pdf";
         c_hgc_eff_2d->SaveAs(c_hgc_eff_2d_name.c_str());

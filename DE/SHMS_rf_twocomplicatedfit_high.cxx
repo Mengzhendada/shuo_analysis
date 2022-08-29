@@ -368,8 +368,8 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
 
     std::unique_ptr<TFile> fout(
         TFile::Open(string("results/pid/rf_histograms" + std::to_string(RunGroup) + "_aero" +
-                           std::to_string(int(P_aero))+ ".root")
-                           //std::to_string(int(P_aero))+ "_withhgc.root")
+                           //std::to_string(int(P_aero))+ ".root")
+                           std::to_string(int(P_aero))+ "_withhgc.root")
                         .c_str(),
                     "RECREATE"));
 
@@ -402,8 +402,8 @@ void SHMS_rf_twocomplicatedfit_high(int RunGroup = 0) {
 
       //
       if (shms_p_lowend > 3) {
-        SHMS_hgc_aero = aeroCutSHMS; 
-        //+" && "+hgcCutSHMS;
+        SHMS_hgc_aero = aeroCutSHMS 
+        +" && "+hgcCutSHMS;
       }
       // SHMS_hgc_aero = aeroCutSHMS;}
       else {
