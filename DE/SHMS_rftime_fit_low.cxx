@@ -486,7 +486,7 @@ void SHMS_rftime_fit_low(int RunGroup = 0, int n_aero=-1 ) {
       minimum_K->Minimize();
       const double *min_K_pars = minimum_K->X();
       */ 
-      double sigma_K = 0.25;
+      double sigma_K = 0.3;
       //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
 
       ROOT::Math::Minimizer* minimum =

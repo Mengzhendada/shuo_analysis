@@ -170,7 +170,7 @@ void SHMS_rf_DE_plots_low(){
     pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
       json j_rfeff_delta;
       {
-        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_4_low_compare.json";
+        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_4_compare_low.json";
         std::ifstream ifstream(name.c_str());
         ifstream>>j_rfeff_delta;
       }

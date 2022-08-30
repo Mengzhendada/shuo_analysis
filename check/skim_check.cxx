@@ -135,6 +135,10 @@ void skim_check(int RunGroup=0){
   std::string Normal_SHMS = "P.gtr.th > "+std::to_string(P_xptar_low)+" && P.gtr.th < "+std::to_string(P_xptar_high)+" && P.gtr.ph > "+std::to_string(P_yptar_low)+" && P.gtr.ph < "+std::to_string(P_yptar_high); 
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
+  std::string HGC_bad_center = "(P.hgcer.yAtCer-1.33)*(P.hgcer.yAtCer-1.33) +  (P.hgcer.xAtCer-0.83)*(P.hgcer.xAtCer-0.83) >= 36";
+  std::string HGC_bad_strip = "(P.hgcer.xAtCer<0 || P.hgcer.xAtCer>3)";
+  std::string HGC_bad = HGC_bad_center + " && "+ HGC_bad_strip;
+
   double W2_cut_num = j_cuts["W2"].get<double>();
   std::string W2_cut = "W2 > "+std::to_string(W2_cut_num);
   double Mx2_cut_num = j_cuts["Mx2"].get<double>();
@@ -276,6 +280,7 @@ void skim_check(int RunGroup=0){
         .Filter(aeroCutSHMS)
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
+        .Filter(HGC_bad)
         .Filter("P.dc.InsideDipoleExit == 1")
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
@@ -594,6 +599,7 @@ void skim_check(int RunGroup=0){
         .Filter(aeroCutSHMS)
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
+        .Filter(HGC_bad)
         .Filter("P.dc.InsideDipoleExit == 1")
         .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})

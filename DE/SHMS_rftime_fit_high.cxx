@@ -410,9 +410,9 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
       return;
   }
   std::unique_ptr<TFile> fin(TFile::Open(string("results/pid/rf_histograms" + to_string(RunGroup) +
-                                                //"_aero" + std::to_string(n_aero) + ".root")
+                                                "_aero" + std::to_string(n_aero) + ".root")
                                                 //"_aero" + std::to_string(n_aero) + "_electrons.root")
-                                                "_aero" + std::to_string(n_aero) + "_withhgc.root")
+                                                //"_aero" + std::to_string(n_aero) + "_withhgc.root")
                                                 //"_aero" + std::to_string(n_aero) + ".root")
                                              .c_str(),
                                          "READ"));
@@ -495,6 +495,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
    */ 
     double sigma_K = 0.3;
     //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
+>>>>>>> a0738f729d646b1350a477eadaf478cf093fb376
 
     ROOT::Math::Minimizer* minimum_K =
     ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
@@ -520,8 +521,7 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
     minimum_K->Minimize();
     const double *min_K_pars = minimum_K->X();
     
-    double sigma_K = 0.25;
-    if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
+    if(min_K_pars[4]>0.2 && min_K_pars[5]<0.35) sigma_K = min_K_pars[5]; 
 
     ROOT::Math::Minimizer* minimum =
     ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
@@ -617,8 +617,8 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
     h_rf_pos_piall->Draw();
     h_rf_pos_piall->GetYaxis()->SetRangeUser(0.1,3.5);
 
-    //c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) + "_" + std::to_string(i_dpcut)+".png").c_str());
-    c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) + "_" + std::to_string(i_dpcut)+"_withhgc.png").c_str());
+    c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) + "_" + std::to_string(i_dpcut)+".png").c_str());
+    //c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) + "_" + std::to_string(i_dpcut)+"_withhgc.png").c_str());
     
     //for pi efficiency
     double width = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
@@ -677,8 +677,8 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
   }//loop over dp
 
   std::string of_name =
-    "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_"+std::to_string(n_aero)+"_compare_withhgc.json";
-    //"results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_"+std::to_string(n_aero)+"_compare.json";
+    //"results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_"+std::to_string(n_aero)+"_compare_withhgc.json";
+    "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_"+std::to_string(n_aero)+"_compare.json";
   std::ofstream ofs;
   ofs.open(of_name.c_str());
   ofs << j_rungroup_info.dump(4) << std::endl;
