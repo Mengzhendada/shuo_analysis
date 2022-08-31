@@ -34,9 +34,9 @@ double t_pi(double p) {
 void rf_offset_update(){
   double offset_fall_high = 401.016;
   double offset_fall_low = 399.012;
-  double offset_spring_high = 400.436;
-  double offset_spring_low = 398.432;
-  double shms_p_mean = 2.6;//I assumed, need to be verified
+  double offset_spring_high = 400.268;
+  double offset_spring_low = 398.264;
+  //double shms_p_mean = 2.6;//I assumed, need to be verified
   json j_rungroup;
   {
     std::ifstream ifs("db2/ratio_run_group_updated.json");
@@ -50,9 +50,9 @@ void rf_offset_update(){
   for(auto it = j_rungroup.begin();it!=j_rungroup.end();++it){
     int RunGroup = std::stoi(it.key());
     double shms_p = it.value()["shms_p"].get<double>();
-    double rfoffset_shift = -(t_pi(shms_p)-t_pi(shms_p_mean));
+    //double rfoffset_shift = -(t_pi(shms_p)-t_pi(shms_p_mean));
     //std::cout<<" 1 "<<t_pi(shms_p)<<std::endl;
-    std::cout<<"shift "<<rfoffset_shift<<std::endl;
+    //std::cout<<"shift "<<rfoffset_shift<<std::endl;
     //offset_fall_high = 401.016 + rfoffset_shift;
     //offset_fall_low = 399.012 + rfoffset_shift;
     //offset_spring_high = 400.436+rfoffset_shift;

@@ -33,7 +33,7 @@ void rf_offset_plot(){
   }
   json j_info;
   {
-    std::ifstream ifs("db2/runs_info_offset.json");
+    std::ifstream ifs("db2/runs_info_onlyoffset.json");
     ifs>>j_info;
   }
   TGraph* g_neg_D2_fall = new TGraph();
@@ -78,7 +78,7 @@ void rf_offset_plot(){
         else{
           g_neg_D2_spring->SetPoint(i_run_neg_spring,RunNumber,offset);
           i_run_neg_spring++;
-          if(offset>400){
+          if(offset>399){
             g_D2_spring_high->SetPoint(i_run_spring_high,RunNumber,offset);
             i_run_spring_high++;
           }

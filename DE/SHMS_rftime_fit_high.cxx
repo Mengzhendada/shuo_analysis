@@ -72,8 +72,8 @@ double gaus_fun_kaonNodecay(double* x, double* params) {
   // std::cout<<"check kaon slower than pion "<<t_K(params[3])-t_pi(params[3])<<" pion position
   // "<<params[0]<<" kaon no decay position "<<kaon_nodecay_peak<<std::endl; std::cout<<"check kaon
   // "<<kaon_nodecay_peak<<std::endl;
-  double gaus_shape = params[2] * exp(-0.5 * pow((x[0] - kaon_nodecay_peak) / params[4],
-                                                 2)); ///(params[2] *sqrt(2*M_PI));
+  double gaus_shape = params[2] * exp(-0.5 * pow((x[0] - kaon_nodecay_peak) / params[4],2))
+                      + params[2]/15*exp(-0.5 * pow((x[0] - kaon_nodecay_peak) / (2*params[4]),2));
   // std::cout<<"check gaus "<<gaus_shape<<std::endl;
   return gaus_shape;
 }
@@ -85,7 +85,9 @@ double gaus_fun_pion_kaondecay(double* x, double* pa) {
   // pions that kaon decays is calculated by momentum pa[1],and the position where kaon decays pa[3]
   double pi_fromkaondecay_peak = t_pi_fromkaondecay(pa[1], pa[3], pa[4]);
   double gaus_shape =
-      pa[0] * exp(-0.5 * pow((x[0] - pi_fromkaondecay_peak) / pa[2], 2)); ///(pa[2] *sqrt(2*M_PI));
+    //Add a background on the pion peak, due to detector inefficiency etc
+      pa[0] * exp(-0.5 * pow((x[0] - pi_fromkaondecay_peak) / pa[2], 2))
+      +pa[0]/15 * exp(-0.5 * pow((x[0] - pi_fromkaondecay_peak) / (2*pa[2]), 2)); 
   // std::cout<<"check pion "<<pi_fromkaondecay_peak<<" gaus "<<gaus_shape<<std::endl;
   return gaus_shape;
 }
@@ -226,7 +228,9 @@ public:
 
   std::vector<std::pair<double,double>> kaon_decay_prob = Get_kaon_decay_prob(SHMS_momentum);
   double pion_part(double x, double A_pi, double mu_piK, double sigma_pi) const {
-    double gaus_shape = A_pi * exp(-0.5 * pow((x - mu_piK) / sigma_pi, 2)); ///(params[2] *sqrt(2*M_PI));
+    //add a background due to ADC inefficiency etc on main pion peak
+    double gaus_shape = A_pi * exp(-0.5 * pow((x - mu_piK) / sigma_pi, 2))+A_pi/15 * exp(-0.5 * pow((x - mu_piK) / (2*sigma_pi), 2)); 
+    //double gaus_shape = A_pi * exp(-0.5 * pow((x - mu_piK) / sigma_pi, 2)); 
     return gaus_shape;
   }
   double kaon_part(double x, double mu_piK,double sigma_pi, double A_K, double sigma_K ) const {
@@ -495,7 +499,6 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
    */ 
     double sigma_K = 0.3;
     //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
->>>>>>> a0738f729d646b1350a477eadaf478cf093fb376
 
     ROOT::Math::Minimizer* minimum_K =
     ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
