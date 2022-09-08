@@ -1409,7 +1409,7 @@ void make_simc_input_H2(int RunGroup = 0){
   ofs_H2_neg_delta<<" doing_kaon = 0"<<std::endl;
   ofs_H2_neg_delta<<" doing_pion = 1"<<std::endl;
   ofs_H2_neg_delta<<" which_pion = 3"<<std::endl;
-  ofs_H2_neg_delta<<" doing_delta = 0"<<std::endl;
+  ofs_H2_neg_delta<<" doing_delta = 1"<<std::endl;
   ofs_H2_neg_delta<<" doing_decay = 0"<<std::endl;
   ofs_H2_neg_delta<<" ctau = 780.4"<<std::endl;
   ofs_H2_neg_delta<<"end parm experiment\n"<<std::endl;
@@ -1534,7 +1534,7 @@ void make_simc_input_H2(int RunGroup = 0){
   ofs_H2_pos_delta<<" doing_kaon = 0"<<std::endl;
   ofs_H2_pos_delta<<" doing_pion = 1"<<std::endl;
   ofs_H2_pos_delta<<" which_pion = 2"<<std::endl;
-  ofs_H2_pos_delta<<" doing_delta = 0"<<std::endl;
+  ofs_H2_pos_delta<<" doing_delta = 1"<<std::endl;
   ofs_H2_pos_delta<<" doing_decay = 0"<<std::endl;
   ofs_H2_pos_delta<<" ctau = 780.4"<<std::endl;
   ofs_H2_pos_delta<<"end parm experiment\n"<<std::endl;

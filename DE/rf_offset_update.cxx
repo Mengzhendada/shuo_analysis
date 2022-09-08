@@ -50,13 +50,14 @@ void rf_offset_update(){
   for(auto it = j_rungroup.begin();it!=j_rungroup.end();++it){
     int RunGroup = std::stoi(it.key());
     double shms_p = it.value()["shms_p"].get<double>();
-    //double rfoffset_shift = -(t_pi(shms_p)-t_pi(shms_p_mean));
-    //std::cout<<" 1 "<<t_pi(shms_p)<<std::endl;
-    //std::cout<<"shift "<<rfoffset_shift<<std::endl;
-    //offset_fall_high = 401.016 + rfoffset_shift;
-    //offset_fall_low = 399.012 + rfoffset_shift;
-    //offset_spring_high = 400.436+rfoffset_shift;
-    //offset_spring_low = 398.432+ rfoffset_shift;
+    double shms_p_mean = 2.6;//I guess. average from all the runs
+    double rfoffset_shift = -(t_pi(shms_p)-t_pi(shms_p_mean));
+    std::cout<<" 1 "<<t_pi(shms_p)<<std::endl;
+    std::cout<<"shift "<<rfoffset_shift<<std::endl;
+    offset_fall_high = 401.016 + rfoffset_shift;
+    offset_fall_low = 399.012 + rfoffset_shift;
+    offset_spring_high = 400.268+rfoffset_shift;
+    offset_spring_low = 398.264+ rfoffset_shift;
     //offset_spring_high = 400.016+rfoffset_shift;
     //offset_spring_low = 398.012+ rfoffset_shift;
     std::cout<<offset_fall_high<<" "<<offset_fall_low<<" "<<offset_spring_high<<" "<<offset_spring_low<<std::endl;
@@ -80,7 +81,7 @@ void rf_offset_update(){
         }//if fall runs
         else{
           double rfoffset = j_info[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
-          if(rfoffset>400){
+          if(rfoffset>399){
             j_info[(std::to_string(RunNumber)).c_str()]["offset"] = offset_spring_high;
             //double offset_spring_high = 401.032;
           }
@@ -103,7 +104,7 @@ void rf_offset_update(){
         }//if fall runs
         else{
           double rfoffset = j_info[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
-          if(rfoffset>400){
+          if(rfoffset>399){
             j_info[(std::to_string(RunNumber)).c_str()]["offset"] = offset_spring_high;
             //double offset_spring_high = 401.032;
           }
