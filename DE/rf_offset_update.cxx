@@ -34,8 +34,8 @@ double t_pi(double p) {
 void rf_offset_update(){
   double offset_fall_high = 401.016;
   double offset_fall_low = 399.012;
-  double offset_spring_high = 400.268;
-  double offset_spring_low = 398.264;
+  double offset_spring_high = 400.027;
+  double offset_spring_low = 398.023;
   //double shms_p_mean = 2.6;//I assumed, need to be verified
   json j_rungroup;
   {
@@ -56,8 +56,8 @@ void rf_offset_update(){
     std::cout<<"shift "<<rfoffset_shift<<std::endl;
     offset_fall_high = 401.016 + rfoffset_shift;
     offset_fall_low = 399.012 + rfoffset_shift;
-    offset_spring_high = 400.268+rfoffset_shift;
-    offset_spring_low = 398.264+ rfoffset_shift;
+    offset_spring_high = 400.027+rfoffset_shift;
+    offset_spring_low = 398.023+ rfoffset_shift;
     //offset_spring_high = 400.016+rfoffset_shift;
     //offset_spring_low = 398.012+ rfoffset_shift;
     std::cout<<offset_fall_high<<" "<<offset_fall_low<<" "<<offset_spring_high<<" "<<offset_spring_low<<std::endl;

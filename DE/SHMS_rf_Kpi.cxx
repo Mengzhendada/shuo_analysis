@@ -114,9 +114,9 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
   double      H_cal_low     = j_cuts["H_cal_low"].get<double>();
   double      H_cal_high    = j_cuts["H_cal_high"].get<double>();
   double      H_cer         = j_cuts["H_cer"].get<double>();
-  int         P_hgcer       = j_cuts["P_hgcer"].get<double>();
+  double      P_hgcer       = j_cuts["P_hgcer"].get<double>();
   std::string hgcCutSHMS    = (" P.hgcer.npeSum > " + std::to_string(P_hgcer)).c_str();
-  std::string SHMS_hgc_aero = aeroCutSHMS;
+  //std::string SHMS_hgc_aero = aeroCutSHMS;
   std::string SHMS_anti_hgc_aero = aeroCutSHMS+" && P.hgcer.npeSum<2";
   std::string eCutHMS =
     ("H.cal.etottracknorm > " + std::to_string(H_cal_low) + " && H.cal.etottracknorm < " +
@@ -143,11 +143,27 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
   std::cout << Normal_HMS << std::endl;
   std::cout << Normal_SHMS << std::endl;
 
-  //HGC bad region cut
+  //HGC bad region cut not used
   std::string HGC_bad_center = "(P.hgcer.yAtCer-1.33)*(P.hgcer.yAtCer-1.33) +  (P.hgcer.xAtCer-0.83)*(P.hgcer.xAtCer-0.83) >= 36";
   std::string HGC_bad_strip = "(P.hgcer.xAtCer<0 || P.hgcer.xAtCer>3)";
   std::string HGC_bad = HGC_bad_center + " && "+ HGC_bad_strip;
   
+  //momentum greater than 2.8
+  auto SHMS_p_cut = [=](double shms_dp){
+    double shms_p = (shms_dp+100)*shms_p_central/100; 
+    return shms_p>2.8;
+  };
+  //HGC_aero cut event level
+  auto SHMS_hgc_aero =[=](double shms_dp,double hgc_Npe,double aero_Npe){
+
+    if((shms_dp+100)*shms_p_central/100>2.8){
+        return hgc_Npe>P_hgcer && aero_Npe>P_aero;
+    }
+    else{
+      return aero_Npe>P_aero;
+    }
+  };
+  /*
   if (shms_p_central > 3) {
     SHMS_hgc_aero = aeroCutSHMS 
       +" && "+hgcCutSHMS;
@@ -155,6 +171,7 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
   else {
     SHMS_hgc_aero = aeroCutSHMS;
   }
+  */
 
   //double shms_p_average = 2.6;//average of all the runs, roughly
   auto rftime_K = [shms_p_central](double SHMS_dp,double rftime){
@@ -337,15 +354,19 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
       ;
     auto d_pos_piall = d_mod_first
       //.Filter(aeroCutSHMS)
-      .Filter(SHMS_hgc_aero);
+      .Filter(SHMS_p_cut,{"P.gtr.dp"})
+      .Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"});
     auto d_pos_Kall = d_mod_first
+      .Filter(SHMS_p_cut,{"P.gtr.dp"})
       .Filter(SHMS_anti_hgc_aero)
       ;
     auto d_pos_piall_bg = d_pos_bg_norfcut
       //.Filter(aeroCutSHMS)
-      .Filter(SHMS_hgc_aero);
+      .Filter(SHMS_p_cut,{"P.gtr.dp"})
+      .Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"});
     auto d_pos_Kall_bg = d_pos_bg_norfcut
       //.Filter("P.aero.npeSum<10")
+      .Filter(SHMS_p_cut,{"P.gtr.dp"})
       .Filter(SHMS_anti_hgc_aero)
       ;
 
@@ -508,14 +529,18 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
 
     auto d_neg_piall = d_mod_first
       //.Filter(aeroCutSHMS)
-      .Filter(SHMS_hgc_aero);
+      .Filter(SHMS_p_cut,{"P.gtr.dp"})
+      .Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"});
     auto d_neg_Kall = d_mod_first
+      .Filter(SHMS_p_cut,{"P.gtr.dp"})
       .Filter(SHMS_anti_hgc_aero)
       ;
     auto d_neg_piall_bg = d_neg_bg_norfcut
       //.Filter(aeroCutSHMS)
-      .Filter(SHMS_hgc_aero);
+      .Filter(SHMS_p_cut,{"P.gtr.dp"})
+      .Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"});
     auto d_neg_Kall_bg = d_neg_bg_norfcut
+      .Filter(SHMS_p_cut,{"P.gtr.dp"})
       .Filter(SHMS_anti_hgc_aero)
       ;
 

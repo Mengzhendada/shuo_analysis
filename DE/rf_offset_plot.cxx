@@ -114,7 +114,7 @@ void rf_offset_plot(){
         else{
           g_pos_D2_spring->SetPoint(i_run_pos_spring,RunNumber,offset);
           i_run_pos_spring++;
-          if(offset>400){
+          if(offset>399){
             g_D2_spring_high->SetPoint(i_run_spring_high,RunNumber,offset);
             i_run_spring_high++;
           }

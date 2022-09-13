@@ -515,12 +515,12 @@ void SHMS_rftime_fit_high(int RunGroup = 0, int n_aero=-1 ) {
     minimum_K->SetLimitedVariable(0,"A_{#pi,neg} ", 100.0,  1,0,10000 );
     minimum_K->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.1, 1.8);
     minimum_K->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
-    minimum_K->SetVariable(       3,"A_{K,neg}   ", 100.0,  1.0 );
+    minimum_K->SetLimitedVariable(3,"A_{K,neg}   ", 100.0,  1.0,0,1000 );
     //minimum_K->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
     minimum_K->SetVariable(  4,"#sigma_{K}  ", 0.3,0.001);
     //minimum_K->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
     minimum_K->SetLimitedVariable(5,"A_{#pi,pos} ", 100.0,  1,0,10000 );
-    minimum_K->SetVariable(       6,"A_{K,pos}   ", 100.0,  1.0 );
+    minimum_K->SetLimitedVariable(6,"A_{K,pos}   ", 100.0,  1.0,0,1000 );
     minimum_K->Minimize();
     const double *min_K_pars = minimum_K->X();
     
