@@ -49,7 +49,22 @@ double Get_pi_eff(double shms_p){
 double Get_pos_pi_purity(double shms_p){
   if(shms_p>2.8){
   //double pi_purity = 1.978-0.4815*shms_p+0.05161*shms_p*shms_p;
-    double pi_purity = 0.8381+0.1812*shms_p-0.04437*shms_p*shms_p;
+  //  double pi_purity = 0.8381+0.1812*shms_p-0.04437*shms_p*shms_p;
+  //double pi_purity = -0.0150813*shms_p*shms_p+0.0590388*shms_p+0.94521101;
+  double pi_purity = 1;
+    if(pi_purity>1) pi_purity = 1;
+  return pi_purity;
+  }
+  else{
+    return 1;
+  }
+}
+double Get_pos_pi_purity_withHGC(double shms_p){
+  if(shms_p>2.8){
+  //double pi_purity = 1.478-0.2423*shms_p+0.0687*shms_p*shms_p;
+  //  double pi_purity = 0.9079+0.09864*shms_p-0.02375*shms_p*shms_p;
+  //  double pi_purity = -0.00151264*shms_p+1.00305806;
+  double pi_purity = 1;
     if(pi_purity>1) pi_purity = 1;
   return pi_purity;
   }
@@ -58,18 +73,8 @@ double Get_pos_pi_purity(double shms_p){
   }
 }
 double Get_neg_pi_purity(double shms_p){
-  if(shms_p>2.8){
-  //double pi_purity = 1.478-0.2423*shms_p+0.0687*shms_p*shms_p;
-    double pi_purity = 0.9079+0.09864*shms_p-0.02375*shms_p*shms_p;
-    if(pi_purity>1) pi_purity = 1;
-  return pi_purity;
-  }
-  else{
-    return 1;
-  }
+  return 1;
 }
-
-
 
 bool shms_momentum_high = true;
 
@@ -156,6 +161,15 @@ void skim_check_H2(int RunGroup=0){
     SHMS_P = SHMS_P*Get_SHMS_P_corr(SHMS_P);
     auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
     //if(SHMS_P>3.2){aeroCutSHMS = aeroCutSHMS + " && P.hgcer.npeSum > "+(std::to_string(P_hgcer)).c_str();}
+  auto SHMS_hgc_aero =[=](double shms_dp,double hgc_Npe,double aero_Npe){
+
+    if((shms_dp+100)*SHMS_P/100>2.8){
+        return hgc_Npe>P_hgcer && aero_Npe>P_aero;
+    }
+    else{
+      return aero_Npe>P_aero;
+    }
+  };
     
     double Eb;
     if(RunGroup < 420) {Eb = 10.597;}
@@ -268,7 +282,8 @@ void skim_check_H2(int RunGroup=0){
         .Filter(goodTrackHMS)
         .Filter(piCutSHMS)
         .Filter(eCutHMS)
-        .Filter(aeroCutSHMS)
+        //.Filter(aeroCutSHMS)
+        .Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"})
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
         .Filter("P.dc.InsideDipoleExit == 1")
@@ -563,7 +578,8 @@ void skim_check_H2(int RunGroup=0){
         .Filter(goodTrackHMS)
         .Filter(piCutSHMS)
         .Filter(eCutHMS)
-        .Filter(aeroCutSHMS)
+        //.Filter(aeroCutSHMS)
+        .Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"})
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
         .Filter("P.dc.InsideDipoleExit == 1")

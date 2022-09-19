@@ -652,7 +652,7 @@ int Q2_xz_ratio_combined(){
               double RY_rho = yield_negwithrho/yield_poswithrho;
               double RY_1p8rho = yield_negwith_1p8rho/yield_poswith_1p8rho;
               double RY_noexc = yield_neg_noexc/yield_pos_noexc; 
-              rouble RY_nodelta = yield_neg_nodelta/yield_pos_nodelta; 
+              double RY_nodelta = yield_neg_nodelta/yield_pos_nodelta; 
               //std::cout<<"RY "<<RY<<std::endl;
               double error = RY*std::sqrt((error_neg*error_neg)/(yield_neg*yield_neg)+(error_pos*error_pos)/(yield_pos*yield_pos));
               double error_rho = RY_rho*std::sqrt((error_neg*error_neg)/(yield_neg_rho*yield_neg_rho)+(error_pos*error_pos)/(yield_pos_rho*yield_pos_rho));
@@ -929,20 +929,6 @@ int Q2_xz_ratio_combined(){
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["shms_dp_corr_err"] = shms_dp_corr_err;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["Q2_corr"] = Q2_corr;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["Q2_corr_err"] = Q2_corr_err;
-                  jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["z_corr"] = z_corr;
-                  jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["z_corr_err"] = z_corr_err;
-                 
-
-                }
-                else{
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["value"] = y_RD;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["error"] = error_RD;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["RD_rho"] = y_RD_rho;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["RDerror_rho"] = error_RD_rho;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["yield_neg"] = yield_neg;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["yield_pos"] = yield_pos;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["error_neg"] = error_neg;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["error_pos"] = error_pos;
                   jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["rungroup"] = RunGroup;
 
                 }

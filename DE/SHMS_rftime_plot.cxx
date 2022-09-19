@@ -72,7 +72,8 @@ void SHMS_rftime_plot(){
         std::cout<<" pos charge "<<charge<<std::endl;
         pos_charge = pos_charge+ charge;
       }
-      if(1.25*shms_p>2.85){
+      if(shms_p>2.8){
+      //if(1.25*shms_p>2.85){
         json j_rf_HGC;
         {
           std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_4_HGC.json";
@@ -95,14 +96,20 @@ void SHMS_rftime_plot(){
 
         double HGC_eff_pos_err = std::sqrt(N_pion_hgc_pos+N_pion_antiHGC_pos- N_pion_hgc_pos)/(N_pion_hgc_pos+N_pion_antiHGC_pos);
         double HGC_eff_neg_err = std::sqrt(N_pion_hgc_neg+N_pion_antiHGC_neg- N_pion_hgc_neg)/(N_pion_hgc_neg+N_pion_antiHGC_neg);
-        double R_Kpi_ratio_pos_err = std::sqrt(N_pion_hgc_pos+N_pion_antiHGC_pos- N_Kaon_antiHGC_pos)/(N_pion_hgc_pos+N_pion_antiHGC_pos); 
-        double R_Kpi_ratio_neg_err = std::sqrt(N_pion_hgc_neg+N_pion_antiHGC_neg- N_Kaon_antiHGC_neg)/(N_pion_hgc_neg+N_pion_antiHGC_neg); 
+        double Kpi_ratio_pos_Ks_err = std::sqrt(N_Kaon_antiHGC_pos);        
+        double Kpi_ratio_pos_pions_err = std::sqrt(N_pion_hgc_pos+N_pion_antiHGC_pos);
+        double R_Kpi_ratio_pos_err = R_Kpi_ratio_pos*std::sqrt(std::pow(Kpi_ratio_pos_Ks_err/N_Kaon_antiHGC_pos,2)+std::pow(Kpi_ratio_pos_pions_err/(N_pion_hgc_pos+N_pion_antiHGC_pos),2));
+        double Kpi_ratio_neg_Ks_err = std::sqrt(N_Kaon_antiHGC_neg);        
+        double Kpi_ratio_neg_pions_err = std::sqrt(N_pion_hgc_neg+N_pion_antiHGC_neg);
+        double R_Kpi_ratio_neg_err = R_Kpi_ratio_neg*std::sqrt(std::pow(Kpi_ratio_neg_Ks_err/N_Kaon_antiHGC_neg,2)+std::pow(Kpi_ratio_neg_pions_err/(N_pion_hgc_neg+N_pion_antiHGC_neg),2));
+        //double R_Kpi_ratio_pos_err = std::sqrt(N_pion_hgc_pos+N_pion_antiHGC_pos- N_Kaon_antiHGC_pos)/(N_pion_hgc_pos+N_pion_antiHGC_pos); 
+        //double R_Kpi_ratio_neg_err = std::sqrt(N_pion_hgc_neg+N_pion_antiHGC_neg- N_Kaon_antiHGC_neg)/(N_pion_hgc_neg+N_pion_antiHGC_neg); 
         double K_pos_err = std::sqrt(N_Kaon_antiHGC_pos)/pos_charge;
         double K_neg_err = std::sqrt(N_Kaon_antiHGC_neg)/neg_charge;
-        double K_pos_neg_ratio_err = K_pos_neg_ratio*std::sqrt(std::pow((K_pos_err/N_Kaon_antiHGC_pos),2)+std::pow(K_neg_err/N_Kaon_antiHGC_neg,2));
         double pi_pos_err = std::sqrt(N_pion_hgc_pos)/pos_charge;
         double pi_neg_err = std::sqrt(N_pion_hgc_neg)/neg_charge;
-        double pi_pos_neg_ratio_err = pi_pos_neg_ratio*std::sqrt(std::pow((pi_pos_err/N_pion_hgc_pos),2)+std::pow(pi_neg_err/N_pion_hgc_neg,2));
+        double K_pos_neg_ratio_err = K_pos_neg_ratio*std::sqrt(std::pow((K_pos_err/(N_Kaon_antiHGC_pos/pos_charge)),2)+std::pow(K_neg_err/(N_Kaon_antiHGC_neg/neg_charge),2));
+        double pi_pos_neg_ratio_err = pi_pos_neg_ratio*std::sqrt(std::pow((pi_pos_err/(N_pion_hgc_pos/pos_charge)),2)+std::pow(pi_neg_err/(N_pion_hgc_neg/neg_charge),2));
         //if(pi_pos_neg_ratio>2) std::cout<<"K+/K- ratio greater than 2 "<<RunGroup<<std::endl;
         if(RunGroup<410){
           g_pos_rungroup_fall_HGCeff->SetPoint(i_fall,RunGroup,HGC_eff_pos);
@@ -205,6 +212,7 @@ void SHMS_rftime_plot(){
   mg_shmsp_HGCeff->Draw("A");
   mg_shmsp_HGCeff->GetXaxis()->SetTitle("shmsp");
   mg_shmsp_HGCeff->GetYaxis()->SetTitle("HGC_eff");
+  mg_shmsp_HGCeff->GetXaxis()->SetRangeUser(2.8,4.5);
   c_HGCeff_shmsp->BuildLegend();
   c_HGCeff_shmsp->SaveAs("results/pid/rftime_new/HGCeff_shmsp.pdf");
   TCanvas *c_Kpiratio_rungroup = new TCanvas();
@@ -244,13 +252,23 @@ void SHMS_rftime_plot(){
   g_neg_shmsp_spring_Kpiratio->SetMarkerStyle(4);
   g_neg_shmsp_spring_Kpiratio->SetMarkerColor(kBlack);
   g_neg_shmsp_spring_Kpiratio->SetTitle("neg spring");
+  TMultiGraph* mg_shmsp_pos_Kpiratio = new TMultiGraph();
+  mg_shmsp_pos_Kpiratio->Add(g_pos_shmsp_fall_Kpiratio,"P");
+  mg_shmsp_pos_Kpiratio->Add(g_pos_shmsp_spring_Kpiratio,"P");
+  mg_shmsp_pos_Kpiratio->Fit("pol1");
+  gStyle->SetOptFit(0001);
+  mg_shmsp_pos_Kpiratio->Draw("same");
   TMultiGraph* mg_shmsp_Kpiratio = new TMultiGraph();
   mg_shmsp_Kpiratio->Add(g_pos_shmsp_fall_Kpiratio,"P");
   mg_shmsp_Kpiratio->Add(g_pos_shmsp_spring_Kpiratio,"P");
+  mg_shmsp_Kpiratio->Fit("pol1");
+  gStyle->SetOptFit(0001);
+  //TF1 *f1_Kpiratio =0wi 
   mg_shmsp_Kpiratio->Add(g_neg_shmsp_fall_Kpiratio,"P");
   mg_shmsp_Kpiratio->Add(g_neg_shmsp_spring_Kpiratio,"P");
   mg_shmsp_Kpiratio->Draw("A");
   mg_shmsp_Kpiratio->GetXaxis()->SetTitle("shmsp");
+  mg_shmsp_Kpiratio->GetXaxis()->SetRangeUser(2.8,4.5);
   mg_shmsp_Kpiratio->GetYaxis()->SetTitle("K/pi");
   mg_shmsp_Kpiratio->GetYaxis()->SetRangeUser(0,0.16);
   c_Kpiratio_shmsp->BuildLegend(0.15,0.65,0.35,0.9);
@@ -267,7 +285,8 @@ void SHMS_rftime_plot(){
   mg_rungroup_Kratio->Add(g_rungroup_spring_Kratio,"P");
   mg_rungroup_Kratio->Draw("A");
   mg_rungroup_Kratio->GetXaxis()->SetTitle("RunGroup");
-  mg_rungroup_Kratio->GetYaxis()->SetTitle("K+/K-");
+  mg_rungroup_Kratio->GetYaxis()->SetTitle("K-/K+");
+  //mg_rungroup_Kratio->GetYaxis()->SetRangeUser(0,100);
   c_Kratio_rungroup->BuildLegend();
   c_Kratio_rungroup->SaveAs("results/pid/rftime_new/Kratio_rungroup.pdf");
   TCanvas *c_Kratio_shmsp = new TCanvas();
@@ -282,7 +301,8 @@ void SHMS_rftime_plot(){
   mg_shmsp_Kratio->Add(g_shmsp_spring_Kratio,"P");
   mg_shmsp_Kratio->Draw("A");
   mg_shmsp_Kratio->GetXaxis()->SetTitle("shmsp");
-  mg_shmsp_Kratio->GetYaxis()->SetTitle("K+/K-");
+  mg_shmsp_Kratio->GetYaxis()->SetTitle("K-/K+");
+  //mg_shmsp_Kratio->GetYaxis()->SetRangeUser(0,1);
   c_Kratio_shmsp->BuildLegend();
   c_Kratio_shmsp->SaveAs("results/pid/rftime_new/Kratio_shmsp.pdf");
   TCanvas *c_piratio_rungroup = new TCanvas();
@@ -297,7 +317,7 @@ void SHMS_rftime_plot(){
   mg_rungroup_piratio->Add(g_rungroup_spring_piratio,"P");
   mg_rungroup_piratio->Draw("A");
   mg_rungroup_piratio->GetXaxis()->SetTitle("RunGroup");
-  mg_rungroup_piratio->GetYaxis()->SetTitle("pi+/pi-");
+  mg_rungroup_piratio->GetYaxis()->SetTitle("pi-/pi+");
   c_piratio_rungroup->BuildLegend();
   c_piratio_rungroup->SaveAs("results/pid/rftime_new/piratio_rungroup.pdf");
   TCanvas *c_piratio_shmsp = new TCanvas();
@@ -312,7 +332,8 @@ void SHMS_rftime_plot(){
   mg_shmsp_piratio->Add(g_shmsp_spring_piratio,"P");
   mg_shmsp_piratio->Draw("A");
   mg_shmsp_piratio->GetXaxis()->SetTitle("shmsp");
-  mg_shmsp_piratio->GetYaxis()->SetTitle("pi+/pi-");
+  mg_shmsp_piratio->GetYaxis()->SetTitle("pi-/pi+");
+  mg_shmsp_piratio->GetYaxis()->SetRangeUser(0,1);
   c_piratio_shmsp->BuildLegend();
   c_piratio_shmsp->SaveAs("results/pid/rftime_new/piratio_shmsp.pdf");
 }

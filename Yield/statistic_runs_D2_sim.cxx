@@ -42,6 +42,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     auto z = [](float pq, float ph) {
       return ph/pq;
     };
+    auto Wprime2 = [](Pvec4D& pq,Pvec4D& ph) {
+      auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq - ph;
+      return Ptot.Dot(Ptot);
+    };
     auto Mx2 = [](float nu,float z,float pmiss){
       return (M_P+nu - z*nu)*(M_P+nu - z*nu) -abs(pmiss)*abs(pmiss);
     };

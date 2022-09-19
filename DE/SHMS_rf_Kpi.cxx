@@ -117,7 +117,7 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
   double      P_hgcer       = j_cuts["P_hgcer"].get<double>();
   std::string hgcCutSHMS    = (" P.hgcer.npeSum > " + std::to_string(P_hgcer)).c_str();
   //std::string SHMS_hgc_aero = aeroCutSHMS;
-  std::string SHMS_anti_hgc_aero = aeroCutSHMS+" && P.hgcer.npeSum<2";
+  std::string SHMS_anti_hgc_aero = (aeroCutSHMS+" && P.hgcer.npeSum<"+std::to_string(P_hgcer)).c_str();
   std::string eCutHMS =
     ("H.cal.etottracknorm > " + std::to_string(H_cal_low) + " && H.cal.etottracknorm < " +
      std::to_string(H_cal_high) + " && H.cer.npeSum > " + std::to_string(H_cer))
