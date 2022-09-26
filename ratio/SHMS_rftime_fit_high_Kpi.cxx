@@ -234,7 +234,7 @@ class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
     double pion_part(double x, double A_pi, double mu_piK, double sigma_pi) const {
       //add a background due to ADC inefficiency etc on main pion peak
       double gaus_shape = A_pi * exp(-0.5 * pow((x - mu_piK) / sigma_pi, 2))
-      +A_pi/15 * exp(-0.5 * pow((x - mu_piK) / (2*sigma_pi), 2)); 
+        +A_pi/15 * exp(-0.5 * pow((x - mu_piK) / (2*sigma_pi), 2)); 
       //double gaus_shape = A_pi * exp(-0.5 * pow((x - mu_piK) / sigma_pi, 2)); 
       return gaus_shape;
     }
@@ -418,13 +418,6 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
     if (n_aero <= 0)
       return;
   }
-  std::unique_ptr<TFile> fin(TFile::Open(string("results/pid/rf_histograms" + to_string(RunGroup) +
-          "_aero" + std::to_string(n_aero) + ".root")
-        //"_aero" + std::to_string(n_aero) + "_electrons.root")
-        //"_aero" + std::to_string(n_aero) + "_withhgc.root")
-        //"_aero" + std::to_string(n_aero) + ".root")
-    .c_str(),
-    "READ"));
 
   json j_DE;
   {
@@ -445,7 +438,6 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
     ifs >> j_runsinfo;
   }
 
-  json j_rungroup_info;
   std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_right_cuts"].get<std::vector<double>>();
 
   std::string rg = (std::to_string(RunGroup)).c_str();
@@ -453,343 +445,309 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
   double shms_p = shms_p_central; 
   std::vector<int> pruns = j_rungroup[rg]["pos"]["D2"].get<std::vector<int>>();
   std::vector<int> nruns = j_rungroup[rg]["neg"]["D2"].get<std::vector<int>>();
-  std::vector<double> prun_offsets;
-  std::vector<double> nrun_offsets;
-  for (auto r : pruns) {
-    prun_offsets.push_back(j_runsinfo[(std::to_string(r)).c_str()]["offset"].get<double>());
-  }
-  for (auto r : nruns) {
-    nrun_offsets.push_back(j_runsinfo[(std::to_string(r)).c_str()]["offset"].get<double>());
-  }
-
-  double y_max = 400;
-  double y_K_max = 400;
-
-
-  auto h_rf_pos_piall = fin->Get<TH1D>(std::string("rftime_pos_" + std::to_string(RunGroup)).c_str());
-  auto h_rf_neg_piall = fin->Get<TH1D>(std::string("rftime_neg_" + std::to_string(RunGroup)).c_str());
-  auto h_rf_pos_Kall = fin->Get<TH1D>(std::string("rftime_pos_K_" + std::to_string(RunGroup)).c_str());
-  auto h_rf_neg_Kall = fin->Get<TH1D>(std::string("rftime_neg_K_" + std::to_string(RunGroup)).c_str());
-  auto h_rfpi_pos_Kall = fin->Get<TH1D>(std::string("rftimepi_pos_K_" + std::to_string(RunGroup)).c_str());
-  auto h_rfpi_neg_Kall = fin->Get<TH1D>(std::string("rftimepi_neg_K_" + std::to_string(RunGroup)).c_str());
-  auto h_rfproton_pos_Kall = fin->Get<TH1D>(std::string("rftimeproton_pos_K_" + std::to_string(RunGroup)).c_str());
-  auto h_rfproton_neg_Kall = fin->Get<TH1D>(std::string("rftimeproton_neg_K_" + std::to_string(RunGroup)).c_str());
-        y_max = h_rf_pos_piall->GetMaximum() * 1.1;
-        y_K_max = h_rf_pos_Kall->GetMaximum() * 1.1;
-        /*
-           ROOT::Math::Minimizer* minimum_K =
-           ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
-        // set tolerance , etc...
-        minimum_K->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-        minimum_K->SetMaxIterations(100000);  // for GSL
-        minimum_K->SetTolerance(0.01);
-        minimum_K->SetPrintLevel(2);
-
-        RFTimeFitFCN f_K(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
-        minimum_K->SetFunction(f_K);
-
-        //minimum_K->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
-        minimum_K->SetLimitedVariable(0,"A_{#pi,neg} ", 300.0,  1,0,1000 );
-        minimum_K->SetLimitedVariable(1,"#mu         ", 1, 0.01, 0.5, 1.3);
-        minimum_K->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
-        minimum_K->SetLimitedVariable(3,"A_{K,neg}   ", 5.0,  1.0,0,1000);
-        minimum_K->SetFixedVariable(  4,"#sigma_{K}  ", 0.3);
-        //minimum_K->SetVariable(  4,"#sigma_{K}  ", 0.3,0.001);
-        //minimum_K->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
-        minimum_K->SetLimitedVariable(5,"A_{#pi,pos} ", 300.0,  1,0,1000 );
-        minimum_K->SetLimitedVariable(6,"A_{K,pos}   ", 2.0,  1.0,0,1000 );
-        minimum_K->Minimize();
-        const double *min_K_pars = minimum_K->X();
-        */ 
-        double sigma_K = 0.3;
-        ROOT::Math::Minimizer* minimum =
-          ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
-        // set tolerance , etc...
-        minimum->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-        minimum->SetMaxIterations(100000);  // for GSL
-        minimum->SetTolerance(0.01);
-        minimum->SetPrintLevel(2);
-
-        RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
-        minimum->SetFunction(f_pi);
-
-        //minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
-        minimum->SetLimitedVariable(0,"A_{#pi,neg} ", 350.0,  1,0,3000 );
-        minimum->SetLimitedVariable(1,"#mu         ", 1, 0.01, 0.5, 1.3);
-        minimum->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
-        minimum->SetFixedVariable(3,"A_{K,neg}   ", 0);
-        minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0);
-        //minimum->SetLimitedVariable(  4,"#sigma_{K}  ", 0.3,0.001,0.23,0.5);
-        //minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
-        minimum->SetLimitedVariable(5,"A_{#pi,pos} ", 350.0,  1,0,3000 );
-        //minimum->SetLimitedVariable(6,"A_{K,pos}   ", 2.0,  1.0,0,3000 );
-        minimum->SetFixedVariable(6,"A_{K,pos}   ", 0);
-        minimum->Minimize();
-
-        const double *min_pi_pars = minimum->X();
-        double mu_pi = min_pi_pars[1];
-        double sigma_pi = min_pi_pars[2];
-        //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
-
-        ROOT::Math::Minimizer* minimum_K =
-          ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
-        // set tolerance , etc...
-        minimum_K->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-        minimum_K->SetMaxIterations(100000);  // for GSL
-        minimum_K->SetTolerance(0.01);
-        minimum_K->SetPrintLevel(2);
-
-        RFTimeFitFCN f_K(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
-        minimum_K->SetFunction(f_K);
-
-        //minimum_K->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
-        minimum_K->SetLimitedVariable(0,"A_{#pi,neg} ", 100.0,  1,0,10000 );
-        //minimum_K->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.1, 1.8);
-        //minimum_K->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
-        minimum_K->SetFixedVariable(1,"#mu         ", mu_pi);
-        minimum_K->SetFixedVariable(2,"#sigma_{#pi}", sigma_pi);
-        minimum_K->SetLimitedVariable(3,"A_{K,neg}", 100.0,  1.0,0,1000 );
-        //minimum_K->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
-        minimum_K->SetLimitedVariable(4,"#sigma_{K}  ", 0.3,0.001,0.2,0.4);
-        //minimum_K->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
-        minimum_K->SetLimitedVariable(5,"A_{#pi,pos} ", 100.0,  1,0,10000 );
-        minimum_K->SetLimitedVariable(6,"A_{K,pos}", 100.0,  1.0,0,1000 );
-        minimum_K->Minimize();
-        const double *min_K_pars = minimum_K->X();
-
-        //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.35) sigma_K = min_K_pars[5]; 
+  if(!pruns.empty() && !nruns.empty()){
+    //for(auto it = pruns.begin();it!=pruns.end();++it){
+    int RunNumber = pruns[0];
+    std::string runnumber_str = (std::to_string(RunNumber)).c_str();
+    double offset = j_runsinfo[(std::to_string(RunNumber)).c_str()]["offset"].get<double>();
+    std::vector<double> prun_offsets;
+    std::vector<double> nrun_offsets;
+    for (auto r : pruns) {
+      prun_offsets.push_back(j_runsinfo[(std::to_string(r)).c_str()]["offset"].get<double>());
+    }
+    for (auto r : nruns) {
+      nrun_offsets.push_back(j_runsinfo[(std::to_string(r)).c_str()]["offset"].get<double>());
+    }
 
 
-        TCanvas* cpi_K = new TCanvas("cpi_K","cpi_K",1200,900);
-        cpi_K->Divide(2,2);
-        cpi_K->cd(1);
-        h_rfpi_pos_Kall->SetTitle("rf_pi for K+");
-        h_rfpi_pos_Kall->DrawCopy();
-        cpi_K->cd(2);
-        h_rfpi_neg_Kall->SetTitle("rf_pi for K-");
-        h_rfpi_neg_Kall->DrawCopy();
-        cpi_K->cd(3);
-        h_rfproton_pos_Kall->SetTitle("rf_proton for K+");
-        h_rfproton_pos_Kall->DrawCopy();
-        cpi_K->cd(4);
-        h_rfproton_neg_Kall->SetTitle("rf_proton for K-");
-        h_rfproton_neg_Kall->DrawCopy();
-        cpi_K->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +"_K_rfpi.png").c_str());
 
-        TCanvas* c_K = new TCanvas("c_K","c_K",1200,900);
-        c_K->Divide(1,2);
-        c_K->cd(1);
-        gPad->SetLogy(false);
-        //gPad->SetLogy();
-        TF1 * fpos_K = new TF1("rftime_pos",&f_K,&RFTimeFitFCN::Evaluate_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
-        fpos_K->SetParameters(min_K_pars);
-        TF1 * fpos_K_pp = new TF1("rftime_pp",&f_K,&RFTimeFitFCN::Evaluate_pions_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
-        fpos_K_pp->SetParameters(min_K_pars);
-        fpos_K_pp->SetLineColor(4);
-        TF1 * fpos_K_kp = new TF1("rftime_kp",&f_K,&RFTimeFitFCN::Evaluate_kaons_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
-        fpos_K_kp->SetParameters(min_K_pars);
-        fpos_K_kp->SetLineColor(2);
-        auto h1_K = h_rf_pos_Kall->DrawCopy();
-        h1_K->SetTitle("rf_K, K+");
-        h1_K->GetYaxis()->SetRangeUser(0.1,y_K_max);
-        fpos_K->DrawCopy("lsame");
-        fpos_K_pp->DrawCopy("lsame");
-        fpos_K_kp->DrawCopy("lsame");
+    std::unique_ptr<TFile> fin(TFile::Open(string("results/pid/rf_histograms" + to_string(RunGroup) +
+            "_aero" + std::to_string(n_aero) + ".root")
+          .c_str(),
+          "READ"));
 
-        TLatex lt_K;
-        lt_K.DrawLatexNDC(0.6,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
+    double y_max = 400;
+    double y_K_max = 400;
+    json j_counts;
+    {
+      std::string ifs_name = "results/pid/rftime_new/"+std::to_string(RunGroup)+".json";
+      std::ifstream ifs(ifs_name.c_str());
+      ifs>>j_counts;
+    }
+    auto ik = j_counts[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()];
+    for(auto ij = ik.begin();ij!=ik.end();++ij){
 
+      int point = std::stoi(ij.key());
+      std::string point_str = (std::to_string(poin)).c_str();
+      std::cout<<"RunGroup "<<RunGroup<<" RunNumber "<<RunNumber<<" point "<<point<<std::endl;
 
-        std::string rgtext_K = "ratio run group " + rg + "  #splitline{";
-        for (auto r : pruns)
-          rgtext_K += (std::to_string(r) + ",");
-        rgtext_K += "}{";
-        for (auto r : nruns)
-          rgtext_K += (std::to_string(r) + ",");
-        rgtext_K += "}";
-        lt_K.DrawLatexNDC(0.6,0.5, rgtext_K.c_str());
+      auto h_rf_pos_piall = fin->Get<TH1D>(std::string("rftime_pos_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
+      auto h_rf_neg_piall = fin->Get<TH1D>(std::string("rftime_neg_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
+      auto h_rf_pos_Kall = fin->Get<TH1D>(std::string("rftime_pos_K_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
+      auto h_rf_neg_Kall = fin->Get<TH1D>(std::string("rftime_neg_K_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
+      auto h_rfpi_pos_Kall = fin->Get<TH1D>(std::string("rftimepi_pos_K_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
+      auto h_rfpi_neg_Kall = fin->Get<TH1D>(std::string("rftimepi_neg_K_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
+      auto h_rfproton_pos_Kall = fin->Get<TH1D>(std::string("rftimeproton_pos_K_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
+      auto h_rfproton_neg_Kall = fin->Get<TH1D>(std::string("rftimeproton_neg_K_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
+      y_max = h_rf_pos_piall->GetMaximum() * 1.1;
+      y_K_max = h_rf_pos_Kall->GetMaximum() * 1.1;
+      double sigma_K = 0.3;
+      ROOT::Math::Minimizer* minimum =
+        ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
+      // set tolerance , etc...
+      minimum->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+      minimum->SetMaxIterations(100000);  // for GSL
+      minimum->SetTolerance(0.01);
+      minimum->SetPrintLevel(2);
 
-        std::string offsettext_K = "run RF time offsets  #splitline{";
-        for (auto r : prun_offsets)
-          offsettext_K += (std::to_string(r) + ",");
-        offsettext_K += "}{";
-        for (auto r : nrun_offsets)
-          offsettext_K += (std::to_string(r) + ",");
-        offsettext_K += "}";
-        lt_K.DrawLatexNDC(0.6,0.4, offsettext_K.c_str());
+      RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
+      minimum->SetFunction(f_pi);
 
+      //minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
+      minimum->SetLimitedVariable(0,"A_{#pi,neg} ", 350.0,  1,0,3000 );
+      minimum->SetLimitedVariable(1,"#mu         ", 1, 0.01, 0.5, 1.3);
+      minimum->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
+      minimum->SetFixedVariable(3,"A_{K,neg}   ", 0);
+      minimum->SetFixedVariable(  4,"#sigma_{K}  ", 0);
+      //minimum->SetLimitedVariable(  4,"#sigma_{K}  ", 0.3,0.001,0.23,0.5);
+      //minimum->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
+      minimum->SetLimitedVariable(5,"A_{#pi,pos} ", 350.0,  1,0,3000 );
+      //minimum->SetLimitedVariable(6,"A_{K,pos}   ", 2.0,  1.0,0,3000 );
+      minimum->SetFixedVariable(6,"A_{K,pos}   ", 0);
+      minimum->Minimize();
 
-        c_K->cd(2);
-        //gPad->SetLogy();
-        //gPad->SetLogy(false);
-        TF1 * fneg_K = new TF1("rftime_neg",&f_K,&RFTimeFitFCN::Evaluate_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
-        fneg_K->SetParameters(min_K_pars);
-        TF1 * fneg_K_pp = new TF1("rftime_pp",&f_K,&RFTimeFitFCN::Evaluate_pions_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
-        fneg_K_pp->SetParameters(min_K_pars);
-        fneg_K_pp->SetLineColor(4);
-        TF1 * fneg_K_kp = new TF1("rftime_kp",&f_K,&RFTimeFitFCN::Evaluate_kaons_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
-        fneg_K_kp->SetParameters(min_K_pars);
-        fneg_K_kp->SetLineColor(2);
-        h_rf_neg_Kall->SetTitle("rf_K, K-");
-        h_rf_neg_Kall->Draw();
-        h_rf_neg_Kall->GetYaxis()->SetRangeUser(0.1,y_K_max);
-        fneg_K->DrawCopy("lsame");
-        fneg_K_pp->DrawCopy("lsame");
-        fneg_K_kp->DrawCopy("lsame");
+      const double *min_pi_pars = minimum->X();
+      double mu_pi = min_pi_pars[1];
+      double sigma_pi = min_pi_pars[2];
+      //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.4) sigma_K = min_K_pars[5]; 
 
-        TLatex lt2_K;
-        std::string t_K_text = "Kaon is "+std::to_string(t_K(shms_p)-t_pi(shms_p))+" ns slower than pion";
-        lt2_K.DrawLatexNDC(0.6,0.7,t_K_text.c_str());
+      ROOT::Math::Minimizer* minimum_K =
+        ROOT::Math::Factory::CreateMinimizer("Minuit2", "Fumili2");
+      // set tolerance , etc...
+      minimum_K->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+      minimum_K->SetMaxIterations(100000);  // for GSL
+      minimum_K->SetTolerance(0.01);
+      minimum_K->SetPrintLevel(2);
 
-        std::string fitting_text_K = "A_{#pi neg} , #mu_{#pi} , #sigma_{#pi} , A_{K neg} , #sigma_K , A_{#pi pos} , A_{Kpos}:";
-        lt2_K.DrawLatexNDC(0.6,0.6, fitting_text_K.c_str());
-        std::string fitting_params_text_K = std::to_string(min_K_pars[0]).substr(0,7)+","+std::to_string(min_K_pars[1]).substr(0,4)+","+std::to_string(min_K_pars[2]).substr(0,4)+","+std::to_string(min_K_pars[3]).substr(0,6)+","+std::to_string(min_K_pars[4]).substr(0,4)+","+std::to_string(min_K_pars[5]).substr(0,6)+","+std::to_string(min_K_pars[6]).substr(0,6);
-        lt2_K.DrawLatexNDC(0.6,0.5,fitting_params_text_K.c_str());
-        //c_K->cd(3);
-        //h_rf_pos_Kall->Divide(h_rf_neg_Kall);
-        //h_rf_pos_Kall->Draw();
-        //h_rf_pos_Kall->GetYaxis()->SetRangeUser(0.1,3.5);
+      RFTimeFitFCN f_K(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
+      minimum_K->SetFunction(f_K);
 
-        c_K->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +"_K.png").c_str());
-        TCanvas* c = new TCanvas("c1","c1",1200,900);
-        c->Divide(1,2);
-        c->cd(1);
-        gPad->SetLogy(false);
-        //gPad->SetLogy();
-        TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
-        fpos->SetParameters(min_pi_pars);
-        TF1 * fpos_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
-        fpos_pp->SetParameters(min_pi_pars);
-        fpos_pp->SetLineColor(4);
-        TF1 * fpos_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
-        fpos_kp->SetParameters(min_pi_pars);
-        fpos_kp->SetLineColor(2);
-        auto h1 = h_rf_pos_piall->DrawCopy();
-        h1->SetTitle("rf_pi,pi+");
-        h1->GetYaxis()->SetRangeUser(0.1,y_max);
-        fpos->DrawCopy("lsame");
-        fpos_pp->DrawCopy("lsame");
-        fpos_kp->DrawCopy("lsame");
+      //minimum_K->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
+      minimum_K->SetLimitedVariable(0,"A_{#pi,neg} ", 100.0,  1,0,10000 );
+      //minimum_K->SetLimitedVariable(1,"#mu         ", 1.0, 0.01, 0.1, 1.8);
+      //minimum_K->SetLimitedVariable(2,"#sigma_{#pi}", 0.2, 0.001,0.18,0.22);
+      minimum_K->SetFixedVariable(1,"#mu         ", mu_pi);
+      minimum_K->SetFixedVariable(2,"#sigma_{#pi}", sigma_pi);
+      minimum_K->SetLimitedVariable(3,"A_{K,neg}", 100.0,  1.0,0,1000 );
+      //minimum_K->SetFixedVariable(  4,"#sigma_{K}  ", 0.25);
+      minimum_K->SetLimitedVariable(4,"#sigma_{K}  ", 0.3,0.001,0.2,0.4);
+      //minimum_K->SetVariable(       5,"A_{#pi,pos} ", 100.0,  1 );
+      minimum_K->SetLimitedVariable(5,"A_{#pi,pos} ", 100.0,  1,0,10000 );
+      minimum_K->SetLimitedVariable(6,"A_{K,pos}", 100.0,  1.0,0,1000 );
+      minimum_K->Minimize();
+      const double *min_K_pars = minimum_K->X();
 
-        TLatex lt;
-        lt.DrawLatexNDC(0.6,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
+      //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.35) sigma_K = min_K_pars[5]; 
 
 
-        std::string rgtext = "ratio run group " + rg + "  #splitline{";
-        for (auto r : pruns)
-          rgtext += (std::to_string(r) + ",");
-        rgtext += "}{";
-        for (auto r : nruns)
-          rgtext += (std::to_string(r) + ",");
-        rgtext += "}";
-        lt.DrawLatexNDC(0.6,0.5, rgtext.c_str());
+      TCanvas* cpi_K = new TCanvas("cpi_K","cpi_K",1200,900);
+      cpi_K->Divide(2,2);
+      cpi_K->cd(1);
+      h_rfpi_pos_Kall->SetTitle("rf_pi for K+");
+      h_rfpi_pos_Kall->DrawCopy();
+      cpi_K->cd(2);
+      h_rfpi_neg_Kall->SetTitle("rf_pi for K-");
+      h_rfpi_neg_Kall->DrawCopy();
+      cpi_K->cd(3);
+      h_rfproton_pos_Kall->SetTitle("rf_proton for K+");
+      h_rfproton_pos_Kall->DrawCopy();
+      cpi_K->cd(4);
+      h_rfproton_neg_Kall->SetTitle("rf_proton for K-");
+      h_rfproton_neg_Kall->DrawCopy();
+      cpi_K->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +"_K_rfpi.png").c_str());
 
-        std::string offsettext = "run RF time offsets  #splitline{";
-        for (auto r : prun_offsets)
-          offsettext += (std::to_string(r) + ",");
-        offsettext += "}{";
-        for (auto r : nrun_offsets)
-          offsettext += (std::to_string(r) + ",");
-        offsettext += "}";
-        lt.DrawLatexNDC(0.6,0.4, offsettext.c_str());
+      TCanvas* c_K = new TCanvas("c_K","c_K",1200,900);
+      c_K->Divide(1,2);
+      c_K->cd(1);
+      gPad->SetLogy(false);
+      //gPad->SetLogy();
+      TF1 * fpos_K = new TF1("rftime_pos",&f_K,&RFTimeFitFCN::Evaluate_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
+      fpos_K->SetParameters(min_K_pars);
+      TF1 * fpos_K_pp = new TF1("rftime_pp",&f_K,&RFTimeFitFCN::Evaluate_pions_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
+      fpos_K_pp->SetParameters(min_K_pars);
+      fpos_K_pp->SetLineColor(4);
+      TF1 * fpos_K_kp = new TF1("rftime_kp",&f_K,&RFTimeFitFCN::Evaluate_kaons_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
+      fpos_K_kp->SetParameters(min_K_pars);
+      fpos_K_kp->SetLineColor(2);
+      auto h1_K = h_rf_pos_Kall->DrawCopy();
+      h1_K->SetTitle("rf_K, K+");
+      h1_K->GetYaxis()->SetRangeUser(0.1,y_K_max);
+      fpos_K->DrawCopy("lsame");
+      fpos_K_pp->DrawCopy("lsame");
+      fpos_K_kp->DrawCopy("lsame");
+
+      TLatex lt_K;
+      lt_K.DrawLatexNDC(0.6,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
 
 
-        c->cd(2);
-        //gPad->SetLogy();
-        gPad->SetLogy(false);
-        TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
-        fneg->SetParameters(min_pi_pars);
-        TF1 * fneg_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
-        fneg_pp->SetParameters(min_pi_pars);
-        fneg_pp->SetLineColor(4);
-        TF1 * fneg_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
-        fneg_kp->SetParameters(min_pi_pars);
-        fneg_kp->SetLineColor(2);
-        h_rf_neg_piall->Draw();
-        h_rf_neg_piall->SetTitle("rf_pi,pi-");
-        h_rf_neg_piall->GetYaxis()->SetRangeUser(0.1,y_max);
-        fneg->DrawCopy("lsame");
-        fneg_pp->DrawCopy("lsame");
-        fneg_kp->DrawCopy("lsame");
+      std::string rgtext_K = "ratio run group " + rg + "  #splitline{";
+      for (auto r : pruns)
+        rgtext_K += (std::to_string(r) + ",");
+      rgtext_K += "}{";
+      for (auto r : nruns)
+        rgtext_K += (std::to_string(r) + ",");
+      rgtext_K += "}";
+      lt_K.DrawLatexNDC(0.6,0.5, rgtext_K.c_str());
 
-        TLatex lt2;
-        std::string fitting_text = "A_{#pi neg} , #mu_{#pi} , #sigma_{#pi} , A_{#pi pos} :";
-        lt2.DrawLatexNDC(0.6,0.6, fitting_text.c_str());
-        std::string fitting_params_text = std::to_string(min_pi_pars[0]).substr(0,7)+","+std::to_string(min_pi_pars[1]).substr(0,4)+","+std::to_string(min_pi_pars[2]).substr(0,4)+std::to_string(min_pi_pars[5]).substr(0,6);
-        lt2.DrawLatexNDC(0.6,0.5,fitting_params_text.c_str());
-        //c->cd(3);
-        //h_rf_pos_piall->Divide(h_rf_neg_piall);
-        //h_rf_pos_piall->Draw();
-        //h_rf_pos_piall->GetYaxis()->SetRangeUser(0.1,3.5);
+      std::string offsettext_K = "run RF time offsets  #splitline{";
+      for (auto r : prun_offsets)
+        offsettext_K += (std::to_string(r) + ",");
+      offsettext_K += "}{";
+      for (auto r : nrun_offsets)
+        offsettext_K += (std::to_string(r) + ",");
+      offsettext_K += "}";
+      lt_K.DrawLatexNDC(0.6,0.4, offsettext_K.c_str());
 
-        c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +".png").c_str());
 
-        //for pi efficiency
-        double width = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
-        double pos_pi_all = fpos_pp->Integral(-1,5.008,width);
-        j_rungroup_info[rg]["pos"]["pi_HGC_all"] = pos_pi_all;
-        j_rungroup_info[rg]["shms_p"] = shms_p;
-        j_rungroup_info[rg]["pi_peak"]["pos"] = min_pi_pars[1];
-        double neg_pi_all = fneg_pp->Integral(-1,5.008,width);
-        j_rungroup_info[rg]["neg"]["pi_HGC_all"] = neg_pi_all;
-        j_rungroup_info[rg]["pi_peak"]["neg"] = min_pi_pars[1];
-        double pos_pi_Kall = fpos_K_pp->Integral(-1,5.008,width);
-        j_rungroup_info[rg]["pos"]["pi_antiHGC_all"] = pos_pi_Kall;
-        double neg_pi_Kall = fneg_K_pp->Integral(-1,5.008,width);
-        j_rungroup_info[rg]["neg"]["pi_antiHGC_all"] = neg_pi_Kall;
-        double pos_K_Kall = fpos_K_kp->Integral(-1,5.008,width);
-        j_rungroup_info[rg]["pos"]["K_antiHGC_all"] = pos_K_Kall;
-        double neg_K_Kall = fneg_K_kp->Integral(-1,5.008,width);
-        j_rungroup_info[rg]["neg"]["K_antiHGC_all"] = neg_K_Kall;
-        //numbers for the pion purity
-        std::vector<double> n_pos_pi_rf, n_pos_K_rf;
-        std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
-        for (int i = 0; i < rf_cuts.size(); ++i) {
-          double rf_pi_low  = min_pi_pars[1] - (rf_cuts[i] - 1);
-          double rf_pi_high = min_pi_pars[1] + (rf_cuts[i] - 1);
+      c_K->cd(2);
+      //gPad->SetLogy();
+      //gPad->SetLogy(false);
+      TF1 * fneg_K = new TF1("rftime_neg",&f_K,&RFTimeFitFCN::Evaluate_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
+      fneg_K->SetParameters(min_K_pars);
+      TF1 * fneg_K_pp = new TF1("rftime_pp",&f_K,&RFTimeFitFCN::Evaluate_pions_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
+      fneg_K_pp->SetParameters(min_K_pars);
+      fneg_K_pp->SetLineColor(4);
+      TF1 * fneg_K_kp = new TF1("rftime_kp",&f_K,&RFTimeFitFCN::Evaluate_kaons_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
+      fneg_K_kp->SetParameters(min_K_pars);
+      fneg_K_kp->SetLineColor(2);
+      h_rf_neg_Kall->SetTitle("rf_K, K-");
+      h_rf_neg_Kall->Draw();
+      h_rf_neg_Kall->GetYaxis()->SetRangeUser(0.1,y_K_max);
+      fneg_K->DrawCopy("lsame");
+      fneg_K_pp->DrawCopy("lsame");
+      fneg_K_kp->DrawCopy("lsame");
 
-          rf_pos_cuts.push_back(rf_pi_high);
-          rf_pos_cuts_low.push_back(rf_pi_low);
-          double pos_pi_N = fpos_pp->Integral(rf_pi_low, rf_pi_high, width);
-          n_pos_pi_rf.push_back(pos_pi_N);
-          double pos_K_N = fpos_kp->Integral(rf_pi_low, rf_pi_high, width);
-          n_pos_K_rf.push_back(pos_K_N);
-        }
-        //j_rungroup_info[rg]["pos"]
-        //  ["rf_cuts_high"] = rf_pos_cuts;
-        //j_rungroup_info[rg]["pos"]
-        //  ["rf_cuts_low"] = rf_pos_cuts_low;
-        //j_rungroup_info[rg]["pos"]
-        //  ["pi_eff_Ns"] = n_pos_pi_rf;
-        //j_rungroup_info[rg]["pos"]
-        //  ["Ks"] = n_pos_K_rf;
-        std::vector<double> n_neg_pi_rf, n_neg_K_rf;
-        std::vector<double> rf_neg_cuts, rf_neg_cuts_low;
-        for (int i = 0; i < rf_cuts.size(); ++i) {
-          double rf_pi_low  = min_pi_pars[1] - (rf_cuts[i] - 1);
-          double rf_pi_high = min_pi_pars[1] + (rf_cuts[i] - 1);
+      TLatex lt2_K;
+      std::string t_K_text = "Kaon is "+std::to_string(t_K(shms_p)-t_pi(shms_p))+" ns slower than pion";
+      lt2_K.DrawLatexNDC(0.6,0.7,t_K_text.c_str());
 
-          rf_neg_cuts.push_back(rf_pi_high);
-          rf_neg_cuts_low.push_back(rf_pi_low);
-          double neg_pi_N = fneg_pp->Integral(rf_pi_low, rf_pi_high, width);
-          n_neg_pi_rf.push_back(neg_pi_N);
-          double neg_K_N = fneg_kp->Integral(rf_pi_low, rf_pi_high, width);
-          n_neg_K_rf.push_back(neg_K_N);
-          //std::cout << neg_K_N << " " << neg_pi_N << " " << i_dpcut << std::endl;
-        }
-        //j_rungroup_info[rg]["neg"]
-        //  ["rf_cuts_high"] = rf_neg_cuts;
-        //j_rungroup_info[rg]["neg"]
-        //  ["rf_cuts_low"] = rf_neg_cuts_low;
-        //j_rungroup_info[rg]["neg"]
-        //  ["pi_eff_Ns"] = n_neg_pi_rf;
-        //j_rungroup_info[rg]["neg"]
-        //  ["Ks"] = n_neg_K_rf;
+      std::string fitting_text_K = "A_{#pi neg} , #mu_{#pi} , #sigma_{#pi} , A_{K neg} , #sigma_K , A_{#pi pos} , A_{Kpos}:";
+      lt2_K.DrawLatexNDC(0.6,0.6, fitting_text_K.c_str());
+      std::string fitting_params_text_K = std::to_string(min_K_pars[0]).substr(0,7)+","+std::to_string(min_K_pars[1]).substr(0,4)+","+std::to_string(min_K_pars[2]).substr(0,4)+","+std::to_string(min_K_pars[3]).substr(0,6)+","+std::to_string(min_K_pars[4]).substr(0,4)+","+std::to_string(min_K_pars[5]).substr(0,6)+","+std::to_string(min_K_pars[6]).substr(0,6);
+      lt2_K.DrawLatexNDC(0.6,0.5,fitting_params_text_K.c_str());
+      //c_K->cd(3);
+      //h_rf_pos_Kall->Divide(h_rf_neg_Kall);
+      //h_rf_pos_Kall->Draw();
+      //h_rf_pos_Kall->GetYaxis()->SetRangeUser(0.1,3.5);
 
-        std::string of_name =
-          "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_"+std::to_string(n_aero)+"_HGC.json";
-        std::ofstream ofs;
-        ofs.open(of_name.c_str());
-        ofs << j_rungroup_info.dump(4) << std::endl;
+      c_K->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +"_K.png").c_str());
+      TCanvas* c = new TCanvas("c1","c1",1200,900);
+      c->Divide(1,2);
+      c->cd(1);
+      gPad->SetLogy(false);
+      //gPad->SetLogy();
+      TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
+      fpos->SetParameters(min_pi_pars);
+      TF1 * fpos_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
+      fpos_pp->SetParameters(min_pi_pars);
+      fpos_pp->SetLineColor(4);
+      TF1 * fpos_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
+      fpos_kp->SetParameters(min_pi_pars);
+      fpos_kp->SetLineColor(2);
+      auto h1 = h_rf_pos_piall->DrawCopy();
+      h1->SetTitle("rf_pi,pi+");
+      h1->GetYaxis()->SetRangeUser(0.1,y_max);
+      fpos->DrawCopy("lsame");
+      fpos_pp->DrawCopy("lsame");
+      fpos_kp->DrawCopy("lsame");
 
+      TLatex lt;
+      lt.DrawLatexNDC(0.6,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
+
+
+      std::string rgtext = "ratio run group " + rg + "  #splitline{";
+      for (auto r : pruns)
+        rgtext += (std::to_string(r) + ",");
+      rgtext += "}{";
+      for (auto r : nruns)
+        rgtext += (std::to_string(r) + ",");
+      rgtext += "}";
+      lt.DrawLatexNDC(0.6,0.5, rgtext.c_str());
+
+      std::string offsettext = "run RF time offsets  #splitline{";
+      for (auto r : prun_offsets)
+        offsettext += (std::to_string(r) + ",");
+      offsettext += "}{";
+      for (auto r : nrun_offsets)
+        offsettext += (std::to_string(r) + ",");
+      offsettext += "}";
+      lt.DrawLatexNDC(0.6,0.4, offsettext.c_str());
+
+
+      c->cd(2);
+      //gPad->SetLogy();
+      gPad->SetLogy(false);
+      TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
+      fneg->SetParameters(min_pi_pars);
+      TF1 * fneg_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
+      fneg_pp->SetParameters(min_pi_pars);
+      fneg_pp->SetLineColor(4);
+      TF1 * fneg_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
+      fneg_kp->SetParameters(min_pi_pars);
+      fneg_kp->SetLineColor(2);
+      h_rf_neg_piall->Draw();
+      h_rf_neg_piall->SetTitle("rf_pi,pi-");
+      h_rf_neg_piall->GetYaxis()->SetRangeUser(0.1,y_max);
+      fneg->DrawCopy("lsame");
+      fneg_pp->DrawCopy("lsame");
+      fneg_kp->DrawCopy("lsame");
+
+      TLatex lt2;
+      std::string fitting_text = "A_{#pi neg} , #mu_{#pi} , #sigma_{#pi} , A_{#pi pos} :";
+      lt2.DrawLatexNDC(0.6,0.6, fitting_text.c_str());
+      std::string fitting_params_text = std::to_string(min_pi_pars[0]).substr(0,7)+","+std::to_string(min_pi_pars[1]).substr(0,4)+","+std::to_string(min_pi_pars[2]).substr(0,4)+std::to_string(min_pi_pars[5]).substr(0,6);
+      lt2.DrawLatexNDC(0.6,0.5,fitting_params_text.c_str());
+      //c->cd(3);
+      //h_rf_pos_piall->Divide(h_rf_neg_piall);
+      //h_rf_pos_piall->Draw();
+      //h_rf_pos_piall->GetYaxis()->SetRangeUser(0.1,3.5);
+
+      c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +".png").c_str());
+
+      json j_counts;
+      {
+        std::string ifs_name = "results/pid/rftime_new/"+std::to_string(RunGroup)+".json";
+        std::ifstream ifs(ifs_name.c_str());
+        ifs>>j_counts;
+      }
+
+      //for pi efficiency
+      double width = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
+      double pos_pi_all = fpos_pp->Integral(-1,5.008,width);
+      j_counts[rg][point_str]["pos"]["pi_HGC_all"] = pos_pi_all;
+      j_counts[rg][point_str]["shms_p"] = shms_p;
+      j_counts[rg][point_str]["pi_peak"]["pos"] = min_pi_pars[1];
+      double neg_pi_all = fneg_pp->Integral(-1,5.008,width);
+      j_counts[rg][point_str]["neg"]["pi_HGC_all"] = neg_pi_all;
+      j_counts[rg][point_str]["pi_peak"]["neg"] = min_pi_pars[1];
+      double pos_pi_Kall = fpos_K_pp->Integral(-1,5.008,width);
+      j_counts[rg][point_str]["pos"]["pi_antiHGC_all"] = pos_pi_Kall;
+      double neg_pi_Kall = fneg_K_pp->Integral(-1,5.008,width);
+      j_counts[rg][point_str]["neg"]["pi_antiHGC_all"] = neg_pi_Kall;
+      double pos_K_Kall = fpos_K_kp->Integral(-1,5.008,width);
+      j_counts[rg][point_str]["pos"]["K_antiHGC_all"] = pos_K_Kall;
+      double neg_K_Kall = fneg_K_kp->Integral(-1,5.008,width);
+      j_counts[rg][point_str]["neg"]["K_antiHGC_all"] = neg_K_Kall;
+      //numbers for the pion purity
+      std::vector<double> n_pos_pi_rf, n_pos_K_rf;
+      std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
+
+      std::string of_name =
+        "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_"+std::to_string(n_aero)+"_HGC.json";
+      std::ofstream ofs;
+      ofs.open(of_name.c_str());
+      ofs << j_counts.dump(4) << std::endl;
+    }//loop over points
+    // }//loop over pos runs
+  }//if not empty
 }

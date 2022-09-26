@@ -599,7 +599,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_exc_rad<<" spec%e%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%e%offset%yptar = 0."<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%p%offset%x = -0.13"<<std::endl;
-  ofs_D2_neg_exc_rad<<" spec%p%offset%y = 0.06"<<std::endl;
+  ofs_D2_neg_exc_rad<<" spec%p%offset%y = -0.06"<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%p%offset%z = 0."<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%p%offset%xptar = 0."<<std::endl;
   ofs_D2_neg_exc_rad<<" spec%p%offset%yptar = 0."<<std::endl;
@@ -1412,8 +1412,10 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_delta<<" doing_kaon = 0"<<std::endl;
   ofs_D2_neg_delta<<" doing_pion = 1"<<std::endl;
   ofs_D2_neg_delta<<" which_pion = 3"<<std::endl;
-  ofs_D2_neg_delta<<" doing_delta = 1"<<std::endl;
-  ofs_D2_neg_delta<<" doing_decay = 0"<<std::endl;
+  ofs_D2_neg_delta<<" doing_delta = 0"<<std::endl;
+  ofs_D2_neg_delta<<" doing_semi = 0"<<std::endl;
+  ofs_D2_neg_delta<<" doing_hplus = 0"<<std::endl;
+  ofs_D2_neg_delta<<" doing_decay = 1"<<std::endl;
   ofs_D2_neg_delta<<" ctau = 780.4"<<std::endl;
   ofs_D2_neg_delta<<"end parm experiment\n"<<std::endl;
 
@@ -1521,7 +1523,7 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_neg_delta<<" sigc_kin_min = 0.0"<<std::endl;
   ofs_D2_neg_delta<<" sigc_kin_max = 1.0"<<std::endl;
   ofs_D2_neg_delta<<" sigc_kin_ind = 0.550"<<std::endl;
-  ofs_D2_neg_delta<<" 377468"<<std::endl;
+  ofs_D2_neg_delta<<" random_seed = 377468"<<std::endl;
   
   ofs_D2_neg_delta<<"end parm simulate\n"<<std::endl;
 
@@ -1537,8 +1539,9 @@ void make_simc_input(int RunGroup = 0){
   ofs_D2_pos_delta<<" doing_kaon = 0"<<std::endl;
   ofs_D2_pos_delta<<" doing_pion = 1"<<std::endl;
   ofs_D2_pos_delta<<" which_pion = 2"<<std::endl;
-  ofs_D2_pos_delta<<" doing_delta = 1"<<std::endl;
-  ofs_D2_pos_delta<<" doing_decay = 0"<<std::endl;
+  ofs_D2_pos_delta<<" doing_delta = 0"<<std::endl;
+  ofs_D2_pos_delta<<" doing_hplus = 0"<<std::endl;
+  ofs_D2_pos_delta<<" doing_decay = 1"<<std::endl;
   ofs_D2_pos_delta<<" ctau = 780.4"<<std::endl;
   ofs_D2_pos_delta<<"end parm experiment\n"<<std::endl;
 

@@ -160,7 +160,6 @@ int plot_Q2x_ratio_corr(){
               int RunNumber = *it;
               std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              charge_neg_all += charge;
               //double TE = j_info[(std::to_string(RunNumber)).c_str()]["TE"].get<double>();
               //double TLT = j_info[(std::to_string(RunNumber)).c_str()]["TLT"].get<double>();
               //double TEHMS = j_info[(std::to_string(RunNumber)).c_str()]["TEHMS"].get<double>();
@@ -174,6 +173,12 @@ int plot_Q2x_ratio_corr(){
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_z_neg = new TH1D("","",bins,0,1);
               h_z_neg = (TH1D*)root_file_neg->Get("z");
+              if(!(TH1D*)root_file_neg->Get("z")){
+                std::cout<<"failed to get 2d histogram for "<<RunNumber<<std::endl;
+              }
+              else{
+                charge_neg_all += charge;
+              }
               TH1D *h_z_neg_bg = new TH1D("","",bins,0,1);
               h_z_neg_bg = (TH1D*)root_file_neg->Get("z_bg");
               //h_z_neg_all->Add(h_z_neg_bg,-1/(charge*TE));
@@ -190,11 +195,14 @@ int plot_Q2x_ratio_corr(){
               int RunNumber = *it;
               std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              charge_pos_all+=charge;
               //std::cout<<"pos DE check"<<std::endl;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_z_pos = new TH1D("","",bins,0,1);
               h_z_pos = (TH1D*)root_file_pos->Get("z");
+              if(!(TH1D*)root_file_pos->Get("z")){
+                std::cout<<"failed to get 2d histogram for "<<RunNumber<<std::endl;
+              }
+              else{charge_pos_all+=charge;}
               TH1D *h_z_pos_bg = new TH1D("","",bins,0,1);
               h_z_pos_bg = (TH1D*)root_file_pos->Get("z_bg");
               double EFF = Get_all_eff(RunNumber);
@@ -205,10 +213,15 @@ int plot_Q2x_ratio_corr(){
               int RunNumber = *it;
               std::cout<<"Dummy"<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              charge_neg_Dummy_all += charge;
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_z_neg = new TH1D("","",bins,0,1);
               h_z_neg = (TH1D*)root_file_neg->Get("z");
+              if(!(TH1D*)root_file_neg->Get("z")){
+                std::cout<<"failed to get 2d histogram for "<<RunNumber<<std::endl;
+              }
+              else{
+                charge_neg_Dummy_all += charge;
+              }
               TH1D *h_z_neg_bg = new TH1D("","",bins,0,1);
               h_z_neg_bg = (TH1D*)root_file_neg->Get("z_bg");
               //h_z_neg_bg_Dummy_all->Add(h_z_neg_bg,1/(6*TLT*TEHMS*TE*HMS_cal_eff*SHMS_cal_eff*SHMS_aero_eff*HMS_cer_eff));
@@ -221,10 +234,15 @@ int plot_Q2x_ratio_corr(){
               int RunNumber = *it;
               std::cout<<"Dummy neg "<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              charge_pos_Dummy_all+=charge;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH1D *h_z_pos = new TH1D("","",bins,0,1);
               h_z_pos = (TH1D*)root_file_pos->Get("z");
+              if(!(TH1D*)root_file_pos->Get("z")){
+                std::cout<<"failed to get 2d histogram for "<<RunNumber<<std::endl;
+              }
+              else{
+                charge_pos_Dummy_all+=charge;
+              }
               TH1D *h_z_pos_bg = new TH1D("","",bins,0,1);
               h_z_pos_bg = (TH1D*)root_file_pos->Get("z_bg");
               double EFF = Get_all_eff(RunNumber);
@@ -375,6 +393,7 @@ int plot_Q2x_ratio_corr(){
             }
           }
           TCanvas *c_yield_pos = new TCanvas();
+          c_yield_pos->SetTitle((std::to_string(RunGroup)).c_str());
           gStyle->SetOptTitle(0);
           //h_z_pos_yield->GetYaxis()->SetTitle("yield");
           //h_z_pos_yield->GetYaxis()->SetTitleSize(0.53);
@@ -442,7 +461,7 @@ int plot_Q2x_ratio_corr(){
           mg_z_yield_pos->SetTitle(q2xz_str.c_str());
           mg_z_yield_pos->GetYaxis()->SetTitle("yield");
           mg_z_yield_pos->GetXaxis()->SetTitle("z");
-          mg_z_yield_pos->Draw("AL");
+          mg_z_yield_pos->Draw("A");
           c_yield_pos->BuildLegend(0.75,0.75,1,1);
           std::string c_yield_pos_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_pos.pdf";
           c_yield_pos->SaveAs(c_yield_pos_name.c_str());
@@ -481,6 +500,7 @@ int plot_Q2x_ratio_corr(){
             }
           }
           TCanvas *c_yield_neg = new TCanvas();
+          c_yield_neg->SetTitle((std::to_string(RunGroup)).c_str());
           gStyle->SetOptTitle(0);
           //g_z_neg_yield->DrawCopy();
           //h_z_neg_bg_yield->SetLineColor(kOrange);
@@ -546,7 +566,7 @@ int plot_Q2x_ratio_corr(){
           //h_z_neg_sim_delta->SetLineColor(6);
           //h_z_neg_sim_delta->SetTitle("pi- sim delta");
           //h_z_neg_sim_delta->DrawCopy("hist same");
-          c_yield_neg->BuildLegend(0.75,0.75,1,1);
+          c_yield_neg->BuildLegend(0.75,0.75,1,1,(std::to_string(RunGroup)).c_str());
           std::string c_yield_neg_name = "results/yield/statistics_corr/yield_"+q2xz_str_filename+"_neg.pdf";
           c_yield_neg->SaveAs(c_yield_neg_name.c_str());
 
@@ -606,7 +626,7 @@ int plot_Q2x_ratio_corr(){
 
           // TGraphErrors* g_yield_ratio = new TGraphErrors(h_z_neg_all);
           TGraphErrors* g_yield_ratio = new TGraphErrors();
-          std::string z_string = "R_Y z setting "+(std::to_string(z)).substr(0,4);
+          std::string z_string = (std::to_string(RunGroup))+" R_Y z setting "+(std::to_string(z)).substr(0,4);
           g_yield_ratio->SetName(z_string.c_str());
           TGraphErrors* g_frag_ratio = new TGraphErrors();
           std::string frag_z_string = "frag z setting "+(std::to_string(z)).substr(0,4);
@@ -705,10 +725,10 @@ int plot_Q2x_ratio_corr(){
             }
           }
 
-          g_yield_ratio->SetName(q2xz_str_filename.c_str());
-          TFile* yield_ratio_file = new TFile("results/yield_ratio_all.root","UPDATE");
-          g_yield_ratio->Write();
-          yield_ratio_file->Close();  
+          //g_yield_ratio->SetName(q2xz_str_filename.c_str());
+          //TFile* yield_ratio_file = new TFile("results/yield_ratio_all.root","UPDATE");
+          //g_yield_ratio->Write();
+          //yield_ratio_file->Close();  
           // int nbins = h_z_pos_all->GetXaxis()->GetNbins();
           // TGraphErrors* g_yield_ratio = new TGraphErrors();
           // std::string z_string = "z setting "+(std::to_string(z)).substr(0,4);
@@ -819,7 +839,7 @@ int plot_Q2x_ratio_corr(){
         //fit->Draw("same");
         //      std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_RDratio.pdf";
         std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_ratio.pdf";
-        //c_Q2x_ratio->BuildLegend(0.6,0.6,0.95,0.95);
+        c_Q2x_ratio->BuildLegend(0.6,0.6,0.95,0.95);
         c_Q2x_ratio->SaveAs(ratiopdfname.c_str());
         TCanvas* c_frag_ratio = new TCanvas("","",1900,1000);
         mg_frag->GetXaxis()->SetTitleSize(0.053);

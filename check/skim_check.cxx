@@ -159,29 +159,27 @@ void skim_check(int RunGroup=0){
     std::ifstream ifs(if_name.c_str());
     ifs>>j_runsinfo;
   }
-  json j_DE;
-  {
-    std::ifstream ifs("db2/PID_test.json");
-    ifs>>j_DE;
-  }
-      std::vector<int> delta_cut_num= j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>(); 
   if(!neg_D2.empty() && !pos_D2.empty()){
     std::vector<std::string> files_neg,files_pos;
     double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
     SHMS_P = SHMS_P*Get_SHMS_P_corr(SHMS_P);
     auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
     //if(SHMS_P>3.2){aeroCutSHMS = aeroCutSHMS + " && P.hgcer.npeSum > "+(std::to_string(P_hgcer)).c_str();}
-  auto SHMS_hgc_aero =[=](double shms_dp,double hgc_Npe,double aero_Npe){
+    /*
+       auto SHMS_hgc_aero =[=](double shms_dp,double hgc_Npe,double aero_Npe){
 
-    if(SHMS_P*(shms_dp+100)/100>2.9){
-        return hgc_Npe>P_hgcer && aero_Npe>P_aero;
-        //return aero_Npe>P_aero;
-    }
-    else{
-      return aero_Npe>P_aero;
-    }
-  };
-    
+       if(SHMS_P*(shms_dp+100)/100>2.9){
+       if(P_hgcer==-1){
+       return aero_Npe>P_aero;}
+       else{
+       return hgc_Npe>P_hgcer && aero_Npe>P_aero;
+       }
+       }
+       else{
+       return aero_Npe>P_aero;
+       }
+       };
+       */
     double Eb;
     if(RunGroup < 420) {Eb = 10.597;}
     else{Eb = 10.214;}
@@ -245,7 +243,7 @@ void skim_check(int RunGroup=0){
    //   .Filter(aeroCutSHMS)
    //   .Filter(Normal_SHMS)
    //   .Filter(Normal_HMS)
-   //   .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+   //   .Define("fptime_minus_rf","P.hod.fpHitsTime - T.coin.pRF_tdcTime")
    //   ;
 
 
@@ -293,13 +291,13 @@ void skim_check(int RunGroup=0){
         .Filter(goodTrackHMS)
         .Filter(piCutSHMS)
         .Filter(eCutHMS)
-        //.Filter(aeroCutSHMS)
-        .Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"})
+        .Filter(aeroCutSHMS)
+        //.Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"})
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
         //.Filter(HGC_bad)
         .Filter("P.dc.InsideDipoleExit == 1")
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+        .Define("fptime_minus_rf","P.hod.fpHitsTime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return current>current_offset;},{"current"})
         //.Filter([&](double current){return std::abs(current-pos_setcurrent)<current_offset;},{"current"})
@@ -389,7 +387,7 @@ void skim_check(int RunGroup=0){
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
       opts.fMode = "UPDATE";
-      d_pos_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp","P.gtr.p","H.gtr.dp","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
+      d_pos_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
       //d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_pos_pi.Count();
@@ -456,7 +454,7 @@ void skim_check(int RunGroup=0){
         //.Filter(W2_cut)
         ;
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str());
-      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","pmiss","Mx2","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp","P.gtr.p","H.gtr.dp","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
+      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","pmiss","Mx2","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_pos_bg = d_pos_bg.Histo1D({"","pos bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
@@ -613,13 +611,13 @@ void skim_check(int RunGroup=0){
         .Filter(goodTrackHMS)
         .Filter(piCutSHMS)
         .Filter(eCutHMS)
-        //.Filter(aeroCutSHMS)
-        .Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"})
+        .Filter(aeroCutSHMS)
+        //.Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"})
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
         //.Filter(HGC_bad)
         .Filter("P.dc.InsideDipoleExit == 1")
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+        .Define("fptime_minus_rf","P.hod.fpHitsTime - T.coin.pRF_tdcTime")
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return current>current_offset;},{"current"})
         //.Filter([&](double current){return std::abs(current-neg_setcurrent)<current_offset;},{"current"})
@@ -670,32 +668,6 @@ void skim_check(int RunGroup=0){
         return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
         
       };
-      /*
-      auto Get_pi_eff = [=](double SHMS_dp){
-        double pi_eff;
-        int i_order = 0,i_which;
-        for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
-          if(SHMS_dp>*it){
-            i_which = i_order;
-            pi_eff = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_eff"].get<double>();
-          }
-          i_order++;
-        }
-        return pi_eff;  
-      };
-      auto Get_pi_purity = [=](double SHMS_dp){
-        double pi_purity;
-        int i_order = 0,i_which;
-        for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
-          if(SHMS_dp>*it){
-            i_which = i_order;
-            pi_purity = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_purity"].get<double>();
-          }
-          i_order++;
-        }
-        return pi_purity;  
-      };
-      */
       //std::cout<<"offset for neg runs "<<offset_neg<<std::endl;
       //jout[(std::to_string(RunNumber)).c_str()]["offset"] = offset_neg;
       auto d_mod_first = d_neg_first
@@ -736,7 +708,7 @@ void skim_check(int RunGroup=0){
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
       opts.fMode = "UPDATE";
-      d_neg_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp","P.gtr.p","H.gtr.dp","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
+      d_neg_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
       //d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_neg_pi.Count();
@@ -803,7 +775,7 @@ void skim_check(int RunGroup=0){
         //.Filter(W2_cut)
         ;
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str());
-      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp","P.gtr.p","H.gtr.dp","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
+      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_neg_bg = d_neg_bg.Histo1D({"","neg bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
