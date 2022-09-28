@@ -369,7 +369,7 @@ void skim_check_H2(int RunGroup=0){
       auto d_pos_pi = d_mod_first
       //  .Filter(
       //      [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        //.Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         //.Filter(Wp2_cut)
         //.Filter(Mx2_cut)
         //.Filter(W2_cut)
@@ -437,7 +437,7 @@ void skim_check_H2(int RunGroup=0){
         ;
       auto h_difftime_forbg = d_pos_forbg.Histo1D({"","diff for bg",100,0,4.008},"diff_time_mod");
       auto d_pos_bg  = d_pos_forbg
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        //.Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         //.Filter(Mx2_cut)
         //.Filter(Wp2_cut)
         //.Filter(W2_cut)
@@ -666,7 +666,7 @@ void skim_check_H2(int RunGroup=0){
       auto d_neg_pi = d_mod_first
         //.Filter(
         //    [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        //.Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         //.Filter(Mx2_cut)
         //.Filter(Wp2_cut)
         //.Filter(W2_cut)
@@ -734,7 +734,7 @@ void skim_check_H2(int RunGroup=0){
         ;
       auto h_difftime_forbg = d_neg_forbg.Histo1D({"","diff for bg",100,0,4.008},"diff_time_mod");
       auto d_neg_bg  = d_neg_forbg
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        //.Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         //.Filter(Mx2_cut)
         //.Filter(Wp2_cut)
         //.Filter(W2_cut)

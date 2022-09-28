@@ -144,18 +144,20 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
 
 
 
-    //loop over 20 bins in x and 20 bins in z, 
-    int i_xz = 0;//count which poin in (x,z), 20x20, range 0-399
-    for(int i_x = 0;i_x<20;i_x++){
-      double x_left = i_x*0.05;
-      double x_right = (i_x+1)*0.05;
+    //loop over xbin bins in x and zbin bins in z, 
+    int i_xz = 0;//count which poin in (x,z), xbin*zbin
+    int xbin =2;
+    int zbin = 10;
+    for(int i_x = 0;i_x<xbin;i_x++){
+      double x_left = i_x*1.0/xbin;
+      double x_right = (i_x+1)*1.0/xbin;
       double x_center = (x_left+x_right)/2;
       auto x_cut = [=](double xbj){
         return xbj>x_left && xbj<x_right;
       };
-      for(int i_z = 0;i_z<20;i_z++){
-        double z_left = i_z*0.05;
-        double z_right = (i_z+1)*0.05;
+      for(int i_z = 0;i_z<zbin;i_z++){
+        double z_left = i_z*1.0/zbin;
+        double z_right = (i_z+1)*1.0/zbin;
         double z_center = (z_left+z_right)/2;
         auto z_cut = [=](double z){
           return z>z_left && z<z_right;
@@ -239,19 +241,19 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
             auto h_rf_pos_bg =
               d_pos_piall_bg_i.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_pi");
             auto h_rf_pos_K =
-              d_pos_Kall.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_k");
+              d_pos_Kall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rf_pos_K_bg =
-              d_pos_Kall_bg.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_k");
+              d_pos_Kall_bg_i.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_k");
 
             //just for fun
             auto h_rfpi_pos_K =
-              d_pos_Kall.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_pos_Kall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_pi");
             auto h_rfpi_pos_K_bg =
-              d_pos_Kall_bg.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_pos_Kall_bg_i.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_pi");
             auto h_rfproton_pos_K =
-              d_pos_Kall.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_proton");
+              d_pos_Kall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_proton");
             auto h_rfproton_pos_K_bg =
-              d_pos_Kall_bg.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_proton");
+              d_pos_Kall_bg_i.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_proton");
 
             h_rf_pos_pi->Add(h_rf_pos_bg.GetPtr(),-1/6);
             h_rf_pos_piall->Add(h_rf_pos_pi.GetPtr(),1);
@@ -267,12 +269,20 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
             double pos_Kall = *d_pos_Kall_i.Count();
             double pos_Kall_bg = *d_pos_Kall_bg_i.Count();
 
+            double shms_p_i = *d_pos_piall_i.Mean("shms_p");
+            double shms_dp_i = *d_pos_piall_i.Mean("P_gtr_dp");
+            double xbj_i = *d_pos_piall_i.Mean("xbj");
+            double z_i = *d_pos_piall_i.Mean("z");
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["pos_piall"] = pos_piall;
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["pos_piall_bg"] = pos_piall_bg;
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["pos_Kall"] = pos_Kall;
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["pos_Kall_bg"] = pos_Kall_bg;
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["x_center"] = x_center;
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["z_center"] = z_center;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["shms_p"] = shms_p_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["shms_dp"] = shms_dp_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["xbj"] = xbj_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["z"] = z_i;
 
 
           }//for pos runs
@@ -331,19 +341,19 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
             auto h_rf_neg_bg =
               d_neg_piall_bg_i.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_pi");
             auto h_rf_neg_K =
-              d_neg_Kall.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_k");
+              d_neg_Kall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rf_neg_K_bg =
-              d_neg_Kall_bg.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_k");
+              d_neg_Kall_bg_i.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_k");
 
             //just for fun
             auto h_rfpi_neg_K =
-              d_neg_Kall.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_neg_Kall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_pi");
             auto h_rfpi_neg_K_bg =
-              d_neg_Kall_bg.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_neg_Kall_bg_i.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_pi");
             auto h_rfproton_neg_K =
-              d_neg_Kall.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_proton");
+              d_neg_Kall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_proton");
             auto h_rfproton_neg_K_bg =
-              d_neg_Kall_bg.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_proton");
+              d_neg_Kall_bg_i.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_proton");
 
             h_rf_neg_pi->Add(h_rf_neg_bg.GetPtr(),-1/6);
             h_rf_neg_piall->Add(h_rf_neg_pi.GetPtr(),1);
@@ -383,7 +393,7 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
         i_xz++;
       }//loop over z bins
     }//loop over x bins
-
+  std::cout<<" i_xz is "<<i_xz<<std::endl;
   }   // if normal production runs
         std::string ofs_name = "results/pid/rftime_new/"+std::to_string(RunGroup)+".json";
         std::ofstream ofs(ofs_name.c_str());

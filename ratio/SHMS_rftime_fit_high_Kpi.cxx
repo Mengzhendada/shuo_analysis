@@ -440,9 +440,14 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
 
   std::vector<double> rf_cuts = j_DE["SHMS"]["rf_time_right_cuts"].get<std::vector<double>>();
 
+  json jout;
+
   std::string rg = (std::to_string(RunGroup)).c_str();
   double shms_p_central = j_rungroup[rg]["shms_p"].get<double>();
   double shms_p = shms_p_central; 
+  double shms_dp = 0;
+  double xbj_center = 0; 
+  double z_center = 0; 
   std::vector<int> pruns = j_rungroup[rg]["pos"]["D2"].get<std::vector<int>>();
   std::vector<int> nruns = j_rungroup[rg]["neg"]["D2"].get<std::vector<int>>();
   if(!pruns.empty() && !nruns.empty()){
@@ -478,8 +483,12 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
     for(auto ij = ik.begin();ij!=ik.end();++ij){
 
       int point = std::stoi(ij.key());
-      std::string point_str = (std::to_string(poin)).c_str();
-      std::cout<<"RunGroup "<<RunGroup<<" RunNumber "<<RunNumber<<" point "<<point<<std::endl;
+      std::string point_str = (std::to_string(point)).c_str();
+      shms_p = ij.value()["shms_p"].get<double>();
+      xbj_center = ij.value()["xbj"].get<double>();
+      shms_dp = ij.value()["shms_dp"].get<double>();
+      z_center = ij.value()["z"].get<double>();
+      std::cout<<"RunGroup "<<RunGroup<<" RunNumber "<<RunNumber<<" point "<<point<<" momentum "<<shms_p<<std::endl;
 
       auto h_rf_pos_piall = fin->Get<TH1D>(std::string("rftime_pos_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
       auto h_rf_neg_piall = fin->Get<TH1D>(std::string("rftime_neg_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
@@ -564,7 +573,7 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       cpi_K->cd(4);
       h_rfproton_neg_Kall->SetTitle("rf_proton for K-");
       h_rfproton_neg_Kall->DrawCopy();
-      cpi_K->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +"_K_rfpi.png").c_str());
+      cpi_K->SaveAs(std::string("results/pid/HGC_pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) + +"_point"+point_str+"_K_rfpi.png").c_str());
 
       TCanvas* c_K = new TCanvas("c_K","c_K",1200,900);
       c_K->Divide(1,2);
@@ -640,7 +649,7 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       //h_rf_pos_Kall->Draw();
       //h_rf_pos_Kall->GetYaxis()->SetRangeUser(0.1,3.5);
 
-      c_K->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +"_K.png").c_str());
+      c_K->SaveAs(std::string("results/pid/HGC_pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +"_point"+point_str+"_K.png").c_str());
       TCanvas* c = new TCanvas("c1","c1",1200,900);
       c->Divide(1,2);
       c->cd(1);
@@ -712,32 +721,29 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       //h_rf_pos_piall->Draw();
       //h_rf_pos_piall->GetYaxis()->SetRangeUser(0.1,3.5);
 
-      c->SaveAs(std::string("results/pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +".png").c_str());
+      c->SaveAs(std::string("results/pid/HGC_pid/rftime_" + std::to_string(RunGroup) + "_aero"+std::to_string(n_aero) +"_point"+point_str+".png").c_str());
 
-      json j_counts;
-      {
-        std::string ifs_name = "results/pid/rftime_new/"+std::to_string(RunGroup)+".json";
-        std::ifstream ifs(ifs_name.c_str());
-        ifs>>j_counts;
-      }
 
+      jout[rg][point_str]["shms_p"] = shms_p;
+      jout[rg][point_str]["shms_dp"] = shms_dp;
+      jout[rg][point_str]["xbj_center"] = xbj_center;
+      jout[rg][point_str]["z_center"] = z_center;
       //for pi efficiency
       double width = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
       double pos_pi_all = fpos_pp->Integral(-1,5.008,width);
-      j_counts[rg][point_str]["pos"]["pi_HGC_all"] = pos_pi_all;
-      j_counts[rg][point_str]["shms_p"] = shms_p;
-      j_counts[rg][point_str]["pi_peak"]["pos"] = min_pi_pars[1];
+      jout[rg][point_str]["pos"]["pi_HGC_all"] = pos_pi_all;
+      jout[rg][point_str]["pi_peak"]["pos"] = min_pi_pars[1];
       double neg_pi_all = fneg_pp->Integral(-1,5.008,width);
-      j_counts[rg][point_str]["neg"]["pi_HGC_all"] = neg_pi_all;
-      j_counts[rg][point_str]["pi_peak"]["neg"] = min_pi_pars[1];
+      jout[rg][point_str]["neg"]["pi_HGC_all"] = neg_pi_all;
+      jout[rg][point_str]["pi_peak"]["neg"] = min_pi_pars[1];
       double pos_pi_Kall = fpos_K_pp->Integral(-1,5.008,width);
-      j_counts[rg][point_str]["pos"]["pi_antiHGC_all"] = pos_pi_Kall;
+      jout[rg][point_str]["pos"]["pi_antiHGC_all"] = pos_pi_Kall;
       double neg_pi_Kall = fneg_K_pp->Integral(-1,5.008,width);
-      j_counts[rg][point_str]["neg"]["pi_antiHGC_all"] = neg_pi_Kall;
+      jout[rg][point_str]["neg"]["pi_antiHGC_all"] = neg_pi_Kall;
       double pos_K_Kall = fpos_K_kp->Integral(-1,5.008,width);
-      j_counts[rg][point_str]["pos"]["K_antiHGC_all"] = pos_K_Kall;
+      jout[rg][point_str]["pos"]["K_antiHGC_all"] = pos_K_Kall;
       double neg_K_Kall = fneg_K_kp->Integral(-1,5.008,width);
-      j_counts[rg][point_str]["neg"]["K_antiHGC_all"] = neg_K_Kall;
+      jout[rg][point_str]["neg"]["K_antiHGC_all"] = neg_K_Kall;
       //numbers for the pion purity
       std::vector<double> n_pos_pi_rf, n_pos_K_rf;
       std::vector<double> rf_pos_cuts, rf_pos_cuts_low;
@@ -746,7 +752,7 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
         "results/pid/rftime_new/rf_eff_" + std::to_string(RunGroup) + "_"+std::to_string(n_aero)+"_HGC.json";
       std::ofstream ofs;
       ofs.open(of_name.c_str());
-      ofs << j_counts.dump(4) << std::endl;
+      ofs << jout.dump(4) << std::endl;
     }//loop over points
     // }//loop over pos runs
   }//if not empty

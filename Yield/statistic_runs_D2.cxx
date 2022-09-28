@@ -106,6 +106,12 @@ void statistic_runs_D2(int RunGroup=0){
       return true;
     }
   };
+      double rf_pi_low = j_cuts["rf_cut_low"].get<double>();
+      double rf_pi_high = j_cuts["rf_cut_high"].get<double>();
+      auto rf_cut = [=](double SHMS_rftime){
+        return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
+        
+      };
 
   if(!neg_D2.empty() && !pos_D2.empty()){
     //for pos runs
@@ -129,6 +135,7 @@ void statistic_runs_D2(int RunGroup=0){
         .Define("W22","W2*W2")
         .Define("Wp22","Wp2*Wp2")
         .Filter(pt_cut)
+        .Filter(rf_cut,{"diff_time_mod"})
         //.Filter(Mx2_cut)
         .Filter(W2_cut)
         .Filter(Wp2_cut)
@@ -147,6 +154,7 @@ void statistic_runs_D2(int RunGroup=0){
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
         //.Filter(Mx2_cut)
+        .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
         .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum"})
@@ -633,6 +641,7 @@ void statistic_runs_D2(int RunGroup=0){
         .Define("zprime2","zprime*zprime")
         .Filter(pt_cut)
         //.Filter(Mx2_cut)
+        .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
         .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum"})
@@ -657,6 +666,7 @@ void statistic_runs_D2(int RunGroup=0){
         .Define("zprime",zprime,{"z","xprime","xbj","pt","Q2"})
         .Filter(pt_cut)
         //.Filter(Mx2_cut)
+        .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
         .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum"})
