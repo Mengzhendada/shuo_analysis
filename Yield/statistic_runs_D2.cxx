@@ -92,14 +92,17 @@ void statistic_runs_D2(int RunGroup=0){
   std::string Q2_high_cut = "Q2>"+std::to_string(Q2_high);
   std::string Q2_middle_cut = "Q2>="+std::to_string(Q2_low)+" && Q2<="+std::to_string(Q2_high);
 
+  std::string HGC_bad_center = "(P.hgcer.yAtCer-1.33)*(P.hgcer.yAtCer-1.33) +  (P.hgcer.xAtCer-0.83)*(P.hgcer.xAtCer-0.83) >= 36";
+  std::string HGC_bad_strip = "(P.hgcer.xAtCer<0 || P.hgcer.xAtCer>3)";
+  std::string HGC_bad = HGC_bad_center + " && "+ HGC_bad_strip;
   double P_hgcer = j_cuts["P_hgcer"].get<double>();
-  auto SHMS_hgc_cut =  [=](double shms_p,double hgc_Npe){
+  auto SHMS_hgc_cut =  [=](double shms_p,double hgc_Npe,double xcer,double ycer){
     if(shms_p>2.9){
       if(P_hgcer==-1){
         return true;
       }
       else{
-        return hgc_Npe>P_hgcer;
+        return hgc_Npe>P_hgcer && (xcer-1.33)*(xcer-1.33)+(ycer-0.83)*(ycer-0.83)>=36 && (xcer<0||xcer>3);
       }
     }
     else{
@@ -139,7 +142,7 @@ void statistic_runs_D2(int RunGroup=0){
         //.Filter(Mx2_cut)
         .Filter(W2_cut)
         .Filter(Wp2_cut)
-        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum"})
+        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgcer_yAtCer"})
         ;
       //int pion_n = *d_pos_pi.Count();
       //jout[(std::to_string(RunNumber)).c_str()]["pion_n"] = pion_n;
@@ -157,7 +160,7 @@ void statistic_runs_D2(int RunGroup=0){
         .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
-        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum"})
+        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgcer_yAtCer"})
         ;
       auto d_pos_bg_1 = d_pos_bg.Filter(Q2_low_cut);
       auto d_pos_bg_2 = d_pos_bg.Filter(Q2_middle_cut);
@@ -644,7 +647,7 @@ void statistic_runs_D2(int RunGroup=0){
         .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
-        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum"})
+        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgcer_yAtCer"})
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
         .Define("Q22","Q2*Q2")
@@ -669,7 +672,7 @@ void statistic_runs_D2(int RunGroup=0){
         .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
-        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum"})
+        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgcer_yAtCer"})
         ;
       auto d_neg_bg_1 = d_neg_bg.Filter(Q2_low_cut);
       auto d_neg_bg_2 = d_neg_bg.Filter(Q2_middle_cut);

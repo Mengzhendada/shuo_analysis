@@ -387,7 +387,7 @@ void skim_check(int RunGroup=0){
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
       opts.fMode = "UPDATE";
-      d_pos_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
+      d_pos_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.hgcer.xAtCer","P.hgcer.yAtCer","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
       //d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_pos_pi.Count();
@@ -454,7 +454,7 @@ void skim_check(int RunGroup=0){
         //.Filter(W2_cut)
         ;
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str());
-      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","pmiss","Mx2","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
+      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","pmiss","Mx2","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.hgcer.xAtCer","P.hgcer.yAtCer","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_pos_bg = d_pos_bg.Histo1D({"","pos bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
@@ -708,7 +708,7 @@ void skim_check(int RunGroup=0){
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
       opts.fMode = "UPDATE";
-      d_neg_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
+      d_neg_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.hgcer.xAtCer","P.hgcer.yAtCer","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
       //d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_neg_pi.Count();
@@ -775,7 +775,7 @@ void skim_check(int RunGroup=0){
         //.Filter(W2_cut)
         ;
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str());
-      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
+      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.hgcer.xAtCer","P.hgcer.yAtCer","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_neg_bg = d_neg_bg.Histo1D({"","neg bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 

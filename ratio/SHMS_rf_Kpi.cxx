@@ -147,7 +147,7 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
     //loop over xbin bins in x and zbin bins in z, 
     int i_xz = 0;//count which poin in (x,z), xbin*zbin
     int xbin =2;
-    int zbin = 10;
+    int zbin = 20;
     for(int i_x = 0;i_x<xbin;i_x++){
       double x_left = i_x*1.0/xbin;
       double x_right = (i_x+1)*1.0/xbin;
@@ -273,16 +273,17 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
             double shms_dp_i = *d_pos_piall_i.Mean("P_gtr_dp");
             double xbj_i = *d_pos_piall_i.Mean("xbj");
             double z_i = *d_pos_piall_i.Mean("z");
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["pos_piall"] = pos_piall;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["pos_piall_bg"] = pos_piall_bg;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["pos_Kall"] = pos_Kall;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["pos_Kall_bg"] = pos_Kall_bg;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["x_center"] = x_center;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["z_center"] = z_center;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["shms_p"] = shms_p_i;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["shms_dp"] = shms_dp_i;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["xbj"] = xbj_i;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["z"] = z_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["pos_piall"] = pos_piall;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["piall"] = pos_piall;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["pos_piall_bg"] = pos_piall_bg;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["pos_Kall"] = pos_Kall;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["pos_Kall_bg"] = pos_Kall_bg;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["x_center"] = x_center;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["z_center"] = z_center;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["shms_p"] = shms_p_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["shms_dp"] = shms_dp_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["xbj"] = xbj_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["z"] = z_i;
 
 
           }//for pos runs
@@ -368,13 +369,23 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
             double neg_piall_bg = *d_neg_piall_bg_i.Count();
             double neg_Kall = *d_neg_Kall_i.Count();
             double neg_Kall_bg = *d_neg_Kall_bg_i.Count();
+            
+            double shms_p_i = *d_neg_piall_i.Mean("shms_p");
+            double shms_dp_i = *d_neg_piall_i.Mean("P_gtr_dp");
+            double xbj_i = *d_neg_piall_i.Mean("xbj");
+            double z_i = *d_neg_piall_i.Mean("z");
 
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["neg_piall"] = neg_piall;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["neg_piall_bg"] = neg_piall_bg;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["neg_Kall"] = neg_Kall;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["neg_Kall_bg"] = neg_Kall_bg;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["x_center"] = x_center;
-            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()][(std::to_string(i_xz)).c_str()]["z_center"] = z_center;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["neg_piall"] = neg_piall;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["piall"] = neg_piall;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["neg_piall_bg"] = neg_piall_bg;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["neg_Kall"] = neg_Kall;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["neg_Kall_bg"] = neg_Kall_bg;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["x_center"] = x_center;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["z_center"] = z_center;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["shms_p"] = shms_p_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["shms_dp"] = shms_dp_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["xbj"] = xbj_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["z"] = z_i;
 
 
 

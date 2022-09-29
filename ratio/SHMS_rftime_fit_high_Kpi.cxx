@@ -65,6 +65,15 @@ double t_pi_fromkaondecay(double p, double position, double pion_peak) {
   double real_pi_time = t_pi(p) - pion_peak;
   return sum_time - real_pi_time;
 }
+double Get_average(std::vector<double> value,std::vector<double> counts){
+  double sum_value = 0,sum_count = 0; 
+  for(int i = 0;i<value.size();++i){
+    sum_value+=value[i]*counts[i];
+    sum_count+=counts[i];
+      
+  }
+  return sum_value/sum_count;
+}
 double gaus_fun_kaonNodecay(double* x, double* params) {
   // param[1] is the momentum, gaus peak mean of the kaon that doesn't decay is calculated by the
   // momentum
@@ -202,33 +211,10 @@ class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
   public:
 
     double SHMS_momentum = 2.0;
+    std::pair<double,double> rf_cut={0.5,2.5};
     TH1D * h_positive = nullptr;
     TH1D * h_negative = nullptr;
-    // this should be momentum dependent?
-    /*
-       const std::vector<std::pair<double,double>> kaon_decay_prob =  {
-       { 1 , 0.027 + 0.020},
-       { 2 , 0.014 + 0.013},
-       { 3 , 0.005 + 0.006},
-       { 4 , 0.003 + 0.004},
-       { 5 , 0.001 + 0.004},
-       { 6 , 0.002 + 0.002},
-       { 7 , 0.002 + 0.003},
-       { 8 , 0.002 + 0.003},
-       { 9 , 0.004 + 0.003},
-       {10 , 0.003 + 0.004},
-       {11 , 0.004 + 0.005},
-       {12 , 0.005 + 0.007},
-       {13 , 0.005 + 0.009},
-       {14 , 0.004 + 0.008},
-       {15 , 0.004 + 0.008},
-       {16 , 0.002 + 0.005},
-       {17 , 0.001 + 0.004},
-       {18 , 0.001 + 0.004},
-       {19 , 0.033 + 0.030},
-       {20 , 0.050 + 0.041}};
-       */
-    RFTimeFitFCN(TH1D* p, TH1D* n,double mom) :h_positive(p), h_negative(n), SHMS_momentum(mom) { }
+    RFTimeFitFCN(TH1D* p, TH1D* n,double mom, std::pair<double,double> rftime_range) :h_positive(p), h_negative(n), SHMS_momentum(mom), rf_cut(rftime_range) { }
 
     std::vector<std::pair<double,double>> kaon_decay_prob = Get_kaon_decay_prob(SHMS_momentum);
     double pion_part(double x, double A_pi, double mu_piK, double sigma_pi) const {
@@ -357,7 +343,27 @@ class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
     // NDim is the number of fit parameters
     unsigned int 	NDim () const { return 7;}
 
-    double DoEval (const double *x) const {
+    std::pair<int,int> DoF () const{
+      int pos_counts = 0,neg_counts = 0;
+      int n_bins  = h_positive->GetNbinsX();
+      for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
+        double x_bin = h_positive->GetBinCenter(i_bin);
+        if(x_bin>rf_cut.second || x_bin<rf_cut.first) continue;
+        double dy_bin = h_positive->GetBinError(i_bin);
+        if(dy_bin<1e-3) continue;
+        pos_counts++;
+      }
+      n_bins  = h_negative->GetNbinsX();
+      for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
+        double x_bin = h_negative->GetBinCenter(i_bin);
+        if(x_bin>rf_cut.second || x_bin<rf_cut.first) continue;
+        double dy_bin = h_negative->GetBinError(i_bin);
+        if(dy_bin<1e-3) continue;
+        neg_counts++;
+      }
+      return {pos_counts,neg_counts};
+    }
+    double DoEval_pos (const double *x) const {
       double A_pi     = x[0];
       double mu_piK   = x[1];
       double sigma_pi = x[2];
@@ -376,7 +382,7 @@ class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
       int n_bins  = h_positive->GetNbinsX();
       for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
         double x_bin = h_positive->GetBinCenter(i_bin);
-        if(x_bin>3 || x_bin<0.5) continue;
+        if(x_bin>rf_cut.second || x_bin<rf_cut.first) continue;
         double y_bin = h_positive->GetBinContent(i_bin);
         double dy_bin = h_positive->GetBinError(i_bin);
         if(dy_bin<1e-3) continue;
@@ -387,10 +393,28 @@ class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
         //std::cout<<i_bin<<" check "<<chi<<std::endl;
         //std::cout<<"y bin "<<y_bin<<" y_function "<<y_function<<" dy "<<dy_bin<<std::endl;
       }
-      n_bins  = h_negative->GetNbinsX();
+      return chi2;
+    }
+    double DoEval_neg (const double *x) const {
+      double A_pi     = x[0];
+      double mu_piK   = x[1];
+      double sigma_pi = x[2];
+      double A_K      = x[3];
+      double sigma_K  = x[4];
+      double A_pi_pos = x[5];
+      double A_K_pos  = x[6];
+      //double mu_piK   = x[1];//same as negative
+      double sigma_pi_pos = x[2];//same as negative
+      double sigma_K_pos  = x[4];//same as neg
+
+      //std::cout<<"A_pi "<<A_pi<<" mu_pi "<<mu_piK<<" sigma_pi "<<sigma_pi<<" A_K "<<A_K<<" sigma_K "<<sigma_K<<" A_pi_pos "<<A_pi_pos<<" A_K_pos "<<A_K_pos<<std::endl; 
+
+      double chi2 = 0; 
+
+      int n_bins  = h_negative->GetNbinsX();
       for(int i_bin = 1; i_bin <= n_bins; i_bin ++ ){
         double x_bin = h_negative->GetBinCenter(i_bin);
-        if(x_bin>3 || x_bin<0.5) continue;
+        if(x_bin>rf_cut.second || x_bin<rf_cut.first) continue;
         double y_bin = h_negative->GetBinContent(i_bin);
         double dy_bin = h_negative->GetBinError(i_bin);
         if(dy_bin<1e-3) continue;
@@ -403,6 +427,10 @@ class RFTimeFitFCN : public ROOT::Math::IBaseFunctionMultiDim {
       //std::cout << " chi2 = " << chi2 << "\n";
       return chi2;
     }
+    //This is chi2 for both pos and neg
+    double DoEval (const double *x) const{
+      return DoEval_pos(x)+DoEval_neg(x);
+    } 
 };
 
 void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
@@ -446,8 +474,8 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
   double shms_p_central = j_rungroup[rg]["shms_p"].get<double>();
   double shms_p = shms_p_central; 
   double shms_dp = 0;
-  double xbj_center = 0; 
-  double z_center = 0; 
+  double xbj_ave = 0; 
+  double z_ave = 0; 
   std::vector<int> pruns = j_rungroup[rg]["pos"]["D2"].get<std::vector<int>>();
   std::vector<int> nruns = j_rungroup[rg]["neg"]["D2"].get<std::vector<int>>();
   if(!pruns.empty() && !nruns.empty()){
@@ -479,16 +507,34 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       std::ifstream ifs(ifs_name.c_str());
       ifs>>j_counts;
     }
-    auto ik = j_counts[(std::to_string(RunGroup)).c_str()][(std::to_string(RunNumber)).c_str()];
+    auto ik = j_counts[(std::to_string(RunGroup)).c_str()];
     for(auto ij = ik.begin();ij!=ik.end();++ij){
 
       int point = std::stoi(ij.key());
       std::string point_str = (std::to_string(point)).c_str();
-      shms_p = ij.value()["shms_p"].get<double>();
-      xbj_center = ij.value()["xbj"].get<double>();
-      shms_dp = ij.value()["shms_dp"].get<double>();
-      z_center = ij.value()["z"].get<double>();
-      std::cout<<"RunGroup "<<RunGroup<<" RunNumber "<<RunNumber<<" point "<<point<<" momentum "<<shms_p<<std::endl;
+      std::cout<<"RunGroup "<<RunGroup<<" point "<<point<<std::endl;
+      auto runjs_xz = ij.value();
+      
+      std::vector<double> counts,shms_ps,xbj_aves,shms_dps,z_aves;
+      for(auto i_runnumber = runjs_xz.begin();i_runnumber != runjs_xz.end();++i_runnumber){
+        //if(i_runnumber.value().find("pos_piall")!=i_runnumber.value().end()){
+          counts.push_back(i_runnumber.value()["piall"].get<double>());
+          //counts.push_back(i_runnumber.value()["pos_piall"].get<double>());
+          shms_ps.push_back(i_runnumber.value()["shms_p"].get<double>());
+          xbj_aves.push_back(i_runnumber.value()["xbj"].get<double>());
+          shms_dps.push_back(i_runnumber.value()["shms_dp"].get<double>());
+          z_aves.push_back(i_runnumber.value()["z"].get<double>());
+        //}
+      }
+      //shms_p = shms_ps[0];
+      //shms_dp = shms_dps[0];
+      //xbj_ave = xbj_aves[0];
+      //z_ave = z_aves[0];
+      shms_p = Get_average(shms_ps,counts);
+      xbj_ave = Get_average(xbj_aves,counts);
+      shms_dp = Get_average(shms_dps,counts);
+      z_ave = Get_average(z_aves,counts);
+      std::cout<<"shms_p "<<shms_p<<" xbj ave "<<xbj_ave<<" shms_dp "<<shms_dp<<"z ave "<<z_ave<<std::endl;
 
       auto h_rf_pos_piall = fin->Get<TH1D>(std::string("rftime_pos_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
       auto h_rf_neg_piall = fin->Get<TH1D>(std::string("rftime_neg_" + std::to_string(RunGroup)+"_"+std::to_string(point)).c_str());
@@ -509,7 +555,8 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       minimum->SetTolerance(0.01);
       minimum->SetPrintLevel(2);
 
-      RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p);
+      double rf_right = (t_proton(shms_p)+t_K(shms_p))/2;//2.5;(protontime+kaontime)/2;
+      RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p,{0.5,rf_right});
       minimum->SetFunction(f_pi);
 
       //minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
@@ -538,7 +585,7 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       minimum_K->SetTolerance(0.01);
       minimum_K->SetPrintLevel(2);
 
-      RFTimeFitFCN f_K(h_rf_pos_Kall,h_rf_neg_Kall,shms_p);
+      RFTimeFitFCN f_K(h_rf_pos_Kall,h_rf_neg_Kall,shms_p,{0.5,2.5});
       minimum_K->SetFunction(f_K);
 
       //minimum_K->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
@@ -554,7 +601,12 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       minimum_K->SetLimitedVariable(5,"A_{#pi,pos} ", 100.0,  1,0,10000 );
       minimum_K->SetLimitedVariable(6,"A_{K,pos}", 100.0,  1.0,0,1000 );
       minimum_K->Minimize();
+      
+      auto [DoFpos,DoFneg] = f_K.DoF();
       const double *min_K_pars = minimum_K->X();
+      
+      auto Chi2_pos = f_K.DoEval_pos(min_K_pars);
+      auto Chi2_neg = f_K.DoEval_neg(min_K_pars);
 
       //if(min_K_pars[4]>0.2 && min_K_pars[5]<0.35) sigma_K = min_K_pars[5]; 
 
@@ -637,6 +689,8 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       fneg_K_kp->DrawCopy("lsame");
 
       TLatex lt2_K;
+      std::string chi2_dof = "Pos #chi^2/Dof "+std::to_string(Chi2_pos)+"/"+std::to_string(DoFpos);
+      lt2_K.DrawLatexNDC(0.6,0.8,chi2_dof.c_str());
       std::string t_K_text = "Kaon is "+std::to_string(t_K(shms_p)-t_pi(shms_p))+" ns slower than pion";
       lt2_K.DrawLatexNDC(0.6,0.7,t_K_text.c_str());
 
@@ -726,8 +780,8 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
 
       jout[rg][point_str]["shms_p"] = shms_p;
       jout[rg][point_str]["shms_dp"] = shms_dp;
-      jout[rg][point_str]["xbj_center"] = xbj_center;
-      jout[rg][point_str]["z_center"] = z_center;
+      jout[rg][point_str]["xbj_ave"] = xbj_ave;
+      jout[rg][point_str]["z_ave"] = z_ave;
       //for pi efficiency
       double width = h_rf_pos_piall->GetXaxis()->GetBinWidth(1);
       double pos_pi_all = fpos_pp->Integral(-1,5.008,width);
