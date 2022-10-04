@@ -107,13 +107,14 @@ void SHMS_rftime_plot(){
           std::ifstream ifstream(name.c_str());
           ifstream>>j_rf_HGC;
         }
+        std::cout<<"check"<<std::endl;
         auto point_js = j_rf_HGC[(std::to_string(RunGroup)).c_str()];
         for(auto ik = point_js.begin();ik!=point_js.end();++ik){
           auto point_jsi = ik.value();
           shms_p = point_jsi["shms_p"].get<double>();
           shms_dp = point_jsi["shms_dp"].get<double>();
-          zhad = point_jsi["z_center"].get<double>();
-          xbj = point_jsi["xbj_center"].get<double>();
+          zhad = point_jsi["z_ave"].get<double>();
+          xbj = point_jsi["xbj_ave"].get<double>();
           double N_pion_hgc_pos = point_jsi["pos"]["pi_HGC_all"].get<double>();
           double N_pion_hgc_neg = point_jsi["neg"]["pi_HGC_all"].get<double>();
           double N_pion_antiHGC_pos = point_jsi["pos"]["pi_antiHGC_all"].get<double>();

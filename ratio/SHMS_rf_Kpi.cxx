@@ -237,9 +237,9 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
             auto d_pos_Kall_i = d_pos_Kall.Filter(x_cut,{"xbj"}).Filter(z_cut,{"z"});
             auto d_pos_Kall_bg_i = d_pos_Kall_bg.Filter(x_cut,{"xbj"}).Filter(z_cut,{"z"});
 
-            auto h_rf_pos_pi = d_pos_piall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_pi");
+            auto h_rf_pos_pi = d_pos_piall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rf_pos_bg =
-              d_pos_piall_bg_i.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_pos_piall_bg_i.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rf_pos_K =
               d_pos_Kall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rf_pos_K_bg =
@@ -247,9 +247,9 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
 
             //just for fun
             auto h_rfpi_pos_K =
-              d_pos_Kall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_pos_Kall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rfpi_pos_K_bg =
-              d_pos_Kall_bg_i.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_pos_Kall_bg_i.Histo1D({"", "pos,cal,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rfproton_pos_K =
               d_pos_Kall_i.Histo1D({"", "pos,rftime,norfcut", 150, -1, 5.008}, "rf_proton");
             auto h_rfproton_pos_K_bg =
@@ -338,9 +338,9 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
             auto d_neg_Kall_i = d_neg_Kall.Filter(x_cut,{"xbj"}).Filter(z_cut,{"z"});
             auto d_neg_Kall_bg_i = d_neg_Kall_bg.Filter(x_cut,{"xbj"}).Filter(z_cut,{"z"});
 
-            auto h_rf_neg_pi = d_neg_piall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_pi");
+            auto h_rf_neg_pi = d_neg_piall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rf_neg_bg =
-              d_neg_piall_bg_i.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_neg_piall_bg_i.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rf_neg_K =
               d_neg_Kall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rf_neg_K_bg =
@@ -348,9 +348,9 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
 
             //just for fun
             auto h_rfpi_neg_K =
-              d_neg_Kall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_neg_Kall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rfpi_neg_K_bg =
-              d_neg_Kall_bg_i.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_pi");
+              d_neg_Kall_bg_i.Histo1D({"", "neg,cal,norfcut", 150, -1, 5.008}, "rf_k");
             auto h_rfproton_neg_K =
               d_neg_Kall_i.Histo1D({"", "neg,rftime,norfcut", 150, -1, 5.008}, "rf_proton");
             auto h_rfproton_neg_K_bg =

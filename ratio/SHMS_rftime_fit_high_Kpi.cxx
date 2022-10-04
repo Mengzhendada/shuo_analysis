@@ -556,7 +556,8 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       minimum->SetPrintLevel(2);
 
       double rf_right = (t_proton(shms_p)+t_K(shms_p))/2;//2.5;(protontime+kaontime)/2;
-      RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p,{0.5,rf_right});
+      double rf_left = 0.5;
+      RFTimeFitFCN f_pi(h_rf_pos_piall,h_rf_neg_piall,shms_p,{rf_left,rf_right});
       minimum->SetFunction(f_pi);
 
       //minimum->SetVariable(       0,"A_{#pi,neg} ", 100.0,  1 );
@@ -632,12 +633,12 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       c_K->cd(1);
       gPad->SetLogy(false);
       //gPad->SetLogy();
-      TF1 * fpos_K = new TF1("rftime_pos",&f_K,&RFTimeFitFCN::Evaluate_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
+      TF1 * fpos_K = new TF1("rftime_pos",&f_K,&RFTimeFitFCN::Evaluate_pos,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
       fpos_K->SetParameters(min_K_pars);
-      TF1 * fpos_K_pp = new TF1("rftime_pp",&f_K,&RFTimeFitFCN::Evaluate_pions_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
+      TF1 * fpos_K_pp = new TF1("rftime_pp",&f_K,&RFTimeFitFCN::Evaluate_pions_pos,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
       fpos_K_pp->SetParameters(min_K_pars);
       fpos_K_pp->SetLineColor(4);
-      TF1 * fpos_K_kp = new TF1("rftime_kp",&f_K,&RFTimeFitFCN::Evaluate_kaons_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
+      TF1 * fpos_K_kp = new TF1("rftime_kp",&f_K,&RFTimeFitFCN::Evaluate_kaons_pos,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
       fpos_K_kp->SetParameters(min_K_pars);
       fpos_K_kp->SetLineColor(2);
       auto h1_K = h_rf_pos_Kall->DrawCopy();
@@ -649,6 +650,8 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
 
       TLatex lt_K;
       lt_K.DrawLatexNDC(0.6,0.7, std::string("P_{SHMS} = " +  std::to_string(shms_p) + " GeV").c_str());
+      std::string chi2_dof = "Pos #chi^2/Dof "+std::to_string(Chi2_pos).substr(0,6)+"/"+std::to_string(DoFpos);
+      lt_K.DrawLatexNDC(0.6,0.8,chi2_dof.c_str());
 
 
       std::string rgtext_K = "ratio run group " + rg + "  #splitline{";
@@ -662,10 +665,10 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
 
       std::string offsettext_K = "run RF time offsets  #splitline{";
       for (auto r : prun_offsets)
-        offsettext_K += (std::to_string(r) + ",");
+        offsettext_K += (std::to_string(r).substr(0,6) + ",");
       offsettext_K += "}{";
       for (auto r : nrun_offsets)
-        offsettext_K += (std::to_string(r) + ",");
+        offsettext_K += (std::to_string(r).substr(0,6) + ",");
       offsettext_K += "}";
       lt_K.DrawLatexNDC(0.6,0.4, offsettext_K.c_str());
 
@@ -673,12 +676,12 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       c_K->cd(2);
       //gPad->SetLogy();
       //gPad->SetLogy(false);
-      TF1 * fneg_K = new TF1("rftime_neg",&f_K,&RFTimeFitFCN::Evaluate_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
+      TF1 * fneg_K = new TF1("rftime_neg",&f_K,&RFTimeFitFCN::Evaluate_neg,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
       fneg_K->SetParameters(min_K_pars);
-      TF1 * fneg_K_pp = new TF1("rftime_pp",&f_K,&RFTimeFitFCN::Evaluate_pions_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
+      TF1 * fneg_K_pp = new TF1("rftime_pp",&f_K,&RFTimeFitFCN::Evaluate_pions_neg,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
       fneg_K_pp->SetParameters(min_K_pars);
       fneg_K_pp->SetLineColor(4);
-      TF1 * fneg_K_kp = new TF1("rftime_kp",&f_K,&RFTimeFitFCN::Evaluate_kaons_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
+      TF1 * fneg_K_kp = new TF1("rftime_kp",&f_K,&RFTimeFitFCN::Evaluate_kaons_neg,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
       fneg_K_kp->SetParameters(min_K_pars);
       fneg_K_kp->SetLineColor(2);
       h_rf_neg_Kall->SetTitle("rf_K, K-");
@@ -689,8 +692,6 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       fneg_K_kp->DrawCopy("lsame");
 
       TLatex lt2_K;
-      std::string chi2_dof = "Pos #chi^2/Dof "+std::to_string(Chi2_pos)+"/"+std::to_string(DoFpos);
-      lt2_K.DrawLatexNDC(0.6,0.8,chi2_dof.c_str());
       std::string t_K_text = "Kaon is "+std::to_string(t_K(shms_p)-t_pi(shms_p))+" ns slower than pion";
       lt2_K.DrawLatexNDC(0.6,0.7,t_K_text.c_str());
 
@@ -698,6 +699,8 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       lt2_K.DrawLatexNDC(0.6,0.6, fitting_text_K.c_str());
       std::string fitting_params_text_K = std::to_string(min_K_pars[0]).substr(0,7)+","+std::to_string(min_K_pars[1]).substr(0,4)+","+std::to_string(min_K_pars[2]).substr(0,4)+","+std::to_string(min_K_pars[3]).substr(0,6)+","+std::to_string(min_K_pars[4]).substr(0,4)+","+std::to_string(min_K_pars[5]).substr(0,6)+","+std::to_string(min_K_pars[6]).substr(0,6);
       lt2_K.DrawLatexNDC(0.6,0.5,fitting_params_text_K.c_str());
+      std::string neg_chi2_dof = "Neg #chi^2/DoF "+std::to_string(Chi2_neg).substr(0,5)+"/"+std::to_string(DoFneg);
+      lt2_K.DrawLatexNDC(0.6,0.8,neg_chi2_dof.c_str());
       //c_K->cd(3);
       //h_rf_pos_Kall->Divide(h_rf_neg_Kall);
       //h_rf_pos_Kall->Draw();
@@ -709,12 +712,12 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       c->cd(1);
       gPad->SetLogy(false);
       //gPad->SetLogy();
-      TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
+      TF1 * fpos = new TF1("rftime_pos",&f_pi,&RFTimeFitFCN::Evaluate_pos,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_pos");   // create TF1 class.
       fpos->SetParameters(min_pi_pars);
-      TF1 * fpos_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
+      TF1 * fpos_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_pos,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_pions_pos");   // create TF1 class.
       fpos_pp->SetParameters(min_pi_pars);
       fpos_pp->SetLineColor(4);
-      TF1 * fpos_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_pos,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
+      TF1 * fpos_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_pos,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_kaons_pos");   // create TF1 class.
       fpos_kp->SetParameters(min_pi_pars);
       fpos_kp->SetLineColor(2);
       auto h1 = h_rf_pos_piall->DrawCopy();
@@ -739,10 +742,10 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
 
       std::string offsettext = "run RF time offsets  #splitline{";
       for (auto r : prun_offsets)
-        offsettext += (std::to_string(r) + ",");
+        offsettext += (std::to_string(r).substr(0,6) + ",");
       offsettext += "}{";
       for (auto r : nrun_offsets)
-        offsettext += (std::to_string(r) + ",");
+        offsettext += (std::to_string(r).substr(0,6) + ",");
       offsettext += "}";
       lt.DrawLatexNDC(0.6,0.4, offsettext.c_str());
 
@@ -750,12 +753,12 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       c->cd(2);
       //gPad->SetLogy();
       gPad->SetLogy(false);
-      TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
+      TF1 * fneg = new TF1("rftime_neg",&f_pi,&RFTimeFitFCN::Evaluate_neg,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_neg");   // create TF1 class.
       fneg->SetParameters(min_pi_pars);
-      TF1 * fneg_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
+      TF1 * fneg_pp = new TF1("rftime_pp",&f_pi,&RFTimeFitFCN::Evaluate_pions_neg,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_pions_neg");   // create TF1 class.
       fneg_pp->SetParameters(min_pi_pars);
       fneg_pp->SetLineColor(4);
-      TF1 * fneg_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_neg,0.05,3.0,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
+      TF1 * fneg_kp = new TF1("rftime_kp",&f_pi,&RFTimeFitFCN::Evaluate_kaons_neg,rf_left,rf_right,7,"RFTimeFitFCN","Evaluate_kaons_neg");   // create TF1 class.
       fneg_kp->SetParameters(min_pi_pars);
       fneg_kp->SetLineColor(2);
       h_rf_neg_piall->Draw();
@@ -787,9 +790,13 @@ void SHMS_rftime_fit_high_Kpi(int RunGroup = 0, int n_aero=-1 ) {
       double pos_pi_all = fpos_pp->Integral(-1,5.008,width);
       jout[rg][point_str]["pos"]["pi_HGC_all"] = pos_pi_all;
       jout[rg][point_str]["pi_peak"]["pos"] = min_pi_pars[1];
+      jout[rg][point_str]["pos"]["chi2"] = Chi2_pos;
+      jout[rg][point_str]["pos"]["DoF"] = DoFpos;
       double neg_pi_all = fneg_pp->Integral(-1,5.008,width);
       jout[rg][point_str]["neg"]["pi_HGC_all"] = neg_pi_all;
       jout[rg][point_str]["pi_peak"]["neg"] = min_pi_pars[1];
+      jout[rg][point_str]["neg"]["chi2"] = Chi2_neg;
+      jout[rg][point_str]["neg"]["DoF"] = DoFneg;
       double pos_pi_Kall = fpos_K_pp->Integral(-1,5.008,width);
       jout[rg][point_str]["pos"]["pi_antiHGC_all"] = pos_pi_Kall;
       double neg_pi_Kall = fneg_K_pp->Integral(-1,5.008,width);
