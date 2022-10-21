@@ -71,6 +71,7 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
     ifs >> j_rungroup;
     //std::cout << "derp\n";
   }
+  double xbj_set = j_rungroup[(std::to_string(RunGroup)).c_str()]["x"].get<double>();
 
   json j_rungroup_info;
 
@@ -149,8 +150,8 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
     int xbin =2;
     int zbin = 20;
     for(int i_x = 0;i_x<xbin;i_x++){
-      double x_left = i_x*1.0/xbin;
-      double x_right = (i_x+1)*1.0/xbin;
+      double x_left = i_x*(xbj_set/(xbin/2));
+      double x_right = (i_x+1)*(xbj_set/(xbin/2));
       double x_center = (x_left+x_right)/2;
       auto x_cut = [=](double xbj){
         return xbj>x_left && xbj<x_right;
@@ -283,6 +284,7 @@ void SHMS_rf_Kpi(int RunGroup = 0) {
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["shms_p"] = shms_p_i;
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["shms_dp"] = shms_dp_i;
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["xbj"] = xbj_i;
+            jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["xbj_set"] = xbj_set;
             jout[(std::to_string(RunGroup)).c_str()][(std::to_string(i_xz)).c_str()][(std::to_string(RunNumber)).c_str()]["z"] = z_i;
 
 

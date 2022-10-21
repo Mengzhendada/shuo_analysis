@@ -13,6 +13,12 @@
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 using namespace std;
+double fit_pol1(double *x,double *pars){
+  return pars[0]*x[0]+pars[1];
+}
+double fit_pol1_neg(double *x,double a,double b,double c){
+  return c*(a*x[0]+b);
+}
 void SHMS_rftime_plot_Q2x(){
   json j_runsinfo;
   {
@@ -176,12 +182,12 @@ void SHMS_rftime_plot_Q2x(){
               //if(pi_pos_neg_ratio>2) std::cout<<"K+/K- ratio greater than 2 "<<RunGroup<<std::endl;
               //if(chi2_pos_point<50 && chi2_neg_point<50 && xbj>0.5){
               //if(chi2_pos_point<2 && chi2_neg_point<2 && xbj<0.5 ){
-              if(chi2_pos_point<2 && chi2_neg_point<2 && xbj>0.5 && xbj_set>0.4 ){
+              if(chi2_pos_point<2 && chi2_neg_point<2 && xbj>xbj_set ){
               
                 std::cout<< "if less than 0.5"<<std::endl;
                 file_name = "Q2_"+(std::to_string(1000*Q2_set)).substr(0,4)+"_xbj_"+(std::to_string(100*xbj_set)).substr(0,2)+"_largex";
                 //file_name = "Q2_"+(std::to_string(1000*Q2_set)).substr(0,4)+"_xbj_"+(std::to_string(100*xbj_set)).substr(0,2)+"_smallx";
-                if(RunGroup<410 && HGC_eff_pos_err<0.2){
+                if(RunGroup<410 && HGC_eff_pos_err<0.2 && shms_p>2.9){
                   g_pos_zhad_fall_HGCeff->SetPoint(i_fall,zhad,HGC_eff_pos);
                   g_pos_zhad_fall_HGCeff->SetPointError(i_fall,0,HGC_eff_pos_err);
                   g_pos_xbj_fall_HGCeff->SetPoint(i_fall,xbj,HGC_eff_pos);
@@ -235,7 +241,7 @@ void SHMS_rftime_plot_Q2x(){
                   g_pos_zhad_Kpiratio->SetPointError(i_all,0,R_Kpi_ratio_pos_err);
                   i_all++;
                 }//for fall runs
-                else if(HGC_eff_pos_err<0.2){
+                else if(HGC_eff_pos_err<0.2 && shms_p>2.9){
                   g_pos_zhad_spring_HGCeff->SetPoint(i_spring,zhad,HGC_eff_pos);
                   g_pos_zhad_spring_HGCeff->SetPointError(i_spring,0,HGC_eff_pos_err);
                   g_pos_xbj_spring_HGCeff->SetPoint(i_spring,xbj,HGC_eff_pos);
@@ -365,7 +371,7 @@ void SHMS_rftime_plot_Q2x(){
           mg_shmsp_HGCeff->Draw("A");
           mg_shmsp_HGCeff->GetXaxis()->SetTitle("shmsp");
           mg_shmsp_HGCeff->GetYaxis()->SetTitle("HGC_eff");
-          mg_shmsp_HGCeff->GetXaxis()->SetRangeUser(2.8,4.5);
+          //mg_shmsp_HGCeff->GetXaxis()->SetRangeUser(2.8,4.5);
           mg_shmsp_HGCeff->GetYaxis()->SetRangeUser(0.7,1);
           c_HGCeff_shmsp->BuildLegend();
           std::string c_HGCeff_shmsp_name = (("results/pid/HGC_pid/HGCeff_shmsp_"+file_name+".pdf").c_str());
@@ -395,6 +401,8 @@ void SHMS_rftime_plot_Q2x(){
           mg_shmsdp_HGCeff->GetYaxis()->SetRangeUser(0.7,1);
           c_HGCeff_shmsdp->BuildLegend();
           c_HGCeff_shmsdp->SaveAs(("results/pid/HGC_pid/HGCeff_shmsdp_"+file_name+".pdf").c_str());
+          
+          //Kpi ratio as a function of z
           TCanvas *c_Kpiratio_zhad = new TCanvas();
           gStyle->SetOptFit(0001);
           g_pos_zhad_fall_Kpiratio->SetMarkerStyle(8);
@@ -413,6 +421,8 @@ void SHMS_rftime_plot_Q2x(){
           mg_zhad_Kpiratio->Add(g_pos_zhad_fall_Kpiratio,"P");
           mg_zhad_Kpiratio->Add(g_pos_zhad_spring_Kpiratio,"P");
           mg_zhad_Kpiratio->Draw("A");
+          
+          
           mg_zhad_Kpiratio->Fit("pol1");
           double p0 = 0,p1 = 0;
           if(i_all!=0){
@@ -422,11 +432,37 @@ void SHMS_rftime_plot_Q2x(){
               }
           //mg_zhad_Kpiratio->Add(g_neg_zhad_fall_Kpiratio,"P");
           //mg_zhad_Kpiratio->Add(g_neg_zhad_spring_Kpiratio,"P");
-          mg_zhad_Kpiratio->GetXaxis()->SetTitle("zhad");
+          mg_zhad_Kpiratio->GetXaxis()->SetTitle("z");
           mg_zhad_Kpiratio->GetYaxis()->SetTitle("K/pi");
           mg_zhad_Kpiratio->GetYaxis()->SetRangeUser(0,0.16);
           c_Kpiratio_zhad->BuildLegend(0.15,0.65,0.35,0.9);
           c_Kpiratio_zhad->SaveAs(("results/pid/HGC_pid/Kpiratio_zhad_"+file_name+".pdf").c_str());
+         
+          TCanvas *c_Kpiratio_zhad_neg = new TCanvas();
+          TMultiGraph* mg_zhad_Kpiratio_neg = new TMultiGraph();
+          mg_zhad_Kpiratio_neg->Add(g_neg_zhad_fall_Kpiratio,"P");
+          mg_zhad_Kpiratio_neg->Add(g_neg_zhad_spring_Kpiratio,"P");
+          mg_zhad_Kpiratio_neg->Fit("pol1");
+          double p0_neg = 0,p1_neg = 0;
+          if(i_all!=0){
+              TF1* fit_kpiratio_neg = mg_zhad_Kpiratio_neg->GetFunction("pol1");
+              p0_neg = fit_kpiratio_neg->GetParameter(0);
+              p1_neg = fit_kpiratio_neg->GetParameter(1);
+              }
+          //TF1* fit_neg = new TF1("fit_neg","fit_neg",2.8,5,3);
+          //fit_neg->SetParameters(p0,p1,0.25);
+          //fit_neg->FixParameter(0,p0);
+          //fit_neg->FixParameter(1,p1);
+          //mg_zhad_Kpiratio_neg->Fit(fit_neg,"r");
+          mg_zhad_Kpiratio_neg->Draw("A");
+          mg_zhad_Kpiratio_neg->GetXaxis()->SetTitle("z");
+          mg_zhad_Kpiratio_neg->GetYaxis()->SetTitle("K/pi");
+          mg_zhad_Kpiratio_neg->GetYaxis()->SetRangeUser(0,0.16);
+          c_Kpiratio_zhad_neg->BuildLegend(0.15,0.65,0.35,0.9);
+          //fit_neg->Draw("same");
+          c_Kpiratio_zhad_neg->SaveAs(("results/pid/HGC_pid/Kpiratio_zhad_"+file_name+"_neg.pdf").c_str());
+
+
           TCanvas *c_Kpiratio_xbj = new TCanvas();
           g_pos_xbj_fall_Kpiratio->SetMarkerStyle(8);
           g_pos_xbj_fall_Kpiratio->SetMarkerColor(kRed);
@@ -489,7 +525,7 @@ void SHMS_rftime_plot_Q2x(){
           mg_shmsp_Kpiratio->Add(g_neg_shmsp_spring_Kpiratio,"P");
           mg_shmsp_Kpiratio->Draw("A");
           mg_shmsp_Kpiratio->GetXaxis()->SetTitle("shmsp");
-          mg_shmsp_Kpiratio->GetXaxis()->SetRangeUser(2.8,4.5);
+          //mg_shmsp_Kpiratio->GetXaxis()->SetRangeUser(2.8,4.5);
           mg_shmsp_Kpiratio->GetYaxis()->SetTitle("K/pi");
           mg_shmsp_Kpiratio->GetYaxis()->SetRangeUser(0,0.16);
           c_Kpiratio_shmsp->BuildLegend(0.15,0.65,0.35,0.9);
@@ -657,6 +693,8 @@ void SHMS_rftime_plot_Q2x(){
           
           jout[(std::to_string(xbj_set)).c_str()][(std::to_string(Q2_set)).c_str()]["largex"]["p0"] = p0;
           jout[(std::to_string(xbj_set)).c_str()][(std::to_string(Q2_set)).c_str()]["largex"]["p1"] = p1;
+          jout[(std::to_string(xbj_set)).c_str()][(std::to_string(Q2_set)).c_str()]["largex"]["p0_neg"] = p0_neg;
+          jout[(std::to_string(xbj_set)).c_str()][(std::to_string(Q2_set)).c_str()]["largex"]["p1_neg"] = p1_neg;
           //jout[(std::to_string(xbj_set)).c_str()][(std::to_string(Q2_set)).c_str()]["smallx"]["p0"] = p0;
           //jout[(std::to_string(xbj_set)).c_str()][(std::to_string(Q2_set)).c_str()]["smallx"]["p1"] = p1;
         }//if not 0

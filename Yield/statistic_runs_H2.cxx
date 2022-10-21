@@ -131,7 +131,7 @@ void statistic_runs_H2(int RunGroup=0){
         .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
-        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgceri_yAtCer"})
+        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgcer_yAtCer"})
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
         .Define("Q22","Q2*Q2")
@@ -158,7 +158,7 @@ void statistic_runs_H2(int RunGroup=0){
         .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
-        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgceri_yAtCer"})
+        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgcer_yAtCer"})
         ;
       auto d_pos_bg_1 = d_pos_bg.Filter(Q2_low_cut);
       auto d_pos_bg_2 = d_pos_bg.Filter(Q2_middle_cut);
@@ -611,7 +611,7 @@ void statistic_runs_H2(int RunGroup=0){
         .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
-        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgceri_yAtCer"})
+        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgcer_yAtCer"})
         .Define("xbj2","xbj*xbj")
         .Define("z2","z*z")
         .Define("Q22","Q2*Q2")
@@ -638,7 +638,7 @@ void statistic_runs_H2(int RunGroup=0){
         .Filter(rf_cut,{"diff_time_mod"})
         .Filter(W2_cut)
         .Filter(Wp2_cut)
-        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgceri_yAtCer"})
+        .Filter(SHMS_hgc_cut,{"shms_p","P_hgcer_npeSum","P_hgcer_xAtCer","P_hgcer_yAtCer"})
         ;
       auto d_neg_bg_1 = d_neg_bg.Filter(Q2_low_cut);
       auto d_neg_bg_2 = d_neg_bg.Filter(Q2_middle_cut);

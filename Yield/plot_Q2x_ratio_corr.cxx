@@ -47,19 +47,22 @@ int plot_Q2x_ratio_corr(){
 
   for(json::iterator it = j_Q2x.begin();it!=j_Q2x.end();++it){
     double xbj = std::stod(it.key());
+    double xbj_set = xbj;
     auto j_Q2z = it.value();
     auto mg_x_all = new TMultiGraph();
     for(json::iterator it  = j_Q2z.begin();it!=j_Q2z.end();++it){
       double Q2 = std::stod(it.key());
+      double Q2_set = Q2;
       auto j_z = it.value();
       std::string canvas_name = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5);
       std::string canvas_filename = "x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4);
-      std::string q2x_name = "x:"+std::to_string(xbj).substr(0,4)+",Q2:"+std::to_string(Q2).substr(0,5)+"_yieldratio";
+      std::string q2x_name = "x : "+std::to_string(xbj).substr(0,4)+", Q2: "+std::to_string(Q2).substr(0,5)+"GeV2";
       std::string q2x_filename = "x_Q2_"+std::to_string(100*xbj).substr(0,2)+"_"+std::to_string(1000*Q2).substr(0,4)+"_yieldratio";
       TH1D* h_neg_q2x = new TH1D("",(q2x_name).c_str(),bins,0,1);
       TH1D* h_pos_q2x = new TH1D("",(q2x_name).c_str(),bins,0,1);
       int i_color = 1;
       auto mg = new TMultiGraph();
+      auto mg_SIMC = new TMultiGraph();
       auto mg_frag = new TMultiGraph();
       auto mg_RD = new TMultiGraph();
       //THStack* hs = new THStack("yield_ratio","yield ratio");
@@ -626,7 +629,8 @@ int plot_Q2x_ratio_corr(){
 
           // TGraphErrors* g_yield_ratio = new TGraphErrors(h_z_neg_all);
           TGraphErrors* g_yield_ratio = new TGraphErrors();
-          std::string z_string = (std::to_string(RunGroup))+" R_Y z setting "+(std::to_string(z)).substr(0,4);
+          //std::string z_string = (std::to_string(RunGroup))+" R_Y z setting "+(std::to_string(z)).substr(0,4);
+          std::string z_string = " z data "+(std::to_string(z)).substr(0,4);
           g_yield_ratio->SetName(z_string.c_str());
           TGraphErrors* g_frag_ratio = new TGraphErrors();
           std::string frag_z_string = "frag z setting "+(std::to_string(z)).substr(0,4);
@@ -822,14 +826,15 @@ int plot_Q2x_ratio_corr(){
         mg->GetYaxis()->SetTitleSize(0.053);
         mg->GetXaxis()->SetLabelSize(0.05);
         mg->GetYaxis()->SetLabelSize(0.05);
-        mg->SetMinimum(0.3);
+        mg->SetMinimum(0.5);
         mg->SetMaximum(0.9);
         std::string mg_title = canvas_name+",z";
         mg->SetTitle(mg_title.c_str());
         //TPaveText *pt_mg = new TPaveText(0.5,0.8,0.8,1);
         //pt_mg->AddText(canvas_name.c_str());
         //pt_mg->Draw("same");
-        mg->Draw("APL");
+        mg->Draw("AP");
+        //mg_SIMC->Draw("same");
         //f_RD->Draw("same");
         mg->GetHistogram()->SetTitle(canvas_name.c_str());
         mg->GetXaxis()->SetTitle(mg_title.c_str());
@@ -839,7 +844,14 @@ int plot_Q2x_ratio_corr(){
         //fit->Draw("same");
         //      std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_RDratio.pdf";
         std::string ratiopdfname = "results/yield/statistics_corr/"+canvas_filename+"_ratio.pdf";
-        c_Q2x_ratio->BuildLegend(0.6,0.6,0.95,0.95);
+        //auto legend = new TLegend(0.6,0.8,0.8,0.9);
+        //legend->SetHeader(q2x_name.c_str(),"C");
+        //legend->AddEntry("mg","graph");
+        //legend->Draw();
+        //TPaveText pt(0.6,0.8,0.7,0.9);
+        //pt.AddText(q2x_name.c_str());
+        //pt.Draw();
+        c_Q2x_ratio->BuildLegend(0.7,0.5,0.9,0.9);
         c_Q2x_ratio->SaveAs(ratiopdfname.c_str());
         TCanvas* c_frag_ratio = new TCanvas("","",1900,1000);
         mg_frag->GetXaxis()->SetTitleSize(0.053);
