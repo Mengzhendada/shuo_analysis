@@ -52,8 +52,8 @@ int Q2_xz_ratio_combined(){
   std::ofstream csv_file;
   csv_file.open("results/csv_datasub.csv");
   //remember to change xbj_str to xbj , z_str to z
-  csv_file<<"Q2,Q2_corr,Q2_corr_err,xbj_set,xbj,xbj_corr,xbj_corr_err,z_set,z,z_corr,z_corr_err,RunGroup,y_RD,error_RD,y_RD_rho,RY,RY_rho,RY_1p8rho,RY_noexc,RY_nodelta,error,yield_neg,yield_pos,yield_neg_data,error_neg,yield_pos_data,error_pos,charge_neg_all,charge_pos_all,yield_neg_exc,yield_neg_delta,yield_neg_rho,yield_pos_exc,yield_pos_delta,yield_pos_rho,yield_neg_incnorad,yield_neg_incrad,yield_pos_incnorad,yield_pos_incrad,W2_corr,Wp2_corr,xprime_corr,zprime_corr,shms_p,shms_dp"<<std::endl;                  
-//                  csv_file<<Q2<<","<<Q2_corr<<","<<Q2_corr_err<<","<<xbj_set<<","<<xbj_str<<","<<xbj_corr<<","<<xbj_corr_err<<","<<z_set<<","<<z_str<<","<<z_corr<<","<<z_corr_err<<","<<RunGroup<<","<<y_RD<<","<<error_RD<<","<<y_RD_rho<<","<<RY<<","<<RY_rho<<","<<RY_1p8rho<<","<<RY_noexc<<","<<RY_nodelta<<","<<error<<","<<yield_neg<<","<<yield_pos<<","<<yield_neg_data<<","<<error_neg<<","<<yield_pos_data<<","<<error_pos<<","<<charge_neg_all<<","<<charge_pos_all<<","<<yield_neg_exc<<","<<yield_neg_delta<<","<<yield_neg_rho<<","<<yield_pos_exc<<","<<yield_pos_delta<<","<<yield_pos_rho<<","<<yield_neg_incnorad<<","<<yield_neg_incrad<<","<<yield_pos_incnorad<<","<<yield_pos_incrad<<","<<W2_corr<<","<<Wp2_corr<<","<<xprime_corr<<","<<zprime_corr<<","<<shms_p_corr<<","<<shms_dp_corr<<std::endl;                  
+  csv_file<<"Q2,Q2_corr,Q2_corr_err,xbj_set,xbj,xbj_corr,xbj_corr_err,z_set,z,z_corr,z_corr_err,RunGroup,y_RD,error_RD,y_RD_rho,y_RD_1p8rho,y_RD_2rho,RY,RY_rho,RY_1p8rho,RY_noexc,RY_nodelta,error,yield_neg,yield_pos,radia_corr_neg,radia_corr_pos,yield_neg_data,error_neg,yield_pos_data,error_pos,charge_neg_all,charge_pos_all,yield_neg_exc,yield_neg_delta,yield_neg_norho,yield_neg_rho,yield_pos_exc,yield_pos_delta,yield_pos_norho,yield_pos_rho,yield_neg_incnorad,yield_neg_incrad,yield_pos_incnorad,yield_pos_incrad,W2_corr,Wp2_corr,xprime_corr,zprime_corr,shms_p,shms_dp_corr"<<std::endl;                  
+  //csv_file<<"Q2,Q2_corr,Q2_corr_err,xbj_set,xbj,xbj_corr,xbj_corr_err,z_set,z,z_corr,z_corr_err,RunGroup,y_RD,error_RD,y_RD_rho,RY,RY_rho,RY_1p8rho,RY_noexc,RY_nodelta,error,yield_neg,yield_pos,yield_neg_data,error_neg,yield_pos_data,error_pos,charge_neg_all,charge_pos_all,yield_neg_exc,yield_neg_delta,yield_neg_rho,yield_pos_exc,yield_pos_delta,yield_pos_rho,yield_neg_incnorad,yield_neg_incrad,yield_pos_incnorad,yield_pos_incrad,W2_corr,Wp2_corr,xprime_corr,zprime_corr,shms_p,shms_dp"<<std::endl;                  
  
   //TH2D* h_Q2_1_neg =new TH2D("","3.95",bins,0,1,bins,0,1);
   //TH2D* h_Q2_1_pos =new TH2D("","3.95",bins,0,1,bins,0,1);
@@ -248,10 +248,15 @@ int Q2_xz_ratio_combined(){
               int RunNumber = *it;
               //std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              charge_neg_all += charge;
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH2D *h_xz_neg = new TH2D("","",20,0,1,20,0,1);
               h_xz_neg = (TH2D*)root_file_neg->Get("x_z");
+              if(!(TH2D*)root_file_neg->Get("x_z")){
+                std::cout<<"failed to get 2d histogram for "<<RunNumber<<std::endl;
+              }
+              else{
+                charge_neg_all += charge;
+              }
               TH2D *h_xz_neg_bg = new TH2D("","",20,0,1,20,0,1);
               h_xz_neg_bg = (TH2D*)root_file_neg->Get("x_z_bg");
               double EFF = Get_all_eff(RunNumber);
@@ -352,11 +357,16 @@ int Q2_xz_ratio_combined(){
               int RunNumber = *it;
               //std::cout<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              charge_pos_all+=charge;
               //std::cout<<"pos DE check"<<std::endl;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH2D *h_xz_pos = new TH2D("","",20,0,1,20,0,1);
               h_xz_pos = (TH2D*)root_file_pos->Get("x_z");
+              if(!(TH2D*)root_file_pos->Get("x_z")){
+                std::cout<<"failed to get 2d histogram for "<<RunNumber<<std::endl;
+              }
+              else{
+                charge_pos_all+=charge;
+              }
               TH2D *h_xz_pos_bg = new TH2D("","",20,0,1,20,0,1);
               h_xz_pos_bg = (TH2D*)root_file_pos->Get("x_z_bg");
               double EFF = Get_all_eff(RunNumber);
@@ -455,10 +465,15 @@ int Q2_xz_ratio_combined(){
               int RunNumber = *it;
               //std::cout<<"Dummy"<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              charge_neg_Dummy_all += charge;
               TFile *root_file_neg = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH2D *h_xz_neg = new TH2D("","",bins,0,1,bins,0,1);
               h_xz_neg = (TH2D*)root_file_neg->Get("x_z");
+              if(!(TH2D*)root_file_neg->Get("x_z")){
+                std::cout<<"failed to get 2d histogram for "<<RunNumber<<std::endl;
+              }
+              else{
+                charge_neg_Dummy_all += charge;
+              }
               TH2D *h_xz_neg_bg = new TH2D("","",bins,0,1,bins,0,1);
               h_xz_neg_bg = (TH2D*)root_file_neg->Get("x_z_bg");
               double EFF = Get_all_eff(RunNumber);
@@ -469,10 +484,15 @@ int Q2_xz_ratio_combined(){
               int RunNumber = *it;
               //std::cout<<"Dummy "<<RunNumber<<std::endl;
               double charge = j_info[(std::to_string(RunNumber)).c_str()]["charge"].get<double>();
-              charge_pos_Dummy_all+=charge;
               TFile *root_file_pos = new TFile(("results/yield/kinematics_yield_"+std::to_string(RunNumber)+".root").c_str());
               TH2D *h_xz_pos = new TH2D("","",bins,0,1,bins,0,1);
               h_xz_pos = (TH2D*)root_file_pos->Get("x_z");
+              if(!(TH2D*)root_file_pos->Get("x_z")){
+                std::cout<<"failed to get 2d histogram for "<<RunNumber<<std::endl;
+              }
+              else{
+                charge_pos_Dummy_all+=charge;
+              }
               TH2D *h_xz_pos_bg = new TH2D("","",bins,0,1,bins,0,1);
               h_xz_pos_bg = (TH2D*)root_file_pos->Get("x_z_bg");
               double EFF = Get_all_eff(RunNumber);
@@ -577,7 +597,9 @@ int Q2_xz_ratio_combined(){
               double yield_neg_noexc = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_rho;
               double yield_neg_nodelta = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_exc-yield_neg_rho;
               double yield_negwithrho = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc-1*yield_neg_rho;
+              double yield_neg_norho = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc;
               double yield_negwith_1p8rho = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc-1.8*yield_neg_rho;
+              double yield_negwith_2rho = yield_neg_D2-yield_neg_bg_D2-0.245*yield_neg_Dummy-yield_neg_delta-yield_neg_exc-2*yield_neg_rho;
               double error_neg_D2 = h_xz_neg_all->GetBinError(i+1,j+1)/charge_neg_all;
               double error_neg_D2_2 = std::sqrt(h_xz_neg_all->GetBinContent(i+1,j+1))/charge_neg_all;
               if((error_neg_D2_2 - error_neg_D2_2)!=0){std::cout<<"check two errors"<<error_neg_D2/error_neg_D2_2<<std::endl;}
@@ -602,7 +624,9 @@ int Q2_xz_ratio_combined(){
               double yield_pos_nodelta = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_exc-yield_pos_rho;
               double yield_pos = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc;
               double yield_poswithrho = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc-1*yield_pos_rho;
+              double yield_pos_norho = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc;
               double yield_poswith_1p8rho = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc-1.8*yield_pos_rho;
+              double yield_poswith_2rho = yield_pos_D2-yield_pos_bg_D2-0.245*yield_pos_Dummy-yield_pos_delta-yield_pos_exc-2*yield_pos_rho;
               double error_pos_D2 = h_xz_pos_all->GetBinError(i+1,j+1)/charge_pos_all;
               double error_pos_bg_D2 = h_xz_pos_bg_all->GetBinError(i+1,j+1)/charge_pos_all;
               double error_pos_Dummy = h_xz_pos_Dummy_all->GetBinError(i+1,j+1)/charge_pos_Dummy_all;
@@ -631,8 +655,10 @@ int Q2_xz_ratio_combined(){
               error_neg = error_neg*radia_corr_neg;
               yield_negwithrho = yield_negwithrho*radia_corr_neg;
               yield_negwith_1p8rho = yield_negwith_1p8rho*radia_corr_neg;
+              yield_negwith_2rho = yield_negwith_2rho*radia_corr_neg;
               yield_poswithrho = yield_poswithrho*radia_corr_pos;
               yield_poswith_1p8rho = yield_poswith_1p8rho*radia_corr_pos;
+              yield_poswith_2rho = yield_poswith_2rho*radia_corr_pos;
               yield_neg_data = yield_neg_data*radia_corr_neg;
               yield_pos_data = yield_pos_data*radia_corr_pos;
               yield_neg_noexc = yield_neg_noexc*radia_corr_neg;
@@ -651,14 +677,17 @@ int Q2_xz_ratio_combined(){
               double RY = (yield_neg)/(yield_pos);
               double RY_rho = yield_negwithrho/yield_poswithrho;
               double RY_1p8rho = yield_negwith_1p8rho/yield_poswith_1p8rho;
+              double RY_2rho = yield_negwith_2rho/yield_poswith_2rho;
               double RY_noexc = yield_neg_noexc/yield_pos_noexc; 
-              rouble RY_nodelta = yield_neg_nodelta/yield_pos_nodelta; 
+              double RY_nodelta = yield_neg_nodelta/yield_pos_nodelta; 
               //std::cout<<"RY "<<RY<<std::endl;
               double error = RY*std::sqrt((error_neg*error_neg)/(yield_neg*yield_neg)+(error_pos*error_pos)/(yield_pos*yield_pos));
               double error_rho = RY_rho*std::sqrt((error_neg*error_neg)/(yield_neg_rho*yield_neg_rho)+(error_pos*error_pos)/(yield_pos_rho*yield_pos_rho));
               double y_RD = (4*RY-1)/(1-RY);
               double error_RD = 3*error/((1-RY)*(1-RY));
               double y_RD_rho = (4*RY_rho-1)/(1-RY_rho);
+              double y_RD_1p8rho = (4*RY_1p8rho-1)/(1-RY_1p8rho);
+              double y_RD_2rho = (4*RY_2rho-1)/(1-RY_2rho);
               double error_RD_rho = 3*error_rho/((1-RY_rho)*(1-RY_rho));
               double y_frag = (4*RY-1)/(4-RY);
               double error_frag = y_frag*std::sqrt((error*error)/(RY*RY));
@@ -843,7 +872,7 @@ int Q2_xz_ratio_combined(){
                     //std::cout<<"outofrange alert"<<std::endl;
                   }
                   jout_2[std::to_string(Q2)][xbj_str][(std::to_string(RunGroup)).c_str()][z_str]["z_corr"] = z_corr;
-                  csv_file<<Q2<<","<<Q2_corr<<","<<Q2_corr_err<<","<<xbj_set<<","<<xbj_str<<","<<xbj_corr<<","<<xbj_corr_err<<","<<z_set<<","<<z_str<<","<<z_corr<<","<<z_corr_err<<","<<RunGroup<<","<<y_RD<<","<<error_RD<<","<<y_RD_rho<<","<<RY<<","<<RY_rho<<","<<RY_1p8rho<<","<<RY_noexc<<","<<RY_nodelta<<","<<error<<","<<yield_neg<<","<<yield_pos<<","<<yield_neg_data<<","<<error_neg<<","<<yield_pos_data<<","<<error_pos<<","<<charge_neg_all<<","<<charge_pos_all<<","<<yield_neg_exc<<","<<yield_neg_delta<<","<<yield_neg_rho<<","<<yield_pos_exc<<","<<yield_pos_delta<<","<<yield_pos_rho<<","<<yield_neg_incnorad<<","<<yield_neg_incrad<<","<<yield_pos_incnorad<<","<<yield_pos_incrad<<","<<W2_corr<<","<<Wp2_corr<<","<<xprime_corr<<","<<zprime_corr<<","<<shms_p_corr<<","<<shms_dp_corr<<std::endl;                  
+                  csv_file<<Q2<<","<<Q2_corr<<","<<Q2_corr_err<<","<<xbj_set<<","<<xbj_str<<","<<xbj_corr<<","<<xbj_corr_err<<","<<z_set<<","<<z_str<<","<<z_corr<<","<<z_corr_err<<","<<RunGroup<<","<<y_RD<<","<<error_RD<<","<<y_RD_rho<<","<<y_RD_1p8rho<<","<<y_RD_2rho<<","<<RY<<","<<RY_rho<<","<<RY_1p8rho<<","<<RY_noexc<<","<<RY_nodelta<<","<<error<<","<<yield_neg<<","<<yield_pos<<","<<radia_corr_neg<<","<<radia_corr_pos<<","<<yield_neg_data<<","<<error_neg<<","<<yield_pos_data<<","<<error_pos<<","<<charge_neg_all<<","<<charge_pos_all<<","<<yield_neg_exc<<","<<yield_neg_delta<<","<<yield_neg_norho<<","<<yield_neg_rho<<","<<yield_pos_exc<<","<<yield_pos_delta<<","<<yield_pos_norho<<","<<yield_pos_rho<<","<<yield_neg_incnorad<<","<<yield_neg_incrad<<","<<yield_pos_incnorad<<","<<yield_pos_incrad<<","<<W2_corr<<","<<Wp2_corr<<","<<xprime_corr<<","<<zprime_corr<<","<<shms_p_corr<<","<<shms_dp_corr<<std::endl;                  
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["value"] = y_RD;
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["error"] = error_RD;
                   jout_3[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["RD_rho"] = y_RD_rho;
@@ -929,20 +958,6 @@ int Q2_xz_ratio_combined(){
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["shms_dp_corr_err"] = shms_dp_corr_err;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["Q2_corr"] = Q2_corr;
                   jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["Q2_corr_err"] = Q2_corr_err;
-                  jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["z_corr"] = z_corr;
-                  jout_5[std::to_string(Q2)][z_str][(std::to_string(RunGroup)).c_str()][xbj_str]["z_corr_err"] = z_corr_err;
-                 
-
-                }
-                else{
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["value"] = y_RD;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["error"] = error_RD;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["RD_rho"] = y_RD_rho;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["RDerror_rho"] = error_RD_rho;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["yield_neg"] = yield_neg;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["yield_pos"] = yield_pos;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["error_neg"] = error_neg;
-                  jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["error_pos"] = error_pos;
                   jout_sthwrong[std::to_string(Q2)][xbj_str][z_str][(std::to_string(RunGroup)).c_str()]["rungroup"] = RunGroup;
 
                 }

@@ -14,7 +14,11 @@
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 using namespace std;
-  
+
+double fit_fun(double *x,double *par){
+  return par[0]+par[1]*x[0]+par[2]*x[0]*x[0];
+  //return par[0]*TMath::Exp(par[1]*x[0]);
+}
 
 void SHMS_rf_DE_plots_new(){
 
@@ -49,10 +53,10 @@ void SHMS_rf_DE_plots_new(){
     neg_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["neg"]["D2"].get<std::vector<int>>();
     pos_D2 = j_rungroup[(std::to_string(RunGroup)).c_str()]["pos"]["D2"].get<std::vector<int>>();
     if(!pos_D2.empty() && !neg_D2.empty()){
-       
+
       json j_rfeff_delta;
       {
-        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_compare.json";
+        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_4_compare.json";
         std::ifstream ifstream(name.c_str());
         ifstream>>j_rfeff_delta;
       }
@@ -62,38 +66,42 @@ void SHMS_rf_DE_plots_new(){
         int i_dp = std::stoi(it.key());
         //std::cout<<i_dp<<std::endl;
         double shms_p = it.value()["shms_p"].get<double>();
-        std::vector<double> pi_eff_Ns_pos = it.value()["pos"]["pi_eff_Ns"].get<std::vector<double>>();
-        double pi_eff_N_pos = pi_eff_Ns_pos[i_rfcut];
-        double pi_eff_all_pos = it.value()["pos"]["pi_eff_all"].get<double>();
-        std::vector<double> K_con_Ns_pos = it.value()["pos"]["Ks"].get<std::vector<double>>();
-        double K_n_pos = K_con_Ns_pos[i_rfcut];
-        double pi_eff_pos = pi_eff_N_pos/pi_eff_all_pos;
-        double pi_purity_pos = pi_eff_N_pos/(pi_eff_N_pos+K_n_pos);
-        //double pi_eff_pos_err = sqrt(pi_eff_all_pos-pi_eff_N_pos)/pi_eff_all_pos;
-        double pi_eff_pos_err = sqrt(pi_eff_pos*(1-pi_eff_pos)/pi_eff_all_pos);
-        double pi_purity_pos_err = sqrt(K_n_pos)/(pi_eff_N_pos+K_n_pos);
-        
-        std::vector<double> pi_eff_Ns_neg = it.value()["neg"]["pi_eff_Ns"].get<std::vector<double>>();
-        double pi_eff_N_neg = pi_eff_Ns_neg[i_rfcut];
-        double pi_eff_all_neg = it.value()["neg"]["pi_eff_all"].get<double>();
-        std::vector<double> K_con_Ns_neg = it.value()["neg"]["Ks"].get<std::vector<double>>();
-        double K_n_neg = K_con_Ns_neg[i_rfcut];
-        double pi_eff_neg = pi_eff_N_neg/pi_eff_all_neg;
-        double pi_purity_neg = pi_eff_N_neg/(pi_eff_N_neg+K_n_neg);
-        double pi_eff_neg_err = sqrt(pi_eff_neg*(1-pi_eff_neg)/pi_eff_all_neg);
-          //sqrt(pi_eff_all_neg-pi_eff_N_neg)/pi_eff_all_neg;
-        double pi_purity_neg_err = sqrt(K_n_neg)/(pi_eff_N_neg+K_n_neg);
+        if(!it.value()["pos"]["pi_eff_all"].empty()){
+          std::vector<double> pi_eff_Ns_pos = it.value()["pos"]["pi_eff_Ns"].get<std::vector<double>>();
+          double pi_eff_N_pos = pi_eff_Ns_pos[i_rfcut];
+          double pi_eff_all_pos = it.value()["pos"]["pi_eff_all"].get<double>();
+          std::vector<double> K_con_Ns_pos = it.value()["pos"]["Ks"].get<std::vector<double>>();
+          double K_n_pos = K_con_Ns_pos[i_rfcut];
+          double pi_eff_pos = pi_eff_N_pos/pi_eff_all_pos;
+          double pi_purity_pos = pi_eff_N_pos/(pi_eff_N_pos+K_n_pos);
+          //double pi_eff_pos_err = sqrt(pi_eff_all_pos-pi_eff_N_pos)/pi_eff_all_pos;
+          double pi_eff_pos_err = sqrt(pi_eff_pos*(1-pi_eff_pos)/pi_eff_all_pos);
+          double pi_purity_pos_err = sqrt(K_n_pos)/(pi_eff_N_pos+K_n_pos);
 
-        g_pos_pieff->SetPoint(i_graph_pos,shms_p,pi_eff_pos);
-        g_pos_pieff->SetPointError(i_graph_pos,0,pi_eff_pos_err);
-        g_pos_pipurity->SetPoint(i_graph_pos,shms_p,pi_purity_pos);
-        g_pos_pipurity->SetPointError(i_graph_pos,0,pi_purity_pos_err);
-        g_neg_pieff->SetPoint(i_graph_neg,shms_p,pi_eff_neg);
-        g_neg_pieff->SetPointError(i_graph_neg,0,pi_eff_neg_err);
-        g_neg_pipurity->SetPoint(i_graph_neg,shms_p,pi_purity_neg);
-        g_neg_pipurity->SetPointError(i_graph_neg,0,pi_purity_neg_err);
-        i_graph_pos++;
-        i_graph_neg++;
+          std::vector<double> pi_eff_Ns_neg = it.value()["neg"]["pi_eff_Ns"].get<std::vector<double>>();
+          double pi_eff_N_neg = pi_eff_Ns_neg[i_rfcut];
+          double pi_eff_all_neg = it.value()["neg"]["pi_eff_all"].get<double>();
+          std::vector<double> K_con_Ns_neg = it.value()["neg"]["Ks"].get<std::vector<double>>();
+          double K_n_neg = K_con_Ns_neg[i_rfcut];
+          double pi_eff_neg = pi_eff_N_neg/pi_eff_all_neg;
+          double pi_purity_neg = pi_eff_N_neg/(pi_eff_N_neg+K_n_neg);
+          double pi_eff_neg_err = sqrt(pi_eff_neg*(1-pi_eff_neg)/pi_eff_all_neg);
+          //sqrt(pi_eff_all_neg-pi_eff_N_neg)/pi_eff_all_neg;
+          double pi_purity_neg_err = sqrt(K_n_neg)/(pi_eff_N_neg+K_n_neg);
+
+          //if(shms_p>2.8){
+            g_pos_pieff->SetPoint(i_graph_pos,shms_p,pi_eff_pos);
+            g_pos_pieff->SetPointError(i_graph_pos,0,pi_eff_pos_err);
+            g_pos_pipurity->SetPoint(i_graph_pos,shms_p,pi_purity_pos);
+            g_pos_pipurity->SetPointError(i_graph_pos,0,pi_purity_pos_err);
+            g_neg_pieff->SetPoint(i_graph_neg,shms_p,pi_eff_neg);
+            g_neg_pieff->SetPointError(i_graph_neg,0,pi_eff_neg_err);
+            g_neg_pipurity->SetPoint(i_graph_neg,shms_p,pi_purity_neg);
+            g_neg_pipurity->SetPointError(i_graph_neg,0,pi_purity_neg_err);
+            i_graph_pos++;
+            i_graph_neg++;
+          //}
+        }
       }
 
     }//if neg and pos not empty
@@ -135,7 +143,7 @@ void SHMS_rf_DE_plots_new(){
   //TF1 * f = new TF1("f",[](double*x,double*p){return p[0] + p[1]*x[0];},2.8,5,2);
   TCanvas *c_neg_purity = new TCanvas();
   g_neg_pipurity->Draw("AP");
-  g_neg_pipurity->Fit("pol2","","",3,5);
+  g_neg_pipurity->Fit("pol2","","",2.8,5);
   g_neg_pipurity->SetMaximum(1.01);
   g_neg_pipurity->SetMinimum(0.7);
   gStyle->SetOptFit(0001);
@@ -143,7 +151,12 @@ void SHMS_rf_DE_plots_new(){
   TCanvas *c_pos_purity = new TCanvas();
   c_pos_purity->cd();
   g_pos_pipurity->Draw("AP");
-  g_pos_pipurity->Fit("pol2","","",2.9,5);
+  TF1 *f1 = new TF1("fit",fit_fun,2.8,5,3);
+  f1->SetParameter(0,0.9);
+  //f1->FixParameter(0,0.9);
+  f1->SetParameter(2,-0.02);
+  //f1->FixParameter(2,-0.02);
+  g_pos_pipurity->Fit("fit","","",2.8,5);
   g_pos_pipurity->SetMaximum(1.01);
   g_pos_pipurity->SetMinimum(0.7);
   gStyle->SetOptFit(0001);
@@ -167,7 +180,7 @@ void SHMS_rf_DE_plots_new(){
     if(!pos_D2.empty() && !neg_D2.empty()){
       json j_rfeff_delta;
       {
-        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_compare.json";
+        std::string name = "results/pid/rftime_new/rf_eff_"+std::to_string(RunGroup)+"_4_compare.json";
         std::ifstream ifstream(name.c_str());
         ifstream>>j_rfeff_delta;
       }

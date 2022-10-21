@@ -58,7 +58,7 @@ kaon_contam_fun_fit.cxx, This is a test file to use the new shape to fit the rf 
 rf_offset_plot.cxx, reads rf offsets from db2/runs_info_offset.cxx(where the offset is determined by the maximum bin), plot the offsets vs. run number, and fit pol0
 rf_offset_update.cxx, update the rfoffset from pol0 fit result to the input runsinfo file
 
-SHMS_rf_DE_plots.cxx This one reads the results from SHMS_rf_twofit_high.cxx, and plot the rf eff and purity as a function of momentum
+SHMS_rf_DE_plots.cxx This one reads the results from SHMS_rf_twofit_high.cxx, and plot the rf eff and purity as a function of momentum, the rf cuts are changing, using the cut that makes efficiency greater than 99
 
 SHMS_rf_twocomplicatedfit_high.cxx This one is similar to SHMS_rf_twofit_high.cxx, but with updated kaon decay function as in kaon_contam_func.cxx. the results is in results/pid/rftime_new/...
 

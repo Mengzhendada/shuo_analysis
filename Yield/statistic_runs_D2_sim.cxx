@@ -42,6 +42,10 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     auto z = [](float pq, float ph) {
       return ph/pq;
     };
+    auto Wprime2 = [](Pvec4D& pq,Pvec4D& ph) {
+      auto Ptot = Pvec4D{0.0,0.0,0.0, M_P} + pq - ph;
+      return Ptot.Dot(Ptot);
+    };
     auto Mx2 = [](float nu,float z,float pmiss){
       return (M_P+nu - z*nu)*(M_P+nu - z*nu) -abs(pmiss)*abs(pmiss);
     };
@@ -115,6 +119,23 @@ void statistic_runs_D2_sim(int RunGroup = 0){
   {
     std::ifstream ifs("db2/simc_rungroup.json");
     ifs>>j_simc;
+  };
+  double P_hgcer = j_cuts["P_hgcer"].get<double>();
+  auto HGC_bad = [=](float shms_p, float x_fp,float xp_fp,float y_fp,float yp_fp){
+    double xcer = x_fp+156.27*xp_fp;
+    double ycer = y_fp+156.27*yp_fp;
+
+    if(shms_p>2.9){
+      if(P_hgcer==-1){
+        return true;
+      }
+      else{
+        return (xcer-1.33)*(xcer-1.33)+(ycer-0.83)*(ycer-0.83)>=36 && (xcer<0||xcer>3);
+      }
+    }
+    else{
+      return true;
+    }
   };
 
   int bins = j_cuts["bins"].get<int>();
@@ -202,6 +223,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    .Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double wfac_D2_neg_inc_norad = (normfac_D2_neg_inc_norad/nentries_D2_neg_inc_norad);
   //auto weight_calculate = [&](float weight){return wfac_D2_neg_inc_norad*weight;}
@@ -227,6 +249,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    .Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   std::cout<<"sim counts "<<nentries_D2_pos_inc_norad<<std::endl;
   double wfac_D2_pos_inc_norad = (normfac_D2_pos_inc_norad/nentries_D2_pos_inc_norad);
@@ -260,6 +283,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    //.Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_neg_exc_rad = *d_D2_neg_exc_rad_raw.Count();
 
@@ -291,6 +315,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    //.Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_pos_exc_rad = *d_D2_pos_exc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_exc_rad<<std::endl;
@@ -320,6 +345,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    .Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_neg_inc_rad = *d_D2_neg_inc_rad_raw.Count();
 
@@ -350,6 +376,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    .Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_pos_inc_rad = *d_D2_pos_inc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_inc_rad<<std::endl;
@@ -379,6 +406,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    .Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_neg_K_inc_rad = *d_D2_neg_K_inc_rad_raw.Count();
 
@@ -409,6 +437,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    .Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_pos_K_inc_rad = *d_D2_pos_K_inc_rad_raw.Count();
   std::cout<<"sim counts "<<nentries_D2_pos_K_inc_rad<<std::endl;
@@ -437,6 +466,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    //.Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_neg_rho = *d_D2_neg_rho_raw.Count();
 
@@ -466,6 +496,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    //.Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_pos_rho = *d_D2_pos_rho_raw.Count();
   double wfac_D2_pos_rho = (normfac_D2_pos_rho/nentries_D2_pos_rho);
@@ -494,6 +525,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    //.Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_neg_delta = *d_D2_neg_delta_raw.Count();
   std::cout<<"sim counts neg delta "<<nentries_D2_neg_delta<<std::endl;
@@ -524,6 +556,7 @@ void statistic_runs_D2_sim(int RunGroup = 0){
     .Filter("HMS_Dipole_Exit>0")
     .Define("SHMS_Dipole_Exit",Dipole_Exit_SHMS,{"ssxfp","ssxpfp","ssyfp","ssypfp"})
     .Filter("SHMS_Dipole_Exit>0")
+    //.Filter(HGC_bad,{"ppi","ssxfp","ssxpfp","ssyfp","ssypfp"})
     ;
   double nentries_D2_pos_delta = *d_D2_pos_delta_raw.Count();
   std::cout<<"sim counts pos delta "<<nentries_D2_pos_delta<<std::endl;

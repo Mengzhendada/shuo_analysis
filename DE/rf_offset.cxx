@@ -212,7 +212,8 @@ void rf_offset(int RunGroup=0){
         .Filter(aeroCutSHMS)
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+        .Define("fptime_minus_rf","P.hod.fpHitsTime - T.coin.pRF_tdcTime")
+        //.Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return current>current_offset;},{"current"})
         ;
@@ -414,7 +415,8 @@ void rf_offset(int RunGroup=0){
         .Filter(aeroCutSHMS)
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+        .Define("fptime_minus_rf","P.hod.fpHitsTime - T.coin.pRF_tdcTime")
+        //.Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return current>current_offset;},{"current"})
         ;

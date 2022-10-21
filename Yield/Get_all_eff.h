@@ -25,6 +25,58 @@ static double Get_all_eff(int RunNumber){
   double Target_Boiling = j_info[(std::to_string(RunNumber)).c_str()]["Target_Boiling"].get<double>();
   return TE*TLT*TEHMS*HMS_cal_eff*SHMS_cal_eff*SHMS_aero_eff*FADC_eff*Target_Boiling;
 };
+static double Get_posKpi_ratio_large(double xbj, double Q2, double z, bool need){
+  json j_kpi;
+  {
+    std::ifstream ifs("results/pid/Kpi_ratio.json");
+    ifs>>j_kpi;
+  }
+  if(need){
+    double p0 = j_kpi[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["largex"]["p0"].get<double>();
+    double p1 = j_kpi[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["largex"]["p1"].get<double>();
+    return p0+p1*z;
+  }
+  else return 1;
+}
+static double Get_posKpi_ratio_small(double xbj, double Q2, double z, bool need){
+  json j_kpi;
+  {
+    std::ifstream ifs("results/pid/Kpi_ratio.json");
+    ifs>>j_kpi;
+  }
+  if(need){
+    double p0 = j_kpi[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["smallx"]["p0"].get<double>();
+    double p1 = j_kpi[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["smallx"]["p1"].get<double>();
+    return p0+p1*z;
+  }
+  else return 1;
+}
+static double Get_negKpi_ratio_large(double xbj, double Q2, double z, bool need){
+  json j_kpi;
+  {
+    std::ifstream ifs("results/pid/Kpi_ratio.json");
+    ifs>>j_kpi;
+  }
+  if(need){
+    double p0 = j_kpi[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["largex"]["p0_neg"].get<double>();
+    double p1 = j_kpi[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["largex"]["p1_neg"].get<double>();
+    return p0+p1*z;
+  }
+  else return 1;
+}
+static double Get_negKpi_ratio_small(double xbj, double Q2, double z, bool need){
+  json j_kpi;
+  {
+    std::ifstream ifs("results/pid/Kpi_ratio.json");
+    ifs>>j_kpi;
+  }
+  if(need){
+    double p0 = j_kpi[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["smallx"]["p0_neg"].get<double>();
+    double p1 = j_kpi[(std::to_string(xbj)).c_str()][(std::to_string(Q2)).c_str()]["smallx"]["p1_neg"].get<double>();
+    return p0+p1*z;
+  }
+  else return 1;
+}
 static double Get_D2_neg_delta_ratio(double xbj,double Q2,double z){
   json j_bgratio;
   {

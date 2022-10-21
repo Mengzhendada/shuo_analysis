@@ -42,14 +42,31 @@ double Get_SHMS_P_corr(double shmsp){
   return 0.998;
 } 
 double Get_pi_eff(double shms_p){
-  double pi_eff = 0.9824+0.002969*shms_p;
-  if(pi_eff>1) pi_eff = 1;
+  //double pi_eff = 0.9824+0.002969*shms_p;
+  //if(pi_eff>1) pi_eff = 1;
+  double pi_eff = 1;
   return pi_eff;
 }
 double Get_pos_pi_purity(double shms_p){
-  if(shms_p>3){
-  double pi_purity = 1.978-0.4815*shms_p+0.05161*shms_p*shms_p;
-  if(pi_purity>1) pi_purity = 1;
+  if(shms_p>2.8){
+  //double pi_purity = 1.978-0.4815*shms_p+0.05161*shms_p*shms_p;
+  //  double pi_purity = 0.8381+0.1812*shms_p-0.04437*shms_p*shms_p;
+  //double pi_purity = -0.0150813*shms_p*shms_p+0.0590388*shms_p+0.94521101;
+  double pi_purity = 1;
+    if(pi_purity>1) pi_purity = 1;
+  return pi_purity;
+  }
+  else{
+    return 1;
+  }
+}
+double Get_pos_pi_purity_withHGC(double shms_p){
+  if(shms_p>2.8){
+  //double pi_purity = 1.478-0.2423*shms_p+0.0687*shms_p*shms_p;
+  //  double pi_purity = 0.9079+0.09864*shms_p-0.02375*shms_p*shms_p;
+    //double pi_purity = -0.00151264*shms_p+1.00305806;
+  double pi_purity = 1;
+    if(pi_purity>1) pi_purity = 1;
   return pi_purity;
   }
   else{
@@ -57,16 +74,8 @@ double Get_pos_pi_purity(double shms_p){
   }
 }
 double Get_neg_pi_purity(double shms_p){
-  if(shms_p>3){
-  double pi_purity = 1.478-0.2423*shms_p+0.0687*shms_p*shms_p;
-  if(pi_purity>1) pi_purity = 1;
-  return pi_purity;
-  }
-  else{
-    return 1;
-  }
+  return 1;
 }
-
 bool shms_momentum_high = true;
 
 void skim_check(int RunGroup=0){
@@ -132,6 +141,10 @@ void skim_check(int RunGroup=0){
   std::string Normal_SHMS = "P.gtr.th > "+std::to_string(P_xptar_low)+" && P.gtr.th < "+std::to_string(P_xptar_high)+" && P.gtr.ph > "+std::to_string(P_yptar_low)+" && P.gtr.ph < "+std::to_string(P_yptar_high); 
   std::cout<<Normal_HMS<<std::endl;
   std::cout<<Normal_SHMS<<std::endl;
+  std::string HGC_bad_center = "(P.hgcer.yAtCer-1.33)*(P.hgcer.yAtCer-1.33) +  (P.hgcer.xAtCer-0.83)*(P.hgcer.xAtCer-0.83) >= 36";
+  std::string HGC_bad_strip = "(P.hgcer.xAtCer<0 || P.hgcer.xAtCer>3)";
+  std::string HGC_bad = HGC_bad_center + " && "+ HGC_bad_strip;
+
   double W2_cut_num = j_cuts["W2"].get<double>();
   std::string W2_cut = "W2 > "+std::to_string(W2_cut_num);
   double Mx2_cut_num = j_cuts["Mx2"].get<double>();
@@ -146,19 +159,27 @@ void skim_check(int RunGroup=0){
     std::ifstream ifs(if_name.c_str());
     ifs>>j_runsinfo;
   }
-  json j_DE;
-  {
-    std::ifstream ifs("db2/PID_test.json");
-    ifs>>j_DE;
-  }
-      std::vector<int> delta_cut_num= j_DE["SHMS"]["delta_cuts_forrf"].get<std::vector<int>>(); 
   if(!neg_D2.empty() && !pos_D2.empty()){
     std::vector<std::string> files_neg,files_pos;
     double SHMS_P = j_rungroup[(std::to_string(RunGroup)).c_str()]["shms_p"].get<double>();
     SHMS_P = SHMS_P*Get_SHMS_P_corr(SHMS_P);
     auto shms_p_calculate = [SHMS_P](double shms_dp){return SHMS_P*(1+shms_dp/100);};
     //if(SHMS_P>3.2){aeroCutSHMS = aeroCutSHMS + " && P.hgcer.npeSum > "+(std::to_string(P_hgcer)).c_str();}
-    
+    /*
+       auto SHMS_hgc_aero =[=](double shms_dp,double hgc_Npe,double aero_Npe){
+
+       if(SHMS_P*(shms_dp+100)/100>2.9){
+       if(P_hgcer==-1){
+       return aero_Npe>P_aero;}
+       else{
+       return hgc_Npe>P_hgcer && aero_Npe>P_aero;
+       }
+       }
+       else{
+       return aero_Npe>P_aero;
+       }
+       };
+       */
     double Eb;
     if(RunGroup < 420) {Eb = 10.597;}
     else{Eb = 10.214;}
@@ -222,7 +243,7 @@ void skim_check(int RunGroup=0){
    //   .Filter(aeroCutSHMS)
    //   .Filter(Normal_SHMS)
    //   .Filter(Normal_HMS)
-   //   .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+   //   .Define("fptime_minus_rf","P.hod.fpHitsTime - T.coin.pRF_tdcTime")
    //   ;
 
 
@@ -271,10 +292,12 @@ void skim_check(int RunGroup=0){
         .Filter(piCutSHMS)
         .Filter(eCutHMS)
         .Filter(aeroCutSHMS)
+        //.Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"})
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
+        //.Filter(HGC_bad)
         .Filter("P.dc.InsideDipoleExit == 1")
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+        .Define("fptime_minus_rf","P.hod.fpHitsTime - T.coin.pRF_tdcTime")
         .Define("current",pos_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return current>current_offset;},{"current"})
         //.Filter([&](double current){return std::abs(current-pos_setcurrent)<current_offset;},{"current"})
@@ -356,7 +379,7 @@ void skim_check(int RunGroup=0){
       auto d_pos_pi = d_mod_first
       //  .Filter(
       //      [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        //.Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         //.Filter(Wp2_cut)
         //.Filter(Mx2_cut)
         //.Filter(W2_cut)
@@ -364,7 +387,7 @@ void skim_check(int RunGroup=0){
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
       opts.fMode = "UPDATE";
-      d_pos_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp","P.gtr.p","H.gtr.dp","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
+      d_pos_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.hgcer.xAtCer","P.hgcer.yAtCer","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
       //d_pos_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_pos_pi.Count();
@@ -425,13 +448,13 @@ void skim_check(int RunGroup=0){
         ;
       auto h_difftime_forbg = d_pos_forbg.Histo1D({"","diff for bg",100,0,4.008},"diff_time_mod");
       auto d_pos_bg  = d_pos_forbg
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        //.Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         //.Filter(Mx2_cut)
         //.Filter(Wp2_cut)
         //.Filter(W2_cut)
         ;
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str());
-      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","pmiss","Mx2","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp","P.gtr.p","H.gtr.dp","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
+      d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","pmiss","Mx2","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.hgcer.xAtCer","P.hgcer.yAtCer","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
       //d_pos_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_pos_bg = d_pos_bg.Histo1D({"","pos bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 
@@ -589,10 +612,12 @@ void skim_check(int RunGroup=0){
         .Filter(piCutSHMS)
         .Filter(eCutHMS)
         .Filter(aeroCutSHMS)
+        //.Filter(SHMS_hgc_aero,{"P.gtr.dp","P.hgcer.npeSum","P.aero.npeSum"})
         .Filter(Normal_SHMS)
         .Filter(Normal_HMS)
+        //.Filter(HGC_bad)
         .Filter("P.dc.InsideDipoleExit == 1")
-        .Define("fptime_minus_rf","P.hod.starttime - T.coin.pRF_tdcTime")
+        .Define("fptime_minus_rf","P.hod.fpHitsTime - T.coin.pRF_tdcTime")
         .Define("current",neg_get_current,{"fEvtHdr.fEvtNum"})
         .Filter([&](double current){return current>current_offset;},{"current"})
         //.Filter([&](double current){return std::abs(current-neg_setcurrent)<current_offset;},{"current"})
@@ -643,32 +668,6 @@ void skim_check(int RunGroup=0){
         return SHMS_rftime>rf_pi_low && SHMS_rftime<rf_pi_high;  
         
       };
-      /*
-      auto Get_pi_eff = [=](double SHMS_dp){
-        double pi_eff;
-        int i_order = 0,i_which;
-        for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
-          if(SHMS_dp>*it){
-            i_which = i_order;
-            pi_eff = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_eff"].get<double>();
-          }
-          i_order++;
-        }
-        return pi_eff;  
-      };
-      auto Get_pi_purity = [=](double SHMS_dp){
-        double pi_purity;
-        int i_order = 0,i_which;
-        for(auto it = delta_cut_num.begin();it!=delta_cut_num.end();++it){
-          if(SHMS_dp>*it){
-            i_which = i_order;
-            pi_purity = j_rf_DE[(std::to_string(RunGroup)).c_str()][(std::to_string(i_which)).c_str()]["pos"]["pi_purity"].get<double>();
-          }
-          i_order++;
-        }
-        return pi_purity;  
-      };
-      */
       //std::cout<<"offset for neg runs "<<offset_neg<<std::endl;
       //jout[(std::to_string(RunNumber)).c_str()]["offset"] = offset_neg;
       auto d_mod_first = d_neg_first
@@ -701,7 +700,7 @@ void skim_check(int RunGroup=0){
       auto d_neg_pi = d_mod_first
         //.Filter(
         //    [=](double difftime){return difftime < rf_pi_high && difftime > rf_pi_low;},{"diff_time_mod"})
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        //.Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         //.Filter(Wp2_cut)
         //.Filter(Mx2_cut)
         //.Filter(W2_cut)
@@ -709,7 +708,7 @@ void skim_check(int RunGroup=0){
       ROOT::RDF::RSnapshotOptions opts;
       //= {"UPDATE", ROOT::kZLIB, 0, 0, 99, true};
       opts.fMode = "UPDATE";
-      d_neg_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp","P.gtr.p","H.gtr.dp","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
+      d_neg_pi.Snapshot("T",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.hgcer.xAtCer","P.hgcer.yAtCer","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"});
       //d_neg_pi.Snapshot("T",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       std::cout<<"check"<<std::endl;
       int pion_counts = *d_neg_pi.Count();
@@ -770,13 +769,13 @@ void skim_check(int RunGroup=0){
         ;
       auto h_difftime_forbg = d_neg_forbg.Histo1D({"","diff for bg",100,0,4.008},"diff_time_mod");
       auto d_neg_bg  = d_neg_forbg
-        .Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
+        //.Filter(rf_cut,{"P.gtr.dp","diff_time_mod"})
         //.Filter(Mx2_cut)
         //.Filter(Wp2_cut)
         //.Filter(W2_cut)
         ;
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str());
-      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","P.gtr.dp","P.gtr.p","H.gtr.dp","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
+      d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"shms_p","xbj","z","Q2","W2","W","Wp","Wp2","emiss","mmiss","InvMass","Mx2","pmiss","weight","P.gtr.th","P.gtr.ph","P.gtr.y","diff_time_mod","P.gtr.dp","P.gtr.p","H.gtr.dp","P.hgcer.npeSum","P.hgcer.xAtCer","P.hgcer.yAtCer","P.kin.secondary.th_xq","P.kin.secondary.ph_xq","H.kin.primary.omega"},opts);
       //d_neg_bg.Snapshot("T_bg",skim_name.c_str(),{"xbj","z","Q2","W2","W","Wp","emiss","mmiss","InvMass","weight"});
       auto h_coin_neg_bg = d_neg_bg.Histo1D({"","neg bg",800,0,100},"CTime.ePiCoinTime_ROC2");
 

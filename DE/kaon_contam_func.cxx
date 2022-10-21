@@ -143,7 +143,7 @@ void kaon_contam_func(){
   }
   mg_pion_fromkaondecay->SetTitle("kaon decay");
   g_kaondecay->SetTitle("Sum");
-  mg_pion_fromkaondecay->Add(g_kaondecay,"L");
+  mg_pion_fromkaondecay->Add(g_kaondecay,"P");
   TCanvas *c_kaondecay = new TCanvas();
   //g_kaondecay->SetMarkerStyle(8);
   c_kaondecay->SetGrid();
